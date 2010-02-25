@@ -12,4 +12,16 @@ describe VCR::Config do
       lambda { VCR::Config.cache_dir = nil }.should_not raise_error
     end
   end
+
+  describe '#default_sandbox_record_mode' do
+    VCR::Sandbox::VALID_RECORD_MODES.each do |mode|
+      it "should allow #{mode}" do
+        lambda { VCR::Config.default_sandbox_record_mode = mode }.should_not raise_error
+      end
+    end
+
+    it "should not allow :not_a_record_mode" do
+      lambda { VCR::Config.default_sandbox_record_mode = :not_a_record_mode }.should raise_error(ArgumentError)
+    end
+  end
 end

@@ -36,6 +36,18 @@ describe VCR::Sandbox do
   end
 
   describe 'on creation' do
+    it "should raise an error if given an invalid record mode" do
+      lambda { VCR::Sandbox.new(:test, :record => :not_a_record_mode) }.should raise_error(ArgumentError)
+    end
+
+    VCR::Sandbox::VALID_RECORD_MODES.each do |mode|
+      it "should default the record mode to #{mode} when VCR::Config.default_sandbox_record_mode is #{mode}" do
+        VCR::Config.default_sandbox_record_mode = mode
+        sandbox = VCR::Sandbox.new(:test)
+        sandbox.record_mode.should == mode
+      end
+    end
+
     { :unregistered => true, :all => true, :none => false }.each do |record_mode, allow_fakeweb_connect|
       it "should set FakeWeb.allow_net_connect to #{allow_fakeweb_connect} when the record mode is #{record_mode}" do
         FakeWeb.allow_net_connect = !allow_fakeweb_connect
