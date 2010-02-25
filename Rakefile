@@ -5,13 +5,13 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "vcr"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %Q{Use VCR to record HTTP responses and replay them using fakeweb.}
+    gem.description = %Q{VCR works together with cucumber and fakeweb.  It provides helpers to record HTTP requests for URIs that are not registered with fakeweb, and replay them later.}
     gem.email = "myron.marston@gmail.com"
     gem.homepage = "http://github.com/myronmarston/vcr"
     gem.authors = ["Myron Marston"]
     gem.add_development_dependency "rspec", ">= 1.2.9"
-    gem.add_development_dependency "cucumber", ">= 0"
+    gem.add_development_dependency "cucumber", ">= 0.6.1"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
