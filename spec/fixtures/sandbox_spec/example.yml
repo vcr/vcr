@@ -1,0 +1,77 @@
+--- 
+- !ruby/struct:VCR::RecordedResponse 
+  :method: :get
+  :uri: http://example.com:80/
+  :response: !ruby/object:Net::HTTPOK 
+    body: |
+      <HTML>
+      <HEAD>
+        <TITLE>Example Web Page</TITLE>
+      </HEAD> 
+      <body>  
+      <p>You have reached this web page by typing &quot;example.com&quot;,
+      &quot;example.net&quot;,
+        or &quot;example.org&quot; into your web browser.</p>
+      <p>These domain names are reserved for use in documentation and are not available 
+        for registration. See <a href="http://www.rfc-editor.org/rfc/rfc2606.txt">RFC 
+        2606</a>, Section 3.</p>
+      </BODY>
+      </HTML>
+
+    body_exist: true
+    code: "200"
+    header: 
+      server: 
+      - Apache/2.2.3 (Red Hat)
+      last-modified: 
+      - Tue, 15 Nov 2005 13:24:10 GMT
+      etag: 
+      - "\"b300b4-1b6-4059a80bfd280\""
+      accept-ranges: 
+      - bytes
+      content-type: 
+      - text/html; charset=UTF-8
+      connection: 
+      - Keep-Alive
+      date: 
+      - Mon, 25 Jan 2010 18:00:32 GMT
+      age: 
+      - "2090"
+      content-length: 
+      - "438"
+    http_version: "1.1"
+    message: OK
+    read: true
+    socket: 
+- !ruby/struct:VCR::RecordedResponse 
+  :method: :get
+  :uri: http://example.com:80/foo
+  :response: !ruby/object:Net::HTTPNotFound 
+    body: |
+      <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+      <html><head>
+      <title>404 Not Found</title>
+      </head><body>
+      <h1>Not Found</h1>
+      <p>The requested URL /foo was not found on this server.</p>
+      <hr>
+      <address>Apache/2.2.3 (CentOS) Server at example.com Port 80</address>
+      </body></html>
+
+    body_exist: true
+    code: "404"
+    header: 
+      date: 
+      - Mon, 25 Jan 2010 18:00:32 GMT
+      server: 
+      - Apache/2.2.3 (CentOS)
+      content-length: 
+      - "277"
+      connection: 
+      - close
+      content-type: 
+      - text/html; charset=iso-8859-1
+    http_version: "1.1"
+    message: Not Found
+    read: true
+    socket: 

@@ -8,6 +8,7 @@ module VCR
       @name = name
       @record_mode = options[:record] || :unregistered
       set_fakeweb_allow_net_connect
+      load_recorded_responses
     end
 
     def destroy!
@@ -36,6 +37,13 @@ module VCR
 
     def restore_fakeweb_allow_net_conect
       FakeWeb.allow_net_connect = @orig_fakeweb_allow_connect
+    end
+
+    def load_recorded_responses
+      if VCR::Config.cache_dir
+        yaml_file = File.join(VCR::Config.cache_dir, "#{name}.yml")
+        @recorded_responses = File.open(yaml_file, 'r') { |f| YAML.load(f.read) } if File.exist?(yaml_file)
+      end
     end
 
     def write_recorded_responses_to_disk

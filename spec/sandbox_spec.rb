@@ -19,6 +19,22 @@ describe VCR::Sandbox do
         FakeWeb.allow_net_connect?.should == allow_fakeweb_connect
       end
     end
+
+    it 'should load the recorded responses from the cached yml file' do
+      VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + '/fixtures/sandbox_spec')
+      sandbox = VCR::Sandbox.new('example')
+      sandbox.should have(2).recorded_responses
+
+      rr1, rr2 = sandbox.recorded_responses.first, sandbox.recorded_responses.last
+
+      rr1.method.should == :get
+      rr1.uri.should == 'http://example.com:80/'
+      rr1.response.body.should =~ /You have reached this web page by typing.+example\.com/
+
+      rr2.method.should == :get
+      rr2.uri.should == 'http://example.com:80/foo'
+      rr2.response.body.should =~ /foo was not found on this server/
+    end
   end
 
   describe '#destroy!' do
