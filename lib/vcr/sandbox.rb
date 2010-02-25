@@ -40,6 +40,8 @@ module VCR
     end
 
     def load_recorded_responses
+      return if record_mode == :all
+
       if VCR::Config.cache_dir
         yaml_file = File.join(VCR::Config.cache_dir, "#{name}.yml")
         @recorded_responses = File.open(yaml_file, 'r') { |f| YAML.load(f.read) } if File.exist?(yaml_file)

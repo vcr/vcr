@@ -24,32 +24,45 @@ describe VCR::Sandbox do
       end
     end
 
-    it 'should load the recorded responses from the cached yml file' do
-      VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + '/fixtures/sandbox_spec')
-      sandbox = VCR::Sandbox.new('example')
-      sandbox.should have(2).recorded_responses
+    { :unregistered => true, :all => false, :none => true }.each do |record_mode, load_responses|
+      it "should #{'not ' unless load_responses}load the recorded responses from the cached yml file when the record mode is #{record_mode}" do
+        VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + '/fixtures/sandbox_spec')
+        sandbox = VCR::Sandbox.new('example', :record => record_mode)
 
-      rr1, rr2 = sandbox.recorded_responses.first, sandbox.recorded_responses.last
+        if load_responses
+          sandbox.should have(2).recorded_responses
 
-      rr1.method.should == :get
-      rr1.uri.should == 'http://example.com:80/'
-      rr1.response.body.should =~ /You have reached this web page by typing.+example\.com/
+          rr1, rr2 = sandbox.recorded_responses.first, sandbox.recorded_responses.last
 
-      rr2.method.should == :get
-      rr2.uri.should == 'http://example.com:80/foo'
-      rr2.response.body.should =~ /foo was not found on this server/
-    end
+          rr1.method.should == :get
+          rr1.uri.should == 'http://example.com:80/'
+          rr1.response.body.should =~ /You have reached this web page by typing.+example\.com/
 
-    it 'should register the recorded responses with fakeweb' do
-      VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + '/fixtures/sandbox_spec')
-      sandbox = VCR::Sandbox.new('example')
+          rr2.method.should == :get
+          rr2.uri.should == 'http://example.com:80/foo'
+          rr2.response.body.should =~ /foo was not found on this server/
+        else
+          sandbox.should have(0).recorded_responses
+        end
+      end
 
-      rr1 = FakeWeb.response_for(:get, "http://example.com")
-      rr2 = FakeWeb.response_for(:get, "http://example.com/foo")
-      rr1.should_not be_nil
-      rr2.should_not be_nil
-      rr1.body.should =~ /You have reached this web page by typing.+example\.com/
-      rr2.body.should =~ /foo was not found on this server/
+      it "should #{'not ' unless load_responses}register the recorded responses with fakeweb when the record mode is #{record_mode}" do
+        VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + '/fixtures/sandbox_spec')
+        sandbox = VCR::Sandbox.new('example', :record => record_mode)
+
+        rr1 = FakeWeb.response_for(:get, "http://example.com")
+        rr2 = FakeWeb.response_for(:get, "http://example.com/foo")
+
+        if load_responses
+          rr1.should_not be_nil
+          rr2.should_not be_nil
+          rr1.body.should =~ /You have reached this web page by typing.+example\.com/
+          rr2.body.should =~ /foo was not found on this server/
+        else
+          rr1.should be_nil
+          rr2.should be_nil
+        end
+      end
     end
   end
 
@@ -57,7 +70,7 @@ describe VCR::Sandbox do
     temp_dir File.expand_path(File.dirname(__FILE__) + '/fixtures/sandbox_spec_destroy'), :assign_to_cache_dir => true
 
     [true, false].each do |orig_allow_net_connect|
-      it "should reset FakeWeb.allow_net_connect to #{orig_allow_net_connect} if it was originally #{orig_allow_net_connect}" do
+      it "should reset FakeWeb.allow_net_connect #{orig_allow_net_connect} if it was originally #{orig_allow_net_connect}" do
         FakeWeb.allow_net_connect = orig_allow_net_connect
         sandbox = VCR::Sandbox.new(:name)
         sandbox.destroy!
