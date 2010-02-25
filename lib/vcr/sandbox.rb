@@ -27,6 +27,10 @@ module VCR
 
     private
 
+    def new_recorded_responses
+      recorded_responses - @original_recorded_responses
+    end
+
     def should_allow_net_connect?
       [:unregistered, :all].include?(record_mode)
     end
@@ -41,9 +45,9 @@ module VCR
     end
 
     def load_recorded_responses
+      @original_recorded_responses = []
       return if record_mode == :all
 
-      @original_recorded_responses = []
       if VCR::Config.cache_dir
         yaml_file = File.join(VCR::Config.cache_dir, "#{name}.yml")
         @original_recorded_responses = @recorded_responses = File.open(yaml_file, 'r') { |f| YAML.load(f.read) } if File.exist?(yaml_file)
@@ -55,7 +59,7 @@ module VCR
     end
 
     def write_recorded_responses_to_disk
-      if VCR::Config.cache_dir && recorded_responses.size > 0
+      if VCR::Config.cache_dir && new_recorded_responses.size > 0
         yaml_file = File.join(VCR::Config.cache_dir, "#{name}.yml")
         File.open(yaml_file, 'w') { |f| f.write recorded_responses.to_yaml }
       end

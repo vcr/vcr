@@ -105,5 +105,13 @@ describe VCR::Sandbox do
       FakeWeb.registered_uri?(:get, 'http://example.com').should be_false
       FakeWeb.registered_uri?(:get, 'http://example.com/foo').should be_false
     end
+
+    it "should not re-write to disk the previously recorded resposes if there are no new ones" do
+      VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + '/fixtures/sandbox_spec')
+      yaml_file = File.join(VCR::Config.cache_dir, 'example.yml')
+      sandbox = VCR::Sandbox.new('example', :record => :none)
+      File.should_not_receive(:open).with(/example/, 'w')
+      lambda { sandbox.destroy! }.should_not change { File.mtime(yaml_file) }
+    end
   end
 end
