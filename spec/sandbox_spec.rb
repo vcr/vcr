@@ -1,6 +1,10 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe VCR::Sandbox do
+  before(:each) do
+    FakeWeb.clean_registry
+  end
+
   describe '#store_recorded_response!' do
     it 'should add the recorded response to #recorded_responses' do
       recorded_response = VCR::RecordedResponse.new(:get, 'http://example.com', :response)
@@ -34,6 +38,18 @@ describe VCR::Sandbox do
       rr2.method.should == :get
       rr2.uri.should == 'http://example.com:80/foo'
       rr2.response.body.should =~ /foo was not found on this server/
+    end
+
+    it 'should register the recorded responses with fakeweb' do
+      VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + '/fixtures/sandbox_spec')
+      sandbox = VCR::Sandbox.new('example')
+
+      rr1 = FakeWeb.response_for(:get, "http://example.com")
+      rr2 = FakeWeb.response_for(:get, "http://example.com/foo")
+      rr1.should_not be_nil
+      rr2.should_not be_nil
+      rr1.body.should =~ /You have reached this web page by typing.+example\.com/
+      rr2.body.should =~ /foo was not found on this server/
     end
   end
 

@@ -44,6 +44,10 @@ module VCR
         yaml_file = File.join(VCR::Config.cache_dir, "#{name}.yml")
         @recorded_responses = File.open(yaml_file, 'r') { |f| YAML.load(f.read) } if File.exist?(yaml_file)
       end
+
+      recorded_responses.each do |rr|
+        FakeWeb.register_uri(rr.method, rr.uri, { :response => rr.response })
+      end
     end
 
     def write_recorded_responses_to_disk
