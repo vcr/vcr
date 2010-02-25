@@ -25,6 +25,10 @@ module VCR
       recorded_responses << recorded_response
     end
 
+    def cache_file
+      File.join(VCR::Config.cache_dir, "#{name.to_s.gsub(/[^\w\-]+/, '_')}.yml") if VCR::Config.cache_dir
+    end
+
     private
 
     def new_recorded_responses
@@ -48,9 +52,8 @@ module VCR
       @original_recorded_responses = []
       return if record_mode == :all
 
-      if VCR::Config.cache_dir
-        yaml_file = File.join(VCR::Config.cache_dir, "#{name}.yml")
-        @original_recorded_responses = @recorded_responses = File.open(yaml_file, 'r') { |f| YAML.load(f.read) } if File.exist?(yaml_file)
+      if cache_file
+        @original_recorded_responses = @recorded_responses = File.open(cache_file, 'r') { |f| YAML.load(f.read) } if File.exist?(cache_file)
       end
 
       recorded_responses.each do |rr|
@@ -60,8 +63,7 @@ module VCR
 
     def write_recorded_responses_to_disk
       if VCR::Config.cache_dir && new_recorded_responses.size > 0
-        yaml_file = File.join(VCR::Config.cache_dir, "#{name}.yml")
-        File.open(yaml_file, 'w') { |f| f.write recorded_responses.to_yaml }
+        File.open(cache_file, 'w') { |f| f.write recorded_responses.to_yaml }
       end
     end
 

@@ -5,6 +5,26 @@ describe VCR::Sandbox do
     FakeWeb.clean_registry
   end
 
+  describe '#cache_file' do
+    temp_dir File.expand_path(File.dirname(__FILE__) + '/fixtures/cache_file'), :assign_to_cache_dir => true
+
+    it 'should combine the cache_dir with the sandbox name' do
+      sandbox = VCR::Sandbox.new('the_cache_file')
+      sandbox.cache_file.should == File.join(VCR::Config.cache_dir, 'the_cache_file.yml')
+    end
+
+    it 'should strip out disallowed characters so that it is a valid file name with no spaces' do
+      sandbox = VCR::Sandbox.new("\nthis \t! / is-the_13212_file name")
+      sandbox.cache_file.should =~ /#{Regexp.escape('_this_is-the_13212_file_name.yml')}$/
+    end
+
+    it 'should return nil if the cache_dir is not set' do
+      VCR::Config.cache_dir = nil
+      sandbox = VCR::Sandbox.new('the_cache_file')
+      sandbox.cache_file.should be_nil
+    end
+  end
+
   describe '#store_recorded_response!' do
     it 'should add the recorded response to #recorded_responses' do
       recorded_response = VCR::RecordedResponse.new(:get, 'http://example.com', :response)
@@ -88,9 +108,8 @@ describe VCR::Sandbox do
       sandbox = VCR::Sandbox.new(:destroy_test)
       sandbox.stub!(:recorded_responses).and_return(recorded_responses)
 
-      yaml_file = File.join(@temp_dir, 'destroy_test.yml')
-      lambda { sandbox.destroy! }.should change { File.exist?(yaml_file) }.from(false).to(true)
-      saved_recorded_responses = File.open(yaml_file, "r") { |f| YAML.load(f.read) }
+      lambda { sandbox.destroy! }.should change { File.exist?(sandbox.cache_file) }.from(false).to(true)
+      saved_recorded_responses = File.open(sandbox.cache_file, "r") { |f| YAML.load(f.read) }
       saved_recorded_responses.should == recorded_responses
     end
   end
@@ -110,7 +129,7 @@ describe VCR::Sandbox do
       VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + '/fixtures/sandbox_spec')
       yaml_file = File.join(VCR::Config.cache_dir, 'example.yml')
       sandbox = VCR::Sandbox.new('example', :record => :none)
-      File.should_not_receive(:open).with(/example/, 'w')
+      File.should_not_receive(:open).with(sandbox.cache_file, 'w')
       lambda { sandbox.destroy! }.should_not change { File.mtime(yaml_file) }
     end
   end
