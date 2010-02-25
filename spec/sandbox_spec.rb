@@ -124,6 +124,19 @@ describe VCR::Sandbox do
       saved_recorded_responses = File.open(sandbox.cache_file, "r") { |f| YAML.load(f.read) }
       saved_recorded_responses.should == recorded_responses
     end
+
+    it "should write both old and new recorded responses to disk" do
+      cache_file = File.expand_path(File.dirname(__FILE__) + '/fixtures/sandbox_spec/example.yml')
+      FileUtils.cp cache_file, File.join(@temp_dir, 'previously_recorded_responses.yml')
+      sandbox = VCR::Sandbox.new('previously_recorded_responses')
+      sandbox.should have(2).recorded_responses
+      new_recorded_response = VCR::RecordedResponse.new(:get, 'http://example.com/bar', :example_dot_com_bar_response)
+      sandbox.store_recorded_response!(new_recorded_response)
+      sandbox.destroy!
+      saved_recorded_responses = File.open(sandbox.cache_file, "r") { |f| YAML.load(f.read) }
+      saved_recorded_responses.should have(3).recorded_responses
+      saved_recorded_responses.last.should == new_recorded_response
+    end
   end
 
   describe '#destroy for a sandbox with previously recorded responses' do
