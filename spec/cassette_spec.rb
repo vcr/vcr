@@ -17,22 +17,22 @@ describe VCR::Cassette do
   describe '#cache_file' do
     temp_dir File.expand_path(File.dirname(__FILE__) + '/fixtures/cache_file'), :assign_to_cache_dir => true
 
-    it 'should combine the cache_dir with the cassette name' do
+    it 'combines the cache_dir with the cassette name' do
       cassette = VCR::Cassette.new('the_cache_file')
       cassette.cache_file.should == File.join(VCR::Config.cache_dir, 'the_cache_file.yml')
     end
 
-    it 'should strip out disallowed characters so that it is a valid file name with no spaces' do
+    it 'strips out disallowed characters so that it is a valid file name with no spaces' do
       cassette = VCR::Cassette.new("\nthis \t!  is-the_13212_file name")
       cassette.cache_file.should =~ /#{Regexp.escape('_this_is-the_13212_file_name.yml')}$/
     end
 
-    it 'should keep any path separators' do
+    it 'keeps any path separators' do
       cassette = VCR::Cassette.new("dir/file_name")
       cassette.cache_file.should =~ /#{Regexp.escape('dir/file_name.yml')}$/
     end
 
-    it 'should return nil if the cache_dir is not set' do
+    it 'returns nil if the cache_dir is not set' do
       VCR::Config.cache_dir = nil
       cassette = VCR::Cassette.new('the_cache_file')
       cassette.cache_file.should be_nil
@@ -40,7 +40,7 @@ describe VCR::Cassette do
   end
 
   describe '#store_recorded_response!' do
-    it 'should add the recorded response to #recorded_responses' do
+    it 'adds the recorded response to #recorded_responses' do
       recorded_response = VCR::RecordedResponse.new(:get, 'http://example.com', :response)
       cassette = VCR::Cassette.new(:test_cassette)
       cassette.recorded_responses.should == []
@@ -50,12 +50,12 @@ describe VCR::Cassette do
   end
 
   describe 'on creation' do
-    it "should raise an error if given an invalid record mode" do
+    it "raises an error if given an invalid record mode" do
       lambda { VCR::Cassette.new(:test, :record => :not_a_record_mode) }.should raise_error(ArgumentError)
     end
 
     VCR::Cassette::VALID_RECORD_MODES.each do |mode|
-      it "should default the record mode to #{mode} when VCR::Config.default_cassette_record_mode is #{mode}" do
+      it "defaults the record mode to #{mode} when VCR::Config.default_cassette_record_mode is #{mode}" do
         VCR::Config.default_cassette_record_mode = mode
         cassette = VCR::Cassette.new(:test)
         cassette.record_mode.should == mode
@@ -63,7 +63,7 @@ describe VCR::Cassette do
     end
 
     { :unregistered => true, :all => true, :none => false }.each do |record_mode, allow_fakeweb_connect|
-      it "should set FakeWeb.allow_net_connect to #{allow_fakeweb_connect} when the record mode is #{record_mode}" do
+      it "sets FakeWeb.allow_net_connect to #{allow_fakeweb_connect} when the record mode is #{record_mode}" do
         FakeWeb.allow_net_connect = !allow_fakeweb_connect
         VCR::Cassette.new(:name, :record => record_mode)
         FakeWeb.allow_net_connect?.should == allow_fakeweb_connect
@@ -71,7 +71,7 @@ describe VCR::Cassette do
     end
 
     { :unregistered => true, :all => false, :none => true }.each do |record_mode, load_responses|
-      it "should #{'not ' unless load_responses}load the recorded responses from the cached yml file when the record mode is #{record_mode}" do
+      it "#{load_responses ? 'loads' : 'does not load'} the recorded responses from the cached yml file when the record mode is #{record_mode}" do
         VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
         cassette = VCR::Cassette.new('example', :record => record_mode)
 
@@ -92,7 +92,7 @@ describe VCR::Cassette do
         end
       end
 
-      it "should #{'not ' unless load_responses}register the recorded responses with fakeweb when the record mode is #{record_mode}" do
+      it "#{load_responses ? 'registers' : 'does not register'} the recorded responses with fakeweb when the record mode is #{record_mode}" do
         VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
         cassette = VCR::Cassette.new('example', :record => record_mode)
 
@@ -116,7 +116,7 @@ describe VCR::Cassette do
     temp_dir File.expand_path(File.dirname(__FILE__) + '/fixtures/cassette_spec_destroy'), :assign_to_cache_dir => true
 
     [true, false].each do |orig_allow_net_connect|
-      it "should reset FakeWeb.allow_net_connect #{orig_allow_net_connect} if it was originally #{orig_allow_net_connect}" do
+      it "resets FakeWeb.allow_net_connect #{orig_allow_net_connect} if it was originally #{orig_allow_net_connect}" do
         FakeWeb.allow_net_connect = orig_allow_net_connect
         cassette = VCR::Cassette.new(:name)
         cassette.destroy!
@@ -124,7 +124,7 @@ describe VCR::Cassette do
       end
     end
 
-    it "should write the recorded responses to disk as yaml" do
+    it "writes the recorded responses to disk as yaml" do
       recorded_responses = [
         VCR::RecordedResponse.new(:get,  'http://example.com', :get_example_dot_come_response),
         VCR::RecordedResponse.new(:post, 'http://example.com', :post_example_dot_come_response),
@@ -139,7 +139,7 @@ describe VCR::Cassette do
       saved_recorded_responses.should == recorded_responses
     end
 
-    it "should write the recorded responses a subdirectory if the cassette name includes a directory" do
+    it "writes the recorded responses a subdirectory if the cassette name includes a directory" do
       recorded_responses = [VCR::RecordedResponse.new(:get,  'http://example.com', :get_example_dot_come_response)]
       cassette = VCR::Cassette.new('subdirectory/test_cassette')
       cassette.stub!(:recorded_responses).and_return(recorded_responses)
@@ -149,7 +149,7 @@ describe VCR::Cassette do
       saved_recorded_responses.should == recorded_responses
     end
 
-    it "should write both old and new recorded responses to disk" do
+    it "writes both old and new recorded responses to disk" do
       cache_file = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec/example.yml")
       FileUtils.cp cache_file, File.join(@temp_dir, 'previously_recorded_responses.yml')
       cassette = VCR::Cassette.new('previously_recorded_responses')
@@ -164,7 +164,7 @@ describe VCR::Cassette do
   end
 
   describe '#destroy for a cassette with previously recorded responses' do
-    it "should de-register the recorded responses from fakeweb" do
+    it "de-registers the recorded responses from fakeweb" do
       VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
       cassette = VCR::Cassette.new('example', :record => :none)
       FakeWeb.registered_uri?(:get, 'http://example.com').should be_true
@@ -174,7 +174,7 @@ describe VCR::Cassette do
       FakeWeb.registered_uri?(:get, 'http://example.com/foo').should be_false
     end
 
-    it "should not re-write to disk the previously recorded resposes if there are no new ones" do
+    it "does not re-write to disk the previously recorded resposes if there are no new ones" do
       VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
       yaml_file = File.join(VCR::Config.cache_dir, 'example.yml')
       cassette = VCR::Cassette.new('example', :record => :none)

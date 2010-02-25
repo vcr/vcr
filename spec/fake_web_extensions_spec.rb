@@ -9,16 +9,16 @@ describe "FakeWebExtensions" do
       @remove_example_dot_com = lambda { FakeWeb.remove_from_registry(:get, 'http://example.com') }
     end
 
-    it "should remove the :get http://example.com registration" do
+    it "removes the :get http://example.com registration" do
       @remove_example_dot_com.should change { FakeWeb.registered_uri?(:get, 'http://example.com') }.from(true).to(false)
     end
 
-    it "should not remove the :post http://example.com registration" do
+    it "does not remove the :post http://example.com registration" do
       FakeWeb.registered_uri?(:post, 'http://example.com').should be_true
       @remove_example_dot_com.should_not change { FakeWeb.registered_uri?(:post, 'http://example.com') }
     end
 
-    it "should not affect other registered uris" do
+    it "does not affect other registered uris" do
       FakeWeb.registered_uri?(:get, 'http://google.com').should be_true
       @remove_example_dot_com.should_not change { FakeWeb.registered_uri?(:get, 'http://google.com') }
     end

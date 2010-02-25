@@ -18,7 +18,7 @@ describe VCR::CucumberTags do
 
   describe '#tag' do
     [:before, :after].each do |hook|
-      it "should set up a cucumber #{hook} hook for the given tag that creates a new cassette" do
+      it "sets up a cucumber #{hook} hook for the given tag that creates a new cassette" do
         VCR.cucumber_tags { |t| t.tag 'tag_test' }
 
         @args[hook].should == [['@tag_test']]
@@ -32,7 +32,7 @@ describe VCR::CucumberTags do
         @blocks[hook].first.call
       end
 
-      it "should set up separate hooks for each tag, passing the given options to each cassette" do
+      it "sets up separate hooks for each tag, passing the given options to each cassette" do
         VCR.cucumber_tags { |t| t.tag 'tag_test1', 'tag_test2', :record => :none }
         @args[hook].should == [['@tag_test1'], ['@tag_test2']]
 
@@ -46,7 +46,7 @@ describe VCR::CucumberTags do
         @blocks[hook].each { |b| b.call }
       end
 
-      it "should work with tags that start with an @" do
+      it "works with tags that start with an @" do
         VCR.cucumber_tags { |t| t.tag '@tag_test' }
         @args[hook].should == [['@tag_test']]
 
