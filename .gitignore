@@ -19,3 +19,4 @@ rdoc
 pkg
 
 ## PROJECT::SPECIFIC
+features/fixtures/vcr_sandboxes/temp/
