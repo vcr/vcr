@@ -5,6 +5,14 @@ require 'vcr'
 require 'spec'
 require 'spec/autorun'
 
+begin
+  require 'ruby-debug'
+  Debugger.start
+  Debugger.settings[:autoeval] = true if Debugger.respond_to?(:settings)
+rescue LoadError
+  # ruby-debug wasn't available so neither can the debugging be
+end
+
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.
 Dir[File.expand_path(File.join(File.dirname(__FILE__),'support','**','*.rb'))].each {|f| require f}
