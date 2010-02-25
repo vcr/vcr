@@ -1,4 +1,5 @@
 require 'vcr/fake_web_extensions'
+require 'vcr/recorded_response'
 require 'vcr/sandbox'
 
 module VCR
