@@ -130,6 +130,16 @@ describe VCR::Sandbox do
       saved_recorded_responses.should == recorded_responses
     end
 
+    it "should write the recorded responses a subdirectory if the sandbox name includes a directory" do
+      recorded_responses = [VCR::RecordedResponse.new(:get,  'http://example.com', :get_example_dot_come_response)]
+      sandbox = VCR::Sandbox.new('subdirectory/test_sandbox')
+      sandbox.stub!(:recorded_responses).and_return(recorded_responses)
+
+      lambda { sandbox.destroy! }.should change { File.exist?(sandbox.cache_file) }.from(false).to(true)
+      saved_recorded_responses = File.open(sandbox.cache_file, "r") { |f| YAML.load(f.read) }
+      saved_recorded_responses.should == recorded_responses
+    end
+
     it "should write both old and new recorded responses to disk" do
       cache_file = File.expand_path(File.dirname(__FILE__) + '/fixtures/sandbox_spec/example.yml')
       FileUtils.cp cache_file, File.join(@temp_dir, 'previously_recorded_responses.yml')

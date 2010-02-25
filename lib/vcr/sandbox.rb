@@ -1,3 +1,4 @@
+require 'fileutils'
 require 'yaml'
 
 module VCR
@@ -73,6 +74,8 @@ module VCR
 
     def write_recorded_responses_to_disk
       if VCR::Config.cache_dir && new_recorded_responses.size > 0
+        directory = File.dirname(cache_file)
+        FileUtils.mkdir_p directory unless File.exist?(directory)
         File.open(cache_file, 'w') { |f| f.write recorded_responses.to_yaml }
       end
     end
