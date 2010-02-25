@@ -94,4 +94,16 @@ describe VCR::Sandbox do
       saved_recorded_responses.should == recorded_responses
     end
   end
+
+  describe '#destroy for a sandbox with previously recorded responses' do
+    it "should de-register the recorded responses from fakeweb" do
+      VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + '/fixtures/sandbox_spec')
+      sandbox = VCR::Sandbox.new('example', :record => :none)
+      FakeWeb.registered_uri?(:get, 'http://example.com').should be_true
+      FakeWeb.registered_uri?(:get, 'http://example.com/foo').should be_true
+      sandbox.destroy!
+      FakeWeb.registered_uri?(:get, 'http://example.com').should be_false
+      FakeWeb.registered_uri?(:get, 'http://example.com/foo').should be_false
+    end
+  end
 end
