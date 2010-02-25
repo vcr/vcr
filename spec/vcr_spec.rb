@@ -63,4 +63,14 @@ describe VCR do
       lambda { VCR.with_sandbox(:sandbox_test) { raise StandardError } }.should raise_error
     end
   end
+
+  describe 'config' do
+    it 'should yield the configuration object' do
+      yielded_object = nil
+      VCR.config do |obj|
+        yielded_object = obj
+      end
+      yielded_object.should == VCR::Config
+    end
+  end
 end

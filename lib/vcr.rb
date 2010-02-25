@@ -30,6 +30,10 @@ module VCR
     destroy_sandbox!
   end
 
+  def config
+    yield VCR::Config
+  end
+
   private
 
   def sandboxes
