@@ -10,6 +10,9 @@ begin
     gem.email = "myron.marston@gmail.com"
     gem.homepage = "http://github.com/myronmarston/vcr"
     gem.authors = ["Myron Marston"]
+
+    gem.add_dependency 'fakeweb',  '>= 1.2.8'
+
     gem.add_development_dependency "rspec", ">= 1.2.9"
     gem.add_development_dependency "cucumber", ">= 0.6.1"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
