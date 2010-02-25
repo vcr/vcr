@@ -19,15 +19,15 @@ module VCR
       options = tag_names.last.is_a?(::Hash) ? tag_names.pop : {}
       tag_names.each do |tag_name|
         tag_name = "@#{tag_name}" unless tag_name =~ /^@/
-        sandbox_name = "cucumber_tags/#{tag_name.gsub(/\A@/, '')}"
+        cassette_name = "cucumber_tags/#{tag_name.gsub(/\A@/, '')}"
 
         @main_object.instance_eval do
           Before(tag_name) do
-            VCR.create_sandbox!(sandbox_name, options)
+            VCR.create_cassette!(cassette_name, options)
           end
 
           After(tag_name) do
-            VCR.destroy_sandbox!
+            VCR.destroy_cassette!
           end
         end
         self.class.add_tag(tag_name)

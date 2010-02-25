@@ -13,7 +13,7 @@ module Net
     private
 
     def __store_response_with_vcr__(response, request)
-      if sandbox = VCR.current_sandbox
+      if cassette = VCR.current_cassette
         # Copied from: http://github.com/chrisk/fakeweb/blob/fakeweb-1.2.8/lib/fake_web/ext/net_http.rb#L39-52
         protocol = use_ssl? ? "https" : "http"
 
@@ -31,7 +31,7 @@ module Net
         method = request.method.downcase.to_sym
 
         unless FakeWeb.registered_uri?(method, uri)
-          sandbox.store_recorded_response!(VCR::RecordedResponse.new(method, uri, response))
+          cassette.store_recorded_response!(VCR::RecordedResponse.new(method, uri, response))
         end
       end
     end

@@ -2,14 +2,14 @@ require 'fileutils'
 require 'yaml'
 
 module VCR
-  class Sandbox
+  class Cassette
     VALID_RECORD_MODES = [:all, :none, :unregistered].freeze
 
     attr_reader :name, :record_mode
 
     def initialize(name, options = {})
       @name = name
-      @record_mode = options[:record] || VCR::Config.default_sandbox_record_mode
+      @record_mode = options[:record] || VCR::Config.default_cassette_record_mode
       self.class.raise_error_unless_valid_record_mode(record_mode)
       set_fakeweb_allow_net_connect
       load_recorded_responses
@@ -35,7 +35,7 @@ module VCR
 
     def self.raise_error_unless_valid_record_mode(record_mode)
       unless VALID_RECORD_MODES.include?(record_mode)
-        raise ArgumentError.new("#{record_mode} is not a valid sandbox record mode.  Valid options are: #{VALID_RECORD_MODES.inspect}")
+        raise ArgumentError.new("#{record_mode} is not a valid cassette record mode.  Valid options are: #{VALID_RECORD_MODES.inspect}")
       end
     end
 

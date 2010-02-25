@@ -1,34 +1,34 @@
+require 'vcr/cassette'
 require 'vcr/config'
 require 'vcr/cucumber_tags'
 require 'vcr/fake_web_extensions'
 require 'vcr/net_http_extensions'
 require 'vcr/recorded_response'
-require 'vcr/sandbox'
 
 module VCR
   extend self
 
-  def current_sandbox
-    sandboxes.last
+  def current_cassette
+    cassettes.last
   end
 
-  def create_sandbox!(*args)
-    sandbox = Sandbox.new(*args)
-    sandboxes.push(sandbox)
-    sandbox
+  def create_cassette!(*args)
+    cassette = Cassette.new(*args)
+    cassettes.push(cassette)
+    cassette
   end
 
-  def destroy_sandbox!
-    sandbox = sandboxes.pop
-    sandbox.destroy! if sandbox
-    sandbox
+  def destroy_cassette!
+    cassette = cassettes.pop
+    cassette.destroy! if cassette
+    cassette
   end
 
-  def with_sandbox(*args)
-    create_sandbox!(*args)
+  def with_cassette(*args)
+    create_cassette!(*args)
     yield
   ensure
-    destroy_sandbox!
+    destroy_cassette!
   end
 
   def config
@@ -42,7 +42,7 @@ module VCR
 
   private
 
-  def sandboxes
-    @sandboxes ||= []
+  def cassettes
+    @cassettes ||= []
   end
 end

@@ -18,29 +18,29 @@ describe VCR::CucumberTags do
 
   describe '#tag' do
     [:before, :after].each do |hook|
-      it "should set up a cucumber #{hook} hook for the given tag that creates a new sandbox" do
+      it "should set up a cucumber #{hook} hook for the given tag that creates a new cassette" do
         VCR.cucumber_tags { |t| t.tag 'tag_test' }
 
         @args[hook].should == [['@tag_test']]
 
         if hook == :before
-          VCR.should_receive(:create_sandbox!).with('cucumber_tags/tag_test', {})
+          VCR.should_receive(:create_cassette!).with('cucumber_tags/tag_test', {})
         else
-          VCR.should_receive(:destroy_sandbox!)
+          VCR.should_receive(:destroy_cassette!)
         end
         @blocks[hook].should have(1).block
         @blocks[hook].first.call
       end
 
-      it "should set up separate hooks for each tag, passing the given options to each sandbox" do
+      it "should set up separate hooks for each tag, passing the given options to each cassette" do
         VCR.cucumber_tags { |t| t.tag 'tag_test1', 'tag_test2', :record => :none }
         @args[hook].should == [['@tag_test1'], ['@tag_test2']]
 
         if hook == :before
-          VCR.should_receive(:create_sandbox!).with('cucumber_tags/tag_test1', { :record => :none }).once
-          VCR.should_receive(:create_sandbox!).with('cucumber_tags/tag_test2', { :record => :none }).once
+          VCR.should_receive(:create_cassette!).with('cucumber_tags/tag_test1', { :record => :none }).once
+          VCR.should_receive(:create_cassette!).with('cucumber_tags/tag_test2', { :record => :none }).once
         else
-          VCR.should_receive(:destroy_sandbox!).twice
+          VCR.should_receive(:destroy_cassette!).twice
         end
         @blocks[hook].should have(2).blocks
         @blocks[hook].each { |b| b.call }
@@ -51,9 +51,9 @@ describe VCR::CucumberTags do
         @args[hook].should == [['@tag_test']]
 
         if hook == :before
-          VCR.should_receive(:create_sandbox!).with('cucumber_tags/tag_test', {})
+          VCR.should_receive(:create_cassette!).with('cucumber_tags/tag_test', {})
         else
-          VCR.should_receive(:destroy_sandbox!)
+          VCR.should_receive(:destroy_cassette!)
         end
         @blocks[hook].should have(1).block
         @blocks[hook].first.call

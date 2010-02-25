@@ -1,0 +1,74 @@
+--- 
+- !ruby/struct:VCR::RecordedResponse 
+  :method: :get
+  :uri: http://example.com:80/
+  :response: !ruby/object:Net::HTTPOK 
+    body: |
+      <HTML>
+      <HEAD>
+        <TITLE>Example Web Page</TITLE>
+      </HEAD> 
+      <body>  
+      <p>
+        This is not the real response from example.com
+      </p>
+      </BODY>
+      </HTML>
+
+    body_exist: true
+    code: "200"
+    header: 
+      server: 
+      - Apache/2.2.3 (Red Hat)
+      last-modified: 
+      - Tue, 15 Nov 2005 13:24:10 GMT
+      etag: 
+      - "\"b300b4-1b6-4059a80bfd280\""
+      accept-ranges: 
+      - bytes
+      content-type: 
+      - text/html; charset=UTF-8
+      connection: 
+      - Keep-Alive
+      date: 
+      - Thu, 28 Jan 2010 07:14:48 GMT
+      age: 
+      - "1696"
+      content-length: 
+      - "438"
+    http_version: "1.1"
+    message: OK
+    read: true
+    socket: 
+- !ruby/struct:VCR::RecordedResponse 
+  :method: :get
+  :uri: http://example.com:80/foo
+  :response: !ruby/object:Net::HTTPNotFound 
+    body: |
+      <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+      <html><head>
+      <title>404 Not Found</title>
+      </head><body>
+      <h1>Not Found</h1>
+      <p>The requested URL /foo was not found on this server.</p>
+      <hr>
+      <address>Apache/2.2.3 (CentOS) Server at example.com Port 80</address>
+      </body></html>
+
+    body_exist: true
+    code: "404"
+    header: 
+      date: 
+      - Thu, 25 Feb 2010 07:57:03 GMT
+      server: 
+      - Apache/2.2.3 (CentOS)
+      content-length: 
+      - "277"
+      connection: 
+      - close
+      content-type: 
+      - text/html; charset=iso-8859-1
+    http_version: "1.1"
+    message: Not Found
+    read: true
+    socket: 

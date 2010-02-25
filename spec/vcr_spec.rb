@@ -2,74 +2,74 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe VCR do
   before(:all) do
-    @orig_default_sandbox_record_mode = VCR::Config.default_sandbox_record_mode
-    VCR::Config.default_sandbox_record_mode = :unregistered
+    @orig_default_cassette_record_mode = VCR::Config.default_cassette_record_mode
+    VCR::Config.default_cassette_record_mode = :unregistered
   end
 
   after(:all) do
-    VCR::Config.default_sandbox_record_mode = :unregistered
+    VCR::Config.default_cassette_record_mode = :unregistered
   end
 
-  def create_sandbox
-    VCR.create_sandbox!(:sandbox_test)
+  def create_cassette
+    VCR.create_cassette!(:cassette_test)
   end
 
-  describe 'create_sandbox!' do
-    it 'should create a new sandbox' do
-      create_sandbox.should be_instance_of(VCR::Sandbox)
+  describe 'create_cassette!' do
+    it 'should create a new cassette' do
+      create_cassette.should be_instance_of(VCR::Cassette)
     end
 
-    it 'should take over as the #current_sandbox' do
-      orig_sandbox = VCR.current_sandbox
-      new_sandbox = create_sandbox
-      new_sandbox.should_not == orig_sandbox
-      VCR.current_sandbox.should == new_sandbox
+    it 'should take over as the #current_cassette' do
+      orig_cassette = VCR.current_cassette
+      new_cassette = create_cassette
+      new_cassette.should_not == orig_cassette
+      VCR.current_cassette.should == new_cassette
     end
   end
 
-  describe 'destroy_sandbox!' do
-    def destroy_sandbox
-      VCR.destroy_sandbox!
+  describe 'destroy_cassette!' do
+    def destroy_cassette
+      VCR.destroy_cassette!
     end
 
     it 'should destroy the current sandbo' do
-      sandbox = create_sandbox
-      sandbox.should_receive(:destroy!)
-      VCR.destroy_sandbox!
+      cassette = create_cassette
+      cassette.should_receive(:destroy!)
+      VCR.destroy_cassette!
     end
 
-    it 'should return the destroyed sandbox' do
-      sandbox = create_sandbox
-      VCR.destroy_sandbox!.should == sandbox
+    it 'should return the destroyed cassette' do
+      cassette = create_cassette
+      VCR.destroy_cassette!.should == cassette
     end
 
-    it 'should return the #current_sandbox to the previous one' do
-      sandbox1, sandbox2 = create_sandbox, create_sandbox
-      lambda { VCR.destroy_sandbox! }.should change(VCR, :current_sandbox).from(sandbox2).to(sandbox1)
+    it 'should return the #current_cassette to the previous one' do
+      cassette1, cassette2 = create_cassette, create_cassette
+      lambda { VCR.destroy_cassette! }.should change(VCR, :current_cassette).from(cassette2).to(cassette1)
     end
   end
 
-  describe 'with_sandbox' do
-    it 'should create a new sandbox' do
-      new_sandbox = VCR::Sandbox.new(:with_sandbox_test)
-      VCR.should_receive(:create_sandbox!).and_return(new_sandbox)
-      VCR.with_sandbox(:sandbox_test) { }
+  describe 'with_cassette' do
+    it 'should create a new cassette' do
+      new_cassette = VCR::Cassette.new(:with_cassette_test)
+      VCR.should_receive(:create_cassette!).and_return(new_cassette)
+      VCR.with_cassette(:cassette_test) { }
     end
 
     it 'should yield' do
       yielded = false
-      VCR.with_sandbox(:sandbox_test) { yielded = true }
+      VCR.with_cassette(:cassette_test) { yielded = true }
       yielded.should be_true
     end
 
-    it 'should destroy the sandbox' do
-      VCR.should_receive(:destroy_sandbox!)
-      VCR.with_sandbox(:sandbox_test) { }
+    it 'should destroy the cassette' do
+      VCR.should_receive(:destroy_cassette!)
+      VCR.with_cassette(:cassette_test) { }
     end
 
-    it 'should destroy the sandbox even if there is an error' do
-      VCR.should_receive(:destroy_sandbox!)
-      lambda { VCR.with_sandbox(:sandbox_test) { raise StandardError } }.should raise_error
+    it 'should destroy the cassette even if there is an error' do
+      VCR.should_receive(:destroy_cassette!)
+      lambda { VCR.with_cassette(:cassette_test) { raise StandardError } }.should raise_error
     end
   end
 

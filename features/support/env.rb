@@ -12,7 +12,7 @@ end
 require 'spec/expectations'
 
 VCR.config do |c|
-  c.cache_dir = File.join(File.dirname(__FILE__), '..', 'fixtures', 'vcr_sandboxes', RUBY_VERSION)
+  c.cache_dir = File.join(File.dirname(__FILE__), '..', 'fixtures', 'vcr_cassettes', RUBY_VERSION)
 end
 
 VCR.module_eval do
@@ -43,13 +43,13 @@ Before('@copy_not_the_real_response_to_temp') do
 end
 
 at_exit do
-  %w(record_sandbox1 record_sandbox2).each do |tag|
+  %w(record_cassette1 record_cassette2).each do |tag|
     cache_file = File.join(VCR::Config.cache_dir, 'cucumber_tags', "#{tag}.yml")
     FileUtils.rm_rf(cache_file) if File.exist?(cache_file)
   end
 end
 
 VCR.cucumber_tags do |t|
-  t.tags '@record_sandbox1', '@record_sandbox2', :record => :unregistered
-  t.tags '@replay_sandbox1', '@replay_sandbox2', :record => :none
+  t.tags '@record_cassette1', '@record_cassette2', :record => :unregistered
+  t.tags '@replay_cassette1', '@replay_cassette2', :record => :none
 end

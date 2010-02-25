@@ -13,15 +13,15 @@ describe VCR::Config do
     end
   end
 
-  describe '#default_sandbox_record_mode' do
-    VCR::Sandbox::VALID_RECORD_MODES.each do |mode|
+  describe '#default_cassette_record_mode' do
+    VCR::Cassette::VALID_RECORD_MODES.each do |mode|
       it "should allow #{mode}" do
-        lambda { VCR::Config.default_sandbox_record_mode = mode }.should_not raise_error
+        lambda { VCR::Config.default_cassette_record_mode = mode }.should_not raise_error
       end
     end
 
     it "should not allow :not_a_record_mode" do
-      lambda { VCR::Config.default_sandbox_record_mode = :not_a_record_mode }.should raise_error(ArgumentError)
+      lambda { VCR::Config.default_cassette_record_mode = :not_a_record_mode }.should raise_error(ArgumentError)
     end
   end
 end
