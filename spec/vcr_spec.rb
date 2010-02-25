@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe VCR do
   def create_sandbox
-    VCR.create_sandbox!(:sandbox_test)
+    VCR.create_sandbox!(:sandbox_test, :record => :all)
   end
 
   describe 'create_sandbox!' do
