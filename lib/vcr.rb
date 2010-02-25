@@ -1,0 +1,1 @@
+require 'vcr/fake_web_extensions'
