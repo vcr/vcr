@@ -1,0 +1,45 @@
+--- 
+- !ruby/struct:VCR::RecordedResponse 
+  method: :get
+  uri: http://example.com:80/before_nested
+  response: !ruby/object:Net::HTTPNotFound 
+    body: The before_nested response
+    body_exist: true
+    code: "404"
+    header: 
+      content-type: 
+      - text/html; charset=iso-8859-1
+      connection: 
+      - close
+      server: 
+      - Apache/2.2.3 (CentOS)
+      date: 
+      - Thu, 25 Feb 2010 15:23:39 GMT
+      content-length: 
+      - "287"
+    http_version: "1.1"
+    message: Not Found
+    read: true
+    socket: 
+- !ruby/struct:VCR::RecordedResponse 
+  method: :get
+  uri: http://example.com:80/after_nested
+  response: !ruby/object:Net::HTTPNotFound 
+    body: The after_nested response
+    body_exist: true
+    code: "404"
+    header: 
+      content-type: 
+      - text/html; charset=iso-8859-1
+      connection: 
+      - close
+      server: 
+      - Apache/2.2.3 (CentOS)
+      date: 
+      - Thu, 25 Feb 2010 15:23:39 GMT
+      content-length: 
+      - "286"
+    http_version: "1.1"
+    message: Not Found
+    read: true
+    socket: 

@@ -63,7 +63,7 @@ describe VCR::Sandbox do
 
     { :unregistered => true, :all => false, :none => true }.each do |record_mode, load_responses|
       it "should #{'not ' unless load_responses}load the recorded responses from the cached yml file when the record mode is #{record_mode}" do
-        VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + '/fixtures/sandbox_spec')
+        VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/sandbox_spec")
         sandbox = VCR::Sandbox.new('example', :record => record_mode)
 
         if load_responses
@@ -84,7 +84,7 @@ describe VCR::Sandbox do
       end
 
       it "should #{'not ' unless load_responses}register the recorded responses with fakeweb when the record mode is #{record_mode}" do
-        VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + '/fixtures/sandbox_spec')
+        VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/sandbox_spec")
         sandbox = VCR::Sandbox.new('example', :record => record_mode)
 
         rr1 = FakeWeb.response_for(:get, "http://example.com")
@@ -141,7 +141,7 @@ describe VCR::Sandbox do
     end
 
     it "should write both old and new recorded responses to disk" do
-      cache_file = File.expand_path(File.dirname(__FILE__) + '/fixtures/sandbox_spec/example.yml')
+      cache_file = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/sandbox_spec/example.yml")
       FileUtils.cp cache_file, File.join(@temp_dir, 'previously_recorded_responses.yml')
       sandbox = VCR::Sandbox.new('previously_recorded_responses')
       sandbox.should have(2).recorded_responses
@@ -156,7 +156,7 @@ describe VCR::Sandbox do
 
   describe '#destroy for a sandbox with previously recorded responses' do
     it "should de-register the recorded responses from fakeweb" do
-      VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + '/fixtures/sandbox_spec')
+      VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/sandbox_spec")
       sandbox = VCR::Sandbox.new('example', :record => :none)
       FakeWeb.registered_uri?(:get, 'http://example.com').should be_true
       FakeWeb.registered_uri?(:get, 'http://example.com/foo').should be_true
@@ -166,7 +166,7 @@ describe VCR::Sandbox do
     end
 
     it "should not re-write to disk the previously recorded resposes if there are no new ones" do
-      VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + '/fixtures/sandbox_spec')
+      VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/sandbox_spec")
       yaml_file = File.join(VCR::Config.cache_dir, 'example.yml')
       sandbox = VCR::Sandbox.new('example', :record => :none)
       File.should_not_receive(:open).with(sandbox.cache_file, 'w')

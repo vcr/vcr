@@ -12,7 +12,7 @@ end
 require 'spec/expectations'
 
 VCR.config do |c|
-  c.cache_dir = File.join(File.dirname(__FILE__), '..', 'fixtures', 'vcr_sandboxes')
+  c.cache_dir = File.join(File.dirname(__FILE__), '..', 'fixtures', 'vcr_sandboxes', RUBY_VERSION)
 end
 
 VCR.module_eval do
