@@ -1,6 +1,15 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe VCR::Cassette do
+  before(:all) do
+    @orig_default_cassette_record_mode = VCR::Config.default_cassette_record_mode
+    VCR::Config.default_cassette_record_mode = :unregistered
+  end
+
+  after(:all) do
+    VCR::Config.default_cassette_record_mode = :unregistered
+  end
+
   before(:each) do
     FakeWeb.clean_registry
   end
