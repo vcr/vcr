@@ -29,7 +29,7 @@ module VCR
     end
 
     def cache_file
-      File.join(VCR::Config.cache_dir, "#{name.to_s.gsub(/[^\w\-]+/, '_')}.yml") if VCR::Config.cache_dir
+      File.join(VCR::Config.cache_dir, "#{name.to_s.gsub(/[^\w\-\/]+/, '_')}.yml") if VCR::Config.cache_dir
     end
 
     def self.raise_error_unless_valid_record_mode(record_mode)

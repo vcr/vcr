@@ -14,8 +14,13 @@ describe VCR::Sandbox do
     end
 
     it 'should strip out disallowed characters so that it is a valid file name with no spaces' do
-      sandbox = VCR::Sandbox.new("\nthis \t! / is-the_13212_file name")
+      sandbox = VCR::Sandbox.new("\nthis \t!  is-the_13212_file name")
       sandbox.cache_file.should =~ /#{Regexp.escape('_this_is-the_13212_file_name.yml')}$/
+    end
+
+    it 'should keep any path separators' do
+      sandbox = VCR::Sandbox.new("dir/file_name")
+      sandbox.cache_file.should =~ /#{Regexp.escape('dir/file_name.yml')}$/
     end
 
     it 'should return nil if the cache_dir is not set' do
