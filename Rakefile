@@ -31,7 +31,7 @@ Spec::Rake::SpecTask.new(:rcov) do |spec|
   spec.rcov = true
 end
 
-task :spec => :check_dependencies
+task :spec => :check_dependencies if defined?(Jeweler)
 
 begin
   require 'cucumber/rake/task'
