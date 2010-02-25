@@ -1,4 +1,5 @@
 require 'vcr/fake_web_extensions'
+require 'vcr/net_http_extensions'
 require 'vcr/recorded_response'
 require 'vcr/sandbox'
 

@@ -8,5 +8,13 @@ module VCR
 
     def destroy!
     end
+
+    def recorded_responses
+      @recorded_responses ||= []
+    end
+
+    def store_recorded_response!(recorded_response)
+      recorded_responses << recorded_response
+    end
   end
 end
