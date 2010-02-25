@@ -18,7 +18,7 @@ module VCR
     def tags(*tag_names)
       options = tag_names.last.is_a?(::Hash) ? tag_names.pop : {}
       tag_names.each do |tag_name|
-        tag_name = "@#{tag_name}" unless tag_name.start_with?('@')
+        tag_name = "@#{tag_name}" unless tag_name =~ /^@/
         sandbox_name = "cucumber_tags/#{tag_name.gsub(/\A@/, '')}"
 
         @main_object.instance_eval do
