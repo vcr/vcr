@@ -73,4 +73,14 @@ describe VCR do
       yielded_object.should == VCR::Config
     end
   end
+
+  describe 'cucumber_tags' do
+    it 'should yield a cucumber tags object' do
+      yielded_object = nil
+      VCR.cucumber_tags do |obj|
+        yielded_object = obj
+      end
+      yielded_object.should be_instance_of(VCR::CucumberTags)
+    end
+  end
 end

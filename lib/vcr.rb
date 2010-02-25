@@ -1,4 +1,5 @@
 require 'vcr/config'
+require 'vcr/cucumber_tags'
 require 'vcr/fake_web_extensions'
 require 'vcr/net_http_extensions'
 require 'vcr/recorded_response'
@@ -32,6 +33,11 @@ module VCR
 
   def config
     yield VCR::Config
+  end
+
+  def cucumber_tags(&block)
+    main_object = eval('self', block.binding)
+    yield VCR::CucumberTags.new(main_object)
   end
 
   private
