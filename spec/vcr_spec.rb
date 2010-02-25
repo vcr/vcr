@@ -1,8 +1,17 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe VCR do
+  before(:all) do
+    @orig_default_sandbox_record_mode = VCR::Config.default_sandbox_record_mode
+    VCR::Config.default_sandbox_record_mode = :unregistered
+  end
+
+  after(:all) do
+    VCR::Config.default_sandbox_record_mode = :unregistered
+  end
+
   def create_sandbox
-    VCR.create_sandbox!(:sandbox_test, :record => :all)
+    VCR.create_sandbox!(:sandbox_test)
   end
 
   describe 'create_sandbox!' do
