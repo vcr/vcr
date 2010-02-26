@@ -61,7 +61,8 @@ Gem::Specification.new do |s|
      "spec/spec.opts",
      "spec/spec_helper.rb",
      "spec/support/temp_cache_dir.rb",
-     "spec/vcr_spec.rb"
+     "spec/vcr_spec.rb",
+     "vcr.gemspec"
   ]
   s.homepage = %q{http://github.com/myronmarston/vcr}
   s.rdoc_options = ["--charset=UTF-8"]
