@@ -1,6 +1,6 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe "NetHttpExtensions" do
+describe "Net::HTTP Extensions" do
   before(:all) do
     @orig_allow_net_connect = FakeWeb.allow_net_connect?
     FakeWeb.allow_net_connect = true

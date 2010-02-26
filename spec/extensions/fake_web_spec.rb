@@ -1,6 +1,6 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe "FakeWebExtensions" do
+describe "FakeWeb Extensions" do
   describe "#remove_from_registry with (:get, 'http://example.com')" do
     before(:each) do
       FakeWeb.register_uri(:get, 'http://example.com', :body => "Example dot com!")
