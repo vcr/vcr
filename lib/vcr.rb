@@ -3,6 +3,7 @@ require 'vcr/config'
 require 'vcr/cucumber_tags'
 require 'vcr/fake_web_extensions'
 require 'vcr/net_http_extensions'
+require 'vcr/net_read_adapter_extensions'
 require 'vcr/recorded_response'
 
 module VCR

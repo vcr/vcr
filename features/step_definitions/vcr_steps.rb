@@ -42,23 +42,30 @@ Given /^the previous scenario was tagged with the vcr cassette tag: "([^\"]*)"$/
   VCR::CucumberTags.tags.should include(tag)
 end
 
-When /^I make an HTTP get request to "([^\"]*)"$/ do |url|
+When /^I make an( asynchronous)? HTTP get request to "([^\"]*)"$/ do |asynchronous, url|
   @http_requests ||= {}
   begin
-    result = Net::HTTP.get_response(URI.parse(url))
+    if asynchronous =~ /asynchronous/
+      uri = URI.parse(url)
+      path = uri.path.to_s == '' ? '/' : uri.path
+      result = Net::HTTP.new(uri.host, uri.port).request_get(path) { |r| r.read_body { } }
+      result.body.should be_a(Net::ReadAdapter)
+    else
+      result = Net::HTTP.get_response(URI.parse(url))
+    end
   rescue => e
     result = e
   end
   @http_requests[url] = result
 end
 
-When /^I make (?:an )?HTTP get requests? to "([^\"]*)"(?: and "([^\"]*)")? within the "([^\"]*)" ?(#{VCR::Cassette::VALID_RECORD_MODES.join('|')})? cassette$/ do |url1, url2, cassette_name, record_mode|
+When /^I make(?: an)?( asynchronous)? HTTP get requests? to "([^\"]*)"(?: and "([^\"]*)")? within the "([^\"]*)" ?(#{VCR::Cassette::VALID_RECORD_MODES.join('|')})? cassette$/ do |asynchronous, url1, url2, cassette_name, record_mode|
   record_mode ||= :unregistered
   record_mode = record_mode.to_sym
   urls = [url1, url2].select { |u| u.to_s.size > 0 }
   VCR.with_cassette(cassette_name, :record => record_mode) do
     urls.each do |url|
-      When %{I make an HTTP get request to "#{url}"}
+      When %{I make an#{asynchronous} HTTP get request to "#{url}"}
     end
   end
 end

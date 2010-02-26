@@ -53,3 +53,8 @@ Feature: Record response
      When I make HTTP get requests to "http://example.com" and "http://example.com/foo" within the "temp/not_the_real_response" unregistered cassette
      Then the "temp/not_the_real_response" cache file should have a response for "http://example.com" that matches /This is not the real response from example\.com/
       And the "temp/not_the_real_response" cache file should have a response for "http://example.com/foo" that matches /The requested URL \/foo was not found/
+
+  Scenario: Record an asynchronous request (such as for mechanize)
+    Given we do not have a "temp/asynchronous" cassette
+     When I make an asynchronous HTTP get request to "http://example.com" within the "temp/asynchronous" unregistered cassette
+     Then the "temp/asynchronous" cache file should have a response for "http://example.com" that matches /You have reached this web page by typing.*example\.com/
