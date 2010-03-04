@@ -23,4 +23,11 @@ describe "FakeWeb Extensions" do
       @remove_example_dot_com.should_not change { FakeWeb.registered_uri?(:get, 'http://google.com') }
     end
   end
+
+  describe 'FakeWeb::NetConnectNotAllowedError#message' do
+    it 'includes a note about VCR' do
+      FakeWeb::NetConnectNotAllowedError.new('The fakeweb error message').message.should ==
+      'The fakeweb error message.  You can use VCR to automatically record this request and replay it later with fakeweb.  For more details, see the VCR README at: http://github.com/myronmarston/vcr'
+    end
+  end
 end

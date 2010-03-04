@@ -43,7 +43,7 @@ Feature: Record response
   Scenario: Make an HTTP request in a cassette with record mode set to :none
     Given we do not have a "temp/record_none_cassette" cassette
      When I make an HTTP get request to "http://example.com" within the "temp/record_none_cassette" none cassette
-     Then the HTTP get request to "http://example.com" should result in a fakeweb error
+     Then the HTTP get request to "http://example.com" should result in a fakeweb error that mentions VCR
       And there should not be a "temp/record_none_cassette" cache file
 
   @copy_not_the_real_response_to_temp

@@ -92,8 +92,10 @@ Then /^I can test the scenario cassette's recorded responses in the next scenari
   # do nothing...
 end
 
-Then /^the HTTP get request to "([^\"]*)" should result in a fakeweb error$/ do |url|
-  @http_requests[url][0].should be_instance_of(FakeWeb::NetConnectNotAllowedError)
+Then /^the HTTP get request to "([^\"]*)" should result in a fakeweb error that mentions VCR$/ do |url|
+  result = @http_requests[url][0]
+  result.should be_instance_of(FakeWeb::NetConnectNotAllowedError)
+  result.message.should =~ /VCR/
 end
 
 Then /^(?:the )?response(?: (\d+))? for "([^\"]*)" should match \/(.+)\/$/ do |response_num, url, regex_str|

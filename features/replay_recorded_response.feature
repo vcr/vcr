@@ -42,7 +42,7 @@ Feature: Replay recorded response
       And we have a "temp/not_the_real_response" file with no previously recorded response for "http://example.com/foo"
      When I make HTTP get requests to "http://example.com" and "http://example.com/foo" within the "temp/not_the_real_response" none cassette
      Then the response for "http://example.com" should match /This is not the real response from example\.com/
-      And the HTTP get request to "http://example.com/foo" should result in a fakeweb error
+      And the HTTP get request to "http://example.com/foo" should result in a fakeweb error that mentions VCR
 
   @copy_not_the_real_response_to_temp
   Scenario: Make an HTTP request in a cassette with record mode set to :unregistered
