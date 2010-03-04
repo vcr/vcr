@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{vcr}
-  s.version = "0.1.1"
+  s.version = "0.1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Myron Marston"]
-  s.date = %q{2010-02-25}
+  s.date = %q{2010-03-04}
   s.description = %q{VCR provides helpers to record HTTP requests for URIs that are not registered with fakeweb, and replay them later.  It provides built-in support for cucumber, but works with any ruby testing framework.}
   s.email = %q{myron.marston@gmail.com}
   s.extra_rdoc_files = [
@@ -19,21 +19,24 @@ Gem::Specification.new do |s|
   s.files = [
     ".document",
      ".gitignore",
+     "History.rdoc",
      "LICENSE",
      "README.rdoc",
      "Rakefile",
      "VERSION",
      "features/fixtures/vcr_cassettes/1.8.6/cucumber_tags/replay_cassette1.yml",
      "features/fixtures/vcr_cassettes/1.8.6/cucumber_tags/replay_cassette2.yml",
+     "features/fixtures/vcr_cassettes/1.8.6/cucumber_tags/replay_cassette3.yml",
      "features/fixtures/vcr_cassettes/1.8.6/nested_replay_cassette.yml",
      "features/fixtures/vcr_cassettes/1.8.6/not_the_real_response.yml",
-     "features/fixtures/vcr_cassettes/1.8.6/temp/not_the_real_response.yml",
      "features/fixtures/vcr_cassettes/1.8.7/cucumber_tags/replay_cassette1.yml",
      "features/fixtures/vcr_cassettes/1.8.7/cucumber_tags/replay_cassette2.yml",
+     "features/fixtures/vcr_cassettes/1.8.7/cucumber_tags/replay_cassette3.yml",
      "features/fixtures/vcr_cassettes/1.8.7/nested_replay_cassette.yml",
      "features/fixtures/vcr_cassettes/1.8.7/not_the_real_response.yml",
      "features/fixtures/vcr_cassettes/1.9.1/cucumber_tags/replay_cassette1.yml",
      "features/fixtures/vcr_cassettes/1.9.1/cucumber_tags/replay_cassette2.yml",
+     "features/fixtures/vcr_cassettes/1.9.1/cucumber_tags/replay_cassette3.yml",
      "features/fixtures/vcr_cassettes/1.9.1/nested_replay_cassette.yml",
      "features/fixtures/vcr_cassettes/1.9.1/not_the_real_response.yml",
      "features/record_response.feature",
@@ -44,19 +47,19 @@ Gem::Specification.new do |s|
      "lib/vcr/cassette.rb",
      "lib/vcr/config.rb",
      "lib/vcr/cucumber_tags.rb",
-     "lib/vcr/fake_web_extensions.rb",
-     "lib/vcr/net_http_extensions.rb",
-     "lib/vcr/net_read_adapter_extensions.rb",
+     "lib/vcr/extensions/fake_web.rb",
+     "lib/vcr/extensions/net_http.rb",
+     "lib/vcr/extensions/net_read_adapter.rb",
      "lib/vcr/recorded_response.rb",
      "spec/cassette_spec.rb",
      "spec/config_spec.rb",
      "spec/cucumber_tags_spec.rb",
-     "spec/fake_web_extensions_spec.rb",
+     "spec/extensions/fake_web_spec.rb",
+     "spec/extensions/net_http_spec.rb",
+     "spec/extensions/net_read_adapter_spec.rb",
      "spec/fixtures/1.8.6/cassette_spec/example.yml",
      "spec/fixtures/1.8.7/cassette_spec/example.yml",
      "spec/fixtures/1.9.1/cassette_spec/example.yml",
-     "spec/net_http_extensions_spec.rb",
-     "spec/net_read_adapter_extensions_spec.rb",
      "spec/recorded_response_spec.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb",
@@ -73,9 +76,9 @@ Gem::Specification.new do |s|
     "spec/cassette_spec.rb",
      "spec/config_spec.rb",
      "spec/cucumber_tags_spec.rb",
-     "spec/fake_web_extensions_spec.rb",
-     "spec/net_http_extensions_spec.rb",
-     "spec/net_read_adapter_extensions_spec.rb",
+     "spec/extensions/fake_web_spec.rb",
+     "spec/extensions/net_http_spec.rb",
+     "spec/extensions/net_read_adapter_spec.rb",
      "spec/recorded_response_spec.rb",
      "spec/spec_helper.rb",
      "spec/support/temp_cache_dir.rb",
