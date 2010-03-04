@@ -24,6 +24,11 @@ describe "Net::HTTP Extensions" do
       Net::HTTP.get(URI.parse('http://example.com'))
     end
 
+    it 'calls #store_recorded_response! only once, even when Net::HTTP internally recursively calls #request' do
+      @current_cassette.should_receive(:store_recorded_response!).once
+      Net::HTTP.new('example.com', 80).post('/', nil)
+    end
+
     it 'does not have an error if there is no current cassette' do
       VCR.stub!(:current_cassette).and_return(nil)
       lambda { Net::HTTP.get(URI.parse('http://example.com')) }.should_not raise_error

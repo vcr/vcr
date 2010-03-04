@@ -9,6 +9,12 @@ module VCRHelpers
       response.response.body.should =~ regex
     end
   end
+
+  def recorded_responses_for(cassette_name)
+    yaml_file = File.join(VCR::Config.cache_dir, "#{cassette_name}.yml")
+    yaml = File.open(yaml_file, 'r') { |f| f.read }
+    responses = YAML.load(yaml)
+  end
 end
 World(VCRHelpers)
 
@@ -42,16 +48,19 @@ Given /^the previous scenario was tagged with the vcr cassette tag: "([^\"]*)"$/
   VCR::CucumberTags.tags.should include(tag)
 end
 
-When /^I make an( asynchronous)? HTTP get request to "([^\"]*)"$/ do |asynchronous, url|
+When /^I make an(.*)? HTTP (?:get|post) request to "([^\"]*)"$/ do |request_type, url|
   @http_requests ||= {}
+  uri = URI.parse(url)
+  path = uri.path.to_s == '' ? '/' : uri.path
   begin
-    if asynchronous =~ /asynchronous/
-      uri = URI.parse(url)
-      path = uri.path.to_s == '' ? '/' : uri.path
-      result = Net::HTTP.new(uri.host, uri.port).request_get(path) { |r| r.read_body { } }
-      result.body.should be_a(Net::ReadAdapter)
-    else
-      result = Net::HTTP.get_response(URI.parse(url))
+    case request_type
+      when /asynchronous/
+        result = Net::HTTP.new(uri.host, uri.port).request_get(path) { |r| r.read_body { } }
+        result.body.should be_a(Net::ReadAdapter)
+      when /recursive/
+        result = Net::HTTP.new(uri.host, uri.port).post(path, nil)
+      else
+        result = Net::HTTP.get_response(uri)
     end
   rescue => e
     result = e
@@ -59,21 +68,25 @@ When /^I make an( asynchronous)? HTTP get request to "([^\"]*)"$/ do |asynchrono
   @http_requests[url] = result
 end
 
-When /^I make(?: an)?( asynchronous)? HTTP get requests? to "([^\"]*)"(?: and "([^\"]*)")? within the "([^\"]*)" ?(#{VCR::Cassette::VALID_RECORD_MODES.join('|')})? cassette$/ do |asynchronous, url1, url2, cassette_name, record_mode|
+When /^I make(?: an)?(.*)? HTTP (get|post) requests? to "([^\"]*)"(?: and "([^\"]*)")? within the "([^\"]*)" ?(#{VCR::Cassette::VALID_RECORD_MODES.join('|')})? cassette$/ do |request_type, method, url1, url2, cassette_name, record_mode|
   record_mode ||= :unregistered
   record_mode = record_mode.to_sym
   urls = [url1, url2].select { |u| u.to_s.size > 0 }
   VCR.with_cassette(cassette_name, :record => record_mode) do
     urls.each do |url|
-      When %{I make an#{asynchronous} HTTP get request to "#{url}"}
+      When %{I make an#{request_type} HTTP #{method} request to "#{url}"}
     end
   end
 end
 
 Then /^the "([^\"]*)" cache file should have a response for "([^\"]*)" that matches \/(.+)\/$/ do |cassette_name, url, regex_str|
-  yaml_file = File.join(VCR::Config.cache_dir, "#{cassette_name}.yml")
-  responses = File.open(yaml_file, 'r') { |f| YAML.load(f.read) }
+  responses = recorded_responses_for(cassette_name)
   responses.should have_expected_response(url, regex_str)
+end
+
+Then /^the "([^\"]*)" cache file should have exactly (\d+) response$/ do |cassette_name, response_count|
+  responses = recorded_responses_for(cassette_name)
+  responses.should have(response_count.to_i).responses
 end
 
 Then /^I can test the scenario cassette's recorded responses in the next scenario, after the cassette has been destroyed$/ do

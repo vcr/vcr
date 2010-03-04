@@ -3,9 +3,12 @@ require 'net/http'
 module Net
   class HTTP
     def request_with_vcr(request, body = nil, &block)
+      @__request_with_vcr_call_count = (@__request_with_vcr_call_count || 0) + 1
       response = request_without_vcr(request, body, &block)
-      __store_response_with_vcr__(response, request)
+      __store_response_with_vcr__(response, request) if @__request_with_vcr_call_count == 1
       response
+    ensure
+      @__request_with_vcr_call_count -= 1
     end
     alias_method :request_without_vcr, :request
     alias_method :request, :request_with_vcr

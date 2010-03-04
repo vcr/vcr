@@ -58,3 +58,9 @@ Feature: Record response
     Given we do not have a "temp/asynchronous" cassette
      When I make an asynchronous HTTP get request to "http://example.com" within the "temp/asynchronous" unregistered cassette
      Then the "temp/asynchronous" cache file should have a response for "http://example.com" that matches /You have reached this web page by typing.*example\.com/
+
+  Scenario: Record a recursive post request
+    Given we do not have a "temp/recursive_post" cassette
+     When I make a recursive HTTP post request to "http://example.com" within the "temp/recursive_post" unregistered cassette
+     Then the "temp/recursive_post" cache file should have a response for "http://example.com" that matches /You have reached this web page by typing.*example\.com/
+      And the "temp/recursive_post" cache file should have exactly 1 response
