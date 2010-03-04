@@ -32,7 +32,7 @@ describe VCR do
       VCR.destroy_cassette!
     end
 
-    it 'destroys the current sandbo' do
+    it 'destroys the current cassette' do
       cassette = create_cassette
       cassette.should_receive(:destroy!)
       VCR.destroy_cassette!
