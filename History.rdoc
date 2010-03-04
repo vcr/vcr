@@ -1,0 +1,13 @@
+
+== 0.1.2 March 4, 2010
+* Added explanatory note about VCR to FakeWeb::NetConnectNotAllowedError#message.
+* Got things to work for when a cassette records multiple requests made to the same URL with the same HTTP verb,
+  but different responses. We have to register an array of responses with fakeweb.
+* Fixed our Net::HTTP monkey patch so that it only stores a the recorded response once per request.
+  Internally, Net::HTTP#request recursively calls itself (passing slightly different arguments) in certain circumstances.
+
+== 0.1.1 February 25, 2010
+* Handle asynchronous HTTP requests (such as for mechanize).  Bug reported by {Thibaud Guillaume-Gentil}[http://github.com/thibaudgg].
+
+== 0.1.0 February 25, 2010
+* Initial release.  Basic recording and replaying of responses works.
