@@ -67,8 +67,16 @@ module VCR
         recorded_responses.replace(@original_recorded_responses)
       end
 
+      register_responses_with_fakeweb
+    end
+
+    def register_responses_with_fakeweb
+      requests = Hash.new([])
       recorded_responses.each do |rr|
-        FakeWeb.register_uri(rr.method, rr.uri, { :response => rr.response })
+        requests[[rr.method, rr.uri]] += [rr.response]
+      end
+      requests.each do |request, responses|
+        FakeWeb.register_uri(request.first, request.last, responses.map{ |r| { :response => r } })
       end
     end
 

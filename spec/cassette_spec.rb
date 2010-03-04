@@ -76,9 +76,9 @@ describe VCR::Cassette do
         cassette = VCR::Cassette.new('example', :record => record_mode)
 
         if load_responses
-          cassette.should have(2).recorded_responses
+          cassette.should have(3).recorded_responses
 
-          rr1, rr2 = cassette.recorded_responses.first, cassette.recorded_responses.last
+          rr1, rr2, rr3 = *cassette.recorded_responses
 
           rr1.method.should == :get
           rr1.uri.should == 'http://example.com:80/'
@@ -87,6 +87,10 @@ describe VCR::Cassette do
           rr2.method.should == :get
           rr2.uri.should == 'http://example.com:80/foo'
           rr2.response.body.should =~ /foo was not found on this server/
+
+          rr3.method.should == :get
+          rr3.uri.should == 'http://example.com:80/'
+          rr3.response.body.should =~ /Another example\.com response/
         else
           cassette.should have(0).recorded_responses
         end
@@ -98,15 +102,15 @@ describe VCR::Cassette do
 
         rr1 = FakeWeb.response_for(:get, "http://example.com")
         rr2 = FakeWeb.response_for(:get, "http://example.com/foo")
+        rr3 = FakeWeb.response_for(:get, "http://example.com")
 
         if load_responses
-          rr1.should_not be_nil
-          rr2.should_not be_nil
+          [rr1, rr2, rr3].compact.should have(3).responses
           rr1.body.should =~ /You have reached this web page by typing.+example\.com/
           rr2.body.should =~ /foo was not found on this server/
+          rr3.body.should =~ /Another example\.com response/
         else
-          rr1.should be_nil
-          rr2.should be_nil
+          [rr1, rr2, rr3].compact.should have(0).responses
         end
       end
     end
@@ -153,12 +157,12 @@ describe VCR::Cassette do
       cache_file = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec/example.yml")
       FileUtils.cp cache_file, File.join(@temp_dir, 'previously_recorded_responses.yml')
       cassette = VCR::Cassette.new('previously_recorded_responses')
-      cassette.should have(2).recorded_responses
+      cassette.should have(3).recorded_responses
       new_recorded_response = VCR::RecordedResponse.new(:get, 'http://example.com/bar', :example_dot_com_bar_response)
       cassette.store_recorded_response!(new_recorded_response)
       cassette.destroy!
       saved_recorded_responses = File.open(cassette.cache_file, "r") { |f| YAML.load(f.read) }
-      saved_recorded_responses.should have(3).recorded_responses
+      saved_recorded_responses.should have(4).recorded_responses
       saved_recorded_responses.last.should == new_recorded_response
     end
   end

@@ -4,9 +4,8 @@ module VCRHelpers
   def have_expected_response(url, regex_str)
     simple_matcher("a response from #{url} that matches /#{regex_str}/") do |responses|
       regex = /#{regex_str}/i
-      response = responses.detect { |r| URI.parse(r.uri) == URI.parse(url) }
-      response.should_not be_nil
-      response.response.body.should =~ regex
+      responses = responses.select { |r| URI.parse(r.uri) == URI.parse(url) }
+      responses.detect { |r| r.response.body =~ regex }
     end
   end
 
@@ -49,7 +48,7 @@ Given /^the previous scenario was tagged with the vcr cassette tag: "([^\"]*)"$/
 end
 
 When /^I make an(.*)? HTTP (?:get|post) request to "([^\"]*)"$/ do |request_type, url|
-  @http_requests ||= {}
+  @http_requests ||= Hash.new([])
   uri = URI.parse(url)
   path = uri.path.to_s == '' ? '/' : uri.path
   begin
@@ -65,7 +64,7 @@ When /^I make an(.*)? HTTP (?:get|post) request to "([^\"]*)"$/ do |request_type
   rescue => e
     result = e
   end
-  @http_requests[url] = result
+  @http_requests[url] += [result]
 end
 
 When /^I make(?: an)?(.*)? HTTP (get|post) requests? to "([^\"]*)"(?: and "([^\"]*)")? within the "([^\"]*)" ?(#{VCR::Cassette::VALID_RECORD_MODES.join('|')})? cassette$/ do |request_type, method, url1, url2, cassette_name, record_mode|
@@ -94,12 +93,14 @@ Then /^I can test the scenario cassette's recorded responses in the next scenari
 end
 
 Then /^the HTTP get request to "([^\"]*)" should result in a fakeweb error$/ do |url|
-  @http_requests[url].should be_instance_of(FakeWeb::NetConnectNotAllowedError)
+  @http_requests[url][0].should be_instance_of(FakeWeb::NetConnectNotAllowedError)
 end
 
-Then /^the response for "([^\"]*)" should match \/(.+)\/$/ do |url, regex_str|
+Then /^(?:the )?response(?: (\d+))? for "([^\"]*)" should match \/(.+)\/$/ do |response_num, url, regex_str|
+  response_num = response_num.to_i || 0
+  response_num -= 1 if response_num > 0 # translate to 0-based array index.
   regex = /#{regex_str}/i
-  @http_requests[url].body.should =~ regex
+  @http_requests[url][response_num].body.should =~ regex
 end
 
 Then /^there should not be a "([^\"]*)" cache file$/ do |cassette_name|

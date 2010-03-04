@@ -51,5 +51,5 @@ end
 
 VCR.cucumber_tags do |t|
   t.tags '@record_cassette1', '@record_cassette2', :record => :unregistered
-  t.tags '@replay_cassette1', '@replay_cassette2', :record => :none
+  t.tags '@replay_cassette1', '@replay_cassette2', '@replay_cassette3', :record => :none
 end

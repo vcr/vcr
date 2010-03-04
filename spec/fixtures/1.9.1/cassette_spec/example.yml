@@ -75,3 +75,33 @@
     message: Not Found
     read: true
     socket: 
+- !ruby/struct:VCR::RecordedResponse 
+  :method: :get
+  :uri: http://example.com:80/
+  :response: !ruby/object:Net::HTTPOK 
+    body: Another example.com response
+    body_exist: true
+    code: "200"
+    header: 
+      server: 
+      - Apache/2.2.3 (Red Hat)
+      last-modified: 
+      - Tue, 15 Nov 2005 13:24:10 GMT
+      etag: 
+      - "\"b300b4-1b6-4059a80bfd280\""
+      accept-ranges: 
+      - bytes
+      content-type: 
+      - text/html; charset=UTF-8
+      connection: 
+      - Keep-Alive
+      date: 
+      - Mon, 25 Jan 2010 18:00:32 GMT
+      age: 
+      - "2090"
+      content-length: 
+      - "438"
+    http_version: "1.1"
+    message: OK
+    read: true
+    socket: 

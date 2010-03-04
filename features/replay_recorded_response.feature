@@ -51,3 +51,13 @@ Feature: Replay recorded response
    When I make HTTP get requests to "http://example.com" and "http://example.com/foo" within the "temp/not_the_real_response" unregistered cassette
    Then the response for "http://example.com" should match /This is not the real response from example\.com/
     And the response for "http://example.com/foo" should match /The requested URL \/foo was not found/
+
+  @replay_cassette3
+  Scenario: Replay multiple different recorded responses for requests to the same URL
+    Given this scenario is tagged with the vcr cassette tag: "@replay_cassette3"
+      And the "cucumber_tags/replay_cassette3" cache file has a response for "http://example.com" that matches /This is not the real response from example\.com/
+      And the "cucumber_tags/replay_cassette3" cache file has a response for "http://example.com" that matches /This is another fake response from example\.com/
+     When I make an HTTP get request to "http://example.com"
+      And I make an HTTP get request to "http://example.com"
+     Then response 1 for "http://example.com" should match /This is not the real response from example\.com/
+      And response 2 for "http://example.com" should match /This is another fake response from example\.com/
