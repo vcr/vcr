@@ -69,8 +69,11 @@ modes are:
     # the cache_dir is where the cassette yml files will be saved.
     c.cache_dir = File.join(Rails.root, 'features', 'fixtures', 'vcr_cassettes')
 
-    # this record mode will be used for any cassette you create without specifying a record mode.
-    c.default_cassette_record_mode = :none
+    # these options will be used as defaults for your cassettes, but you can override them in each individual cassette.
+    c.default_cassette_options = {
+      :record          => :none,
+      :allow_real_http => :localhost
+    }
   end
 
 This can go pretty much wherever, as long as this code is run before your tests, specs or scenarios.  I tend
@@ -101,6 +104,27 @@ Alternately, you can create and destroy the cassette with individual method call
 In both of these cases, VCR would use the file geocoding/Seattle_WA.yml within the configured
 cache dir.  The :record setting is optional--if you leave it blank, your configured default will be used.
 
+Besides the :record option, cassettes also support the :allow_real_http option.  You can use this to make the cassette
+allow some real HTTP requests.  You can specify it with a lambda:
+
+  VCR.with_cassette('my cassette', :allow_real_http => lambda { |uri| uri.host == 'google.com' }) do
+    # do something that causes an HTTP request.
+  end
+
+In this case, any google HTTP requests will be made for real, regardless of your <tt>FakeWeb.allow_net_connect</tt> setting,
+your current record mode, and whether or not you are recording or replaying this cassette.  Non-google requests will do
+the appropriate recording/replaying as usual.  You can also use the special <tt>:localhost</tt> option:
+
+  VCR.with_cassette('my cassette', :allow_real_http => :localhost) do
+    # do something that causes an HTTP request.
+  end
+
+This is equivalent to using a lambda like:
+
+  lambda { |uri| uri.host == 'localhost' }
+
+This is needed for using VCR with {capybara}[http://github.com/jnicklas/capybara] and any of the javascript drivers (see below for more info).
+
 == Usage with Cucumber
 
 VCR provides special support for cucumber.  You can of course use <tt>VCR.with_cassette</tt> within a step definition,
@@ -124,6 +148,11 @@ For each of the tags you specify in your cucumber_tags block, VCR will set up th
 {Before and After hooks}[http://wiki.github.com/aslakhellesoy/cucumber/hooks] to use a cassette
 for the entire scenario.  The tag (minus the '@') will be used as the cassette name, and it'll
 go in the cucumber_tags subdirectory of the configured cache dir.
+
+== Usage with Capybara
+
+When you use any of the javascript-enabled drivers (selenium, celerity, culerity) with {capybara}[http://github.com/jnicklas/capybara],
+it'll need to ping the app running on localhost.  You can use the <tt>:allow_real_http => :localhost</tt> option to allow this.
 
 == Suggested Workflow
 
