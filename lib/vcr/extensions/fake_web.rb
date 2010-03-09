@@ -5,6 +5,16 @@ module FakeWeb
     Registry.instance.remove(method, url)
   end
 
+  def self.with_allow_net_connect_set_to(value)
+    original_value = FakeWeb.allow_net_connect?
+    begin
+      FakeWeb.allow_net_connect = value
+      yield
+    ensure
+      FakeWeb.allow_net_connect = original_value
+    end
+  end
+
   class Registry #:nodoc:
     def remove(method, url)
       uri_map.delete_if do |uri, method_hash|

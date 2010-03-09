@@ -30,4 +30,34 @@ describe "FakeWeb Extensions" do
       'The fakeweb error message.  You can use VCR to automatically record this request and replay it later with fakeweb.  For more details, see the VCR README at: http://github.com/myronmarston/vcr'
     end
   end
+
+  describe "#with_allow_net_connect_set_to" do
+    it 'sets allow_net_connect for the duration of the block to the provided value' do
+      [true, false].each do |expected|
+        yielded_value = :not_set
+        FakeWeb.with_allow_net_connect_set_to(expected) { yielded_value = FakeWeb.allow_net_connect? }
+        yielded_value.should == expected
+      end
+    end
+
+    it 'returns the value returned by the block' do
+      FakeWeb.with_allow_net_connect_set_to(true) { :return_value }.should == :return_value
+    end
+
+    it 'reverts allow_net_connect when the block completes' do
+      [true, false].each do |expected|
+        FakeWeb.allow_net_connect = expected
+        FakeWeb.with_allow_net_connect_set_to(true) { }
+        FakeWeb.allow_net_connect?.should == expected
+      end
+    end
+
+    it 'reverts allow_net_connect when the block completes, even if an error is raised' do
+      [true, false].each do |expected|
+        FakeWeb.allow_net_connect = expected
+        lambda { FakeWeb.with_allow_net_connect_set_to(true) { raise RuntimeError } }.should raise_error(RuntimeError)
+        FakeWeb.allow_net_connect?.should == expected
+      end
+    end
+  end
 end

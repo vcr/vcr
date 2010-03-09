@@ -10,6 +10,7 @@ module VCR
     def initialize(name, options = {})
       @name = name
       @record_mode = options[:record] || VCR::Config.default_cassette_options[:record]
+      @allow_real_http_lambda = allow_real_http_lambda_for(options[:allow_real_http] || VCR::Config.default_cassette_options[:allow_real_http])
       self.class.raise_error_unless_valid_record_mode(record_mode)
       set_fakeweb_allow_net_connect
       load_recorded_responses
@@ -37,6 +38,10 @@ module VCR
       unless VALID_RECORD_MODES.include?(record_mode)
         raise ArgumentError.new("#{record_mode} is not a valid cassette record mode.  Valid options are: #{VALID_RECORD_MODES.inspect}")
       end
+    end
+
+    def allow_real_http_requests_to?(uri)
+      @allow_real_http_lambda ? @allow_real_http_lambda.call(uri) : false
     end
 
     private
@@ -91,6 +96,14 @@ module VCR
     def deregister_original_recorded_responses
       @original_recorded_responses.each do |rr|
         FakeWeb.remove_from_registry(rr.method, rr.uri)
+      end
+    end
+
+    def allow_real_http_lambda_for(allow_option)
+      if allow_option == :localhost
+        lambda { |uri| uri.host == 'localhost' }
+      else
+        allow_option
       end
     end
   end

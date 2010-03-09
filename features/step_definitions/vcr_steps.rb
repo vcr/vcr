@@ -67,11 +67,11 @@ When /^I make an(.*)? HTTP (?:get|post) request to "([^\"]*)"$/ do |request_type
   @http_requests[url] += [result]
 end
 
-When /^I make(?: an)?(.*)? HTTP (get|post) requests? to "([^\"]*)"(?: and "([^\"]*)")? within the "([^\"]*)" ?(#{VCR::Cassette::VALID_RECORD_MODES.join('|')})? cassette$/ do |request_type, method, url1, url2, cassette_name, record_mode|
-  record_mode ||= :unregistered
-  record_mode = record_mode.to_sym
+When /^I make(?: an)?(.*)? HTTP (get|post) requests? to "([^\"]*)"(?: and "([^\"]*)")? within the "([^\"]*)" ?(#{VCR::Cassette::VALID_RECORD_MODES.join('|')})? cassette(?:, allowing requests matching \/([^\/]+)\/)?$/ do |request_type, method, url1, url2, cassette_name, record_mode, allowed|
+  options = { :record => (record_mode ? record_mode.to_sym : :unregistered) }
+  options[:allow_real_http] = lambda { |uri| uri.to_s =~ /#{allowed}/ } if allowed.to_s.size > 0
   urls = [url1, url2].select { |u| u.to_s.size > 0 }
-  VCR.with_cassette(cassette_name, :record => record_mode) do
+  VCR.with_cassette(cassette_name, options) do
     urls.each do |url|
       When %{I make an#{request_type} HTTP #{method} request to "#{url}"}
     end

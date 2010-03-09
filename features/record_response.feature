@@ -64,3 +64,9 @@ Feature: Record response
      When I make a recursive HTTP post request to "http://example.com" within the "temp/recursive_post" unregistered cassette
      Then the "temp/recursive_post" cache file should have a response for "http://example.com" that matches /You have reached this web page by typing.*example\.com/
       And the "temp/recursive_post" cache file should have exactly 1 response
+
+  Scenario: Make an allowed HTTP request in a cassette with record mode set to :none
+    Given we do not have a "temp/record_none_cassette" cassette
+     When I make an HTTP get request to "http://example.com" within the "temp/record_none_cassette" none cassette, allowing requests matching /example.com/
+     Then the response for "http://example.com" should match /You have reached this web page by typing.*example\.com/
+      And there should not be a "temp/record_none_cassette" cache file
