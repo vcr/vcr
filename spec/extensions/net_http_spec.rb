@@ -1,19 +1,8 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe "Net::HTTP Extensions" do
-  before(:all) do
-    @orig_allow_net_connect = FakeWeb.allow_net_connect?
-    FakeWeb.allow_net_connect = true
-  end
-
-  after(:all) do
-    FakeWeb.allow_net_connect = @orig_allow_net_connect
-  end
-
   before(:each) do
-    @current_cassette = mock
-    VCR.stub!(:current_cassette).and_return(@current_cassette)
-    FakeWeb.clean_registry
+    VCR.stub!(:current_cassette).and_return(@current_cassette = mock)
   end
 
   describe 'a request that is not registered with FakeWeb' do

@@ -1,18 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe VCR::Cassette do
-  before(:all) do
-    VCR::Config.default_cassette_options = { :record => :unregistered }
-  end
-
-  after(:all) do
-    VCR::Config.default_cassette_options = { :record => :unregistered }
-  end
-
-  before(:each) do
-    FakeWeb.clean_registry
-  end
-
   describe '#cache_file' do
     temp_dir File.expand_path(File.dirname(__FILE__) + '/fixtures/cache_file'), :assign_to_cache_dir => true
 

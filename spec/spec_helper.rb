@@ -20,4 +20,10 @@ Dir[File.expand_path(File.join(File.dirname(__FILE__),'support','**','*.rb'))].e
 Spec::Runner.configure do |config|
   config.extend TempCacheDir
   config.extend DisableWarnings
+
+  config.before(:each) do
+    VCR::Config.default_cassette_options = { :record => :unregistered }
+    FakeWeb.allow_net_connect = true
+    FakeWeb.clean_registry
+  end
 end
