@@ -2,12 +2,11 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe VCR do
   before(:all) do
-    @orig_default_cassette_record_mode = VCR::Config.default_cassette_record_mode
-    VCR::Config.default_cassette_record_mode = :unregistered
+    VCR::Config.default_cassette_options = { :record => :unregistered }
   end
 
   after(:all) do
-    VCR::Config.default_cassette_record_mode = :unregistered
+    VCR::Config.default_cassette_options = { :record => :unregistered }
   end
 
   def create_cassette

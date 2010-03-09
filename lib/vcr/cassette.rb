@@ -9,7 +9,7 @@ module VCR
 
     def initialize(name, options = {})
       @name = name
-      @record_mode = options[:record] || VCR::Config.default_cassette_record_mode
+      @record_mode = options[:record] || VCR::Config.default_cassette_options[:record]
       self.class.raise_error_unless_valid_record_mode(record_mode)
       set_fakeweb_allow_net_connect
       load_recorded_responses
