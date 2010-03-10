@@ -73,6 +73,15 @@ When /^I make an asynchronous HTTP get request to "([^\"]*)"$/ do |url|
   end
 end
 
+When /^I make a replayed asynchronous HTTP get request to "([^\"]*)"$/ do |url|
+  capture_response(url) do |uri, path|
+    result_body = ''
+    result = Net::HTTP.new(uri.host, uri.port).request_get(path) { |r| r.read_body { |fragment| result_body << fragment } }
+    result.body.should == result_body
+    result
+  end
+end
+
 When /^I make a recursive HTTP post request to "([^\"]*)"$/ do |url|
   capture_response(url) do |uri, path|
     Net::HTTP.new(uri.host, uri.port).post(path, nil)
