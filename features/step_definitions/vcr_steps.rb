@@ -14,6 +14,18 @@ module VCRHelpers
     yaml = File.open(yaml_file, 'r') { |f| f.read }
     responses = YAML.load(yaml)
   end
+
+  def capture_response(url)
+    @http_requests ||= Hash.new([])
+    uri = URI.parse(url)
+    path = uri.path.to_s == '' ? '/' : uri.path
+    begin
+      result = yield uri, path
+    rescue => e
+      result = e
+    end
+    @http_requests[url] += [result]
+  end
 end
 World(VCRHelpers)
 
@@ -47,33 +59,33 @@ Given /^the previous scenario was tagged with the vcr cassette tag: "([^\"]*)"$/
   VCR::CucumberTags.tags.should include(tag)
 end
 
-When /^I make an(.*)? HTTP (?:get|post) request to "([^\"]*)"$/ do |request_type, url|
-  @http_requests ||= Hash.new([])
-  uri = URI.parse(url)
-  path = uri.path.to_s == '' ? '/' : uri.path
-  begin
-    case request_type
-      when /asynchronous/
-        result = Net::HTTP.new(uri.host, uri.port).request_get(path) { |r| r.read_body { } }
-        result.body.should be_a(Net::ReadAdapter)
-      when /recursive/
-        result = Net::HTTP.new(uri.host, uri.port).post(path, nil)
-      else
-        result = Net::HTTP.get_response(uri)
-    end
-  rescue => e
-    result = e
+When /^I make (?:an )?HTTP get request to "([^\"]*)"$/ do |url|
+  capture_response(url) do |uri, path|
+    Net::HTTP.get_response(uri)
   end
-  @http_requests[url] += [result]
 end
 
-When /^I make(?: an)?(.*)? HTTP (get|post) requests? to "([^\"]*)"(?: and "([^\"]*)")? within the "([^\"]*)" ?(#{VCR::Cassette::VALID_RECORD_MODES.join('|')})? cassette(?:, allowing requests matching \/([^\/]+)\/)?$/ do |request_type, method, url1, url2, cassette_name, record_mode, allowed|
+When /^I make an asynchronous HTTP get request to "([^\"]*)"$/ do |url|
+  capture_response(url) do |uri, path|
+    result = Net::HTTP.new(uri.host, uri.port).request_get(path) { |r| r.read_body { } }
+    result.body.should be_a(Net::ReadAdapter)
+    result
+  end
+end
+
+When /^I make a recursive HTTP post request to "([^\"]*)"$/ do |url|
+  capture_response(url) do |uri, path|
+    Net::HTTP.new(uri.host, uri.port).post(path, nil)
+  end
+end
+
+When /^I make (.*HTTP (?:get|post)) requests? to "([^\"]*)"(?: and "([^\"]*)")? within the "([^\"]*)" ?(#{VCR::Cassette::VALID_RECORD_MODES.join('|')})? cassette(?:, allowing requests matching \/([^\/]+)\/)?$/ do |http_request_type, url1, url2, cassette_name, record_mode, allowed|
   options = { :record => (record_mode ? record_mode.to_sym : :unregistered) }
   options[:allow_real_http] = lambda { |uri| uri.to_s =~ /#{allowed}/ } if allowed.to_s.size > 0
   urls = [url1, url2].select { |u| u.to_s.size > 0 }
   VCR.with_cassette(cassette_name, options) do
     urls.each do |url|
-      When %{I make an#{request_type} HTTP #{method} request to "#{url}"}
+      When %{I make #{http_request_type} request to "#{url}"}
     end
   end
 end
