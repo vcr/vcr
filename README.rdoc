@@ -15,7 +15,7 @@ VCR was inspired by {NetRecorder}[http://github.com/chrisyoung/netrecorder], but
 localized recording and replaying, rather than the global recording and replaying of NetRecorder.  In general, I believe that
 tests should not rely upon anything global.  You're coupling your test to something outside of it that may later change and
 break the test.  It's far better to localize things to each test, as much as possible.  VCR, in combination with FakeWeb,
-makes it easy to do this with the recording and replying of HTTP responses.
+makes it easy to do this with the recording and replaying of HTTP responses.
 
 == Cassettes
 
