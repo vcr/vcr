@@ -145,7 +145,7 @@ describe VCR::Cassette do
     temp_dir File.expand_path(File.dirname(__FILE__) + '/fixtures/cassette_spec_destroy'), :assign_to_cache_dir => true
 
     [true, false].each do |orig_allow_net_connect|
-      it "resets FakeWeb.allow_net_connect #{orig_allow_net_connect} if it was originally #{orig_allow_net_connect}" do
+      it "resets FakeWeb.allow_net_connect to #{orig_allow_net_connect} if it was originally #{orig_allow_net_connect}" do
         FakeWeb.allow_net_connect = orig_allow_net_connect
         cassette = VCR::Cassette.new(:name)
         cassette.destroy!
@@ -168,7 +168,7 @@ describe VCR::Cassette do
       saved_recorded_responses.should == recorded_responses
     end
 
-    it "writes the recorded responses a subdirectory if the cassette name includes a directory" do
+    it "writes the recorded responses to a subdirectory if the cassette name includes a directory" do
       recorded_responses = [VCR::RecordedResponse.new(:get,  'http://example.com', :get_example_dot_come_response)]
       cassette = VCR::Cassette.new('subdirectory/test_cassette')
       cassette.stub!(:recorded_responses).and_return(recorded_responses)
