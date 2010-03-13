@@ -188,7 +188,7 @@ recorded response, and if your code changes so that it is making a new HTTP requ
 
 == Ruby Version Compatibility
 
-  specs.should pass if RUBY_VERSION =~ /^1.(8.6|8.7|9.1)$/
+VCR works on ruby {1.8.6}[http://integrity186.heroku.com/vcr], {1.8.7}[http://integrity187.heroku.com/vcr] and {1.9.1}[http://integrity191.heroku.com/vcr].
 
 == Notes, etc.
 
