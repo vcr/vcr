@@ -1,15 +1,15 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe VCR::Config do
-  describe '#cache_dir=' do
+  describe '#cassette_library_dir=' do
     temp_dir(File.expand_path(File.dirname(__FILE__) + '/fixtures/config_spec'))
 
     it 'creates the directory if it does not exist' do
-      lambda { VCR::Config.cache_dir = @temp_dir }.should change { File.exist?(@temp_dir) }.from(false).to(true)
+      lambda { VCR::Config.cassette_library_dir = @temp_dir }.should change { File.exist?(@temp_dir) }.from(false).to(true)
     end
 
     it 'does not raise an error if given nil' do
-      lambda { VCR::Config.cache_dir = nil }.should_not raise_error
+      lambda { VCR::Config.cassette_library_dir = nil }.should_not raise_error
     end
   end
 

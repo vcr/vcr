@@ -1,28 +1,28 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe VCR::Cassette do
-  describe '#cache_file' do
-    temp_dir File.expand_path(File.dirname(__FILE__) + '/fixtures/cache_file'), :assign_to_cache_dir => true
+  describe '#file' do
+    temp_dir File.expand_path(File.dirname(__FILE__) + '/fixtures/file'), :assign_to_cassette_library_dir => true
 
-    it 'combines the cache_dir with the cassette name' do
-      cassette = VCR::Cassette.new('the_cache_file')
-      cassette.cache_file.should == File.join(VCR::Config.cache_dir, 'the_cache_file.yml')
+    it 'combines the cassette_library_dir with the cassette name' do
+      cassette = VCR::Cassette.new('the_file')
+      cassette.file.should == File.join(VCR::Config.cassette_library_dir, 'the_file.yml')
     end
 
     it 'strips out disallowed characters so that it is a valid file name with no spaces' do
       cassette = VCR::Cassette.new("\nthis \t!  is-the_13212_file name")
-      cassette.cache_file.should =~ /#{Regexp.escape('_this_is-the_13212_file_name.yml')}$/
+      cassette.file.should =~ /#{Regexp.escape('_this_is-the_13212_file_name.yml')}$/
     end
 
     it 'keeps any path separators' do
       cassette = VCR::Cassette.new("dir/file_name")
-      cassette.cache_file.should =~ /#{Regexp.escape('dir/file_name.yml')}$/
+      cassette.file.should =~ /#{Regexp.escape('dir/file_name.yml')}$/
     end
 
-    it 'returns nil if the cache_dir is not set' do
-      VCR::Config.cache_dir = nil
-      cassette = VCR::Cassette.new('the_cache_file')
-      cassette.cache_file.should be_nil
+    it 'returns nil if the cassette_library_dir is not set' do
+      VCR::Config.cassette_library_dir = nil
+      cassette = VCR::Cassette.new('the_file')
+      cassette.file.should be_nil
     end
   end
 
@@ -49,7 +49,7 @@ describe VCR::Cassette do
       end
     end
 
-    { :unregistered => true, :all => true, :none => false }.each do |record_mode, allow_fakeweb_connect|
+    { :new_episodes => true, :all => true, :none => false }.each do |record_mode, allow_fakeweb_connect|
       it "sets FakeWeb.allow_net_connect to #{allow_fakeweb_connect} when the record mode is #{record_mode}" do
         FakeWeb.allow_net_connect = !allow_fakeweb_connect
         VCR::Cassette.new(:name, :record => record_mode)
@@ -57,9 +57,9 @@ describe VCR::Cassette do
       end
     end
 
-    { :unregistered => true, :all => false, :none => true }.each do |record_mode, load_responses|
-      it "#{load_responses ? 'loads' : 'does not load'} the recorded responses from the cached yml file when the record mode is #{record_mode}" do
-        VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
+    { :new_episodes => true, :all => false, :none => true }.each do |record_mode, load_responses|
+      it "#{load_responses ? 'loads' : 'does not load'} the recorded responses from the library yml file when the record mode is #{record_mode}" do
+        VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
         cassette = VCR::Cassette.new('example', :record => record_mode)
 
         if load_responses
@@ -84,7 +84,7 @@ describe VCR::Cassette do
       end
 
       it "#{load_responses ? 'registers' : 'does not register'} the recorded responses with fakeweb when the record mode is #{record_mode}" do
-        VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
+        VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
         cassette = VCR::Cassette.new('example', :record => record_mode)
 
         rr1 = FakeWeb.response_for(:get, "http://example.com")
@@ -141,14 +141,14 @@ describe VCR::Cassette do
     end
   end
 
-  describe '#destroy!' do
-    temp_dir File.expand_path(File.dirname(__FILE__) + '/fixtures/cassette_spec_destroy'), :assign_to_cache_dir => true
+  describe '#eject' do
+    temp_dir File.expand_path(File.dirname(__FILE__) + '/fixtures/cassette_spec_eject'), :assign_to_cassette_library_dir => true
 
     [true, false].each do |orig_allow_net_connect|
       it "resets FakeWeb.allow_net_connect to #{orig_allow_net_connect} if it was originally #{orig_allow_net_connect}" do
         FakeWeb.allow_net_connect = orig_allow_net_connect
         cassette = VCR::Cassette.new(:name)
-        cassette.destroy!
+        cassette.eject
         FakeWeb.allow_net_connect?.should == orig_allow_net_connect
       end
     end
@@ -160,11 +160,11 @@ describe VCR::Cassette do
         VCR::RecordedResponse.new(:get,  'http://google.com',  :get_google_dot_come_response)
       ]
 
-      cassette = VCR::Cassette.new(:destroy_test)
+      cassette = VCR::Cassette.new(:eject_test)
       cassette.stub!(:recorded_responses).and_return(recorded_responses)
 
-      lambda { cassette.destroy! }.should change { File.exist?(cassette.cache_file) }.from(false).to(true)
-      saved_recorded_responses = File.open(cassette.cache_file, "r") { |f| YAML.load(f.read) }
+      lambda { cassette.eject }.should change { File.exist?(cassette.file) }.from(false).to(true)
+      saved_recorded_responses = File.open(cassette.file, "r") { |f| YAML.load(f.read) }
       saved_recorded_responses.should == recorded_responses
     end
 
@@ -173,42 +173,42 @@ describe VCR::Cassette do
       cassette = VCR::Cassette.new('subdirectory/test_cassette')
       cassette.stub!(:recorded_responses).and_return(recorded_responses)
 
-      lambda { cassette.destroy! }.should change { File.exist?(cassette.cache_file) }.from(false).to(true)
-      saved_recorded_responses = File.open(cassette.cache_file, "r") { |f| YAML.load(f.read) }
+      lambda { cassette.eject }.should change { File.exist?(cassette.file) }.from(false).to(true)
+      saved_recorded_responses = File.open(cassette.file, "r") { |f| YAML.load(f.read) }
       saved_recorded_responses.should == recorded_responses
     end
 
     it "writes both old and new recorded responses to disk" do
-      cache_file = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec/example.yml")
-      FileUtils.cp cache_file, File.join(@temp_dir, 'previously_recorded_responses.yml')
+      file = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec/example.yml")
+      FileUtils.cp file, File.join(@temp_dir, 'previously_recorded_responses.yml')
       cassette = VCR::Cassette.new('previously_recorded_responses')
       cassette.should have(3).recorded_responses
       new_recorded_response = VCR::RecordedResponse.new(:get, 'http://example.com/bar', :example_dot_com_bar_response)
       cassette.store_recorded_response!(new_recorded_response)
-      cassette.destroy!
-      saved_recorded_responses = File.open(cassette.cache_file, "r") { |f| YAML.load(f.read) }
+      cassette.eject
+      saved_recorded_responses = File.open(cassette.file, "r") { |f| YAML.load(f.read) }
       saved_recorded_responses.should have(4).recorded_responses
       saved_recorded_responses.last.should == new_recorded_response
     end
   end
 
-  describe '#destroy for a cassette with previously recorded responses' do
+  describe '#eject for a cassette with previously recorded responses' do
     it "de-registers the recorded responses from fakeweb" do
-      VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
+      VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
       cassette = VCR::Cassette.new('example', :record => :none)
       FakeWeb.registered_uri?(:get, 'http://example.com').should be_true
       FakeWeb.registered_uri?(:get, 'http://example.com/foo').should be_true
-      cassette.destroy!
+      cassette.eject
       FakeWeb.registered_uri?(:get, 'http://example.com').should be_false
       FakeWeb.registered_uri?(:get, 'http://example.com/foo').should be_false
     end
 
     it "does not re-write to disk the previously recorded resposes if there are no new ones" do
-      VCR::Config.cache_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
-      yaml_file = File.join(VCR::Config.cache_dir, 'example.yml')
+      VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
+      yaml_file = File.join(VCR::Config.cassette_library_dir, 'example.yml')
       cassette = VCR::Cassette.new('example', :record => :none)
-      File.should_not_receive(:open).with(cassette.cache_file, 'w')
-      lambda { cassette.destroy! }.should_not change { File.mtime(yaml_file) }
+      File.should_not_receive(:open).with(cassette.file, 'w')
+      lambda { cassette.eject }.should_not change { File.mtime(yaml_file) }
     end
   end
 end

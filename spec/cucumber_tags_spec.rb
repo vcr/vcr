@@ -24,9 +24,9 @@ describe VCR::CucumberTags do
         @args[hook].should == [['@tag_test']]
 
         if hook == :before
-          VCR.should_receive(:create_cassette!).with('cucumber_tags/tag_test', {})
+          VCR.should_receive(:insert_cassette).with('cucumber_tags/tag_test', {})
         else
-          VCR.should_receive(:destroy_cassette!)
+          VCR.should_receive(:eject_cassette)
         end
         @blocks[hook].should have(1).block
         @blocks[hook].first.call
@@ -37,10 +37,10 @@ describe VCR::CucumberTags do
         @args[hook].should == [['@tag_test1'], ['@tag_test2']]
 
         if hook == :before
-          VCR.should_receive(:create_cassette!).with('cucumber_tags/tag_test1', { :record => :none }).once
-          VCR.should_receive(:create_cassette!).with('cucumber_tags/tag_test2', { :record => :none }).once
+          VCR.should_receive(:insert_cassette).with('cucumber_tags/tag_test1', { :record => :none }).once
+          VCR.should_receive(:insert_cassette).with('cucumber_tags/tag_test2', { :record => :none }).once
         else
-          VCR.should_receive(:destroy_cassette!).twice
+          VCR.should_receive(:eject_cassette).twice
         end
         @blocks[hook].should have(2).blocks
         @blocks[hook].each { |b| b.call }
@@ -51,9 +51,9 @@ describe VCR::CucumberTags do
         @args[hook].should == [['@tag_test']]
 
         if hook == :before
-          VCR.should_receive(:create_cassette!).with('cucumber_tags/tag_test', {})
+          VCR.should_receive(:insert_cassette).with('cucumber_tags/tag_test', {})
         else
-          VCR.should_receive(:destroy_cassette!)
+          VCR.should_receive(:eject_cassette)
         end
         @blocks[hook].should have(1).block
         @blocks[hook].first.call

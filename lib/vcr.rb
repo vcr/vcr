@@ -1,6 +1,7 @@
 require 'vcr/cassette'
 require 'vcr/config'
 require 'vcr/cucumber_tags'
+require 'vcr/deprecations'
 require 'vcr/recorded_response'
 
 require 'vcr/extensions/fake_web'
@@ -14,23 +15,23 @@ module VCR
     cassettes.last
   end
 
-  def create_cassette!(*args)
+  def insert_cassette(*args)
     cassette = Cassette.new(*args)
     cassettes.push(cassette)
     cassette
   end
 
-  def destroy_cassette!
+  def eject_cassette
     cassette = cassettes.pop
-    cassette.destroy! if cassette
+    cassette.eject if cassette
     cassette
   end
 
-  def with_cassette(*args)
-    create_cassette!(*args)
+  def use_cassette(*args)
+    insert_cassette(*args)
     yield
   ensure
-    destroy_cassette!
+    eject_cassette
   end
 
   def config

@@ -18,11 +18,12 @@ end
 Dir[File.expand_path(File.join(File.dirname(__FILE__),'support','**','*.rb'))].each {|f| require f}
 
 Spec::Runner.configure do |config|
-  config.extend TempCacheDir
+  config.extend TempCassetteLibraryDir
   config.extend DisableWarnings
+  config.extend Deprecated
 
   config.before(:each) do
-    VCR::Config.default_cassette_options = { :record => :unregistered }
+    VCR::Config.default_cassette_options = { :record => :new_episodes }
     FakeWeb.allow_net_connect = true
     FakeWeb.clean_registry
   end

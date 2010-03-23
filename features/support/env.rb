@@ -12,7 +12,7 @@ end
 require 'spec/expectations'
 
 VCR.config do |c|
-  c.cache_dir = File.join(File.dirname(__FILE__), '..', 'fixtures', 'vcr_cassettes', RUBY_VERSION)
+  c.cassette_library_dir = File.join(File.dirname(__FILE__), '..', 'fixtures', 'vcr_cassettes', RUBY_VERSION)
 end
 
 VCR.module_eval do
@@ -31,25 +31,25 @@ end
 
 Before do |scenario|
   VCR.current_cucumber_scenario = scenario
-  temp_dir = File.join(VCR::Config.cache_dir, 'temp')
+  temp_dir = File.join(VCR::Config.cassette_library_dir, 'temp')
   FileUtils.rm_rf(temp_dir) if File.exist?(temp_dir)
 end
 
 Before('@copy_not_the_real_response_to_temp') do
-  orig_file = File.join(VCR::Config.cache_dir, 'not_the_real_response.yml')
-  temp_file = File.join(VCR::Config.cache_dir, 'temp', 'not_the_real_response.yml')
-  FileUtils.mkdir_p(File.join(VCR::Config.cache_dir, 'temp'))
+  orig_file = File.join(VCR::Config.cassette_library_dir, 'not_the_real_response.yml')
+  temp_file = File.join(VCR::Config.cassette_library_dir, 'temp', 'not_the_real_response.yml')
+  FileUtils.mkdir_p(File.join(VCR::Config.cassette_library_dir, 'temp'))
   FileUtils.cp orig_file, temp_file
 end
 
 at_exit do
   %w(record_cassette1 record_cassette2).each do |tag|
-    cache_file = File.join(VCR::Config.cache_dir, 'cucumber_tags', "#{tag}.yml")
-    FileUtils.rm_rf(cache_file) if File.exist?(cache_file)
+    file = File.join(VCR::Config.cassette_library_dir, 'cucumber_tags', "#{tag}.yml")
+    FileUtils.rm_rf(file) if File.exist?(file)
   end
 end
 
 VCR.cucumber_tags do |t|
-  t.tags '@record_cassette1', '@record_cassette2', :record => :unregistered
+  t.tags '@record_cassette1', '@record_cassette2', :record => :new_episodes
   t.tags '@replay_cassette1', '@replay_cassette2', '@replay_cassette3', :record => :none
 end

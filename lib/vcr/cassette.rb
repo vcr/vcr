@@ -3,20 +3,21 @@ require 'yaml'
 
 module VCR
   class Cassette
-    VALID_RECORD_MODES = [:all, :none, :unregistered].freeze
+    VALID_RECORD_MODES = [:all, :none, :new_episodes].freeze
 
     attr_reader :name, :record_mode
 
     def initialize(name, options = {})
       @name = name
       @record_mode = options[:record] || VCR::Config.default_cassette_options[:record]
+      deprecate_unregistered_record_mode
       @allow_real_http_lambda = allow_real_http_lambda_for(options[:allow_real_http] || VCR::Config.default_cassette_options[:allow_real_http])
       self.class.raise_error_unless_valid_record_mode(record_mode)
       set_fakeweb_allow_net_connect
       load_recorded_responses
     end
 
-    def destroy!
+    def eject
       write_recorded_responses_to_disk
       deregister_original_recorded_responses
       restore_fakeweb_allow_net_conect
@@ -30,8 +31,8 @@ module VCR
       recorded_responses << recorded_response
     end
 
-    def cache_file
-      File.join(VCR::Config.cache_dir, "#{name.to_s.gsub(/[^\w\-\/]+/, '_')}.yml") if VCR::Config.cache_dir
+    def file
+      File.join(VCR::Config.cassette_library_dir, "#{name.to_s.gsub(/[^\w\-\/]+/, '_')}.yml") if VCR::Config.cassette_library_dir
     end
 
     def self.raise_error_unless_valid_record_mode(record_mode)
@@ -44,14 +45,12 @@ module VCR
       @allow_real_http_lambda ? @allow_real_http_lambda.call(uri) : false
     end
 
-    private
-
     def new_recorded_responses
       recorded_responses - @original_recorded_responses
     end
 
     def should_allow_net_connect?
-      [:unregistered, :all].include?(record_mode)
+      [:new_episodes, :all].include?(record_mode)
     end
 
     def set_fakeweb_allow_net_connect
@@ -67,8 +66,8 @@ module VCR
       @original_recorded_responses = []
       return if record_mode == :all
 
-      if cache_file
-        @original_recorded_responses = File.open(cache_file, 'r') { |f| YAML.load(f.read) } if File.exist?(cache_file)
+      if file
+        @original_recorded_responses = File.open(file, 'r') { |f| YAML.load(f.read) } if File.exist?(file)
         recorded_responses.replace(@original_recorded_responses)
       end
 
@@ -86,10 +85,10 @@ module VCR
     end
 
     def write_recorded_responses_to_disk
-      if VCR::Config.cache_dir && new_recorded_responses.size > 0
-        directory = File.dirname(cache_file)
+      if VCR::Config.cassette_library_dir && new_recorded_responses.size > 0
+        directory = File.dirname(file)
         FileUtils.mkdir_p directory unless File.exist?(directory)
-        File.open(cache_file, 'w') { |f| f.write recorded_responses.to_yaml }
+        File.open(file, 'w') { |f| f.write recorded_responses.to_yaml }
       end
     end
 

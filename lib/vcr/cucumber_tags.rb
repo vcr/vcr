@@ -23,11 +23,11 @@ module VCR
 
         @main_object.instance_eval do
           Before(tag_name) do
-            VCR.create_cassette!(cassette_name, options)
+            VCR.insert_cassette(cassette_name, options)
           end
 
           After(tag_name) do
-            VCR.destroy_cassette!
+            VCR.eject_cassette
           end
         end
         self.class.add_tag(tag_name)

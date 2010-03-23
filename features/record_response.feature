@@ -3,21 +3,21 @@ Feature: Record response
   As a TDD/BDD developer
   I want to record responses for requests to URIs that are not registered with fakeweb so I can use them with fakeweb in the future
 
-  Scenario: Record a response using VCR.with_cassette
+  Scenario: Record a response using VCR.use_cassette
     Given we do not have a "temp/cassette" cassette
      When I make an HTTP get request to "http://example.com" within the "temp/cassette" cassette
-     Then the "temp/cassette" cache file should have a response for "http://example.com" that matches /You have reached this web page by typing.*example\.com/
+     Then the "temp/cassette" library file should have a response for "http://example.com" that matches /You have reached this web page by typing.*example\.com/
 
   @record_cassette1
   Scenario: Record a response using a tagged scenario
     Given we do not have a "cucumber_tags/record_cassette1" cassette
       And this scenario is tagged with the vcr cassette tag: "@record_cassette1"
      When I make an HTTP get request to "http://example.com"
-     Then I can test the scenario cassette's recorded responses in the next scenario, after the cassette has been destroyed
+     Then I can test the scenario cassette's recorded responses in the next scenario, after the cassette has been ejected
 
   Scenario: Check the recorded response for the previous scenario
     Given the previous scenario was tagged with the vcr cassette tag: "@record_cassette1"
-     Then the "cucumber_tags/record_cassette1" cache file should have a response for "http://example.com" that matches /You have reached this web page by typing.*example\.com/
+     Then the "cucumber_tags/record_cassette1" library file should have a response for "http://example.com" that matches /You have reached this web page by typing.*example\.com/
 
   @record_cassette2
   Scenario: Use both a tagged scenario cassette and a nested cassette within a single step definition
@@ -27,46 +27,46 @@ Feature: Record response
      When I make an HTTP get request to "http://example.com/before_nested"
       And I make an HTTP get request to "http://example.com/nested" within the "temp/nested" cassette
       And I make an HTTP get request to "http://example.com/after_nested"
-     Then I can test the scenario cassette's recorded responses in the next scenario, after the cassette has been destroyed
-      And the "temp/nested" cache file should have a response for "http://example.com/nested" that matches /The requested URL \/nested was not found/
+     Then I can test the scenario cassette's recorded responses in the next scenario, after the cassette has been ejected
+      And the "temp/nested" library file should have a response for "http://example.com/nested" that matches /The requested URL \/nested was not found/
 
   Scenario: Check the recorded response for the previous scenario
     Given the previous scenario was tagged with the vcr cassette tag: "@record_cassette2"
-     Then the "cucumber_tags/record_cassette2" cache file should have a response for "http://example.com/before_nested" that matches /The requested URL \/before_nested was not found/
-      And the "cucumber_tags/record_cassette2" cache file should have a response for "http://example.com/after_nested" that matches /The requested URL \/after_nested was not found/
+     Then the "cucumber_tags/record_cassette2" library file should have a response for "http://example.com/before_nested" that matches /The requested URL \/before_nested was not found/
+      And the "cucumber_tags/record_cassette2" library file should have a response for "http://example.com/after_nested" that matches /The requested URL \/after_nested was not found/
 
   Scenario: Make an HTTP request in a cassette with record mode set to :all
     Given we do not have a "temp/record_all_cassette" cassette
      When I make an HTTP get request to "http://example.com" within the "temp/record_all_cassette" all cassette
-     Then the "temp/record_all_cassette" cache file should have a response for "http://example.com" that matches /You have reached this web page by typing.*example\.com/
+     Then the "temp/record_all_cassette" library file should have a response for "http://example.com" that matches /You have reached this web page by typing.*example\.com/
 
   Scenario: Make an HTTP request in a cassette with record mode set to :none
     Given we do not have a "temp/record_none_cassette" cassette
      When I make an HTTP get request to "http://example.com" within the "temp/record_none_cassette" none cassette
      Then the HTTP get request to "http://example.com" should result in a fakeweb error that mentions VCR
-      And there should not be a "temp/record_none_cassette" cache file
+      And there should not be a "temp/record_none_cassette" library file
 
   @copy_not_the_real_response_to_temp
-  Scenario: Make an HTTP request in a cassette with record mode set to :unregistered
-    Given we have a "temp/not_the_real_response" file with a previously recorded response for "http://example.com"
-      And we have a "temp/not_the_real_response" file with no previously recorded response for "http://example.com/foo"
-     When I make HTTP get requests to "http://example.com" and "http://example.com/foo" within the "temp/not_the_real_response" unregistered cassette
-     Then the "temp/not_the_real_response" cache file should have a response for "http://example.com" that matches /This is not the real response from example\.com/
-      And the "temp/not_the_real_response" cache file should have a response for "http://example.com/foo" that matches /The requested URL \/foo was not found/
+  Scenario: Make an HTTP request in a cassette with record mode set to :new_episodes
+    Given we have a "temp/not_the_real_response" library file with a previously recorded response for "http://example.com"
+      And we have a "temp/not_the_real_response" library file with no previously recorded response for "http://example.com/foo"
+     When I make HTTP get requests to "http://example.com" and "http://example.com/foo" within the "temp/not_the_real_response" new_episodes cassette
+     Then the "temp/not_the_real_response" library file should have a response for "http://example.com" that matches /This is not the real response from example\.com/
+      And the "temp/not_the_real_response" library file should have a response for "http://example.com/foo" that matches /The requested URL \/foo was not found/
 
   Scenario: Record an asynchronous request (such as for mechanize)
     Given we do not have a "temp/asynchronous" cassette
-     When I make an asynchronous HTTP get request to "http://example.com" within the "temp/asynchronous" unregistered cassette
-     Then the "temp/asynchronous" cache file should have a response for "http://example.com" that matches /You have reached this web page by typing.*example\.com/
+     When I make an asynchronous HTTP get request to "http://example.com" within the "temp/asynchronous" new_episodes cassette
+     Then the "temp/asynchronous" library file should have a response for "http://example.com" that matches /You have reached this web page by typing.*example\.com/
 
   Scenario: Record a recursive post request
     Given we do not have a "temp/recursive_post" cassette
-     When I make a recursive HTTP post request to "http://example.com" within the "temp/recursive_post" unregistered cassette
-     Then the "temp/recursive_post" cache file should have a response for "http://example.com" that matches /You have reached this web page by typing.*example\.com/
-      And the "temp/recursive_post" cache file should have exactly 1 response
+     When I make a recursive HTTP post request to "http://example.com" within the "temp/recursive_post" new_episodes cassette
+     Then the "temp/recursive_post" library file should have a response for "http://example.com" that matches /You have reached this web page by typing.*example\.com/
+      And the "temp/recursive_post" library file should have exactly 1 response
 
   Scenario: Make an allowed HTTP request in a cassette with record mode set to :none
     Given we do not have a "temp/record_none_cassette" cassette
      When I make an HTTP get request to "http://example.com" within the "temp/record_none_cassette" none cassette, allowing requests matching /example.com/
      Then the response for "http://example.com" should match /You have reached this web page by typing.*example\.com/
-      And there should not be a "temp/record_none_cassette" cache file
+      And there should not be a "temp/record_none_cassette" library file
