@@ -20,21 +20,21 @@ makes it easy to do this with the recording and replaying of HTTP responses.
 == Cassettes
 
 Cassettes are central to the way VCR works.  They are a similar to VHS cassettes--your library of cassettes
-is your library of previously recorded responses that can be replayed.  When you create a cassette, it does
+is your library of previously recorded responses that can be replayed.  When you insert a cassette, it does
 the following:
 
-* It loads the previously recorded responses from the cache file corresponding to the cassette name.
+* It loads the previously recorded responses from the library file corresponding to the cassette name.
 * It register these responses with fakeweb (depending on the cassette's :record option--see below)
 * It sets the <tt>FakeWeb.allow_net_connect</tt> setting based on the cassette's :record option.
 
 While a cassette is active, any HTTP requests to a URL of a previously recorded response will use
 the recorded response.  New HTTP requests (i.e. HTTP requests that have not been previously recorded)
-will be recorded to the same cache file, depending on your :record option.  When you destroy a cassette,
+will be recorded to the same library file, depending on your :record option.  When you eject a cassette,
 it does the following:
 
-* It saves all of the recorded responses (both old and new) to a cached yml file corresponding to the cassette name.
+* It saves all of the recorded responses (both old and new) to a yml library file corresponding to the cassette name.
 * It removes the registrations it made with fakeweb, to prevent "leakage" into other tests.
-* It reverts the <tt>FakeWeb.allow_net_connect</tt> back to whatever it was before the cassette was created.
+* It reverts the <tt>FakeWeb.allow_net_connect</tt> back to whatever it was before the cassette was inserted.
 
 == Record modes
 
@@ -42,20 +42,20 @@ VCR supports 3 record modes, which configure when it records new responses.  You
 record mode in your configuration (see below) and a per-cassette record mode when creating a cassette.  The record
 modes are:
 
+* <tt>:new_episodes</tt> - This will use the previously recorded responses, and record any new requests that are not registered with
+  fakeweb.  The previously recorded responses will be registered with fakeweb.  <tt>FakeWeb.allow_net_connect</tt> will be
+  set to true, so that VCR will record any new HTTP requests within the cassette.  Use this when it's ok for external HTTP
+  requests to be made without you explicitly allowing it.  New requests will get saved to the cassette's yml library file, and
+  automatically get used in the future.
 * <tt>:all</tt> - This will cause VCR to re-record all HTTP requests that occur.
   When the cassette is created, it will not register any of the cached responses with fakeweb.
   <tt>FakeWeb.allow_net_connect</tt> will be set to true, so it can record the requests.  Use this
   when you want to re-record all of the HTTP requests for a cassette.  Alternately, you can simply
-  delete the corresponding cache file and use the :unregistered record mode, described below.
+  delete the corresponding library file and use the :new_episodes record mode, described above.
 * <tt>:none</tt> - This will prevent VCR from recording, or even allowing, any new HTTP requests.
   The previously recorded responses will be registered with fakeweb.  <tt>FakeWeb.allow_net_connect</tt> will be set to
   false, so that no new HTTP connections are allowed.  Use this when you want to guarantee that no external
   HTTP requests will be made while the given cassette is active.  Fakeweb will raise an error in this case.
-* <tt>:unregistered</tt> - This will use the previously recorded responses, and record any new requests that are not registered with
-  fakeweb.  The previously recorded responses will be registered with fakeweb.  <tt>FakeWeb.allow_net_connect</tt> will be
-  set to true, so that VCR will record any new HTTP requests within the cassette.  Use this when it's ok for external HTTP
-  requests to be made without you explicitly allowing it.  New requests will get saved to the cassettes yml file, and
-  automatically get used in the future.
 
 == Configuration
 
@@ -66,8 +66,8 @@ modes are:
   FakeWeb.allow_net_connect = false
 
   VCR.config do |c|
-    # the cache_dir is where the cassette yml files will be saved.
-    c.cache_dir = File.join(Rails.root, 'features', 'fixtures', 'vcr_cassettes')
+    # the cassette_library_dir is where the cassette yml files will be saved.
+    c.cassette_library_dir = File.join(Rails.root, 'features', 'fixtures', 'cassette_library')
 
     # these options will be used as defaults for your cassettes, but you can override them in each individual cassette.
     c.default_cassette_options = {
@@ -81,33 +81,33 @@ to put it in spec/support/vcr.rb, test/support/vcr.rb or features/support/vcr.rb
 
 == Usage with your favorite test/spec framework
 
-VCR can easily be used with any ruby test or spec framework.  Usually, you'll want to use <tt>VCR.with_cassette</tt>:
+VCR can easily be used with any ruby test or spec framework.  Usually, you'll want to use <tt>VCR.use_cassette</tt>:
 
-  VCR.with_cassette('geocoding/Seattle, WA', :record => :unregistered) do
+  VCR.use_cassette('geocoding/Seattle, WA', :record => :new_episodes) do
     # do something that causes an HTTP request.
   end
 
-Alternately, you can create and destroy the cassette with individual method calls from setup/before and teardown/after:
+Alternately, you can insert and eject the cassette with individual method calls from setup/before and teardown/after:
 
   describe "Something that makes an HTTP request" do
     before(:each) do
-      VCR.create_cassette!('geocoding/Seattle, WA', :record => :unregistered)
+      VCR.insert_cassette('geocoding/Seattle, WA', :record => :new_episodes)
     end
 
     it "should do something that makes an HTTP request"
 
     after(:each) do
-      VCR.destroy_cassette!
+      VCR.eject_cassette
     end
   end
 
 In both of these cases, VCR would use the file geocoding/Seattle_WA.yml within the configured
-cache dir.  The :record setting is optional--if you leave it blank, your configured default will be used.
+cassette library dir.  The :record setting is optional--if you leave it blank, your configured default will be used.
 
 Besides the :record option, cassettes also support the :allow_real_http option.  You can use this to make the cassette
 allow some real HTTP requests.  You can specify it with a lambda:
 
-  VCR.with_cassette('my cassette', :allow_real_http => lambda { |uri| uri.host == 'google.com' }) do
+  VCR.use_cassette('my cassette', :allow_real_http => lambda { |uri| uri.host == 'google.com' }) do
     # do something that causes an HTTP request.
   end
 
@@ -115,7 +115,7 @@ In this case, any google HTTP requests will be made for real, regardless of your
 your current record mode, and whether or not you are recording or replaying this cassette.  Non-google requests will do
 the appropriate recording/replaying as usual.  You can also use the special <tt>:localhost</tt> option:
 
-  VCR.with_cassette('my cassette', :allow_real_http => :localhost) do
+  VCR.use_cassette('my cassette', :allow_real_http => :localhost) do
     # do something that causes an HTTP request.
   end
 
@@ -127,7 +127,7 @@ This is needed for using VCR with {capybara}[http://github.com/jnicklas/capybara
 
 == Usage with Cucumber
 
-VCR provides special support for cucumber.  You can of course use <tt>VCR.with_cassette</tt> within a step definition,
+VCR provides special support for cucumber.  You can of course use <tt>VCR.use_cassette</tt> within a step definition,
 and that's the recommended way for any of your step definitions.  But many times I find myself using generic step definitions
 provided by another library (such as the webrat/capybara web steps generated by cucumber-rails), and I don't want to modify
 these.  VCR provides cucumber tagging support to help in these cases.
@@ -147,7 +147,7 @@ Then let VCR know about this tag, in features/support/vcr.rb (or some similar su
 For each of the tags you specify in your cucumber_tags block, VCR will set up the appropriate
 {Before and After hooks}[http://wiki.github.com/aslakhellesoy/cucumber/hooks] to use a cassette
 for the entire scenario.  The tag (minus the '@') will be used as the cassette name, and it'll
-go in the cucumber_tags subdirectory of the configured cache dir.
+go in the cucumber_tags subdirectory of the configured cassette library dir.
 
 == Usage with Capybara
 
@@ -157,8 +157,7 @@ it'll need to ping the app running on localhost.  You can use the <tt>:allow_rea
 == Suggested Workflow
 
 First, configure VCR and FakeWeb as I have above.  I like setting <tt>FakeWeb.allow_net_connect</tt> to <tt>false</tt>
-and VCR's <tt>default_cassette_record_mode</tt> to <tt>:none</tt> so that no new HTTP requests are made without me
-explicitly allowing it.
+and the default record mode to <tt>:none</tt> so that no new HTTP requests are made without me explicitly allowing it.
 
 When an HTTP request is made, you'll get an {error from FakeWeb}[http://github.com/chrisk/fakeweb/blob/fakeweb-1.2.8/lib/fake_web/ext/net_http.rb#L62-63],
 such as:
@@ -166,23 +165,23 @@ such as:
   FakeWeb::NetConnectNotAllowedError: Real HTTP connections are disabled. Unregistered request: get http://example.com
 
 Find the place that is making the HTTP request (the backtrace should help here).  If you've already recorded this HTTP
-request to a cassette from a different test, you can simply re-use the cassette.  Use <tt>VCR.with_cassette</tt>, as
+request to a cassette from a different test, you can simply re-use the cassette.  Use <tt>VCR.use_cassette</tt>, as
 shown above.  You may also want to refactor this into a helper method that sets up the VCR cassette and does whatever
 makes the HTTP request:
 
   def set_user_address(user, address, city, state)
-    VCR.with_cassette("geocoding/#{address}, #{city}, #{state}", :record => :unregistered) do
+    VCR.use_cassette("geocoding/#{address}, #{city}, #{state}", :record => :new_episodes) do
       user.address.update_attributes!(:address => address, :city => city, :state => state)
     end
   end
 
 In this case, I've used a dynamic cassette name based on the address being geocoded.  That way, each separate address
 gets a different cassette, and tests that set the same user address will reuse the same cassette.  I've also set
-the record mode to <tt>:unregistered</tt> so that VCR will automatically record geocoding requests for a new address
+the record mode to <tt>:new_episodes</tt> so that VCR will automatically record geocoding requests for a new address
 to a new cassette, without me having to do anything.
 
-If the HTTP request that triggered the error is new, you'll have to record it for the first time.  Simply use <tt>VCR.with_cassette</tt>
-with the record mode set to <tt>:unregistered</tt> or <tt>:all</tt>.  Run the test again, and VCR will record the HTTP response.  I usually
+If the HTTP request that triggered the error is new, you'll have to record it for the first time.  Simply use <tt>VCR.use_cassette</tt>
+with the record mode set to <tt>:new_episodes</tt> or <tt>:all</tt>.  Run the test again, and VCR will record the HTTP response.  I usually
 remove the record mode at this point so that it uses the default of <tt>:none</tt> in the future.  Future test runs will use the
 recorded response, and if your code changes so that it is making a new HTTP request, you'll get the same FakeWeb error as shown above.
 
@@ -192,11 +191,11 @@ VCR works on ruby {1.8.6}[http://integrity186.heroku.com/vcr], {1.8.7}[http://in
 
 == Notes, etc.
 
-* The cassette name determines the name of the cache file for the given cassette.  Strings or symbols are fine,
+* The cassette name determines the name of the library file for the given cassette.  Strings or symbols are fine,
   and you can include any characters, but spaces and invalid file name characters will be removed
-  before the cassette reads or writes to the file.
+  before the cassette reads or writes to its library file.
 * You can use a directory separator (i.e. '/') in your cassette names to cause it to use a subdirectory
-  of the cache_dir.  The cucumber tagging support uses this.
+  of the cassette_library_dir.  The cucumber tagging support uses this.
 * VCR maintains a simple stack of cassettes.  This allows you to nest them as deeply as you want.
   This is particularly useful when you have a cucumber step definition that uses a cassette, and
   you also want to use a cassette for the entire scenario using the tagging support.
