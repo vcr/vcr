@@ -19,29 +19,4 @@ describe VCR::Config do
       VCR::Config.default_cassette_options.should == {}
     end
   end
-
-  describe '#default_cassette_record_mode=' do
-    disable_warnings
-
-    it 'sets the default_cassette_options[:record] option' do
-      VCR::Cassette::VALID_RECORD_MODES.each do |mode|
-        VCR::Config.default_cassette_options = nil
-        VCR::Config.default_cassette_record_mode = mode
-        VCR::Config.default_cassette_options[:record].should == mode
-      end
-    end
-
-    it 'merges the :record option with the existing default_cassette_record options' do
-      VCR::Config.default_cassette_options = { :an => :option }
-      VCR::Config.default_cassette_record_mode = :all
-      VCR::Config.default_cassette_options.should == { :an => :option, :record => :all }
-    end
-
-    it 'warns the user that it is deprecated' do
-      VCR::Cassette::VALID_RECORD_MODES.each do |mode|
-        VCR::Config.should_receive(:warn).with(%Q{WARNING: #default_cassette_record_mode is deprecated.  Instead, use: "default_cassette_options = { :record => :#{mode.to_s} }"})
-        VCR::Config.default_cassette_record_mode = mode
-      end
-    end
-  end
 end

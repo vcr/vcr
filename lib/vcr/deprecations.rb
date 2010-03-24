@@ -45,5 +45,10 @@ module VCR
       warn "WARNING: VCR::Config.cache_dir= is deprecated.  Instead, use: VCR::Config.cassette_library_dir=."
       self.cassette_library_dir = value
     end
+
+    def self.default_cassette_record_mode=(value)
+      warn %Q{WARNING: #default_cassette_record_mode is deprecated.  Instead, use: "default_cassette_options = { :record => :#{value.to_s} }"}
+      default_cassette_options.merge!(:record => value)
+    end
   end
 end
