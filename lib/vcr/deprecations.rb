@@ -10,7 +10,7 @@ module VCR
   end
 
   def with_cassette(*args, &block)
-    warn "WARNING: VCR.with_cassette! is deprecated.  Instead, use: VCR.use_cassette."
+    warn "WARNING: VCR.with_cassette is deprecated.  Instead, use: VCR.use_cassette."
     use_cassette(*args, &block)
   end
 

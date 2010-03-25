@@ -5,7 +5,7 @@ describe 'Deprecations' do
     subject { VCR }
     deprecated :create_cassette!,  :insert_cassette, "WARNING: VCR.create_cassette! is deprecated.  Instead, use: VCR.insert_cassette."
     deprecated :destroy_cassette!, :eject_cassette,  "WARNING: VCR.destroy_cassette! is deprecated.  Instead, use: VCR.eject_cassette."
-    deprecated :with_cassette,     :use_cassette,    "WARNING: VCR.with_cassette! is deprecated.  Instead, use: VCR.use_cassette."
+    deprecated :with_cassette,     :use_cassette,    "WARNING: VCR.with_cassette is deprecated.  Instead, use: VCR.use_cassette."
   end
 
   describe VCR::Cassette do
