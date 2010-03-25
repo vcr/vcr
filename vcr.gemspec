@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{vcr}
-  s.version = "0.2.0"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Myron Marston"]
-  s.date = %q{2010-03-09}
-  s.description = %q{VCR provides helpers to record HTTP requests for URIs that are not registered with fakeweb, and replay them later.  It provides built-in support for cucumber, but works with any ruby testing framework.}
+  s.date = %q{2010-03-24}
+  s.description = %q{VCR provides helpers to record HTTP requests for URIs that are not registered with fakeweb, and replay them later.  It works with any ruby testing framework, and provides built-in support for cucumber.}
   s.email = %q{myron.marston@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -47,6 +47,7 @@ Gem::Specification.new do |s|
      "lib/vcr/cassette.rb",
      "lib/vcr/config.rb",
      "lib/vcr/cucumber_tags.rb",
+     "lib/vcr/deprecations.rb",
      "lib/vcr/extensions/fake_web.rb",
      "lib/vcr/extensions/net_http.rb",
      "lib/vcr/extensions/net_read_adapter.rb",
@@ -54,6 +55,7 @@ Gem::Specification.new do |s|
      "spec/cassette_spec.rb",
      "spec/config_spec.rb",
      "spec/cucumber_tags_spec.rb",
+     "spec/deprecations_spec.rb",
      "spec/extensions/fake_web_spec.rb",
      "spec/extensions/net_http_spec.rb",
      "spec/extensions/net_read_adapter_spec.rb",
@@ -63,8 +65,9 @@ Gem::Specification.new do |s|
      "spec/recorded_response_spec.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb",
+     "spec/support/deprecated.rb",
      "spec/support/disable_warnings.rb",
-     "spec/support/temp_cache_dir.rb",
+     "spec/support/temp_cassette_library_dir.rb",
      "spec/vcr_spec.rb",
      "vcr.gemspec"
   ]
@@ -77,13 +80,15 @@ Gem::Specification.new do |s|
     "spec/cassette_spec.rb",
      "spec/config_spec.rb",
      "spec/cucumber_tags_spec.rb",
+     "spec/deprecations_spec.rb",
      "spec/extensions/fake_web_spec.rb",
      "spec/extensions/net_http_spec.rb",
      "spec/extensions/net_read_adapter_spec.rb",
      "spec/recorded_response_spec.rb",
      "spec/spec_helper.rb",
+     "spec/support/deprecated.rb",
      "spec/support/disable_warnings.rb",
-     "spec/support/temp_cache_dir.rb",
+     "spec/support/temp_cassette_library_dir.rb",
      "spec/vcr_spec.rb"
   ]
 

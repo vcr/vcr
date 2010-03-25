@@ -6,7 +6,7 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = "vcr"
     gem.summary = %Q{Use VCR to record HTTP responses and replay them using fakeweb.}
-    gem.description = %Q{VCR provides helpers to record HTTP requests for URIs that are not registered with fakeweb, and replay them later.  It provides built-in support for cucumber, but works with any ruby testing framework.}
+    gem.description = %Q{VCR provides helpers to record HTTP requests for URIs that are not registered with fakeweb, and replay them later.  It works with any ruby testing framework, and provides built-in support for cucumber.}
     gem.email = "myron.marston@gmail.com"
     gem.homepage = "http://github.com/myronmarston/vcr"
     gem.authors = ["Myron Marston"]
