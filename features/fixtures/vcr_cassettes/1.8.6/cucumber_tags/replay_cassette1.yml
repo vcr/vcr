@@ -41,3 +41,10 @@
     message: OK
     read: true
     socket: 
+  request_headers: 
+    accept: 
+    - "*/*"
+    connection: 
+    - close
+    host: 
+    - example.com

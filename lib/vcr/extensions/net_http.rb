@@ -44,7 +44,7 @@ module Net
         method = request.method.downcase.to_sym
 
         unless FakeWeb.registered_uri?(method, uri)
-          cassette.store_recorded_response!(VCR::RecordedResponse.new(method, uri, response))
+          cassette.store_recorded_response!(VCR::RecordedResponse.new(method, uri, response, request.body, request.to_hash))
         end
       end
     end

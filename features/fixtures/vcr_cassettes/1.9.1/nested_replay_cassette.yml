@@ -29,3 +29,11 @@
     message: OK
     read: true
     socket: 
+  :request_body: 
+  :request_headers: 
+    accept: 
+    - "*/*"
+    connection: 
+    - close
+    host: 
+    - example.com

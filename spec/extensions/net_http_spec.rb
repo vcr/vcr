@@ -25,7 +25,7 @@ describe "Net::HTTP Extensions" do
 
       it 'calls #store_recorded_response! on the current cassette' do
         recorded_response = VCR::RecordedResponse.new(:get, 'http://example.com:80/', :example_response)
-        VCR::RecordedResponse.should_receive(:new).with(:get, 'http://example.com:80/', an_instance_of(Net::HTTPOK)).and_return(recorded_response)
+        VCR::RecordedResponse.should_receive(:new).with(:get, 'http://example.com:80/', an_instance_of(Net::HTTPOK), anything, anything).and_return(recorded_response)
         @current_cassette.should_receive(:store_recorded_response!).with(recorded_response)
         Net::HTTP.get(@uri)
       end

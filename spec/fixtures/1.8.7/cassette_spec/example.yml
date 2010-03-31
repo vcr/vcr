@@ -44,6 +44,14 @@
     message: OK
     read: true
     socket: 
+  request_body: 
+  request_headers: 
+    accept: 
+    - "*/*"
+    connection: 
+    - close
+    host: 
+    - example.com
 - !ruby/struct:VCR::RecordedResponse 
   method: :get
   uri: http://example.com:80/foo
@@ -76,6 +84,14 @@
     message: Not Found
     read: true
     socket: 
+  request_body: 
+  request_headers: 
+    accept: 
+    - "*/*"
+    connection: 
+    - close
+    host: 
+    - example.com
 - !ruby/struct:VCR::RecordedResponse 
   method: :get
   uri: http://example.com:80/
@@ -106,3 +122,11 @@
     message: OK
     read: true
     socket: 
+  request_body: 
+  request_headers: 
+    accept: 
+    - "*/*"
+    connection: 
+    - close
+    host: 
+    - example.com
