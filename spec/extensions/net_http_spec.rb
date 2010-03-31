@@ -16,7 +16,11 @@ describe "Net::HTTP Extensions" do
       @current_cassette.should_receive(:allow_real_http_requests_to?).at_least(:once).with(@uri).and_return(false)
     end
 
-    describe 'a request that is not registered with FakeWeb' do
+    describe 'a request that is not registered with the http stubbing adapter' do
+      before(:each) do
+        VCR::Config.http_stubbing_adapter.should_receive(:request_stubbed?).with(anything, 'http://example.com:80/').and_return(false)
+      end
+
       def perform_get_with_returning_block
         Net::HTTP.new('example.com', 80).request(Net::HTTP::Get.new('/', {})) do |response|
           return response
@@ -41,9 +45,9 @@ describe "Net::HTTP Extensions" do
       end
     end
 
-    describe 'a request that is registered with FakeWeb' do
+    describe 'a request that is registered with the http stubbing adapter' do
       it 'does not call #store_recorded_response! on the current cassette' do
-        FakeWeb.register_uri(:get, 'http://example.com', :body => 'example.com response')
+        VCR::Config.http_stubbing_adapter.should_receive(:request_stubbed?).with(:get, 'http://example.com:80/').and_return(true)
         @current_cassette.should_not_receive(:store_recorded_response!)
         Net::HTTP.get(@uri)
       end
@@ -60,8 +64,8 @@ describe "Net::HTTP Extensions" do
       Net::HTTP.get(@uri)
     end
 
-    it 'uses FakeWeb.with_allow_net_connect_set_to(true) to make the request' do
-      FakeWeb.should_receive(:with_allow_net_connect_set_to).with(true).and_yield
+    it 'uses VCR::Config.http_stubbing_adapter.with_http_connections_allowed_set_to(true) to make the request' do
+      VCR::Config.http_stubbing_adapter.should_receive(:with_http_connections_allowed_set_to).with(true).and_yield
       Net::HTTP.get(@uri)
     end
   end

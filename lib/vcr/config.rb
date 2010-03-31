@@ -13,6 +13,18 @@ module VCR
       def default_cassette_options
         @default_cassette_options ||= {}
       end
+
+      attr_accessor :adapter
+      def http_stubbing_adapter
+        @http_stubbing_adapter ||= case @adapter
+          when :fakeweb
+            VCR::HttpStubbingAdapters::FakeWeb
+          else
+            raise ArgumentError.new("The http stubbing adapter is not configured correctly.")
+        end
+      end
     end
+
+    self.adapter = :fakeweb # set default.
   end
 end

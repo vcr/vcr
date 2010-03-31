@@ -1,4 +1,5 @@
 require 'vcr/extensions/fake_web'
+require 'vcr/extensions/net_http'
 
 module VCR
   module HttpStubbingAdapters

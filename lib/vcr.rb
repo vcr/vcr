@@ -4,8 +4,6 @@ require 'vcr/cucumber_tags'
 require 'vcr/deprecations'
 require 'vcr/recorded_response'
 
-require 'vcr/extensions/fake_web'
-require 'vcr/extensions/net_http'
 require 'vcr/extensions/net_read_adapter'
 
 require 'vcr/http_stubbing_adapters/base'

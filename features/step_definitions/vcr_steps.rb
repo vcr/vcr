@@ -125,9 +125,9 @@ Then /^I can test the scenario cassette's recorded responses in the next scenari
   # do nothing...
 end
 
-Then /^the HTTP get request to "([^\"]*)" should result in a fakeweb error that mentions VCR$/ do |url|
+Then /^the HTTP get request to "([^\"]*)" should result in an error that mentions VCR$/ do |url|
   result = @http_requests[url][0]
-  result.should be_instance_of(FakeWeb::NetConnectNotAllowedError)
+  result.should be_a(StandardError)
   result.message.should =~ /VCR/
 end
 

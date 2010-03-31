@@ -1,4 +1,4 @@
-require 'fake_web'
+require 'fakeweb'
 
 module FakeWeb
   def self.remove_from_registry(method, url)

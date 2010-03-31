@@ -1,7 +1,7 @@
 Feature: Record response
   In order to have deterministic, fast tests that do not depend on an internet connection
   As a TDD/BDD developer
-  I want to record responses for requests to URIs that are not registered with fakeweb so I can use them with fakeweb in the future
+  I want to record responses for new requests so I can replay them in future test runs
 
   Scenario: Record a response using VCR.use_cassette
     Given we do not have a "temp/cassette" cassette
@@ -43,7 +43,7 @@ Feature: Record response
   Scenario: Make an HTTP request in a cassette with record mode set to :none
     Given we do not have a "temp/record_none_cassette" cassette
      When I make an HTTP get request to "http://example.com" within the "temp/record_none_cassette" none cassette
-     Then the HTTP get request to "http://example.com" should result in a fakeweb error that mentions VCR
+     Then the HTTP get request to "http://example.com" should result in an error that mentions VCR
       And there should not be a "temp/record_none_cassette" library file
 
   @copy_not_the_real_response_to_temp

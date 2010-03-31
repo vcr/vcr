@@ -13,14 +13,14 @@ module VCR
       deprecate_unregistered_record_mode
       @allow_real_http_lambda = allow_real_http_lambda_for(options[:allow_real_http] || VCR::Config.default_cassette_options[:allow_real_http])
       self.class.raise_error_unless_valid_record_mode(record_mode)
-      set_fakeweb_allow_net_connect
+      set_http_connections_allowed
       load_recorded_responses
     end
 
     def eject
       write_recorded_responses_to_disk
-      deregister_original_recorded_responses
-      restore_fakeweb_allow_net_conect
+      unstub_requests
+      restore_http_connections_allowed
     end
 
     def recorded_responses
@@ -49,17 +49,17 @@ module VCR
       recorded_responses - @original_recorded_responses
     end
 
-    def should_allow_net_connect?
+    def should_allow_http_connections?
       [:new_episodes, :all].include?(record_mode)
     end
 
-    def set_fakeweb_allow_net_connect
-      @orig_fakeweb_allow_connect = FakeWeb.allow_net_connect?
-      FakeWeb.allow_net_connect = should_allow_net_connect?
+    def set_http_connections_allowed
+      @orig_http_connections_allowed = VCR::Config.http_stubbing_adapter.http_connections_allowed?
+      VCR::Config.http_stubbing_adapter.http_connections_allowed = should_allow_http_connections?
     end
 
-    def restore_fakeweb_allow_net_conect
-      FakeWeb.allow_net_connect = @orig_fakeweb_allow_connect
+    def restore_http_connections_allowed
+      VCR::Config.http_stubbing_adapter.http_connections_allowed = @orig_http_connections_allowed
     end
 
     def load_recorded_responses
@@ -71,17 +71,7 @@ module VCR
         recorded_responses.replace(@original_recorded_responses)
       end
 
-      register_responses_with_fakeweb
-    end
-
-    def register_responses_with_fakeweb
-      requests = Hash.new([])
-      recorded_responses.each do |rr|
-        requests[[rr.method, rr.uri]] += [rr.response]
-      end
-      requests.each do |request, responses|
-        FakeWeb.register_uri(request.first, request.last, responses.map{ |r| { :response => r } })
-      end
+      VCR::Config.http_stubbing_adapter.stub_requests(recorded_responses)
     end
 
     def write_recorded_responses_to_disk
@@ -92,10 +82,8 @@ module VCR
       end
     end
 
-    def deregister_original_recorded_responses
-      @original_recorded_responses.each do |rr|
-        FakeWeb.remove_from_registry(rr.method, rr.uri)
-      end
+    def unstub_requests
+      VCR::Config.http_stubbing_adapter.unstub_requests(@original_recorded_responses)
     end
 
     def allow_real_http_lambda_for(allow_option)

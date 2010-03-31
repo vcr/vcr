@@ -49,11 +49,10 @@ describe VCR::Cassette do
       end
     end
 
-    { :new_episodes => true, :all => true, :none => false }.each do |record_mode, allow_fakeweb_connect|
-      it "sets FakeWeb.allow_net_connect to #{allow_fakeweb_connect} when the record mode is #{record_mode}" do
-        FakeWeb.allow_net_connect = !allow_fakeweb_connect
+    { :new_episodes => true, :all => true, :none => false }.each do |record_mode, http_connections_allowed|
+      it "sets http_connections_allowed to #{http_connections_allowed} on the http stubbing adapter when the record mode is #{record_mode}" do
+        VCR::Config.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(http_connections_allowed)
         VCR::Cassette.new(:name, :record => record_mode)
-        FakeWeb.allow_net_connect?.should == allow_fakeweb_connect
       end
     end
 
@@ -83,22 +82,16 @@ describe VCR::Cassette do
         end
       end
 
-      it "#{load_responses ? 'registers' : 'does not register'} the recorded responses with fakeweb when the record mode is #{record_mode}" do
+      it "#{load_responses ? 'stubs' : 'does not stub'} the recorded responses with the http stubbing adapter when the record mode is #{record_mode}" do
         VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
-        cassette = VCR::Cassette.new('example', :record => record_mode)
-
-        rr1 = FakeWeb.response_for(:get, "http://example.com")
-        rr2 = FakeWeb.response_for(:get, "http://example.com/foo")
-        rr3 = FakeWeb.response_for(:get, "http://example.com")
 
         if load_responses
-          [rr1, rr2, rr3].compact.should have(3).responses
-          rr1.body.should =~ /You have reached this web page by typing.+example\.com/
-          rr2.body.should =~ /foo was not found on this server/
-          rr3.body.should =~ /Another example\.com response/
+          VCR::Config.http_stubbing_adapter.should_receive(:stub_requests).with([an_instance_of(VCR::RecordedResponse)]*3)
         else
-          [rr1, rr2, rr3].compact.should have(0).responses
+          VCR::Config.http_stubbing_adapter.should_receive(:stub_requests).never
         end
+
+        cassette = VCR::Cassette.new('example', :record => record_mode)
       end
     end
   end
@@ -144,12 +137,12 @@ describe VCR::Cassette do
   describe '#eject' do
     temp_dir File.expand_path(File.dirname(__FILE__) + '/fixtures/cassette_spec_eject'), :assign_to_cassette_library_dir => true
 
-    [true, false].each do |orig_allow_net_connect|
-      it "resets FakeWeb.allow_net_connect to #{orig_allow_net_connect} if it was originally #{orig_allow_net_connect}" do
-        FakeWeb.allow_net_connect = orig_allow_net_connect
+    [true, false].each do |orig_http_connections_allowed|
+      it "resets #{orig_http_connections_allowed} on the http stubbing adapter if it was originally #{orig_http_connections_allowed}" do
+        VCR::Config.http_stubbing_adapter.should_receive(:http_connections_allowed?).and_return(orig_http_connections_allowed)
         cassette = VCR::Cassette.new(:name)
+        VCR::Config.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(orig_http_connections_allowed)
         cassette.eject
-        FakeWeb.allow_net_connect?.should == orig_allow_net_connect
       end
     end
 
@@ -193,14 +186,11 @@ describe VCR::Cassette do
   end
 
   describe '#eject for a cassette with previously recorded responses' do
-    it "de-registers the recorded responses from fakeweb" do
+    it "de-registers the recorded responses from the http stubbing adapter" do
       VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
       cassette = VCR::Cassette.new('example', :record => :none)
-      FakeWeb.registered_uri?(:get, 'http://example.com').should be_true
-      FakeWeb.registered_uri?(:get, 'http://example.com/foo').should be_true
+      VCR::Config.http_stubbing_adapter.should_receive(:unstub_requests).with(cassette.recorded_responses)
       cassette.eject
-      FakeWeb.registered_uri?(:get, 'http://example.com').should be_false
-      FakeWeb.registered_uri?(:get, 'http://example.com/foo').should be_false
     end
 
     it "does not re-write to disk the previously recorded resposes if there are no new ones" do
