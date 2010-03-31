@@ -47,7 +47,13 @@ rescue LoadError
   end
 end
 
-task :default => [:spec, :features]
+task :default => :spec do
+  %w( fakeweb ).each do |http_stubbing_adapter|
+    puts "\n\n-------------- Running features using #{http_stubbing_adapter} http_stubbing_adapter -----------------\n"
+    ENV['HTTP_STUBBING_ADAPTER'] = http_stubbing_adapter
+    Rake::Task[:features].invoke
+  end
+end
 
 require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|
