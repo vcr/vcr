@@ -8,6 +8,8 @@ require 'vcr/extensions/fake_web'
 require 'vcr/extensions/net_http'
 require 'vcr/extensions/net_read_adapter'
 
+require 'vcr/http_stubbing_adapters/base'
+
 module VCR
   extend self
 
