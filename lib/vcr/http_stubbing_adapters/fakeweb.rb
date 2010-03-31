@@ -33,8 +33,7 @@ module VCR
         end
 
         def request_uri(net_http, request)
-          # TODO: use the method provided by fakeweb once my fakeweb patches are merged into the fakeweb gem.
-          net_http.send(:__vcr_uri__, request)
+          ::FakeWeb.request_uri(net_http, request)
         end
       end
     end
