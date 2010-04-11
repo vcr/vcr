@@ -41,6 +41,11 @@ describe VCR::Cassette do
       lambda { VCR::Cassette.new(:test, :record => :not_a_record_mode) }.should raise_error(ArgumentError)
     end
 
+    it 'creates a stubs checkpoint on the http_stubbing_adapter' do
+      VCR::Config.http_stubbing_adapter.should_receive(:create_stubs_checkpoint).with('example').once
+      VCR::Cassette.new('example')
+    end
+
     VCR::Cassette::VALID_RECORD_MODES.each do |mode|
       it "defaults the record mode to #{mode} when VCR::Config.default_cassette_options[:record] is #{mode}" do
         VCR::Config.default_cassette_options = { :record => mode }
@@ -186,10 +191,10 @@ describe VCR::Cassette do
   end
 
   describe '#eject for a cassette with previously recorded responses' do
-    it "de-registers the recorded responses from the http stubbing adapter" do
+    it "restore the stubs checkpoint on the http stubbing adapter" do
       VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
       cassette = VCR::Cassette.new('example', :record => :none)
-      VCR::Config.http_stubbing_adapter.should_receive(:unstub_requests).with(cassette.recorded_responses)
+      VCR::Config.http_stubbing_adapter.should_receive(:restore_stubs_checkpoint).with('example')
       cassette.eject
     end
 

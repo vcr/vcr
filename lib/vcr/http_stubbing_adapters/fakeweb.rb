@@ -23,10 +23,12 @@ module VCR
           end
         end
 
-        def unstub_requests(recorded_responses)
-          recorded_responses.each do |rr|
-            ::FakeWeb.remove_from_registry(rr.method, rr.uri)
-          end
+        def create_stubs_checkpoint(checkpoint_name)
+          checkpoints[checkpoint_name] = ::FakeWeb::Registry.instance.uri_map.dup
+        end
+
+        def restore_stubs_checkpoint(checkpoint_name)
+          ::FakeWeb::Registry.instance.uri_map = checkpoints.delete(checkpoint_name)
         end
 
         def request_stubbed?(method, uri)
@@ -35,6 +37,12 @@ module VCR
 
         def request_uri(net_http, request)
           ::FakeWeb.request_uri(net_http, request)
+        end
+
+        private
+
+        def checkpoints
+          @checkpoints ||= {}
         end
       end
     end

@@ -19,7 +19,7 @@ module VCR
 
     def eject
       write_recorded_responses_to_disk
-      unstub_requests
+      VCR::Config.http_stubbing_adapter.restore_stubs_checkpoint(name)
       restore_http_connections_allowed
     end
 
@@ -63,6 +63,7 @@ module VCR
     end
 
     def load_recorded_responses
+      VCR::Config.http_stubbing_adapter.create_stubs_checkpoint(name)
       @original_recorded_responses = []
       return if record_mode == :all
 

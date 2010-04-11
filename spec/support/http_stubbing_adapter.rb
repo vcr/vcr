@@ -1,7 +1,7 @@
 shared_examples_for "an http stubbing adapter" do
   subject { described_class }
 
-  def make_http_request(method = :get, path = '/', body = {})
+  def make_http_request(method, path, body = {})
     case method
       when :get
         Net::HTTP.get_response(URI.parse('http://example.com' + path))
@@ -13,11 +13,11 @@ shared_examples_for "an http stubbing adapter" do
   def self.test_real_http_request(http_allowed)
     if http_allowed
       it 'allows real http requests' do
-        make_http_request.body.should =~ /You have reached this web page by typing.*example\.com/
+        make_http_request(:get, '/foo').body.should =~ /The requested URL \/foo was not found/
       end
     else
       it 'does not allow real HTTP requests' do
-        lambda { make_http_request }.should raise_error(StandardError, /You can use VCR to automatically record this request and replay it later/)
+        lambda { make_http_request(:get, '/foo') }.should raise_error(StandardError, /You can use VCR to automatically record this request and replay it later/)
       end
     end
   end
@@ -32,8 +32,9 @@ shared_examples_for "an http stubbing adapter" do
 
       test_real_http_request(http_allowed)
 
-      context 'when some requests are stubbed' do
+      context 'when some requests are stubbed, after setting a checkpoint' do
         before(:each) do
+          subject.create_stubs_checkpoint(:my_checkpoint)
           @recorded_responses = YAML.load(File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', RUBY_VERSION, 'fake_example.com_responses.yml')))
           subject.stub_requests(@recorded_responses)
         end
@@ -57,8 +58,8 @@ shared_examples_for "an http stubbing adapter" do
           make_http_request(:get, '/foo').body.should == 'example.com get response with path=foo'
         end
 
-        context 'when the requests are unstubbed' do
-          before(:each) { subject.unstub_requests(@recorded_responses) }
+        context 'when we restore our previous check point' do
+          before(:each) { subject.restore_stubs_checkpoint(:my_checkpoint) }
 
           test_real_http_request(http_allowed)
 
