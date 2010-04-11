@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{vcr}
-  s.version = "0.3.0"
+  s.version = "0.3.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Myron Marston"]
-  s.date = %q{2010-03-24}
+  s.date = %q{2010-04-10}
   s.description = %q{VCR provides helpers to record HTTP requests for URIs that are not registered with fakeweb, and replay them later.  It works with any ruby testing framework, and provides built-in support for cucumber.}
   s.email = %q{myron.marston@gmail.com}
   s.extra_rdoc_files = [

@@ -1,3 +1,6 @@
+== 0.3.1 April 10, 2010
+* Fixed a bug: when Net::HTTP#request was called with a block that had a return statement, the response was not being recorded.
+
 == 0.3.0 March 24, 2010
 * Renamed a bunch of methods, replacing them with method names that more clearly fit the VCR/cassette metaphor:
   * VCR.create_cassette! => VCR.insert_cassette
