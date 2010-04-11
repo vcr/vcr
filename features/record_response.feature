@@ -70,3 +70,8 @@ Feature: Record response
      When I make an HTTP get request to "http://example.com" within the "temp/record_none_cassette" none cassette, allowing requests matching /example.com/
      Then the response for "http://example.com" should match /You have reached this web page by typing.*example\.com/
       And there should not be a "temp/record_none_cassette" library file
+
+  Scenario: Record a request with a block with a return statement
+    Given we do not have a "temp/block_with_a_return" cassette
+     When I make a returning block HTTP get request to "http://example.com" within the "temp/block_with_a_return" new_episodes cassette
+     Then the "temp/block_with_a_return" library file should have a response for "http://example.com" that matches /You have reached this web page by typing.*example\.com/

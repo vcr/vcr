@@ -8,8 +8,9 @@ module Net
       if (cassette = VCR.current_cassette) && cassette.allow_real_http_requests_to?(uri)
         FakeWeb.with_allow_net_connect_set_to(true) { request_without_vcr(request, body, &block) }
       else
-        response = request_without_vcr(request, body, &block)
+        response = request_without_vcr(request, body)
         __store_response_with_vcr__(response, request) if @__request_with_vcr_call_count == 1
+        yield response if block_given?
         response
       end
     ensure

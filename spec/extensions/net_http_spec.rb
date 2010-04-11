@@ -17,6 +17,12 @@ describe "Net::HTTP Extensions" do
     end
 
     describe 'a request that is not registered with FakeWeb' do
+      def perform_get_with_returning_block
+        Net::HTTP.new('example.com', 80).request(Net::HTTP::Get.new('/', {})) do |response|
+          return response
+        end
+      end
+
       it 'calls #store_recorded_response! on the current cassette' do
         recorded_response = VCR::RecordedResponse.new(:get, 'http://example.com:80/', :example_response)
         VCR::RecordedResponse.should_receive(:new).with(:get, 'http://example.com:80/', an_instance_of(Net::HTTPOK)).and_return(recorded_response)
@@ -27,6 +33,11 @@ describe "Net::HTTP Extensions" do
       it 'calls #store_recorded_response! only once, even when Net::HTTP internally recursively calls #request' do
         @current_cassette.should_receive(:store_recorded_response!).once
         Net::HTTP.new('example.com', 80).post('/', nil)
+      end
+
+      it 'calls #store_recorded_response! when Net::HTTP#request is called with a block with a return statement' do
+        @current_cassette.should_receive(:store_recorded_response!).once
+        perform_get_with_returning_block
       end
     end
 

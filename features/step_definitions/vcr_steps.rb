@@ -26,6 +26,12 @@ module VCRHelpers
     end
     @http_requests[url] += [result]
   end
+
+  def perform_get_with_returning_block(uri, path)
+    Net::HTTP.new(uri.host, uri.port).request(Net::HTTP::Get.new(path, {})) do |response|
+      return response
+    end
+  end
 end
 World(VCRHelpers)
 
@@ -85,6 +91,12 @@ end
 When /^I make a recursive HTTP post request to "([^\"]*)"$/ do |url|
   capture_response(url) do |uri, path|
     Net::HTTP.new(uri.host, uri.port).post(path, nil)
+  end
+end
+
+When /^I make a returning block HTTP get request to "([^\"]*)"$/ do |url|
+  capture_response(url) do |uri, path|
+    perform_get_with_returning_block(uri, path)
   end
 end
 
