@@ -25,6 +25,10 @@ Spec::Runner.configure do |config|
   config.before(:each) do
     VCR::Config.adapter = :fakeweb
     VCR::Config.default_cassette_options = { :record => :new_episodes }
+
+    WebMock.allow_net_connect!
+    WebMock.reset_webmock
+
     FakeWeb.allow_net_connect = true
     FakeWeb.clean_registry
   end
