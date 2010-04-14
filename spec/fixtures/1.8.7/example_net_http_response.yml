@@ -1,0 +1,25 @@
+--- !ruby/object:Net::HTTPOK 
+body: The response from example.com
+body_exist: true
+code: "200"
+header: 
+  last-modified: 
+  - Tue, 15 Nov 2005 13:24:10 GMT
+  connection: 
+  - close
+  date: 
+  - Wed, 31 Mar 2010 02:43:26 GMT
+  content-type: 
+  - text/html; charset=UTF-8
+  etag: 
+  - "\"24ec5-1b6-4059a80bfd280\""
+  server: 
+  - Apache/2.2.3 (CentOS)
+  content-length: 
+  - "438"
+  accept-ranges: 
+  - bytes
+http_version: "1.1"
+message: OK
+read: true
+socket: 

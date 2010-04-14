@@ -1,0 +1,14 @@
+--- !ruby/object:Net::HTTP 
+address: example.com
+close_on_empty_response: false
+curr_http_version: "1.1"
+debug_output: 
+newimpl: true
+open_timeout: 
+port: 80
+read_timeout: 60
+seems_1_0_server: false
+socket: 
+ssl_context: 
+started: true
+use_ssl: false

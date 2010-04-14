@@ -2,7 +2,7 @@ require 'vcr/cassette'
 require 'vcr/config'
 require 'vcr/cucumber_tags'
 require 'vcr/deprecations'
-require 'vcr/recorded_response'
+require 'vcr/structs'
 
 require 'vcr/extensions/net_read_adapter'
 
