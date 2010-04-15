@@ -3,7 +3,7 @@
   :request_signature: !ruby/struct:VCR::RequestSignature 
     :method: :post
     :uri: http://example.com:80/
-    :body: 
+    :body: id=7
     :headers: 
   :response: !ruby/struct:VCR::Response 
     :status: !ruby/struct:VCR::ResponseStatus 
@@ -46,7 +46,7 @@
   :request_signature: !ruby/struct:VCR::RequestSignature 
     :method: :post
     :uri: http://example.com:80/
-    :body: 
+    :body: id=3
     :headers: 
   :response: !ruby/struct:VCR::Response 
     :status: !ruby/struct:VCR::ResponseStatus 
