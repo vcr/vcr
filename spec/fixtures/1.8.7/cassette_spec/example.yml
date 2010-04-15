@@ -1,8 +1,24 @@
 --- 
-- !ruby/struct:VCR::RecordedResponse 
-  method: :get
-  uri: http://example.com:80/
-  response: !ruby/object:Net::HTTPOK 
+- !ruby/struct:VCR::HTTPInteraction 
+  request_signature: !ruby/struct:VCR::RequestSignature 
+    method: :get
+    uri: http://example.com:80/
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      etag: "\"24ec5-1b6-4059a80bfd280\""
+      last-modified: Tue, 15 Nov 2005 13:24:10 GMT
+      connection: Keep-Alive
+      content-type: text/html; charset=UTF-8
+      date: Thu, 25 Feb 2010 07:53:51 GMT
+      server: Apache/2.2.3 (CentOS)
+      content-length: "438"
+      age: "9260"
+      accept-ranges: bytes
     body: |
       <HTML>
       <HEAD>
@@ -17,45 +33,24 @@
         2606</a>, Section 3.</p>
       </BODY>
       </HTML>
-      
 
-    body_exist: true
-    code: "200"
-    header: 
-      etag: 
-      - "\"24ec5-1b6-4059a80bfd280\""
-      last-modified: 
-      - Tue, 15 Nov 2005 13:24:10 GMT
-      connection: 
-      - Keep-Alive
-      content-type: 
-      - text/html; charset=UTF-8
-      date: 
-      - Thu, 25 Feb 2010 07:53:51 GMT
-      server: 
-      - Apache/2.2.3 (CentOS)
-      content-length: 
-      - "438"
-      age: 
-      - "9260"
-      accept-ranges: 
-      - bytes
     http_version: "1.1"
-    message: OK
-    read: true
-    socket: 
-  request_body: 
-  request_headers: 
-    accept: 
-    - "*/*"
-    connection: 
-    - close
-    host: 
-    - example.com
-- !ruby/struct:VCR::RecordedResponse 
-  method: :get
-  uri: http://example.com:80/foo
-  response: !ruby/object:Net::HTTPNotFound 
+- !ruby/struct:VCR::HTTPInteraction 
+  request_signature: !ruby/struct:VCR::RequestSignature 
+    method: :get
+    uri: http://example.com:80/foo
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      content-type: text/html; charset=iso-8859-1
+      connection: close
+      server: Apache/2.2.3 (CentOS)
+      date: Thu, 25 Feb 2010 07:53:52 GMT
+      content-length: "277"
     body: |
       <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
       <html><head>
@@ -67,66 +62,26 @@
       <address>Apache/2.2.3 (CentOS) Server at example.com Port 80</address>
       </body></html>
 
-    body_exist: true
-    code: "404"
-    header: 
-      content-type: 
-      - text/html; charset=iso-8859-1
-      connection: 
-      - close
-      server: 
-      - Apache/2.2.3 (CentOS)
-      date: 
-      - Thu, 25 Feb 2010 07:53:52 GMT
-      content-length: 
-      - "277"
     http_version: "1.1"
-    message: Not Found
-    read: true
-    socket: 
-  request_body: 
-  request_headers: 
-    accept: 
-    - "*/*"
-    connection: 
-    - close
-    host: 
-    - example.com
-- !ruby/struct:VCR::RecordedResponse 
-  method: :get
-  uri: http://example.com:80/
-  response: !ruby/object:Net::HTTPOK 
+- !ruby/struct:VCR::HTTPInteraction 
+  request_signature: !ruby/struct:VCR::RequestSignature 
+    method: :get
+    uri: http://example.com:80/
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      etag: "\"24ec5-1b6-4059a80bfd280\""
+      last-modified: Tue, 15 Nov 2005 13:24:10 GMT
+      connection: Keep-Alive
+      content-type: text/html; charset=UTF-8
+      date: Thu, 25 Feb 2010 07:53:51 GMT
+      server: Apache/2.2.3 (CentOS)
+      content-length: "438"
+      age: "9260"
+      accept-ranges: bytes
     body: Another example.com response
-    body_exist: true
-    code: "200"
-    header: 
-      etag: 
-      - "\"24ec5-1b6-4059a80bfd280\""
-      last-modified: 
-      - Tue, 15 Nov 2005 13:24:10 GMT
-      connection: 
-      - Keep-Alive
-      content-type: 
-      - text/html; charset=UTF-8
-      date: 
-      - Thu, 25 Feb 2010 07:53:51 GMT
-      server: 
-      - Apache/2.2.3 (CentOS)
-      content-length: 
-      - "438"
-      age: 
-      - "9260"
-      accept-ranges: 
-      - bytes
     http_version: "1.1"
-    message: OK
-    read: true
-    socket: 
-  request_body: 
-  request_headers: 
-    accept: 
-    - "*/*"
-    connection: 
-    - close
-    host: 
-    - example.com

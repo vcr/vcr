@@ -1,8 +1,24 @@
 --- 
-- !ruby/struct:VCR::RecordedResponse 
-  method: :get
-  uri: http://example.com:80/
-  response: !ruby/object:Net::HTTPOK 
+- !ruby/struct:VCR::HTTPInteraction 
+  request_signature: !ruby/struct:VCR::RequestSignature 
+    method: :get
+    uri: http://example.com:80/
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      last-modified: Tue, 15 Nov 2005 13:24:10 GMT
+      connection: Keep-Alive
+      etag: "\"24ec5-1b6-4059a80bfd280\""
+      content-type: text/html; charset=UTF-8
+      date: Thu, 25 Feb 2010 15:22:32 GMT
+      server: Apache/2.2.3 (CentOS)
+      content-length: "438"
+      age: "2643"
+      accept-ranges: bytes
     body: |
       <HTML>
       <HEAD>
@@ -14,44 +30,28 @@
       </p>
       </BODY>
       </HTML>
-      
 
-    body_exist: true
-    code: "200"
-    header: 
-      etag: 
-      - "\"24ec5-1b6-4059a80bfd280\""
-      last-modified: 
-      - Tue, 15 Nov 2005 13:24:10 GMT
-      connection: 
-      - Keep-Alive
-      content-type: 
-      - text/html; charset=UTF-8
-      date: 
-      - Thu, 25 Feb 2010 15:22:32 GMT
-      server: 
-      - Apache/2.2.3 (CentOS)
-      content-length: 
-      - "438"
-      age: 
-      - "2643"
-      accept-ranges: 
-      - bytes
     http_version: "1.1"
-    message: OK
-    read: true
-    socket: 
-  request_headers: 
-    accept: 
-    - "*/*"
-    connection: 
-    - close
-    host: 
-    - example.com
-- !ruby/struct:VCR::RecordedResponse 
-  method: :get
-  uri: http://example.com:80/
-  response: !ruby/object:Net::HTTPOK 
+- !ruby/struct:VCR::HTTPInteraction 
+  request_signature: !ruby/struct:VCR::RequestSignature 
+    method: :get
+    uri: http://example.com:80/
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      last-modified: Tue, 15 Nov 2005 13:24:10 GMT
+      connection: Keep-Alive
+      etag: "\"24ec5-1b6-4059a80bfd280\""
+      content-type: text/html; charset=UTF-8
+      date: Thu, 25 Feb 2010 15:22:32 GMT
+      server: Apache/2.2.3 (CentOS)
+      content-length: "438"
+      age: "2643"
+      accept-ranges: bytes
     body: |
       <HTML>
       <HEAD>
@@ -63,37 +63,5 @@
       </p>
       </BODY>
       </HTML>
-      
 
-    body_exist: true
-    code: "200"
-    header: 
-      etag: 
-      - "\"24ec5-1b6-4059a80bfd280\""
-      last-modified: 
-      - Tue, 15 Nov 2005 13:24:10 GMT
-      connection: 
-      - Keep-Alive
-      content-type: 
-      - text/html; charset=UTF-8
-      date: 
-      - Thu, 25 Feb 2010 15:22:32 GMT
-      server: 
-      - Apache/2.2.3 (CentOS)
-      content-length: 
-      - "438"
-      age: 
-      - "2643"
-      accept-ranges: 
-      - bytes
     http_version: "1.1"
-    message: OK
-    read: true
-    socket: 
-  request_headers: 
-    accept: 
-    - "*/*"
-    connection: 
-    - close
-    host: 
-    - example.com

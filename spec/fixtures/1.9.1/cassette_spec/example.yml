@@ -1,9 +1,25 @@
 --- 
-- !ruby/struct:VCR::RecordedResponse 
-  :method: :get
-  :uri: http://example.com:80/
-  :response: !ruby/object:Net::HTTPOK 
-    body: |
+- !ruby/struct:VCR::HTTPInteraction 
+  :request_signature: !ruby/struct:VCR::RequestSignature 
+    :method: :get
+    :uri: http://example.com:80/
+    :body: 
+    :headers: 
+  :response: !ruby/struct:VCR::Response 
+    :status: !ruby/struct:VCR::ResponseStatus 
+      :code: 200
+      :message: OK
+    :headers: 
+      server: Apache/2.2.3 (Red Hat)
+      last-modified: Tue, 15 Nov 2005 13:24:10 GMT
+      etag: "\"b300b4-1b6-4059a80bfd280\""
+      accept-ranges: bytes
+      content-type: text/html; charset=UTF-8
+      connection: Keep-Alive
+      date: Mon, 25 Jan 2010 18:00:32 GMT
+      age: "2090"
+      content-length: "438"
+    :body: |
       <HTML>
       <HEAD>
         <TITLE>Example Web Page</TITLE>
@@ -18,44 +34,24 @@
       </BODY>
       </HTML>
 
-    body_exist: true
-    code: "200"
-    header: 
-      server: 
-      - Apache/2.2.3 (Red Hat)
-      last-modified: 
-      - Tue, 15 Nov 2005 13:24:10 GMT
-      etag: 
-      - "\"b300b4-1b6-4059a80bfd280\""
-      accept-ranges: 
-      - bytes
-      content-type: 
-      - text/html; charset=UTF-8
-      connection: 
-      - Keep-Alive
-      date: 
-      - Mon, 25 Jan 2010 18:00:32 GMT
-      age: 
-      - "2090"
-      content-length: 
-      - "438"
-    http_version: "1.1"
-    message: OK
-    read: true
-    socket: 
-  :request_body: 
-  :request_headers: 
-    accept: 
-    - "*/*"
-    connection: 
-    - close
-    host: 
-    - example.com
-- !ruby/struct:VCR::RecordedResponse 
-  :method: :get
-  :uri: http://example.com:80/foo
-  :response: !ruby/object:Net::HTTPNotFound 
-    body: |
+    :http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  :request_signature: !ruby/struct:VCR::RequestSignature 
+    :method: :get
+    :uri: http://example.com:80/foo
+    :body: 
+    :headers: 
+  :response: !ruby/struct:VCR::Response 
+    :status: !ruby/struct:VCR::ResponseStatus 
+      :code: 404
+      :message: Not Found
+    :headers: 
+      date: Mon, 25 Jan 2010 18:00:32 GMT
+      server: Apache/2.2.3 (CentOS)
+      content-length: "277"
+      connection: close
+      content-type: text/html; charset=iso-8859-1
+    :body: |
       <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
       <html><head>
       <title>404 Not Found</title>
@@ -66,66 +62,26 @@
       <address>Apache/2.2.3 (CentOS) Server at example.com Port 80</address>
       </body></html>
 
-    body_exist: true
-    code: "404"
-    header: 
-      date: 
-      - Mon, 25 Jan 2010 18:00:32 GMT
-      server: 
-      - Apache/2.2.3 (CentOS)
-      content-length: 
-      - "277"
-      connection: 
-      - close
-      content-type: 
-      - text/html; charset=iso-8859-1
-    http_version: "1.1"
-    message: Not Found
-    read: true
-    socket: 
-  :request_body: 
-  :request_headers: 
-    accept: 
-    - "*/*"
-    connection: 
-    - close
-    host: 
-    - example.com
-- !ruby/struct:VCR::RecordedResponse 
-  :method: :get
-  :uri: http://example.com:80/
-  :response: !ruby/object:Net::HTTPOK 
-    body: Another example.com response
-    body_exist: true
-    code: "200"
-    header: 
-      server: 
-      - Apache/2.2.3 (Red Hat)
-      last-modified: 
-      - Tue, 15 Nov 2005 13:24:10 GMT
-      etag: 
-      - "\"b300b4-1b6-4059a80bfd280\""
-      accept-ranges: 
-      - bytes
-      content-type: 
-      - text/html; charset=UTF-8
-      connection: 
-      - Keep-Alive
-      date: 
-      - Mon, 25 Jan 2010 18:00:32 GMT
-      age: 
-      - "2090"
-      content-length: 
-      - "438"
-    http_version: "1.1"
-    message: OK
-    read: true
-    socket: 
-  :request_body: 
-  :request_headers: 
-    accept: 
-    - "*/*"
-    connection: 
-    - close
-    host: 
-    - example.com
+    :http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  :request_signature: !ruby/struct:VCR::RequestSignature 
+    :method: :get
+    :uri: http://example.com:80/
+    :body: 
+    :headers: 
+  :response: !ruby/struct:VCR::Response 
+    :status: !ruby/struct:VCR::ResponseStatus 
+      :code: 200
+      :message: OK
+    :headers: 
+      server: Apache/2.2.3 (Red Hat)
+      last-modified: Tue, 15 Nov 2005 13:24:10 GMT
+      etag: "\"b300b4-1b6-4059a80bfd280\""
+      accept-ranges: bytes
+      content-type: text/html; charset=UTF-8
+      connection: Keep-Alive
+      date: Mon, 25 Jan 2010 18:00:32 GMT
+      age: "2090"
+      content-length: "438"
+    :body: Another example.com response
+    :http_version: "1.1"
