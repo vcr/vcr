@@ -27,28 +27,28 @@ describe "Net::HTTP Extensions" do
         end
       end
 
-      it 'calls #store_recorded_response! on the current cassette' do
-        recorded_response = VCR::RecordedResponse.new(:get, 'http://example.com:80/', :example_response)
-        VCR::RecordedResponse.should_receive(:new).with(:get, 'http://example.com:80/', an_instance_of(Net::HTTPOK), anything, anything).and_return(recorded_response)
-        @current_cassette.should_receive(:store_recorded_response!).with(recorded_response)
+      it 'calls #record_http_interaction on the current cassette' do
+        interaction = VCR::HTTPInteraction.new
+        VCR::HTTPInteraction.should_receive(:from_net_http_objects).and_return(interaction)
+        @current_cassette.should_receive(:record_http_interaction).with(interaction)
         Net::HTTP.get(@uri)
       end
 
-      it 'calls #store_recorded_response! only once, even when Net::HTTP internally recursively calls #request' do
-        @current_cassette.should_receive(:store_recorded_response!).once
+      it 'calls #record_http_interaction only once, even when Net::HTTP internally recursively calls #request' do
+        @current_cassette.should_receive(:record_http_interaction).once
         Net::HTTP.new('example.com', 80).post('/', nil)
       end
 
-      it 'calls #store_recorded_response! when Net::HTTP#request is called with a block with a return statement' do
-        @current_cassette.should_receive(:store_recorded_response!).once
+      it 'calls #record_http_interaction when Net::HTTP#request is called with a block with a return statement' do
+        @current_cassette.should_receive(:record_http_interaction).once
         perform_get_with_returning_block
       end
     end
 
     describe 'a request that is registered with the http stubbing adapter' do
-      it 'does not call #store_recorded_response! on the current cassette' do
+      it 'does not call #record_http_interaction on the current cassette' do
         VCR::Config.http_stubbing_adapter.should_receive(:request_stubbed?).with(:get, 'http://example.com:80/').and_return(true)
-        @current_cassette.should_not_receive(:store_recorded_response!)
+        @current_cassette.should_not_receive(:record_http_interaction)
         Net::HTTP.get(@uri)
       end
     end
@@ -59,8 +59,8 @@ describe "Net::HTTP Extensions" do
       @current_cassette.should_receive(:allow_real_http_requests_to?).with(@uri).and_return(true)
     end
 
-    it 'does not call #store_recorded_response! on the current cassette' do
-      @current_cassette.should_receive(:store_recorded_response!).never
+    it 'does not call #record_http_interaction on the current cassette' do
+      @current_cassette.should_receive(:record_http_interaction).never
       Net::HTTP.get(@uri)
     end
 

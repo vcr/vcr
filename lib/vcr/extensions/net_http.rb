@@ -29,7 +29,7 @@ module Net
         method = request.method.downcase.to_sym
 
         unless VCR::Config.http_stubbing_adapter.request_stubbed?(method, uri)
-          cassette.store_recorded_response!(VCR::RecordedResponse.new(method, uri, response, request.body, request.to_hash))
+          cassette.record_http_interaction(VCR::HTTPInteraction.from_net_http_objects(self, request, response))
         end
       end
     end

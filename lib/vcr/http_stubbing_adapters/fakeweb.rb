@@ -13,13 +13,15 @@ module VCR
           ::FakeWeb.allow_net_connect = value
         end
 
-        def stub_requests(recorded_responses)
+        def stub_requests(http_interactions)
           requests = Hash.new([])
-          recorded_responses.each do |rr|
-            requests[[rr.method, rr.uri]] += [rr.response]
+
+          http_interactions.each do |i|
+            requests[[i.request_signature.method, i.request_signature.uri]] += [i.response]
           end
+
           requests.each do |request, responses|
-            ::FakeWeb.register_uri(request.first, request.last, responses.map{ |r| { :response => r } })
+            ::FakeWeb.register_uri(request.first, request.last, responses.map{ |r| response_hash(r) })
           end
         end
 
@@ -43,6 +45,13 @@ module VCR
 
         def checkpoints
           @checkpoints ||= {}
+        end
+
+        def response_hash(response)
+          response.headers.merge(
+            :body   => response.body,
+            :status => [response.status.code.to_s, response.status.message]
+          )
         end
       end
     end

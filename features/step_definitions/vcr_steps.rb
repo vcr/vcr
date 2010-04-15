@@ -9,10 +9,10 @@ module VCRHelpers
     end
   end
 
-  def recorded_responses_for(cassette_name)
+  def recorded_interactions_for(cassette_name)
     yaml_file = File.join(VCR::Config.cassette_library_dir, "#{cassette_name}.yml")
     yaml = File.open(yaml_file, 'r') { |f| f.read }
-    responses = YAML.load(yaml)
+    interactions = YAML.load(yaml)
   end
 
   def capture_response(url)
@@ -112,13 +112,13 @@ When /^I make (.*HTTP (?:get|post)) requests? to "([^\"]*)"(?: and "([^\"]*)")? 
 end
 
 Then /^the "([^\"]*)" library file should have a response for "([^\"]*)" that matches \/(.+)\/$/ do |cassette_name, url, regex_str|
-  responses = recorded_responses_for(cassette_name)
-  responses.should have_expected_response(url, regex_str)
+  interactions = recorded_interactions_for(cassette_name)
+  interactions.should have_expected_response(url, regex_str)
 end
 
 Then /^the "([^\"]*)" library file should have exactly (\d+) response$/ do |cassette_name, response_count|
-  responses = recorded_responses_for(cassette_name)
-  responses.should have(response_count.to_i).responses
+  interactions = recorded_interactions_for(cassette_name)
+  interactions.should have(response_count.to_i).responses
 end
 
 Then /^I can test the scenario cassette's recorded responses in the next scenario, after the cassette has been ejected$/ do

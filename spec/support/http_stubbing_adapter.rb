@@ -35,8 +35,8 @@ shared_examples_for "an http stubbing adapter" do
       context 'when some requests are stubbed, after setting a checkpoint' do
         before(:each) do
           subject.create_stubs_checkpoint(:my_checkpoint)
-          @recorded_responses = YAML.load(File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', RUBY_VERSION, 'fake_example.com_responses.yml')))
-          subject.stub_requests(@recorded_responses)
+          @recorded_interactions = YAML.load(File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', RUBY_VERSION, 'fake_example.com_responses.yml')))
+          subject.stub_requests(@recorded_interactions)
         end
 
         it 'returns true from #request_stubbed? for the requests that are stubbed' do

@@ -14,21 +14,21 @@ module VCR
       @allow_real_http_lambda = allow_real_http_lambda_for(options[:allow_real_http] || VCR::Config.default_cassette_options[:allow_real_http])
       self.class.raise_error_unless_valid_record_mode(record_mode)
       set_http_connections_allowed
-      load_recorded_responses
+      load_recorded_interactions
     end
 
     def eject
-      write_recorded_responses_to_disk
+      write_recorded_interactions_to_disk
       VCR::Config.http_stubbing_adapter.restore_stubs_checkpoint(name)
       restore_http_connections_allowed
     end
 
-    def recorded_responses
-      @recorded_responses ||= []
+    def recorded_interactions
+      @recorded_interactions ||= []
     end
 
-    def store_recorded_response!(recorded_response)
-      recorded_responses << recorded_response
+    def record_http_interaction(interaction)
+      recorded_interactions << interaction
     end
 
     def file
@@ -45,8 +45,8 @@ module VCR
       @allow_real_http_lambda ? @allow_real_http_lambda.call(uri) : false
     end
 
-    def new_recorded_responses
-      recorded_responses - @original_recorded_responses
+    def new_recorded_interactions
+      recorded_interactions - @original_recorded_interactions
     end
 
     def should_allow_http_connections?
@@ -62,29 +62,29 @@ module VCR
       VCR::Config.http_stubbing_adapter.http_connections_allowed = @orig_http_connections_allowed
     end
 
-    def load_recorded_responses
+    def load_recorded_interactions
       VCR::Config.http_stubbing_adapter.create_stubs_checkpoint(name)
-      @original_recorded_responses = []
+      @original_recorded_interactions = []
       return if record_mode == :all
 
       if file
-        @original_recorded_responses = File.open(file, 'r') { |f| YAML.load(f.read) } if File.exist?(file)
-        recorded_responses.replace(@original_recorded_responses)
+        @original_recorded_interactions = File.open(file, 'r') { |f| YAML.load(f.read) } if File.exist?(file)
+        recorded_interactions.replace(@original_recorded_interactions)
       end
 
-      VCR::Config.http_stubbing_adapter.stub_requests(recorded_responses)
+      VCR::Config.http_stubbing_adapter.stub_requests(recorded_interactions)
     end
 
-    def write_recorded_responses_to_disk
-      if VCR::Config.cassette_library_dir && new_recorded_responses.size > 0
+    def write_recorded_interactions_to_disk
+      if VCR::Config.cassette_library_dir && new_recorded_interactions.size > 0
         directory = File.dirname(file)
         FileUtils.mkdir_p directory unless File.exist?(directory)
-        File.open(file, 'w') { |f| f.write recorded_responses.to_yaml }
+        File.open(file, 'w') { |f| f.write recorded_interactions.to_yaml }
       end
     end
 
     def unstub_requests
-      VCR::Config.http_stubbing_adapter.unstub_requests(@original_recorded_responses)
+      VCR::Config.http_stubbing_adapter.unstub_requests(@original_recorded_interactions)
     end
 
     def allow_real_http_lambda_for(allow_option)

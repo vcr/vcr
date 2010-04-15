@@ -26,13 +26,12 @@ describe VCR::Cassette do
     end
   end
 
-  describe '#store_recorded_response!' do
-    it 'adds the recorded response to #recorded_responses' do
-      recorded_response = VCR::RecordedResponse.new(:get, 'http://example.com', :response)
+  describe '#record_http_interaction' do
+    it 'adds the interaction to #recorded_interactions' do
       cassette = VCR::Cassette.new(:test_cassette)
-      cassette.recorded_responses.should == []
-      cassette.store_recorded_response!(recorded_response)
-      cassette.recorded_responses.should == [recorded_response]
+      cassette.recorded_interactions.should == []
+      cassette.record_http_interaction(:the_interaction)
+      cassette.recorded_interactions.should == [:the_interaction]
     end
   end
 
@@ -61,37 +60,37 @@ describe VCR::Cassette do
       end
     end
 
-    { :new_episodes => true, :all => false, :none => true }.each do |record_mode, load_responses|
-      it "#{load_responses ? 'loads' : 'does not load'} the recorded responses from the library yml file when the record mode is #{record_mode}" do
+    { :new_episodes => true, :all => false, :none => true }.each do |record_mode, load_interactions|
+      it "#{load_interactions ? 'loads' : 'does not load'} the recorded interactions from the library yml file when the record mode is #{record_mode}" do
         VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
         cassette = VCR::Cassette.new('example', :record => record_mode)
 
-        if load_responses
-          cassette.should have(3).recorded_responses
+        if load_interactions
+          cassette.should have(3).recorded_interactions
 
-          rr1, rr2, rr3 = *cassette.recorded_responses
+          i1, i2, i3 = *cassette.recorded_interactions
 
-          rr1.method.should == :get
-          rr1.uri.should == 'http://example.com:80/'
-          rr1.response.body.should =~ /You have reached this web page by typing.+example\.com/
+          i1.request_signature.method.should == :get
+          i1.request_signature.uri.should == 'http://example.com:80/'
+          i1.response.body.should =~ /You have reached this web page by typing.+example\.com/
 
-          rr2.method.should == :get
-          rr2.uri.should == 'http://example.com:80/foo'
-          rr2.response.body.should =~ /foo was not found on this server/
+          i2.request_signature.method.should == :get
+          i2.request_signature.uri.should == 'http://example.com:80/foo'
+          i2.response.body.should =~ /foo was not found on this server/
 
-          rr3.method.should == :get
-          rr3.uri.should == 'http://example.com:80/'
-          rr3.response.body.should =~ /Another example\.com response/
+          i3.request_signature.method.should == :get
+          i3.request_signature.uri.should == 'http://example.com:80/'
+          i3.response.body.should =~ /Another example\.com response/
         else
-          cassette.should have(0).recorded_responses
+          cassette.should have(0).recorded_interactions
         end
       end
 
-      it "#{load_responses ? 'stubs' : 'does not stub'} the recorded responses with the http stubbing adapter when the record mode is #{record_mode}" do
+      it "#{load_interactions ? 'stubs' : 'does not stub'} the recorded requests with the http stubbing adapter when the record mode is #{record_mode}" do
         VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
 
-        if load_responses
-          VCR::Config.http_stubbing_adapter.should_receive(:stub_requests).with([an_instance_of(VCR::RecordedResponse)]*3)
+        if load_interactions
+          VCR::Config.http_stubbing_adapter.should_receive(:stub_requests).with([an_instance_of(VCR::HTTPInteraction)]*3)
         else
           VCR::Config.http_stubbing_adapter.should_receive(:stub_requests).never
         end
@@ -151,46 +150,46 @@ describe VCR::Cassette do
       end
     end
 
-    it "writes the recorded responses to disk as yaml" do
-      recorded_responses = [
-        VCR::RecordedResponse.new(:get,  'http://example.com', :get_example_dot_come_response),
-        VCR::RecordedResponse.new(:post, 'http://example.com', :post_example_dot_come_response),
-        VCR::RecordedResponse.new(:get,  'http://google.com',  :get_google_dot_come_response)
+    it "writes the recorded interactions to disk as yaml" do
+      recorded_interactions = [
+        VCR::HTTPInteraction.new(:req_sig_1, :response_1),
+        VCR::HTTPInteraction.new(:req_sig_2, :response_2),
+        VCR::HTTPInteraction.new(:req_sig_3, :response_3)
       ]
 
       cassette = VCR::Cassette.new(:eject_test)
-      cassette.stub!(:recorded_responses).and_return(recorded_responses)
+      cassette.stub!(:recorded_interactions).and_return(recorded_interactions)
 
       lambda { cassette.eject }.should change { File.exist?(cassette.file) }.from(false).to(true)
-      saved_recorded_responses = File.open(cassette.file, "r") { |f| YAML.load(f.read) }
-      saved_recorded_responses.should == recorded_responses
+      saved_recorded_interactions = File.open(cassette.file, "r") { |f| YAML.load(f.read) }
+      saved_recorded_interactions.should == recorded_interactions
     end
 
-    it "writes the recorded responses to a subdirectory if the cassette name includes a directory" do
-      recorded_responses = [VCR::RecordedResponse.new(:get,  'http://example.com', :get_example_dot_come_response)]
+    it "writes the recorded interactions to a subdirectory if the cassette name includes a directory" do
+      recorded_interactions = [VCR::HTTPInteraction.new(:the_request_signature, :the_response)]
       cassette = VCR::Cassette.new('subdirectory/test_cassette')
-      cassette.stub!(:recorded_responses).and_return(recorded_responses)
+      cassette.stub!(:recorded_interactions).and_return(recorded_interactions)
 
       lambda { cassette.eject }.should change { File.exist?(cassette.file) }.from(false).to(true)
-      saved_recorded_responses = File.open(cassette.file, "r") { |f| YAML.load(f.read) }
-      saved_recorded_responses.should == recorded_responses
+      saved_recorded_interactions = File.open(cassette.file, "r") { |f| YAML.load(f.read) }
+      saved_recorded_interactions.should == recorded_interactions
     end
 
-    it "writes both old and new recorded responses to disk" do
+    it "writes both old and new recorded interactions to disk" do
       file = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec/example.yml")
-      FileUtils.cp file, File.join(@temp_dir, 'previously_recorded_responses.yml')
-      cassette = VCR::Cassette.new('previously_recorded_responses')
-      cassette.should have(3).recorded_responses
-      new_recorded_response = VCR::RecordedResponse.new(:get, 'http://example.com/bar', :example_dot_com_bar_response)
-      cassette.store_recorded_response!(new_recorded_response)
+      FileUtils.cp file, File.join(@temp_dir, 'previously_recorded_interactions.yml')
+      cassette = VCR::Cassette.new('previously_recorded_interactions')
+      cassette.should have(3).recorded_interactions
+      new_recorded_interaction = VCR::HTTPInteraction.new(:the_request_signature, :the_response)
+      cassette.record_http_interaction(new_recorded_interaction)
       cassette.eject
-      saved_recorded_responses = File.open(cassette.file, "r") { |f| YAML.load(f.read) }
-      saved_recorded_responses.should have(4).recorded_responses
-      saved_recorded_responses.last.should == new_recorded_response
+      saved_recorded_interactions = File.open(cassette.file, "r") { |f| YAML.load(f.read) }
+      saved_recorded_interactions.should have(4).recorded_interactions
+      saved_recorded_interactions.last.should == new_recorded_interaction
     end
   end
 
-  describe '#eject for a cassette with previously recorded responses' do
+  describe '#eject for a cassette with previously recorded interactions' do
     it "restore the stubs checkpoint on the http stubbing adapter" do
       VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
       cassette = VCR::Cassette.new('example', :record => :none)
@@ -198,7 +197,7 @@ describe VCR::Cassette do
       cassette.eject
     end
 
-    it "does not re-write to disk the previously recorded resposes if there are no new ones" do
+    it "does not re-write to disk the previously recorded interactions if there are no new ones" do
       VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
       yaml_file = File.join(VCR::Config.cassette_library_dir, 'example.yml')
       cassette = VCR::Cassette.new('example', :record => :none)
