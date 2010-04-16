@@ -1,6 +1,6 @@
 --- 
 - !ruby/struct:VCR::HTTPInteraction 
-  request_signature: !ruby/struct:VCR::RequestSignature 
+  request: !ruby/struct:VCR::Request 
     method: :get
     uri: http://example.com:80/nested
     body: 
@@ -10,10 +10,15 @@
       code: 404
       message: Not Found
     headers: 
-      connection: close
-      content-type: text/html; charset=iso-8859-1
-      date: Thu, 25 Feb 2010 15:19:40 GMT
-      server: Apache/2.2.3 (CentOS)
-      content-length: "280"
+      connection: 
+      - close
+      content-type: 
+      - text/html; charset=iso-8859-1
+      date: 
+      - Thu, 25 Feb 2010 15:19:40 GMT
+      server: 
+      - Apache/2.2.3 (CentOS)
+      content-length: 
+      - "280"
     body: The nested response
     http_version: "1.1"
