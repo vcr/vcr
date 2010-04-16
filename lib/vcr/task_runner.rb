@@ -23,13 +23,13 @@ module VCR
 
     def http_interaction(recorded_response)
       VCR::HTTPInteraction.new(
-        request_signature(recorded_response),
+        request(recorded_response),
         VCR::Response.from_net_http_response(recorded_response.response)
       )
     end
 
-    def request_signature(recorded_response)
-      VCR::RequestSignature.new(recorded_response.method, recorded_response.uri)
+    def request(recorded_response)
+      VCR::Request.new(recorded_response.method, recorded_response.uri)
     end
 
     def with_recorded_response_defined

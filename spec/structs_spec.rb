@@ -1,38 +1,6 @@
 require 'spec_helper'
 
-describe VCR::RequestSignature do
-  context 'when constructed with method and uri' do
-    subject       { VCR::RequestSignature.new(:get, 'http://example.com') }
-    its(:method)  { should == :get }
-    its(:uri)     { should == 'http://example.com' }
-    its(:body)    { should be_nil }
-    its(:headers) { should be_nil }
-  end
-
-  context 'when constructed with method, uri and body' do
-    subject       { VCR::RequestSignature.new(:get, 'http://example.com', :body => 'a=b') }
-    its(:method)  { should == :get }
-    its(:uri)     { should == 'http://example.com' }
-    its(:body)    { should == 'a=b' }
-    its(:headers) { should be_nil }
-  end
-
-  context 'when constructed with method, uri and headers' do
-    subject       { VCR::RequestSignature.new(:get, 'http://example.com', :headers => { 'foo' => 'bar' }) }
-    its(:method)  { should == :get }
-    its(:uri)     { should == 'http://example.com' }
-    its(:body)    { should be_nil }
-    its(:headers) { should == { 'foo' => 'bar' } }
-  end
-
-  context 'when constructed with method, uri, body and headers' do
-    subject       { VCR::RequestSignature.new(:get, 'http://example.com', :body => 'a=b', :headers => { 'foo' => 'bar' }) }
-    its(:method)  { should == :get }
-    its(:uri)     { should == 'http://example.com' }
-    its(:body)    { should == 'a=b' }
-    its(:headers) { should == { 'foo' => 'bar' } }
-  end
-
+describe VCR::Request do
   describe '.from_net_http_request' do
     let(:net_http) { YAML.load(File.read(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/example_net_http.yml")) }
     let(:request)  { YAML.load(File.read(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/example_net_http_request.yml")) }
@@ -43,7 +11,7 @@ describe VCR::RequestSignature do
       VCR::Config.http_stubbing_adapter.stub!(:request_uri)
     end
 
-    it            { should be_instance_of(VCR::RequestSignature) }
+    it            { should be_instance_of(VCR::Request) }
     its(:method)  { should == :post  }
     its(:body)    { should == 'id=7'  }
     its(:headers) { should == {
@@ -78,14 +46,14 @@ describe VCR::Response do
     its(:body)         { should == 'The response from example.com' }
     its(:http_version) { should == '1.1' }
     its(:headers)      { should == {
-      "last-modified"  => 'Tue, 15 Nov 2005 13:24:10 GMT',
-      "connection"     => 'close',
-      "etag"           => "\"24ec5-1b6-4059a80bfd280\"",
-      "content-type"   => "text/html; charset=UTF-8",
-      "date"           => 'Wed, 31 Mar 2010 02:43:26 GMT',
-      "server"         => 'Apache/2.2.3 (CentOS)',
-      "content-length" => '438',
-      "accept-ranges"  => 'bytes'
+      "last-modified"  => ['Tue, 15 Nov 2005 13:24:10 GMT'],
+      "connection"     => ['close'],
+      "etag"           => ["\"24ec5-1b6-4059a80bfd280\""],
+      "content-type"   => ["text/html; charset=UTF-8"],
+      "date"           => ['Wed, 31 Mar 2010 02:43:26 GMT'],
+      "server"         => ['Apache/2.2.3 (CentOS)'],
+      "content-length" => ['438'],
+      "accept-ranges"  => ['bytes']
     } }
 
     it 'assigns the status using VCR::ResponseStatus.from_net_http_response' do
@@ -104,14 +72,14 @@ describe VCR::HTTPInteraction do
     subject { described_class.from_net_http_objects(net_http, request, response) }
 
     it 'returns a new record with the proper values' do
-      VCR::RequestSignature.should respond_to(:from_net_http_request)
-      VCR::RequestSignature.should_receive(:from_net_http_request).with(net_http, request).and_return(:the_request_signature)
+      VCR::Request.should respond_to(:from_net_http_request)
+      VCR::Request.should_receive(:from_net_http_request).with(net_http, request).and_return(:the_request)
 
       VCR::Response.should respond_to(:from_net_http_response)
       VCR::Response.should_receive(:from_net_http_response).with(response).and_return(:the_response)
 
       subject.should be_instance_of(VCR::HTTPInteraction)
-      subject.request_signature.should == :the_request_signature
+      subject.request.should == :the_request
       subject.response.should == :the_response
     end
   end

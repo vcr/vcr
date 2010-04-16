@@ -70,16 +70,16 @@ describe VCR::Cassette do
 
           i1, i2, i3 = *cassette.recorded_interactions
 
-          i1.request_signature.method.should == :get
-          i1.request_signature.uri.should == 'http://example.com:80/'
+          i1.request.method.should == :get
+          i1.request.uri.should == 'http://example.com:80/'
           i1.response.body.should =~ /You have reached this web page by typing.+example\.com/
 
-          i2.request_signature.method.should == :get
-          i2.request_signature.uri.should == 'http://example.com:80/foo'
+          i2.request.method.should == :get
+          i2.request.uri.should == 'http://example.com:80/foo'
           i2.response.body.should =~ /foo was not found on this server/
 
-          i3.request_signature.method.should == :get
-          i3.request_signature.uri.should == 'http://example.com:80/'
+          i3.request.method.should == :get
+          i3.request.uri.should == 'http://example.com:80/'
           i3.response.body.should =~ /Another example\.com response/
         else
           cassette.should have(0).recorded_interactions
@@ -166,7 +166,7 @@ describe VCR::Cassette do
     end
 
     it "writes the recorded interactions to a subdirectory if the cassette name includes a directory" do
-      recorded_interactions = [VCR::HTTPInteraction.new(:the_request_signature, :the_response)]
+      recorded_interactions = [VCR::HTTPInteraction.new(:the_request, :the_response)]
       cassette = VCR::Cassette.new('subdirectory/test_cassette')
       cassette.stub!(:recorded_interactions).and_return(recorded_interactions)
 
@@ -180,7 +180,7 @@ describe VCR::Cassette do
       FileUtils.cp file, File.join(@temp_dir, 'previously_recorded_interactions.yml')
       cassette = VCR::Cassette.new('previously_recorded_interactions')
       cassette.should have(3).recorded_interactions
-      new_recorded_interaction = VCR::HTTPInteraction.new(:the_request_signature, :the_response)
+      new_recorded_interaction = VCR::HTTPInteraction.new(:the_request, :the_response)
       cassette.record_http_interaction(new_recorded_interaction)
       cassette.eject
       saved_recorded_interactions = File.open(cassette.file, "r") { |f| YAML.load(f.read) }

@@ -28,7 +28,7 @@ describe VCR::TaskRunner do
     end
 
     it 'does not error out on yaml files with individual records' do
-      YAML.should_receive(:load).and_return(VCR::RequestSignature.new(:get, 'http://example.com'))
+      YAML.should_receive(:load).and_return(VCR::Request.new(:get, 'http://example.com'))
       migrate
     end
 
@@ -38,10 +38,10 @@ describe VCR::TaskRunner do
         YAML.load(File.read(test_dir + "/#{file_name}")).first
       end
 
-      its(:request_signature) { should be_instance_of(VCR::RequestSignature) }
+      its(:request) { should be_instance_of(VCR::Request) }
 
-      describe '.request_signature' do
-        def subject; super.request_signature; end
+      describe '.request' do
+        def subject; super.request; end
 
         its(:method)  { should == :post }
         its(:uri)     { should == 'http://example.com:80/' }

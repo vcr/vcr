@@ -1,16 +1,13 @@
 require 'forwardable'
 
 module VCR
-  class RequestSignature < Struct.new(:method, :uri, :body, :headers)
-    def initialize(method, uri, options = {})
-      super(method, uri, options[:body], options[:headers])
-    end
-
+  class Request < Struct.new(:method, :uri, :body, :headers)
     def self.from_net_http_request(net_http, request)
       new(
         request.method.downcase.to_sym,
         VCR::Config.http_stubbing_adapter.request_uri(net_http, request),
-        { :body => request.body, :headers => request.to_hash }
+        request.body,
+        request.to_hash
       )
     end
   end
@@ -25,31 +22,21 @@ module VCR
     def self.from_net_http_response(response)
       new(
         ResponseStatus.from_net_http_response(response),
-        headers_from_net_http_response(response),
+        response.to_hash,
         response.body,
         response.http_version
       )
     end
-
-    private
-
-    def self.headers_from_net_http_response(response)
-      h = {}
-      response.each do |k, v|
-        h[k] = v
-      end
-      h
-    end
   end
 
-  class HTTPInteraction < Struct.new(:request_signature, :response)
+  class HTTPInteraction < Struct.new(:request, :response)
     extend ::Forwardable
 
-    def_delegators :request_signature, :uri, :method
+    def_delegators :request, :uri, :method
 
     def self.from_net_http_objects(net_http, request, response)
       new(
-        RequestSignature.from_net_http_request(net_http, request),
+        Request.from_net_http_request(net_http, request),
         Response.from_net_http_response(response)
       )
     end

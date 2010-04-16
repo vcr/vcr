@@ -17,7 +17,7 @@ module VCR
           requests = Hash.new([])
 
           http_interactions.each do |i|
-            requests[[i.request_signature.method, i.request_signature.uri]] += [i.response]
+            requests[[i.request.method, i.request.uri]] += [i.response]
           end
 
           requests.each do |request, responses|
