@@ -85,9 +85,14 @@ describe VCR do
       VCR.instance_variable_set(:@http_stubbing_adapter, nil)
     end
 
-    it 'returns VCR::HttpStubbingAdapters::FakeWeb when adapter = :fakeweb' do
-      VCR::Config.http_stubbing_adapter = :fakeweb
-      VCR.http_stubbing_adapter.should == VCR::HttpStubbingAdapters::FakeWeb
+    {
+      :fakeweb => VCR::HttpStubbingAdapters::FakeWeb,
+      :webmock => VCR::HttpStubbingAdapters::WebMock
+    }.each do |setting, adapter|
+      it "returns #{adapter} when config http_stubbing_adapter = :#{setting.to_s}" do
+        VCR::Config.http_stubbing_adapter = setting
+        VCR.http_stubbing_adapter.should == adapter
+      end
     end
 
     it 'raises an error when adapter is not set' do

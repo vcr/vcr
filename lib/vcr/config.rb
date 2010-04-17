@@ -16,7 +16,5 @@ module VCR
 
       attr_accessor :http_stubbing_adapter
     end
-
-    self.http_stubbing_adapter = :fakeweb # set default.
   end
 end

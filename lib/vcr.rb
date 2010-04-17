@@ -47,6 +47,8 @@ module VCR
     @http_stubbing_adapter ||= case VCR::Config.http_stubbing_adapter
       when :fakeweb
         VCR::HttpStubbingAdapters::FakeWeb
+      when :webmock
+        VCR::HttpStubbingAdapters::WebMock
       else
         raise ArgumentError.new("The http stubbing adapter is not configured correctly.")
     end
