@@ -1,4 +1,5 @@
 require 'webmock'
+require 'vcr/extensions/net_http'
 
 module VCR
   module HttpStubbingAdapters
