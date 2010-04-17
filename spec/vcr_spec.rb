@@ -79,4 +79,20 @@ describe VCR do
       yielded_object.should be_instance_of(VCR::CucumberTags)
     end
   end
+
+  describe '#http_stubbing_adapter' do
+    before(:each) do
+      VCR.instance_variable_set(:@http_stubbing_adapter, nil)
+    end
+
+    it 'returns VCR::HttpStubbingAdapters::FakeWeb when adapter = :fakeweb' do
+      VCR::Config.http_stubbing_adapter = :fakeweb
+      VCR.http_stubbing_adapter.should == VCR::HttpStubbingAdapters::FakeWeb
+    end
+
+    it 'raises an error when adapter is not set' do
+      VCR::Config.http_stubbing_adapter = nil
+      lambda { VCR.http_stubbing_adapter }.should raise_error(/The http stubbing adapter is not configured correctly/)
+    end
+  end
 end

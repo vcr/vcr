@@ -5,7 +5,7 @@ module VCR
     def self.from_net_http_request(net_http, request)
       new(
         request.method.downcase.to_sym,
-        VCR::Config.http_stubbing_adapter.request_uri(net_http, request),
+        VCR.http_stubbing_adapter.request_uri(net_http, request),
         request.body,
         request.to_hash
       )

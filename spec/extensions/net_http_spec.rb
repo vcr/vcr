@@ -18,7 +18,7 @@ describe "Net::HTTP Extensions" do
 
     describe 'a request that is not registered with the http stubbing adapter' do
       before(:each) do
-        VCR::Config.http_stubbing_adapter.should_receive(:request_stubbed?).with(anything, 'http://example.com:80/').and_return(false)
+        VCR.http_stubbing_adapter.should_receive(:request_stubbed?).with(anything, 'http://example.com:80/').and_return(false)
       end
 
       def perform_get_with_returning_block
@@ -47,7 +47,7 @@ describe "Net::HTTP Extensions" do
 
     describe 'a request that is registered with the http stubbing adapter' do
       it 'does not call #record_http_interaction on the current cassette' do
-        VCR::Config.http_stubbing_adapter.should_receive(:request_stubbed?).with(:get, 'http://example.com:80/').and_return(true)
+        VCR.http_stubbing_adapter.should_receive(:request_stubbed?).with(:get, 'http://example.com:80/').and_return(true)
         @current_cassette.should_not_receive(:record_http_interaction)
         Net::HTTP.get(@uri)
       end
@@ -64,8 +64,8 @@ describe "Net::HTTP Extensions" do
       Net::HTTP.get(@uri)
     end
 
-    it 'uses VCR::Config.http_stubbing_adapter.with_http_connections_allowed_set_to(true) to make the request' do
-      VCR::Config.http_stubbing_adapter.should_receive(:with_http_connections_allowed_set_to).with(true).and_yield
+    it 'uses VCR.http_stubbing_adapter.with_http_connections_allowed_set_to(true) to make the request' do
+      VCR.http_stubbing_adapter.should_receive(:with_http_connections_allowed_set_to).with(true).and_yield
       Net::HTTP.get(@uri)
     end
   end

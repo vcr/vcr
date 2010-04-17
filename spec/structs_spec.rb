@@ -7,8 +7,8 @@ describe VCR::Request do
     subject { described_class.from_net_http_request(net_http, request) }
 
     before(:each) do
-      VCR::Config.http_stubbing_adapter.should respond_to(:request_uri)
-      VCR::Config.http_stubbing_adapter.stub!(:request_uri)
+      VCR.http_stubbing_adapter.should respond_to(:request_uri)
+      VCR.http_stubbing_adapter.stub!(:request_uri)
     end
 
     it            { should be_instance_of(VCR::Request) }
@@ -20,7 +20,7 @@ describe VCR::Request do
     } }
 
     it 'sets the uri using the http_stubbing_adapter.request_uri' do
-      VCR::Config.http_stubbing_adapter.should_receive(:request_uri).with(net_http, request).and_return('foo/bar')
+      VCR.http_stubbing_adapter.should_receive(:request_uri).with(net_http, request).and_return('foo/bar')
       subject.uri.should == 'foo/bar'
     end
   end

@@ -41,7 +41,7 @@ describe VCR::Cassette do
     end
 
     it 'creates a stubs checkpoint on the http_stubbing_adapter' do
-      VCR::Config.http_stubbing_adapter.should_receive(:create_stubs_checkpoint).with('example').once
+      VCR.http_stubbing_adapter.should_receive(:create_stubs_checkpoint).with('example').once
       VCR::Cassette.new('example')
     end
 
@@ -55,7 +55,7 @@ describe VCR::Cassette do
 
     { :new_episodes => true, :all => true, :none => false }.each do |record_mode, http_connections_allowed|
       it "sets http_connections_allowed to #{http_connections_allowed} on the http stubbing adapter when the record mode is #{record_mode}" do
-        VCR::Config.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(http_connections_allowed)
+        VCR.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(http_connections_allowed)
         VCR::Cassette.new(:name, :record => record_mode)
       end
     end
@@ -90,9 +90,9 @@ describe VCR::Cassette do
         VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
 
         if load_interactions
-          VCR::Config.http_stubbing_adapter.should_receive(:stub_requests).with([an_instance_of(VCR::HTTPInteraction)]*3)
+          VCR.http_stubbing_adapter.should_receive(:stub_requests).with([an_instance_of(VCR::HTTPInteraction)]*3)
         else
-          VCR::Config.http_stubbing_adapter.should_receive(:stub_requests).never
+          VCR.http_stubbing_adapter.should_receive(:stub_requests).never
         end
 
         cassette = VCR::Cassette.new('example', :record => record_mode)
@@ -143,9 +143,9 @@ describe VCR::Cassette do
 
     [true, false].each do |orig_http_connections_allowed|
       it "resets #{orig_http_connections_allowed} on the http stubbing adapter if it was originally #{orig_http_connections_allowed}" do
-        VCR::Config.http_stubbing_adapter.should_receive(:http_connections_allowed?).and_return(orig_http_connections_allowed)
+        VCR.http_stubbing_adapter.should_receive(:http_connections_allowed?).and_return(orig_http_connections_allowed)
         cassette = VCR::Cassette.new(:name)
-        VCR::Config.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(orig_http_connections_allowed)
+        VCR.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(orig_http_connections_allowed)
         cassette.eject
       end
     end
@@ -193,7 +193,7 @@ describe VCR::Cassette do
     it "restore the stubs checkpoint on the http stubbing adapter" do
       VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
       cassette = VCR::Cassette.new('example', :record => :none)
-      VCR::Config.http_stubbing_adapter.should_receive(:restore_stubs_checkpoint).with('example')
+      VCR.http_stubbing_adapter.should_receive(:restore_stubs_checkpoint).with('example')
       cassette.eject
     end
 

@@ -43,6 +43,15 @@ module VCR
     yield VCR::CucumberTags.new(main_object)
   end
 
+  def http_stubbing_adapter
+    @http_stubbing_adapter ||= case VCR::Config.http_stubbing_adapter
+      when :fakeweb
+        VCR::HttpStubbingAdapters::FakeWeb
+      else
+        raise ArgumentError.new("The http stubbing adapter is not configured correctly.")
+    end
+  end
+
   private
 
   def cassettes

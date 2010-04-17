@@ -19,7 +19,7 @@ module VCR
 
     def eject
       write_recorded_interactions_to_disk
-      VCR::Config.http_stubbing_adapter.restore_stubs_checkpoint(name)
+      VCR.http_stubbing_adapter.restore_stubs_checkpoint(name)
       restore_http_connections_allowed
     end
 
@@ -54,16 +54,16 @@ module VCR
     end
 
     def set_http_connections_allowed
-      @orig_http_connections_allowed = VCR::Config.http_stubbing_adapter.http_connections_allowed?
-      VCR::Config.http_stubbing_adapter.http_connections_allowed = should_allow_http_connections?
+      @orig_http_connections_allowed = VCR.http_stubbing_adapter.http_connections_allowed?
+      VCR.http_stubbing_adapter.http_connections_allowed = should_allow_http_connections?
     end
 
     def restore_http_connections_allowed
-      VCR::Config.http_stubbing_adapter.http_connections_allowed = @orig_http_connections_allowed
+      VCR.http_stubbing_adapter.http_connections_allowed = @orig_http_connections_allowed
     end
 
     def load_recorded_interactions
-      VCR::Config.http_stubbing_adapter.create_stubs_checkpoint(name)
+      VCR.http_stubbing_adapter.create_stubs_checkpoint(name)
       @original_recorded_interactions = []
       return if record_mode == :all
 
@@ -72,7 +72,7 @@ module VCR
         recorded_interactions.replace(@original_recorded_interactions)
       end
 
-      VCR::Config.http_stubbing_adapter.stub_requests(recorded_interactions)
+      VCR.http_stubbing_adapter.stub_requests(recorded_interactions)
     end
 
     def write_recorded_interactions_to_disk
@@ -84,7 +84,7 @@ module VCR
     end
 
     def unstub_requests
-      VCR::Config.http_stubbing_adapter.unstub_requests(@original_recorded_interactions)
+      VCR.http_stubbing_adapter.unstub_requests(@original_recorded_interactions)
     end
 
     def allow_real_http_lambda_for(allow_option)
