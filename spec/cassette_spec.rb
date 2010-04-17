@@ -36,6 +36,11 @@ describe VCR::Cassette do
   end
 
   describe 'on creation' do
+    it 'raises an error with a helpful message when loading an old unsupported cassette' do
+      VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}")
+      lambda { VCR::Cassette.new('0_3_1_cassette') }.should raise_error(/The VCR cassette 0_3_1_cassette uses an old format that is now deprecated/)
+    end
+
     it "raises an error if given an invalid record mode" do
       lambda { VCR::Cassette.new(:test, :record => :not_a_record_mode) }.should raise_error(ArgumentError)
     end

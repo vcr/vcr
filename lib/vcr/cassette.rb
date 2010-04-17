@@ -68,7 +68,17 @@ module VCR
       return if record_mode == :all
 
       if file
-        @original_recorded_interactions = File.open(file, 'r') { |f| YAML.load(f.read) } if File.exist?(file)
+        @original_recorded_interactions = begin
+          yaml_content = File.read(file)
+          YAML.load(yaml_content)
+        rescue TypeError
+          if yaml_content =~ /VCR::RecordedResponse/
+            raise "The VCR cassette #{name} uses an old format that is now deprecated.  VCR provides a rake task to migrate your old cassettes to the new format.  See http://github.com/myronmarston/vcr/blob/master/History.rdoc for more info."
+          else
+            raise
+          end
+        end if File.exist?(file)
+
         recorded_interactions.replace(@original_recorded_interactions)
       end
 

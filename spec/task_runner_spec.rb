@@ -5,7 +5,7 @@ describe VCR::TaskRunner do
   describe '.migrate_cassettes' do
     temp_dir File.expand_path(File.dirname(__FILE__) + '/fixtures/task_runner')
 
-    let(:file_name)      { '0.3.1_cassette.yml' }
+    let(:file_name)      { '0_3_1_cassette.yml' }
     let(:orig_file_name) { File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/#{file_name}" }
     let(:test_dir)       { @temp_dir + '/migrate_cassettes' }
 
@@ -32,7 +32,7 @@ describe VCR::TaskRunner do
       migrate
     end
 
-    describe 'the structure serialized in the new 0.3.1_cassette_yml file' do
+    describe 'the structure serialized in the new 0_3_1_cassette_yml file' do
       subject do
         migrate
         YAML.load(File.read(test_dir + "/#{file_name}")).first
