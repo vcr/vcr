@@ -128,7 +128,7 @@ end
 Then /^the HTTP get request to "([^\"]*)" should result in an error that mentions VCR$/ do |url|
   result = @http_requests[url][0]
   result.should be_a(StandardError)
-  result.message.should =~ /VCR/
+  result.message.should =~ /Real HTTP connections are disabled/ #/VCR/
 end
 
 Then /^(?:the )?response(?: (\d+))? for "([^\"]*)" should match \/(.+)\/$/ do |response_num, url, regex_str|
