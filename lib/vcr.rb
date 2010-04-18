@@ -54,6 +54,7 @@ module VCR
           raise ArgumentError.new("The http stubbing adapter is not configured correctly.  You should set it to :webmock or :fakeweb.")
       end
 
+      adapter.check_version!
       adapter.http_connections_allowed = false
       adapter
     end

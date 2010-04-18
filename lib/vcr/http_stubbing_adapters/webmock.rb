@@ -5,6 +5,12 @@ module VCR
   module HttpStubbingAdapters
     class WebMock < Base
       class << self
+        def check_version!
+          unless meets_version_requirement?(::WebMock.version, '1.0.0')
+            raise "You are using WebMock #{::WebMock.version}.  VCR requires version 1.0.0 or greater."
+          end
+        end
+
         def http_connections_allowed?
           ::WebMock::Config.instance.allow_net_connect
         end

@@ -89,11 +89,25 @@ describe VCR do
       :fakeweb => VCR::HttpStubbingAdapters::FakeWeb,
       :webmock => VCR::HttpStubbingAdapters::WebMock
     }.each do |setting, adapter|
-      it "returns #{adapter} when config http_stubbing_adapter = :#{setting.to_s}" do
-        adapter.should respond_to(:http_connections_allowed=)
-        adapter.should_receive(:http_connections_allowed=).with(false)
-        VCR::Config.http_stubbing_adapter = setting
-        VCR.http_stubbing_adapter.should == adapter
+      context 'when config http_stubbing_adapter = :#{setting.to_s}' do
+        before(:each) { VCR::Config.http_stubbing_adapter = setting }
+        subject { VCR.http_stubbing_adapter }
+
+        it "returns #{adapter}" do
+          subject.should == adapter
+        end
+
+        it "disallows http connections" do
+          adapter.should respond_to(:http_connections_allowed=)
+          adapter.should_receive(:http_connections_allowed=).with(false)
+          subject
+        end
+
+        it "checks the adapted library's version to make sure it's compatible with VCR" do
+          adapter.should respond_to(:check_version!)
+          adapter.should_receive(:check_version!)
+          subject
+        end
       end
     end
 

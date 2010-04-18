@@ -5,6 +5,12 @@ module VCR
   module HttpStubbingAdapters
     class FakeWeb < Base
       class << self
+        def check_version!
+          unless meets_version_requirement?(::FakeWeb::VERSION, '1.2.8')
+            raise "You are using FakeWeb #{::FakeWeb::VERSION}.  VCR requires version 1.2.8 or greater."
+          end
+        end
+
         def http_connections_allowed?
           ::FakeWeb.allow_net_connect?
         end
