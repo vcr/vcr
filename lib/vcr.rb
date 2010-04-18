@@ -36,6 +36,8 @@ module VCR
 
   def config
     yield VCR::Config
+    http_stubbing_adapter.check_version!
+    http_stubbing_adapter.http_connections_allowed = false
   end
 
   def cucumber_tags(&block)
@@ -44,19 +46,13 @@ module VCR
   end
 
   def http_stubbing_adapter
-    @http_stubbing_adapter ||= begin
-      adapter = case VCR::Config.http_stubbing_adapter
-        when :fakeweb
-          VCR::HttpStubbingAdapters::FakeWeb
-        when :webmock
-          VCR::HttpStubbingAdapters::WebMock
-        else
-          raise ArgumentError.new("The http stubbing adapter is not configured correctly.  You should set it to :webmock or :fakeweb.")
-      end
-
-      adapter.check_version!
-      adapter.http_connections_allowed = false
-      adapter
+    @http_stubbing_adapter ||= case VCR::Config.http_stubbing_adapter
+      when :fakeweb
+        VCR::HttpStubbingAdapters::FakeWeb
+      when :webmock
+        VCR::HttpStubbingAdapters::WebMock
+      else
+        raise ArgumentError.new("The http stubbing adapter is not configured correctly.  You should set it to :webmock or :fakeweb.")
     end
   end
 

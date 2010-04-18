@@ -68,6 +68,18 @@ describe VCR do
       end
       yielded_object.should == VCR::Config
     end
+
+    it "disallows http connections" do
+      VCR.http_stubbing_adapter.should respond_to(:http_connections_allowed=)
+      VCR.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(false)
+      VCR.config { }
+    end
+
+    it "checks the adapted library's version to make sure it's compatible with VCR" do
+      VCR.http_stubbing_adapter.should respond_to(:check_version!)
+      VCR.http_stubbing_adapter.should_receive(:check_version!)
+      VCR.config { }
+    end
   end
 
   describe 'cucumber_tags' do
@@ -95,18 +107,6 @@ describe VCR do
 
         it "returns #{adapter}" do
           subject.should == adapter
-        end
-
-        it "disallows http connections" do
-          adapter.should respond_to(:http_connections_allowed=)
-          adapter.should_receive(:http_connections_allowed=).with(false)
-          subject
-        end
-
-        it "checks the adapted library's version to make sure it's compatible with VCR" do
-          adapter.should respond_to(:check_version!)
-          adapter.should_receive(:check_version!)
-          subject
         end
       end
     end
