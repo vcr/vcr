@@ -51,7 +51,7 @@ module VCR
         when :webmock
           VCR::HttpStubbingAdapters::WebMock
         else
-          raise ArgumentError.new("The http stubbing adapter is not configured correctly.")
+          raise ArgumentError.new("The http stubbing adapter is not configured correctly.  You should set it to :webmock or :fakeweb.")
       end
 
       adapter.http_connections_allowed = false
