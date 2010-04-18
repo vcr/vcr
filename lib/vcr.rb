@@ -2,6 +2,7 @@ require 'vcr/cassette'
 require 'vcr/config'
 require 'vcr/cucumber_tags'
 require 'vcr/deprecations'
+require 'vcr/request_matcher'
 require 'vcr/structs'
 require 'vcr/version'
 
