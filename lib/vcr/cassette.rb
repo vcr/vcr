@@ -12,7 +12,7 @@ module VCR
       @record_mode = options[:record] || VCR::Config.default_cassette_options[:record]
       deprecate_unregistered_record_mode
       @allow_real_http_lambda = allow_real_http_lambda_for(options[:allow_real_http] || VCR::Config.default_cassette_options[:allow_real_http])
-      self.class.raise_error_unless_valid_record_mode(record_mode)
+      raise_error_unless_valid_record_mode(record_mode)
       set_http_connections_allowed
       load_recorded_interactions
     end
@@ -35,14 +35,16 @@ module VCR
       File.join(VCR::Config.cassette_library_dir, "#{name.to_s.gsub(/[^\w\-\/]+/, '_')}.yml") if VCR::Config.cassette_library_dir
     end
 
-    def self.raise_error_unless_valid_record_mode(record_mode)
+    def allow_real_http_requests_to?(uri)
+      @allow_real_http_lambda ? @allow_real_http_lambda.call(uri) : false
+    end
+
+    private
+
+    def raise_error_unless_valid_record_mode(record_mode)
       unless VALID_RECORD_MODES.include?(record_mode)
         raise ArgumentError.new("#{record_mode} is not a valid cassette record mode.  Valid options are: #{VALID_RECORD_MODES.inspect}")
       end
-    end
-
-    def allow_real_http_requests_to?(uri)
-      @allow_real_http_lambda ? @allow_real_http_lambda.call(uri) : false
     end
 
     def new_recorded_interactions
