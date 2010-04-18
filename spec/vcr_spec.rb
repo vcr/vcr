@@ -90,6 +90,8 @@ describe VCR do
       :webmock => VCR::HttpStubbingAdapters::WebMock
     }.each do |setting, adapter|
       it "returns #{adapter} when config http_stubbing_adapter = :#{setting.to_s}" do
+        adapter.should respond_to(:http_connections_allowed=)
+        adapter.should_receive(:http_connections_allowed=).with(false)
         VCR::Config.http_stubbing_adapter = setting
         VCR.http_stubbing_adapter.should == adapter
       end
