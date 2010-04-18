@@ -10,9 +10,11 @@ module VCR
     def initialize(name, options = {})
       @name = name
       @record_mode = options[:record] || VCR::Config.default_cassette_options[:record]
-      deprecate_unregistered_record_mode
       @allow_real_http_lambda = allow_real_http_lambda_for(options[:allow_real_http] || VCR::Config.default_cassette_options[:allow_real_http])
+
+      deprecate_unregistered_record_mode
       raise_error_unless_valid_record_mode(record_mode)
+
       set_http_connections_allowed
       load_recorded_interactions
     end
