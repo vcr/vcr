@@ -68,7 +68,7 @@ if defined?(FakeWeb::NetConnectNotAllowedError)
   module FakeWeb
     class NetConnectNotAllowedError
       def message
-        super + '.  You can use VCR to automatically record this request and replay it later with fakeweb.  For more details, see the VCR README at: http://github.com/myronmarston/vcr'
+        super + '.  You can use VCR to automatically record this request and replay it later.  For more details, see the VCR README at: http://github.com/myronmarston/vcr'
       end
     end
   end

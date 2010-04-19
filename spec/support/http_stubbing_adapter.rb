@@ -17,7 +17,7 @@ shared_examples_for "an http stubbing adapter" do
       end
     else
       it 'does not allow real HTTP requests' do
-        lambda { make_http_request(:get, '/foo') }.should raise_error #(StandardError, /You can use VCR to automatically record this request and replay it later/)
+        lambda { make_http_request(:get, '/foo') }.should raise_error(StandardError, /You can use VCR to automatically record this request and replay it later/)
       end
     end
   end
