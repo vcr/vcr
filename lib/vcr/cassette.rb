@@ -77,7 +77,7 @@ module VCR
           YAML.load(yaml_content)
         rescue TypeError
           if yaml_content =~ /VCR::RecordedResponse/
-            raise "The VCR cassette #{name} uses an old format that is now deprecated.  VCR provides a rake task to migrate your old cassettes to the new format.  See http://github.com/myronmarston/vcr/blob/master/History.rdoc for more info."
+            raise "The VCR cassette #{name} uses an old format that is now deprecated.  VCR provides a rake task to migrate your old cassettes to the new format.  See http://github.com/myronmarston/vcr/blob/master/CHANGELOG.md for more info."
           else
             raise
           end
