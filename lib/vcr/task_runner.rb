@@ -1,3 +1,5 @@
+require 'vcr'
+
 module VCR
   module TaskRunner
     extend self
