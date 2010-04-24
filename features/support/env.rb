@@ -13,7 +13,7 @@ require 'spec/expectations'
 
 VCR.config do |c|
   c.cassette_library_dir = File.join(File.dirname(__FILE__), '..', 'fixtures', 'vcr_cassettes', RUBY_VERSION)
-  c.http_stubbing_adapter = ENV['HTTP_STUBBING_ADAPTER'].to_sym
+  c.http_stubbing_library = ENV['HTTP_STUBBING_ADAPTER'].to_sym
 end
 
 VCR.module_eval do

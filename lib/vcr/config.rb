@@ -14,9 +14,9 @@ module VCR
         @default_cassette_options ||= {}
       end
 
-      attr_writer :http_stubbing_adapter
-      def http_stubbing_adapter
-        @http_stubbing_adapter || begin
+      attr_writer :http_stubbing_library
+      def http_stubbing_library
+        @http_stubbing_library ||= begin
           defined_constants = [:FakeWeb, :WebMock].select { |c| Object.const_defined?(c) }
           defined_constants[0].to_s.downcase.to_sym if defined_constants.size == 1
         end

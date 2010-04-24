@@ -20,16 +20,16 @@ describe VCR::Config do
     end
   end
 
-  describe '#http_stubbing_adapter' do
+  describe '#http_stubbing_library' do
     it 'returns the configured value' do
       [:fakeweb, :webmock].each do |setting|
-        VCR::Config.http_stubbing_adapter = setting
-        VCR::Config.http_stubbing_adapter.should == setting
+        VCR::Config.http_stubbing_library = setting
+        VCR::Config.http_stubbing_library.should == setting
       end
     end
 
     context 'when set to nil' do
-      before(:each) { VCR::Config.http_stubbing_adapter = nil }
+      before(:each) { VCR::Config.http_stubbing_library = nil }
 
       {
         [:FakeWeb, :WebMock] => nil,
@@ -41,7 +41,7 @@ describe VCR::Config do
           [:FakeWeb, :WebMock].each do |const|
             Object.should_receive(:const_defined?).with(const).and_return(defined_constants.include?(const))
           end
-          VCR::Config.http_stubbing_adapter.should == expected_return_value
+          VCR::Config.http_stubbing_library.should == expected_return_value
         end
       end
     end

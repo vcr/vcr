@@ -93,6 +93,7 @@ describe VCR do
   end
 
   describe '#http_stubbing_adapter' do
+    subject { VCR.http_stubbing_adapter }
     before(:each) do
       VCR.instance_variable_set(:@http_stubbing_adapter, nil)
     end
@@ -101,9 +102,8 @@ describe VCR do
       :fakeweb => VCR::HttpStubbingAdapters::FakeWeb,
       :webmock => VCR::HttpStubbingAdapters::WebMock
     }.each do |setting, adapter|
-      context 'when config http_stubbing_adapter = :#{setting.to_s}' do
-        before(:each) { VCR::Config.http_stubbing_adapter = setting }
-        subject { VCR.http_stubbing_adapter }
+      context "when config http_stubbing_library = :#{setting.to_s}" do
+        before(:each) { VCR::Config.http_stubbing_library = setting }
 
         it "returns #{adapter}" do
           subject.should == adapter
@@ -111,9 +111,9 @@ describe VCR do
       end
     end
 
-    it 'raises an error when adapter is not set' do
-      VCR::Config.http_stubbing_adapter = nil
-      lambda { VCR.http_stubbing_adapter }.should raise_error(/The http stubbing adapter is not configured correctly/)
+    it 'raises an error when library is not set' do
+      VCR::Config.http_stubbing_library = nil
+      lambda { subject }.should raise_error(/The http stubbing library is not configured correctly/)
     end
   end
 end
