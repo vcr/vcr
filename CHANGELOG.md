@@ -1,5 +1,30 @@
 #Changelog
 
+## 0.4.0 (To be released soon)
+* Added support for webmock.  All the fakeweb-specific code is now in an adapter (as is the webmock code).
+
+* Changed the format of the VCR cassettes.  The old format was tied directly to Net::HTTP, but webmock supports
+  other HTTP libraries and I plan to allow VCR to use them in the future.  Note that this is a breaking change--your
+  old VCR cassettes from prior releases will not work with VCR 0.4.0.  However, VCR provides a rake task to assist
+  you in migrating your cassettes to the new format.  Simply add `load 'vcr/tasks/vcr.rake'` to your project's Rakefile,
+  and run:
+
+    $ rake vcr:migrate_cassettes DIR=path/to/cassete/library/directory
+
+* The new cassette format records more information about the request (i.e. the request headers and body), so that it
+  can potentially be used with webmock in the future.
+
+* Made most of `VCR::Cassette`'s methods private.  I had forgotten to make the methods private before, and most of them
+  don't need to be exposed.
+
+* Automatically disallow http connections using the appropriate setting of the http stubbing library (fakeweb or webmock).
+  This relieves users from the need to set the option themselves, so they hopefully aren't using either fakeweb or webmock
+  directly, making it much easier to switch between these.
+
+* Change documentation from rdoc to markdown format.
+
+* Lots of other refactoring.
+
 ## 0.3.1 April 10, 2010
 * Fixed a bug: when `Net::HTTP#request` was called with a block that had a return statement, the response was not being recorded.
 
