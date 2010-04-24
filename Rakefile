@@ -5,16 +5,17 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "vcr"
-    gem.summary = %Q{Use VCR to record HTTP responses and replay them using fakeweb.}
-    gem.description = %Q{VCR provides helpers to record HTTP requests for URIs that are not registered with fakeweb, and replay them later.  It works with any ruby testing framework, and provides built-in support for cucumber.}
+    gem.summary = %Q{Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests.}
+    gem.description = %Q{VCR provides helpers to record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests.  It works with any ruby testing framework, and provides built-in support for cucumber.}
     gem.email = "myron.marston@gmail.com"
     gem.homepage = "http://github.com/myronmarston/vcr"
     gem.authors = ["Myron Marston"]
 
-    gem.add_dependency 'fakeweb',  '>= 1.2.8'
-
     gem.add_development_dependency "rspec", ">= 1.2.9"
     gem.add_development_dependency "cucumber", ">= 0.6.1"
+    gem.add_development_dependency "fakeweb", ">= 1.2.8"
+    gem.add_development_dependency "webmock", ">= 1.1.0"
+
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
