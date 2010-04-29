@@ -50,8 +50,8 @@ shared_examples_for "an http stubbing adapter" do
         end
 
         it 'gets the stubbed responses when multple post requests are made to http://example.com' do
-          make_http_request(:post, '/', { :id => '7' }).body.should == 'example.com post response with id=7'
-          make_http_request(:post, '/', { :id => '3' }).body.should == 'example.com post response with id=3'
+          make_http_request(:post, '/', { 'id' => '7' }).body.should == 'example.com post response with id=7'
+          make_http_request(:post, '/', { 'id' => '3' }).body.should == 'example.com post response with id=3'
         end
 
         it 'gets the stubbed responses when requests are made to http://example.com/foo' do
