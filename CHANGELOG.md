@@ -1,6 +1,6 @@
 #Changelog
 
-## 0.4.0 (To be released soon)
+## 0.4.0 April 28, 2010
 * Added support for webmock.  All the fakeweb-specific code is now in an adapter (as is the webmock code).
 
 * Changed the format of the VCR cassettes.  The old format was tied directly to Net::HTTP, but webmock supports

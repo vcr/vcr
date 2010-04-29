@@ -5,25 +5,26 @@
 
 Gem::Specification.new do |s|
   s.name = %q{vcr}
-  s.version = "0.3.1"
+  s.version = "0.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Myron Marston"]
-  s.date = %q{2010-04-10}
-  s.description = %q{VCR provides helpers to record HTTP requests for URIs that are not registered with fakeweb, and replay them later.  It works with any ruby testing framework, and provides built-in support for cucumber.}
+  s.date = %q{2010-04-28}
+  s.description = %q{VCR provides helpers to record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests.  It works with any ruby testing framework, and provides built-in support for cucumber.}
   s.email = %q{myron.marston@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
-     "README.rdoc"
+     "README.md"
   ]
   s.files = [
     ".document",
      ".gitignore",
-     "History.rdoc",
+     "CHANGELOG.md",
      "LICENSE",
-     "README.rdoc",
+     "README.md",
      "Rakefile",
      "VERSION",
+     "benchmarks/http_stubbing_libraries.rb",
      "features/fixtures/vcr_cassettes/1.8.6/cucumber_tags/replay_cassette1.yml",
      "features/fixtures/vcr_cassettes/1.8.6/cucumber_tags/replay_cassette2.yml",
      "features/fixtures/vcr_cassettes/1.8.6/cucumber_tags/replay_cassette3.yml",
@@ -51,23 +52,46 @@ Gem::Specification.new do |s|
      "lib/vcr/extensions/fake_web.rb",
      "lib/vcr/extensions/net_http.rb",
      "lib/vcr/extensions/net_read_adapter.rb",
-     "lib/vcr/recorded_response.rb",
+     "lib/vcr/http_stubbing_adapters/base.rb",
+     "lib/vcr/http_stubbing_adapters/fakeweb.rb",
+     "lib/vcr/http_stubbing_adapters/webmock.rb",
+     "lib/vcr/structs.rb",
+     "lib/vcr/task_runner.rb",
+     "lib/vcr/tasks/vcr.rake",
      "spec/cassette_spec.rb",
      "spec/config_spec.rb",
      "spec/cucumber_tags_spec.rb",
      "spec/deprecations_spec.rb",
-     "spec/extensions/fake_web_spec.rb",
      "spec/extensions/net_http_spec.rb",
      "spec/extensions/net_read_adapter_spec.rb",
+     "spec/fixtures/1.8.6/0_3_1_cassette.yml",
      "spec/fixtures/1.8.6/cassette_spec/example.yml",
+     "spec/fixtures/1.8.6/example_net_http.yml",
+     "spec/fixtures/1.8.6/example_net_http_request.yml",
+     "spec/fixtures/1.8.6/example_net_http_response.yml",
+     "spec/fixtures/1.8.6/fake_example.com_responses.yml",
+     "spec/fixtures/1.8.7/0_3_1_cassette.yml",
      "spec/fixtures/1.8.7/cassette_spec/example.yml",
+     "spec/fixtures/1.8.7/example_net_http.yml",
+     "spec/fixtures/1.8.7/example_net_http_request.yml",
+     "spec/fixtures/1.8.7/example_net_http_response.yml",
+     "spec/fixtures/1.8.7/fake_example.com_responses.yml",
+     "spec/fixtures/1.9.1/0_3_1_cassette.yml",
      "spec/fixtures/1.9.1/cassette_spec/example.yml",
-     "spec/recorded_response_spec.rb",
+     "spec/fixtures/1.9.1/example_net_http.yml",
+     "spec/fixtures/1.9.1/example_net_http_request.yml",
+     "spec/fixtures/1.9.1/example_net_http_response.yml",
+     "spec/fixtures/1.9.1/fake_example.com_responses.yml",
+     "spec/http_stubbing_adapters/fakeweb_spec.rb",
+     "spec/http_stubbing_adapters/webmock_spec.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb",
+     "spec/structs_spec.rb",
      "spec/support/deprecated.rb",
      "spec/support/disable_warnings.rb",
+     "spec/support/http_stubbing_adapter.rb",
      "spec/support/temp_cassette_library_dir.rb",
+     "spec/task_runner_spec.rb",
      "spec/vcr_spec.rb",
      "vcr.gemspec"
   ]
@@ -75,20 +99,23 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.6}
-  s.summary = %q{Use VCR to record HTTP responses and replay them using fakeweb.}
+  s.summary = %q{Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests.}
   s.test_files = [
     "spec/cassette_spec.rb",
      "spec/config_spec.rb",
      "spec/cucumber_tags_spec.rb",
      "spec/deprecations_spec.rb",
-     "spec/extensions/fake_web_spec.rb",
      "spec/extensions/net_http_spec.rb",
      "spec/extensions/net_read_adapter_spec.rb",
-     "spec/recorded_response_spec.rb",
+     "spec/http_stubbing_adapters/fakeweb_spec.rb",
+     "spec/http_stubbing_adapters/webmock_spec.rb",
      "spec/spec_helper.rb",
+     "spec/structs_spec.rb",
      "spec/support/deprecated.rb",
      "spec/support/disable_warnings.rb",
+     "spec/support/http_stubbing_adapter.rb",
      "spec/support/temp_cassette_library_dir.rb",
+     "spec/task_runner_spec.rb",
      "spec/vcr_spec.rb"
   ]
 
@@ -97,18 +124,21 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<fakeweb>, [">= 1.2.8"])
       s.add_development_dependency(%q<rspec>, [">= 1.2.9"])
       s.add_development_dependency(%q<cucumber>, [">= 0.6.1"])
+      s.add_development_dependency(%q<fakeweb>, [">= 1.2.8"])
+      s.add_development_dependency(%q<webmock>, [">= 1.1.0"])
     else
-      s.add_dependency(%q<fakeweb>, [">= 1.2.8"])
       s.add_dependency(%q<rspec>, [">= 1.2.9"])
       s.add_dependency(%q<cucumber>, [">= 0.6.1"])
+      s.add_dependency(%q<fakeweb>, [">= 1.2.8"])
+      s.add_dependency(%q<webmock>, [">= 1.1.0"])
     end
   else
-    s.add_dependency(%q<fakeweb>, [">= 1.2.8"])
     s.add_dependency(%q<rspec>, [">= 1.2.9"])
     s.add_dependency(%q<cucumber>, [">= 0.6.1"])
+    s.add_dependency(%q<fakeweb>, [">= 1.2.8"])
+    s.add_dependency(%q<webmock>, [">= 1.1.0"])
   end
 end
 
