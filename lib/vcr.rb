@@ -4,6 +4,7 @@ require 'vcr/cucumber_tags'
 require 'vcr/deprecations'
 require 'vcr/structs'
 
+require 'vcr/extensions/net_http_response'
 require 'vcr/extensions/net_read_adapter'
 
 require 'vcr/http_stubbing_adapters/base'

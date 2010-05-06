@@ -32,6 +32,9 @@ VCR.module_eval do
 end
 
 After do |scenario|
+  if raised_error = (@http_requests || {}).values.flatten.detect { |result| result.is_a?(Exception) && result.message !~ /VCR/ }
+    raise raised_error
+  end
   VCR.completed_cucumber_scenarios << scenario
 end
 

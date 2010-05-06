@@ -28,6 +28,7 @@ module Net
 
         unless VCR.http_stubbing_adapter.request_stubbed?(method, uri)
           cassette.record_http_interaction(VCR::HTTPInteraction.from_net_http_objects(self, request, response))
+          response.extend VCR::Net::HTTPResponse
         end
       end
     end
