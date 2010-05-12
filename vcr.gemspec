@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{vcr}
-  s.version = "0.4.0"
+  s.version = "0.4.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Myron Marston"]
-  s.date = %q{2010-04-28}
+  s.date = %q{2010-05-11}
   s.description = %q{VCR provides helpers to record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests.  It works with any ruby testing framework, and provides built-in support for cucumber.}
   s.email = %q{myron.marston@gmail.com}
   s.extra_rdoc_files = [
@@ -51,6 +51,7 @@ Gem::Specification.new do |s|
      "lib/vcr/deprecations.rb",
      "lib/vcr/extensions/fake_web.rb",
      "lib/vcr/extensions/net_http.rb",
+     "lib/vcr/extensions/net_http_response.rb",
      "lib/vcr/extensions/net_read_adapter.rb",
      "lib/vcr/http_stubbing_adapters/base.rb",
      "lib/vcr/http_stubbing_adapters/fakeweb.rb",
@@ -62,6 +63,7 @@ Gem::Specification.new do |s|
      "spec/config_spec.rb",
      "spec/cucumber_tags_spec.rb",
      "spec/deprecations_spec.rb",
+     "spec/extensions/net_http_response_spec.rb",
      "spec/extensions/net_http_spec.rb",
      "spec/extensions/net_read_adapter_spec.rb",
      "spec/fixtures/1.8.6/0_3_1_cassette.yml",
@@ -105,6 +107,7 @@ Gem::Specification.new do |s|
      "spec/config_spec.rb",
      "spec/cucumber_tags_spec.rb",
      "spec/deprecations_spec.rb",
+     "spec/extensions/net_http_response_spec.rb",
      "spec/extensions/net_http_spec.rb",
      "spec/extensions/net_read_adapter_spec.rb",
      "spec/http_stubbing_adapters/fakeweb_spec.rb",

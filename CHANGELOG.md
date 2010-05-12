@@ -1,5 +1,10 @@
 #Changelog
 
+## 0.4.1 May 11, 2010
+* Fixed a bug: when `Net::HTTPResponse#read_body` was called after VCR had read the body to record a new request,
+  it raised an error (`IOError: Net::HTTPResponse#read_body called twice`).  My fix extends Net::HTTPResponse
+  so that it no longer raises this error.
+
 ## 0.4.0 April 28, 2010
 * Added support for webmock.  All the fakeweb-specific code is now in an adapter (as is the webmock code).
 
