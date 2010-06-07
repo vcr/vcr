@@ -64,6 +64,19 @@ which is syntactic sugar for:
 This is particularly useful for using VCR with [capybara](http://github.com/jnicklas/capybara)
 and any of its javascript drivers (see below for more info).
 
+## Cassette Customization
+
+Cassettes are stored as simple plain text YAML files and can easily be edited to suit your needs.  One common need
+is for a particular request to be stubbed using a regex rather than the raw URL.  This is handy for URLs that contain
+non-deterministic portions (such as timestamps)--since the URL will be a bit different each time, the URL from the
+recorded request will not match the URL for future requests.  You can simply change the URL to an appropriate regex:
+
+    request: !ruby/struct:VCR::Request 
+      method: :get
+      uri: !ruby/regexp /example\.com\/reg/
+      body: 
+      headers: 
+
 ## Record modes
 
 VCR supports 3 record modes.  You can set a default record mode in your configuration (see below) 
@@ -214,7 +227,7 @@ VCR works on ruby [1.8.6](http://integrity186.heroku.com/vcr), [1.8.7](http://in
 ## Thanks
 
 * [Aslak Hellesøy](http://github.com/aslakhellesoy) for [Cucumber](http://github.com/aslakhellesoy/cucumber).
-* [Bartosz Blimke](http://github.com/bblimke) for [WebMock](http://github.com/bblimke/webmock)
+* [Bartosz Blimke](http://github.com/bblimke) for [WebMock](http://github.com/bblimke/webmock).
 * [Chris Kampmeier](http://github.com/chrisk) for [FakeWeb](http://github.com/chrisk/fakeweb).
 * [Chris Young](http://github.com/chrisyoung) for [NetRecorder](http://github.com/chrisyoung/netrecorder),
   the inspiration for VCR.
