@@ -67,3 +67,14 @@ Feature: Replay recorded response
     Given the "temp/not_the_real_response" library file has a response for "http://example.com" that matches /This is not the real response from example\.com/
      When I make a replayed asynchronous HTTP get request to "http://example.com" within the "temp/not_the_real_response" new_episodes cassette
      Then the response for "http://example.com" should match /This is not the real response from example\.com/
+
+  @regex_cassette
+  Scenario: Replay a cassette with a regex URI
+    Given this scenario is tagged with the vcr cassette tag: "@regex_cassette"
+      And the "cucumber_tags/regex_cassette" library file has a response for /example\.com\/reg/ that matches /This is the response from the regex cassette/
+     When I make an HTTP get request to "http://example.com/regex1"
+      And I make an HTTP get request to "http://example.com/regex2"
+      And I make an HTTP get request to "http://example.com/something_else"
+     Then the response for "http://example.com/regex1" should match /This is the response from the regex cassette/
+      And the response for "http://example.com/regex2" should match /This is the response from the regex cassette/
+      And the HTTP get request to "http://example.com/something_else" should result in an error that mentions VCR

@@ -3,8 +3,14 @@ require 'tmpdir'
 module VCRHelpers
   def have_expected_response(url, regex_str)
     simple_matcher("a response from #{url} that matches /#{regex_str}/") do |responses|
+      selector = case url
+        when String then lambda { |r| URI.parse(r.uri) == URI.parse(url) }
+        when Regexp then lambda { |r| r.uri == url }
+        else raise ArgumentError.new("Unexpected url: #{url.class.to_s}: #{url.inspect}")
+      end
+
+      responses = responses.select(&selector)
       regex = /#{regex_str}/i
-      responses = responses.select { |r| URI.parse(r.uri) == URI.parse(url) }
       responses.detect { |r| r.response.body =~ regex }
     end
   end
@@ -51,6 +57,10 @@ end
 Given /^the "([^\"]*)" library file has a response for "([^\"]*)" that matches \/(.+)\/$/ do |cassette_name, url, regex_str|
   Given %{we have a "#{cassette_name}" library file with a previously recorded response for "#{url}"}
   Then %{the "#{cassette_name}" library file should have a response for "#{url}" that matches /#{regex_str}/}
+end
+
+Given /^the "([^\"]*)" library file has a response for \/(\S+)\/ that matches \/(.+)\/$/ do |cassette_name, url_regex, body_regex|
+  recorded_interactions_for(cassette_name).should have_expected_response(/#{url_regex}/, body_regex)
 end
 
 Given /^this scenario is tagged with the vcr cassette tag: "([^\"]+)"$/ do |tag|
