@@ -3,6 +3,7 @@ require 'vcr/config'
 require 'vcr/cucumber_tags'
 require 'vcr/deprecations'
 require 'vcr/structs'
+require 'vcr/version'
 
 require 'vcr/extensions/net_http_response'
 require 'vcr/extensions/net_read_adapter'

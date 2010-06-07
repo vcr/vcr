@@ -1,28 +1,6 @@
 require 'rubygems'
 require 'rake'
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "vcr"
-    gem.summary = %Q{Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests.}
-    gem.description = %Q{VCR provides helpers to record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests.  It works with any ruby testing framework, and provides built-in support for cucumber.}
-    gem.email = "myron.marston@gmail.com"
-    gem.homepage = "http://github.com/myronmarston/vcr"
-    gem.authors = ["Myron Marston"]
-
-    gem.add_development_dependency "rspec", ">= 1.2.9"
-    gem.add_development_dependency "cucumber", ">= 0.6.1"
-    gem.add_development_dependency "fakeweb", ">= 1.2.8"
-    gem.add_development_dependency "webmock", ">= 1.1.0"
-
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
-  end
-  Jeweler::GemcutterTasks.new
-rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
-end
-
 require 'spec/rake/spectask'
 Spec::Rake::SpecTask.new(:spec) do |spec|
   spec.libs << 'lib' << 'spec'
@@ -35,13 +13,9 @@ Spec::Rake::SpecTask.new(:rcov) do |spec|
   spec.rcov = true
 end
 
-task :spec => :check_dependencies if defined?(Jeweler)
-
 begin
   require 'cucumber/rake/task'
   Cucumber::Rake::Task.new(:features)
-
-  task :features => :check_dependencies
 rescue LoadError
   task :features do
     abort "Cucumber is not available. In order to run features, you must: sudo gem install cucumber"
@@ -65,3 +39,33 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+def gemspec
+  @gemspec ||= begin
+    file = File.expand_path('../vcr.gemspec', __FILE__)
+    eval(File.read(file), binding, file)
+  end
+end
+
+begin
+  require 'rake/gempackagetask'
+rescue LoadError
+  task(:gem) { $stderr.puts '`gem install rake` to package gems' }
+else
+  Rake::GemPackageTask.new(gemspec) do |pkg|
+    pkg.gem_spec = gemspec
+  end
+  task :gem => :gemspec
+end
+
+desc "install the gem locally"
+task :install => :package do
+  sh %{gem install pkg/#{gemspec.name}-#{gemspec.version}}
+end
+
+desc "validate the gemspec"
+task :gemspec do
+  gemspec.validate
+end
+
+task :package => :gemspec
