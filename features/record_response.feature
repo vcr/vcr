@@ -54,24 +54,8 @@ Feature: Record response
      Then the "temp/not_the_real_response" library file should have a response for "http://example.com" that matches /This is not the real response from example\.com/
       And the "temp/not_the_real_response" library file should have a response for "http://example.com/foo" that matches /The requested URL \/foo was not found/
 
-  Scenario: Record an asynchronous request (such as for mechanize)
-    Given we do not have a "temp/asynchronous" cassette
-     When I make an asynchronous HTTP get request to "http://example.com" within the "temp/asynchronous" new_episodes cassette
-     Then the "temp/asynchronous" library file should have a response for "http://example.com" that matches /You have reached this web page by typing.*example\.com/
-
-  Scenario: Record a recursive post request
-    Given we do not have a "temp/recursive_post" cassette
-     When I make a recursive HTTP post request to "http://example.com" within the "temp/recursive_post" new_episodes cassette
-     Then the "temp/recursive_post" library file should have a response for "http://example.com" that matches /You have reached this web page by typing.*example\.com/
-      And the "temp/recursive_post" library file should have exactly 1 response
-
   Scenario: Make an allowed HTTP request in a cassette with record mode set to :none
     Given we do not have a "temp/record_none_cassette" cassette
      When I make an HTTP get request to "http://example.com" within the "temp/record_none_cassette" none cassette, allowing requests matching /example.com/
      Then the response for "http://example.com" should match /You have reached this web page by typing.*example\.com/
       And there should not be a "temp/record_none_cassette" library file
-
-  Scenario: Record a request with a block with a return statement
-    Given we do not have a "temp/block_with_a_return" cassette
-     When I make a returning block HTTP get request to "http://example.com" within the "temp/block_with_a_return" new_episodes cassette
-     Then the "temp/block_with_a_return" library file should have a response for "http://example.com" that matches /You have reached this web page by typing.*example\.com/

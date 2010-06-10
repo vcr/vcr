@@ -62,12 +62,6 @@ Feature: Replay recorded response
      Then response 1 for "http://example.com" should match /This is not the real response from example\.com/
       And response 2 for "http://example.com" should match /This is another fake response from example\.com/
 
-  @copy_not_the_real_response_to_temp
-  Scenario: Replay a response for an asynchronous request (such as for mechanize)
-    Given the "temp/not_the_real_response" library file has a response for "http://example.com" that matches /This is not the real response from example\.com/
-     When I make a replayed asynchronous HTTP get request to "http://example.com" within the "temp/not_the_real_response" new_episodes cassette
-     Then the response for "http://example.com" should match /This is not the real response from example\.com/
-
   @regex_cassette
   Scenario: Replay a cassette with a regex URI
     Given this scenario is tagged with the vcr cassette tag: "@regex_cassette"
