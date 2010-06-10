@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe VCR::HttpStubbingAdapters::FakeWeb do
   it_should_behave_like 'an http stubbing adapter'
+  it_should_behave_like 'an http stubbing adapter that supports Net::HTTP'
 
   describe '#check_version!' do
     before(:each) { @orig_version = FakeWeb::VERSION }

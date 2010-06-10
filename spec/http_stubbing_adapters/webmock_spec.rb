@@ -2,6 +2,45 @@ require 'spec_helper'
 
 describe VCR::HttpStubbingAdapters::WebMock do
   it_should_behave_like 'an http stubbing adapter'
+  it_should_behave_like 'an http stubbing adapter that supports Net::HTTP'
+
+  context "using patron" do
+    let(:patron_session) do
+      sess = Patron::Session.new
+      sess.base_url = 'http://example.com'
+      sess
+    end
+
+    def get_body_string(response); response.body; end
+
+    def make_http_request(method, path, body = {})
+      case method
+        when :get
+          patron_session.get(path)
+        when :post
+          patron_session.post(path, body)
+      end
+    end
+
+    it_should_behave_like 'an http stubbing adapter that supports some HTTP library'
+  end
+
+  context "using httpclient" do
+    def get_body_string(response)
+      response.body.content
+    end
+
+    def make_http_request(method, path, body = {})
+      case method
+        when :get
+          HTTPClient.new.get("http://example.com#{path}")
+        when :post
+          HTTPClient.new.post("http://example.com#{path}", body)
+      end
+    end
+
+    it_should_behave_like 'an http stubbing adapter that supports some HTTP library'
+  end
 
   describe '#check_version!' do
     before(:each) { WebMock.should respond_to(:version) }
