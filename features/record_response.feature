@@ -1,3 +1,4 @@
+@all_http_libs
 Feature: Record response
   In order to have deterministic, fast tests that do not depend on an internet connection
   As a TDD/BDD developer

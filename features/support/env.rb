@@ -1,4 +1,21 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib')
+
+if ENV['HTTP_STUBBING_ADAPTER'].to_s == ''
+  ENV['HTTP_STUBBING_ADAPTER'] = 'fakeweb'
+  warn "Using FakeWeb for VCR's cucumber features since the adapter was not specified.  Set HTTP_STUBBING_ADAPTER to specify."
+end
+
+if ENV['HTTP_LIB'].to_s == ''
+  ENV['HTTP_LIB'] = 'net/http'
+  warn "Using Net::HTTP for VCR's cucumber features since the HTTP library was not specified.  Set HTTP_LIB to specify."
+end
+
+# The HTTP library must be loaded before VCR since WebMock looks for the presence of the HTTB library class constant
+# to decide whether or not to hook into it.
+require ENV['HTTP_LIB']
+
+puts "\n\n---------------- Running features using #{ENV['HTTP_STUBBING_ADAPTER']} and #{ENV['HTTP_LIB']} -----------------\n"
+
 require 'vcr'
 
 begin
@@ -9,16 +26,11 @@ rescue LoadError
   # ruby-debug wasn't available so neither can the debugging be
 end
 
-require 'spec/expectations'
+require 'spec'
 
 VCR.config do |c|
   c.cassette_library_dir = File.join(File.dirname(__FILE__), '..', 'fixtures', 'vcr_cassettes', RUBY_VERSION)
-  c.http_stubbing_library = if ENV['HTTP_STUBBING_ADAPTER'].to_s == ''
-    warn "Using fakeweb for VCR's cucumber features since the adapter was not specified.  Set HTTP_STUBBING_ADAPTER to specify."
-    :fakeweb
-  else
-    ENV['HTTP_STUBBING_ADAPTER'].to_sym
-  end
+  c.http_stubbing_library = ENV['HTTP_STUBBING_ADAPTER'].to_sym
 end
 
 VCR.module_eval do

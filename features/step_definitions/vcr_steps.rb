@@ -11,7 +11,7 @@ module VCRHelpers
 
       responses = responses.select(&selector)
       regex = /#{regex_str}/i
-      responses.detect { |r| r.response.body =~ regex }
+      responses.detect { |r| get_body_string(r.response) =~ regex }
     end
   end
 
@@ -71,7 +71,7 @@ end
 
 When /^I make (?:an )?HTTP get request to "([^\"]*)"$/ do |url|
   capture_response(url) do |uri, path|
-    Net::HTTP.get_response(uri)
+    http_get(uri)
   end
 end
 
@@ -110,7 +110,7 @@ Then /^(?:the )?response(?: (\d+))? for "([^\"]*)" should match \/(.+)\/$/ do |r
   response_num = response_num.to_i || 0
   response_num -= 1 if response_num > 0 # translate to 0-based array index.
   regex = /#{regex_str}/i
-  @http_requests[url][response_num].body.should =~ regex
+  get_body_string(@http_requests[url][response_num]).should =~ regex
 end
 
 Then /^there should not be a "([^\"]*)" library file$/ do |cassette_name|

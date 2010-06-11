@@ -1,3 +1,4 @@
+@net_http
 Feature: Net::HTTP
   In order to have deterministic, fast tests that do not depend on an internet connection
   As a TDD/BDD developer

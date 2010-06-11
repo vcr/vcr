@@ -1,34 +1,63 @@
 require 'rubygems'
 require 'rake'
 
-require 'spec/rake/spectask'
-Spec::Rake::SpecTask.new(:spec) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.spec_files = FileList['spec/**/*_spec.rb']
-end
+begin
+  require 'spec/rake/spectask'
+  Spec::Rake::SpecTask.new(:spec) do |spec|
+    spec.libs << 'lib' << 'spec'
+    spec.spec_files = FileList['spec/**/*_spec.rb']
+  end
 
-Spec::Rake::SpecTask.new(:rcov) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.pattern = 'spec/**/*_spec.rb'
-  spec.rcov = true
+  Spec::Rake::SpecTask.new(:rcov) do |spec|
+    spec.libs << 'lib' << 'spec'
+    spec.pattern = 'spec/**/*_spec.rb'
+    spec.rcov = true
+  end
+rescue LoadError
+  task :spec do
+    abort "Rspec is not available. In order to run specs, you must: sudo gem install rspec"
+  end
 end
 
 begin
+  features_subtasks = []
+
   require 'cucumber/rake/task'
-  Cucumber::Rake::Task.new(:features)
+  namespace :features do
+    {
+      'fakeweb' => %w( net/http ),
+      'webmock' => %w( net/http patron httpclient )
+    }.each do |http_stubbing_adapter, http_libraries|
+      namespace http_stubbing_adapter do
+        http_libraries.each do |http_lib|
+
+          sanitized_http_lib = http_lib.gsub('/', '_')
+          features_subtasks << "features:#{http_stubbing_adapter}:#{sanitized_http_lib}"
+
+          task "#{sanitized_http_lib}_prep" do
+            ENV['HTTP_STUBBING_ADAPTER'] = http_stubbing_adapter
+            ENV['HTTP_LIB'] = http_lib
+          end
+
+          Cucumber::Rake::Task.new(
+            { sanitized_http_lib => "#{features_subtasks.last}_prep" },
+            "Run the features using #{http_stubbing_adapter} and #{http_lib}") do |t|
+              t.cucumber_opts = ['--tags', "@all_http_libs,@#{sanitized_http_lib}"]
+          end
+        end
+      end
+    end
+  end
+
+  desc "Run the features using each supported permutation of http stubbing library and http library."
+  task :features => features_subtasks
 rescue LoadError
   task :features do
     abort "Cucumber is not available. In order to run features, you must: sudo gem install cucumber"
   end
 end
 
-task :default => :spec do
-  %w( webmock fakeweb ).each do |http_stubbing_adapter|
-    puts "\n\n-------------- Running features using #{http_stubbing_adapter} http_stubbing_adapter -----------------\n"
-    ENV['HTTP_STUBBING_ADAPTER'] = http_stubbing_adapter
-    Rake::Task[:features].execute
-  end
-end
+task :default => [:spec, :features]
 
 require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|
