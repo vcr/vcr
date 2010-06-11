@@ -48,17 +48,6 @@ describe "Net::HTTP Response extensions" do
       end
     end
 
-    context 'when the body has already been read using #read_body and a block' do
-      subject do
-        http = Net::HTTP.new('example.com', 80)
-        response = http.request_get('/') { |res| res.read_body { |s| } }
-        response.extend VCR::Net::HTTPResponse
-        response
-      end
-
-      it_allows_the_body_to_be_read_again
-    end
-
     context 'when the body has already been read using #read_body and a dest string' do
       subject do
         http = Net::HTTP.new('example.com', 80)

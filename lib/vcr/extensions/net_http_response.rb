@@ -17,7 +17,6 @@ module VCR
         object.instance_variable_set(:@__orig_body__,
           case body_object
             when String then body_object
-            when ::Net::ReadAdapter then body_object.instance_variable_get(:@__body_for_vcr__)
             else raise ArgumentError.new("Unexpected body object: #{body_object}")
           end
         )
