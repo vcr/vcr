@@ -80,6 +80,17 @@ describe VCR do
       VCR.http_stubbing_adapter.should_receive(:check_version!)
       VCR.config { }
     end
+
+    [true, false].each do |val|
+      it "sets http_stubbing_adapter.ignore_localhost to #{val} when so configured" do
+        VCR.config do |c|
+          c.ignore_localhost = val
+
+          # this is mocked at this point since it should be set when the block completes.
+          VCR.http_stubbing_adapter.should_receive(:ignore_localhost=).with(val)
+        end
+      end
+    end
   end
 
   describe 'cucumber_tags' do

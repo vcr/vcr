@@ -46,4 +46,23 @@ describe VCR::Config do
       end
     end
   end
+
+  describe '#ignore_localhost' do
+    it 'sets VCR.http_stubbing_adapter.ignore_localhost' do
+      [true, false].each do |val|
+        VCR.http_stubbing_adapter.ignore_localhost = !val
+        expect {
+          VCR::Config.ignore_localhost = val
+        }.to change { VCR.http_stubbing_adapter.ignore_localhost }.from(!val).to(val)
+      end
+    end
+
+    it 'stores the value even when VCR.http_stubbing_adapter is nil' do
+      VCR.stub!(:http_stubbing_adapter).and_return(nil)
+      [true, false].each do |val|
+        VCR::Config.ignore_localhost = val
+        VCR::Config.ignore_localhost.should == val
+      end
+    end
+  end
 end

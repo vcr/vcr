@@ -105,44 +105,6 @@ describe VCR::Cassette do
     end
   end
 
-  describe '#allow_real_http_requests_to?' do
-    it 'delegates to the :allow_real_http lambda' do
-      [true, false].each do |value|
-        yielded_uri = nil
-        c = VCR::Cassette.new('example', :allow_real_http => lambda { |uri| yielded_uri = uri; value })
-        c.allow_real_http_requests_to?(:the_uri).should == value
-        yielded_uri.should == :the_uri
-      end
-    end
-
-    it 'returns true for localhost requests when the :allow_real_http option is set to :localhost' do
-      c = VCR::Cassette.new('example', :allow_real_http => :localhost)
-      c.allow_real_http_requests_to?(URI('http://localhost')).should be_true
-      c.allow_real_http_requests_to?(URI('http://example.com')).should be_false
-    end
-
-    it 'returns false when no option is set' do
-      c = VCR::Cassette.new('example')
-      c.allow_real_http_requests_to?(URI('http://localhost')).should be_false
-      c.allow_real_http_requests_to?(URI('http://example.com')).should be_false
-    end
-
-    it 'delegates to the default :allow_real_http lambda' do
-      [true, false].each do |value|
-        yielded_uri = nil
-        VCR::Config.default_cassette_options.merge!(:allow_real_http => lambda { |uri| yielded_uri = uri; value })
-        c = VCR::Cassette.new('example')
-        c.allow_real_http_requests_to?(:the_uri).should == value
-        yielded_uri.should == :the_uri
-      end
-
-      VCR::Config.default_cassette_options.merge!(:allow_real_http => :localhost)
-      c = VCR::Cassette.new('example')
-      c.allow_real_http_requests_to?(URI('http://localhost')).should be_true
-      c.allow_real_http_requests_to?(URI('http://example.com')).should be_false
-    end
-  end
-
   describe '#eject' do
     temp_dir File.expand_path(File.dirname(__FILE__) + '/fixtures/cassette_spec_eject'), :assign_to_cassette_library_dir => true
 

@@ -10,9 +10,8 @@ module VCR
     def initialize(name, options = {})
       @name = name
       @record_mode = options[:record] || VCR::Config.default_cassette_options[:record]
-      @allow_real_http_lambda = allow_real_http_lambda_for(options[:allow_real_http] || VCR::Config.default_cassette_options[:allow_real_http])
 
-      deprecate_unregistered_record_mode
+      deprecate_old_cassette_options(options)
       raise_error_unless_valid_record_mode(record_mode)
 
       set_http_connections_allowed
@@ -23,6 +22,7 @@ module VCR
       write_recorded_interactions_to_disk
       VCR.http_stubbing_adapter.restore_stubs_checkpoint(name)
       restore_http_connections_allowed
+      restore_ignore_localhost_for_deprecation
     end
 
     def recorded_interactions
@@ -35,10 +35,6 @@ module VCR
 
     def file
       File.join(VCR::Config.cassette_library_dir, "#{name.to_s.gsub(/[^\w\-\/]+/, '_')}.yml") if VCR::Config.cassette_library_dir
-    end
-
-    def allow_real_http_requests_to?(uri)
-      @allow_real_http_lambda ? @allow_real_http_lambda.call(uri) : false
     end
 
     private
@@ -99,14 +95,6 @@ module VCR
 
     def unstub_requests
       VCR.http_stubbing_adapter.unstub_requests(@original_recorded_interactions)
-    end
-
-    def allow_real_http_lambda_for(allow_option)
-      if allow_option == :localhost
-        lambda { |uri| uri.host == 'localhost' }
-      else
-        allow_option
-      end
     end
   end
 end

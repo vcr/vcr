@@ -51,6 +51,14 @@ module VCR
           ::WebMock::NetHTTPUtility.request_signature_from_request(net_http, request).uri.to_s
         end
 
+        def ignore_localhost=(value)
+          ::WebMock::Config.instance.allow_localhost = value
+        end
+
+        def ignore_localhost
+          ::WebMock::Config.instance.allow_localhost
+        end
+
         private
 
         def response_hash(response)

@@ -44,12 +44,12 @@ shared_examples_for "an http stubbing adapter that supports Net::HTTP" do
   context "using Net::HTTP" do
     def get_body_string(response); response.body; end
 
-    def make_http_request(method, path, body = {})
+    def make_http_request(method, url, body = {})
       case method
         when :get
-          Net::HTTP.get_response(URI.parse('http://example.com' + path))
+          Net::HTTP.get_response(URI.parse(url))
         when :post
-          Net::HTTP.post_form(URI.parse('http://example.com' + path), body)
+          Net::HTTP.post_form(URI.parse(url), body)
       end
     end
 
@@ -60,14 +60,16 @@ end
 shared_examples_for "an http stubbing adapter that supports some HTTP library" do
   subject { described_class }
 
+  NET_CONNECT_NOT_ALLOWED_ERROR = [StandardError, /You can use VCR to automatically record this request and replay it later/]
+
   def self.test_real_http_request(http_allowed)
     if http_allowed
       it 'allows real http requests' do
-        get_body_string(make_http_request(:get, '/foo')).should =~ /The requested URL \/foo was not found/
+        get_body_string(make_http_request(:get, 'http://example.com/foo')).should =~ /The requested URL \/foo was not found/
       end
     else
       it 'does not allow real HTTP requests' do
-        lambda { make_http_request(:get, '/foo') }.should raise_error(StandardError, /You can use VCR to automatically record this request and replay it later/)
+        lambda { make_http_request(:get, 'http://example.com/foo') }.should raise_error(*NET_CONNECT_NOT_ALLOWED_ERROR)
       end
     end
   end
@@ -81,6 +83,26 @@ shared_examples_for "an http stubbing adapter that supports some HTTP library" d
       end
 
       test_real_http_request(http_allowed)
+
+      unless http_allowed
+        %w(localhost 127.0.0.1).each do |localhost_alias|
+          describe 'when ignore_localhost is true' do
+            before(:each) { subject.ignore_localhost = true }
+
+            it 'allows requests to localhost' do
+              expect { make_http_request(:get, "http://#{localhost_alias}/") }.to_not raise_error(*NET_CONNECT_NOT_ALLOWED_ERROR)
+            end
+          end
+
+          describe 'when ignore_localhost is false' do
+            before(:each) { subject.ignore_localhost = false }
+
+            it 'does not allow requests to localhost' do
+              expect { make_http_request(:get, "http://#{localhost_alias}/") }.to raise_error(*NET_CONNECT_NOT_ALLOWED_ERROR)
+            end
+          end
+        end
+      end
 
       context 'when some requests are stubbed, after setting a checkpoint' do
         before(:each) do
@@ -100,12 +122,12 @@ shared_examples_for "an http stubbing adapter that supports some HTTP library" d
         end
 
         it 'gets the stubbed responses when multiple post requests are made to http://example.com' do
-          get_body_string(make_http_request(:post, '/', { 'id' => '7' })).should == 'example.com post response with id=7'
-          get_body_string(make_http_request(:post, '/', { 'id' => '3' })).should == 'example.com post response with id=3'
+          get_body_string(make_http_request(:post, 'http://example.com/', { 'id' => '7' })).should == 'example.com post response with id=7'
+          get_body_string(make_http_request(:post, 'http://example.com/', { 'id' => '3' })).should == 'example.com post response with id=3'
         end
 
         it 'gets the stubbed responses when requests are made to http://example.com/foo' do
-          get_body_string(make_http_request(:get, '/foo')).should == 'example.com get response with path=foo'
+          get_body_string(make_http_request(:get, 'http://example.com/foo')).should == 'example.com get response with path=foo'
         end
 
         context 'when we restore our previous check point' do

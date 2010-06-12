@@ -60,6 +60,8 @@ module VCR
           "#{protocol}://#{userinfo}#{net_http.address}:#{net_http.port}#{path}"
         end
 
+        attr_accessor :ignore_localhost
+
         private
 
         def checkpoints

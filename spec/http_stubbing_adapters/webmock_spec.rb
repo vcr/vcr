@@ -5,20 +5,18 @@ describe VCR::HttpStubbingAdapters::WebMock do
   it_should_behave_like 'an http stubbing adapter that supports Net::HTTP'
 
   context "using patron" do
-    let(:patron_session) do
-      sess = Patron::Session.new
-      sess.base_url = 'http://example.com'
-      sess
-    end
-
     def get_body_string(response); response.body; end
 
-    def make_http_request(method, path, body = {})
+    def make_http_request(method, url, body = {})
+      uri = URI.parse(url)
+      sess = Patron::Session.new
+      sess.base_url = "#{uri.scheme}://#{uri.host}"
+
       case method
         when :get
-          patron_session.get(path)
+          sess.get(uri.path)
         when :post
-          patron_session.post(path, body)
+          sess.post(uri.path, body)
       end
     end
 
@@ -30,12 +28,12 @@ describe VCR::HttpStubbingAdapters::WebMock do
       response.body.content
     end
 
-    def make_http_request(method, path, body = {})
+    def make_http_request(method, url, body = {})
       case method
         when :get
-          HTTPClient.new.get("http://example.com#{path}")
+          HTTPClient.new.get(url)
         when :post
-          HTTPClient.new.post("http://example.com#{path}", body)
+          HTTPClient.new.post(url, body)
       end
     end
 

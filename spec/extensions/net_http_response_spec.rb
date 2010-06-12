@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe "Net::HTTP Response extensions" do
   context 'extending an already read response' do
     # disable VCR for this spec...
-    before(:each) { VCR.insert_cassette('response_extension', :allow_real_http => lambda { |uri| true }) }
+    before(:each) { VCR.insert_cassette('response_extension') }
     after(:each)  { VCR.eject_cassette }
 
     def self.it_allows_the_body_to_be_read_again

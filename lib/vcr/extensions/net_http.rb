@@ -5,16 +5,16 @@ module Net
     def request_with_vcr(request, body = nil, &block)
       uri = URI.parse(VCR.http_stubbing_adapter.request_uri(self, request))
 
-      if (cassette = VCR.current_cassette) && cassette.allow_real_http_requests_to?(uri)
+      if %w(localhost 127.0.0.1).include?(uri.host) && VCR.http_stubbing_adapter.ignore_localhost
         VCR.http_stubbing_adapter.with_http_connections_allowed_set_to(true) do
-          request_without_vcr(request, body, &block)
+          return request_without_vcr(request, body, &block)
         end
-      else
-        response = request_without_vcr(request, body)
-        __store_response_with_vcr__(response, request) if started?
-        yield response if block_given?
-        response
       end
+
+      response = request_without_vcr(request, body)
+      __store_response_with_vcr__(response, request) if started?
+      yield response if block_given?
+      response
     end
     alias_method :request_without_vcr, :request
     alias_method :request, :request_with_vcr
