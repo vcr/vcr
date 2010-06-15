@@ -44,7 +44,7 @@ module VCR
         end
 
         def request_stubbed?(method, uri)
-          !!::WebMock.registered_request?(::WebMock::RequestSignature.new(method, uri))
+          !!::WebMock.registered_request?(::WebMock::RequestSignature.new(method, uri.to_s))
         end
 
         def request_uri(net_http, request)

@@ -74,6 +74,11 @@ shared_examples_for "an http stubbing adapter that supports some HTTP library" d
     end
   end
 
+  def test_request_stubbed(method, url, expected)
+    subject.request_stubbed?(method, url).should == expected
+    subject.request_stubbed?(method, URI.parse(url)).should == expected
+  end
+
   [true, false].each do |http_allowed|
     context "when #http_connections_allowed is set to #{http_allowed}" do
       before(:each) { subject.http_connections_allowed = http_allowed }
@@ -112,13 +117,13 @@ shared_examples_for "an http stubbing adapter that supports some HTTP library" d
         end
 
         it 'returns true from #request_stubbed? for the requests that are stubbed' do
-          subject.request_stubbed?(:post, 'http://example.com').should be_true
-          subject.request_stubbed?(:get, 'http://example.com/foo').should be_true
+          test_request_stubbed(:post, 'http://example.com', true)
+          test_request_stubbed(:get, 'http://example.com/foo', true)
         end
 
         it 'returns false from #request_stubbed? for requests that are not stubbed' do
-          subject.request_stubbed?(:post, 'http://example.com/foo').should be_false
-          subject.request_stubbed?(:get, 'http://google.com').should be_false
+          test_request_stubbed(:post, 'http://example.com/foo', false)
+          test_request_stubbed(:get, 'http://google.com', false)
         end
 
         it 'gets the stubbed responses when multiple post requests are made to http://example.com' do
@@ -136,9 +141,9 @@ shared_examples_for "an http stubbing adapter that supports some HTTP library" d
           test_real_http_request(http_allowed)
 
           it 'returns false from #request_stubbed?' do
-            subject.request_stubbed?(:get, 'http://example.com/foo').should be_false
-            subject.request_stubbed?(:post, 'http://example.com').should be_false
-            subject.request_stubbed?(:get, 'http://google.com').should be_false
+            test_request_stubbed(:get, 'http://example.com/foo', false)
+            test_request_stubbed(:post, 'http://example.com', false)
+            test_request_stubbed(:get, 'http://google.com', false)
           end
         end
       end
