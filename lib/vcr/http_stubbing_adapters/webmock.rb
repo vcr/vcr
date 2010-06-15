@@ -86,3 +86,8 @@ if defined?(WebMock::NetConnectNotAllowedError)
     end
   end
 end
+
+# TODO: remove this once a new version of WebMock has been released with this fixed.
+if defined?(HTTPClient) && !defined?(HTTPClient::NetConnectNotAllowedError)
+  HTTPClient::NetConnectNotAllowedError = WebMock::NetConnectNotAllowedError
+end
