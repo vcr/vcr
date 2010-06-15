@@ -60,7 +60,7 @@ end
 shared_examples_for "an http stubbing adapter that supports some HTTP library" do
   subject { described_class }
 
-  NET_CONNECT_NOT_ALLOWED_ERROR = [StandardError, /You can use VCR to automatically record this request and replay it later/]
+  NET_CONNECT_NOT_ALLOWED_ERROR = [StandardError, /You can use VCR to automatically record this request and replay it later/] unless defined?(NET_CONNECT_NOT_ALLOWED_ERROR)
 
   def self.test_real_http_request(http_allowed)
     if http_allowed
