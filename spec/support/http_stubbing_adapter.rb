@@ -64,11 +64,26 @@ shared_examples_for "an http stubbing adapter that supports some HTTP library" d
 
   def self.test_real_http_request(http_allowed)
     if http_allowed
+
       it 'allows real http requests' do
         get_body_string(make_http_request(:get, 'http://example.com/foo')).should =~ /The requested URL \/foo was not found/
       end
+
+      it 'records new http requests' do
+        VCR.should_receive(:record_http_interaction) do |interaction|
+          URI.parse(interaction.request.uri).to_s.should == URI.parse('http://example.com/foo').to_s
+          interaction.request.method.should == :get
+          interaction.response.status.code.should == 404
+          interaction.response.status.message.should == 'Not Found'
+          interaction.response.body.should =~ /The requested URL \/foo was not found/
+        end
+
+        make_http_request(:get, 'http://example.com/foo')
+      end
+
     else
-      it 'does not allow real HTTP requests' do
+      it 'does not allow real HTTP requests or record them' do
+        VCR.should_receive(:record_http_interaction).never
         lambda { make_http_request(:get, 'http://example.com/foo') }.should raise_error(*NET_CONNECT_NOT_ALLOWED_ERROR)
       end
     end
@@ -126,12 +141,14 @@ shared_examples_for "an http stubbing adapter that supports some HTTP library" d
           test_request_stubbed(:get, 'http://google.com', false)
         end
 
-        it 'gets the stubbed responses when multiple post requests are made to http://example.com' do
+        it 'gets the stubbed responses when multiple post requests are made to http://example.com, and does not record them' do
+          VCR.should_receive(:record_http_interaction).never
           get_body_string(make_http_request(:post, 'http://example.com/', { 'id' => '7' })).should == 'example.com post response with id=7'
           get_body_string(make_http_request(:post, 'http://example.com/', { 'id' => '3' })).should == 'example.com post response with id=3'
         end
 
-        it 'gets the stubbed responses when requests are made to http://example.com/foo' do
+        it 'gets the stubbed responses when requests are made to http://example.com/foo, and does not record them' do
+          VCR.should_receive(:record_http_interaction).never
           get_body_string(make_http_request(:get, 'http://example.com/foo')).should == 'example.com get response with path=foo'
         end
 

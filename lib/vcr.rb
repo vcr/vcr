@@ -58,6 +58,12 @@ module VCR
     end
   end
 
+  def record_http_interaction(interaction)
+    if cassette = current_cassette
+      cassette.record_http_interaction(interaction)
+    end
+  end
+
   private
 
   def cassettes

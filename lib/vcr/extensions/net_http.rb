@@ -12,25 +12,19 @@ module Net
       end
 
       response = request_without_vcr(request, body)
-      __store_response_with_vcr__(response, request) if started?
+      method = request.method.downcase.to_sym
+
+      if started? && !VCR.http_stubbing_adapter.request_stubbed?(method, uri)
+        http_interaction = VCR::HTTPInteraction.from_net_http_objects(self, request, response)
+        response.extend VCR::Net::HTTPResponse # "unwind" the response
+
+        VCR.record_http_interaction(http_interaction)
+      end
+
       yield response if block_given?
       response
     end
     alias_method :request_without_vcr, :request
     alias_method :request, :request_with_vcr
-
-    private
-
-    def __store_response_with_vcr__(response, request)
-      if cassette = VCR.current_cassette
-        uri = VCR.http_stubbing_adapter.request_uri(self, request)
-        method = request.method.downcase.to_sym
-
-        unless VCR.http_stubbing_adapter.request_stubbed?(method, uri)
-          cassette.record_http_interaction(VCR::HTTPInteraction.from_net_http_objects(self, request, response))
-          response.extend VCR::Net::HTTPResponse
-        end
-      end
-    end
   end
 end
