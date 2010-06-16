@@ -5,6 +5,7 @@ describe VCR::HttpStubbingAdapters::FakeWeb do
   it_should_behave_like 'an http stubbing adapter that supports Net::HTTP'
 
   describe '#check_version!' do
+    disable_warnings
     before(:each) { @orig_version = FakeWeb::VERSION }
     after(:each)  { FakeWeb::VERSION = @orig_version }
 
