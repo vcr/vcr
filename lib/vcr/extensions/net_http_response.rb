@@ -13,34 +13,28 @@ module VCR
   module Net
     module HTTPResponse
       def self.extended(object)
-        body_object = object.instance_variable_get(:@body)
-        object.instance_variable_set(:@__orig_body__,
-          case body_object
-            when String then body_object
-            else raise ArgumentError.new("Unexpected body object: #{body_object}")
-          end
-        )
+        object.instance_variable_set(:@__orig_body_for_vcr__, object.instance_variable_get(:@body))
       end
 
       def read_body(dest = nil, &block)
-        if @__orig_body__
+        if @__orig_body_for_vcr__
           if dest && block
             raise ArgumentError.new("both arg and block given for HTTP method")
           elsif dest
-            dest << @__orig_body__
+            dest << @__orig_body_for_vcr__
           elsif block
             @body = ::Net::ReadAdapter.new(block)
-            @body << @__orig_body__
+            @body << @__orig_body_for_vcr__
             @body
           else
-            @body = @__orig_body__
+            @body = @__orig_body_for_vcr__
           end
         else
           super
         end
       ensure
         # allow subsequent calls to #read_body to proceed as normal, without our hack...
-        @__orig_body__ = nil
+        @__orig_body_for_vcr__ = nil
       end
     end
   end

@@ -12,9 +12,8 @@ module Net
       end
 
       response = request_without_vcr(request, body)
-      method = request.method.downcase.to_sym
 
-      if started? && !VCR.http_stubbing_adapter.request_stubbed?(method, uri)
+      if started? && !VCR.http_stubbing_adapter.request_stubbed?(request.method.downcase.to_sym, uri)
         http_interaction = VCR::HTTPInteraction.from_net_http_objects(self, request, response)
         response.extend VCR::Net::HTTPResponse # "unwind" the response
 
