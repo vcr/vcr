@@ -50,10 +50,11 @@ end
 # Output on my machine:
 #
 # Benchmarking Single setup/teardown:
-# webmock  0.000000   0.000000  18.830000 ( 19.350281)
-# fakeweb  0.000000   0.000000   1.930000 (  2.049569)
+# webmock  0.000000   0.000000   8.440000 (  8.525149)
+# fakeweb  0.000000   0.000000   1.950000 (  1.992489)
 # 
 # 
 # Benchmarking Setup/teardown for each http request:
-# webmock  0.000000   0.000000  21.350000 ( 21.795557)
-# fakeweb  0.000000   0.000000   2.490000 (  2.707574)
+# webmock  0.000000   0.000000  12.180000 ( 12.441542)
+# fakeweb  0.000000   0.000000   2.440000 (  2.470183)
+
