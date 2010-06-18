@@ -58,6 +58,31 @@ describe VCR::Cassette do
       end
     end
 
+    describe 'ERB support' do
+      def cassette_body(name, options = {})
+        VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
+        VCR::Cassette.new(name, options.merge(:record => :new_episodes)).recorded_interactions.first.response.body
+      end
+
+      it "compiles a template as ERB if the :erb option is passed as true" do
+        cassette_body('erb_with_no_vars', :erb => true).should == 'sum: 3'
+      end
+
+      it "compiles a template as ERB if the :erb option is passed a hash" do
+        cassette_body('erb_with_vars', :erb => { :var1 => 'a', :var3 => 'c', :var2 => 'b' }).should == 'var1: a; var2: b; var3: c'
+      end
+
+      it "does not compile a template as ERB if the :erb option is not used" do
+        cassette_body('erb_with_no_vars').should == 'sum: <%= 1 + 2 %>'
+      end
+
+      it "raises an error if the ERB template references variables that are not passed in the :erb hash" do
+        expect {
+          cassette_body('erb_with_vars', :erb => { :var1 => 'a', :var2 => 'b' })
+        }.to raise_error(/undefined local variable or method `var3'/)
+      end
+    end
+
     { :new_episodes => true, :all => true, :none => false }.each do |record_mode, http_connections_allowed|
       it "sets http_connections_allowed to #{http_connections_allowed} on the http stubbing adapter when the record mode is #{record_mode}" do
         VCR.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(http_connections_allowed)

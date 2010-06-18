@@ -73,3 +73,9 @@ Feature: Replay recorded response
      Then the response for "http://example.com/regex1" should match /This is the response from the regex cassette/
       And the response for "http://example.com/regex2" should match /This is the response from the regex cassette/
       And the HTTP get request to "http://example.com/something_else" should result in an error that mentions VCR
+
+  Scenario: Replay recorded erb response
+    Given the "erb_cassette" library file has a response for "http://example.com/embedded_ruby_code" that matches /Some embedded ruby code[\S\s]*The value of some_variable is/
+     When I make an HTTP get request to "http://example.com/embedded_ruby_code" within the "erb_cassette" cassette using cassette options: { :record => :none, :erb => { :some_variable => 'foo-bar' } }
+     Then the response for "http://example.com/embedded_ruby_code" should match /Some embedded ruby code: 7[\S\s]*The value of some_variable is: foo-bar/
+

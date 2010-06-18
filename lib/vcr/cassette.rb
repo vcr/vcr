@@ -1,5 +1,6 @@
 require 'fileutils'
 require 'yaml'
+require 'erb'
 
 module VCR
   class Cassette
@@ -10,6 +11,7 @@ module VCR
     def initialize(name, options = {})
       @name = name
       @record_mode = options[:record] || VCR::Config.default_cassette_options[:record]
+      @erb = options[:erb]
 
       deprecate_old_cassette_options(options)
       raise_error_unless_valid_record_mode(record_mode)
@@ -69,10 +71,9 @@ module VCR
 
       if file
         @original_recorded_interactions = begin
-          yaml_content = File.read(file)
-          YAML.load(yaml_content)
+          YAML.load(raw_yaml_content)
         rescue TypeError
-          if yaml_content =~ /VCR::RecordedResponse/
+          if raw_yaml_content =~ /VCR::RecordedResponse/
             raise "The VCR cassette #{name} uses an old format that is now deprecated.  VCR provides a rake task to migrate your old cassettes to the new format.  See http://github.com/myronmarston/vcr/blob/master/CHANGELOG.md for more info."
           else
             raise
@@ -83,6 +84,20 @@ module VCR
       end
 
       VCR.http_stubbing_adapter.stub_requests(recorded_interactions)
+    end
+
+    def raw_yaml_content
+      content = File.read(file)
+      return content unless @erb
+
+      template = ERB.new(content)
+      return template.result unless @erb.is_a?(Hash)
+
+      # create an object with methods for each desired local variable...
+      local_variables = Struct.new(*@erb.keys).new(*@erb.values)
+
+      # instance_eval seems to be the only way to get the binding for ruby 1.9: http://redmine.ruby-lang.org/issues/show/2161
+      template.result(local_variables.instance_eval { binding })
     end
 
     def write_recorded_interactions_to_disk
