@@ -38,12 +38,12 @@ Feature: Record response
 
   Scenario: Make an HTTP request in a cassette with record mode set to :all
     Given we do not have a "temp/record_all_cassette" cassette
-     When I make an HTTP get request to "http://example.com" within the "temp/record_all_cassette" all cassette
+     When I make an HTTP get request to "http://example.com" within the "temp/record_all_cassette" cassette using cassette options: { :record => :all }
      Then the "temp/record_all_cassette" library file should have a response for "http://example.com" that matches /You have reached this web page by typing.*example\.com/
 
   Scenario: Make an HTTP request in a cassette with record mode set to :none
     Given we do not have a "temp/record_none_cassette" cassette
-     When I make an HTTP get request to "http://example.com" within the "temp/record_none_cassette" none cassette
+     When I make an HTTP get request to "http://example.com" within the "temp/record_none_cassette" cassette using cassette options: { :record => :none }
      Then the HTTP get request to "http://example.com" should result in an error that mentions VCR
       And there should not be a "temp/record_none_cassette" library file
 
@@ -51,6 +51,6 @@ Feature: Record response
   Scenario: Make an HTTP request in a cassette with record mode set to :new_episodes
     Given we have a "temp/not_the_real_response" library file with a previously recorded response for "http://example.com"
       And we have a "temp/not_the_real_response" library file with no previously recorded response for "http://example.com/foo"
-     When I make HTTP get requests to "http://example.com" and "http://example.com/foo" within the "temp/not_the_real_response" new_episodes cassette
+     When I make HTTP get requests to "http://example.com" and "http://example.com/foo" within the "temp/not_the_real_response" cassette
      Then the "temp/not_the_real_response" library file should have a response for "http://example.com" that matches /This is not the real response from example\.com/
       And the "temp/not_the_real_response" library file should have a response for "http://example.com/foo" that matches /The requested URL \/foo was not found/
