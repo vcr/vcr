@@ -47,11 +47,11 @@ Feature: Replay recorded response
 
   @copy_not_the_real_response_to_temp
   Scenario: Make an HTTP request in a cassette with record mode set to :new_episodes
-  Given we have a "temp/not_the_real_response" library file with a previously recorded response for "http://example.com"
-    And we have a "temp/not_the_real_response" library file with no previously recorded response for "http://example.com/foo"
-   When I make HTTP get requests to "http://example.com" and "http://example.com/foo" within the "temp/not_the_real_response" new_episodes cassette
-   Then the response for "http://example.com" should match /This is not the real response from example\.com/
-    And the response for "http://example.com/foo" should match /The requested URL \/foo was not found/
+    Given we have a "temp/not_the_real_response" library file with a previously recorded response for "http://example.com"
+      And we have a "temp/not_the_real_response" library file with no previously recorded response for "http://example.com/foo"
+     When I make HTTP get requests to "http://example.com" and "http://example.com/foo" within the "temp/not_the_real_response" new_episodes cassette
+     Then the response for "http://example.com" should match /This is not the real response from example\.com/
+      And the response for "http://example.com/foo" should match /The requested URL \/foo was not found/
 
   @replay_cassette3
   Scenario: Replay multiple different recorded responses for requests to the same URL
