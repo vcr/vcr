@@ -26,8 +26,13 @@ end
 
 module HTTPClientAdapter
   def get_body_string(response)
-    body = response.body
-    body.is_a?(String) ? body : body.content
+    case
+      when response.is_a?(String) then response
+      when response.is_a?(StringIO) then response.read
+      when response.respond_to?(:body) then get_body_string(response.body)
+      when response.respond_to?(:content) then get_body_string(response.content)
+      else raise ArgumentError.new("Unexpected response: #{response}")
+    end
   end
 
   def http_get(uri)
@@ -37,7 +42,7 @@ end
 
 World case ENV['HTTP_LIB']
   when 'patron'      then PatronAdapter
-  when 'httpclient' then HTTPClientAdapter
+  when 'httpclient'  then HTTPClientAdapter
   when 'net/http'    then NetHTTPAdapter
   else raise ArgumentError.new("Unexpected HTTP_LIB: #{ENV['HTTP_LIB']}")
 end

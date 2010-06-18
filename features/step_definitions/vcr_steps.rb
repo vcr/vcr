@@ -75,7 +75,7 @@ When /^I make (?:an )?HTTP get request to "([^\"]*)"$/ do |url|
   end
 end
 
-When /^I make (.*HTTP (?:get|post)) requests? to "([^\"]*)"(?: and "([^\"]*)")? within the "([^\"]*)" ?(#{VCR::Cassette::VALID_RECORD_MODES.join('|')})? cassette$/ do |http_request_type, url1, url2, cassette_name, record_mode|
+When /^I make (.*) requests? to "([^\"]*)"(?: and "([^\"]*)")? within the "([^\"]*)" ?(#{VCR::Cassette::VALID_RECORD_MODES.join('|')})? cassette$/ do |http_request_type, url1, url2, cassette_name, record_mode|
   options = { :record => (record_mode ? record_mode.to_sym : :new_episodes) }
   urls = [url1, url2].select { |u| u.to_s.size > 0 }
   VCR.use_cassette(cassette_name, options) do
