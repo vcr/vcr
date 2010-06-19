@@ -59,6 +59,14 @@ describe VCR::Cassette do
     end
 
     describe 'ERB support' do
+      before(:each) do
+        @orig_default_options = VCR::Config.default_cassette_options
+      end
+
+      after(:each) do
+        VCR::Config.default_cassette_options = @orig_default_options
+      end
+
       def cassette_body(name, options = {})
         VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
         VCR::Cassette.new(name, options.merge(:record => :new_episodes)).recorded_interactions.first.response.body
@@ -66,6 +74,16 @@ describe VCR::Cassette do
 
       it "compiles a template as ERB if the :erb option is passed as true" do
         cassette_body('erb_with_no_vars', :erb => true).should == 'sum: 3'
+      end
+
+      it "compiles a template as ERB if the default :erb option is true, and no option is passed to the cassette" do
+        VCR::Config.default_cassette_options = { :erb => true }
+        cassette_body('erb_with_no_vars').should == 'sum: 3'
+      end
+
+      it "does not compile a template as ERB if the default :erb option is true, and :erb => false is passed to the cassette" do
+        VCR::Config.default_cassette_options = { :erb => true }
+        cassette_body('erb_with_no_vars', :erb => false).should == 'sum: <%= 1 + 2 %>'
       end
 
       it "compiles a template as ERB if the :erb option is passed a hash" do

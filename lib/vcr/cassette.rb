@@ -9,8 +9,10 @@ module VCR
     attr_reader :name, :record_mode
 
     def initialize(name, options = {})
+      options = VCR::Config.default_cassette_options.merge(options)
+
       @name = name
-      @record_mode = options[:record] || VCR::Config.default_cassette_options[:record]
+      @record_mode = options[:record]
       @erb = options[:erb]
 
       deprecate_old_cassette_options(options)
