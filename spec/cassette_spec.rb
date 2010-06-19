@@ -38,7 +38,7 @@ describe VCR::Cassette do
   describe 'on creation' do
     it 'raises an error with a helpful message when loading an old unsupported cassette' do
       VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}")
-      lambda { VCR::Cassette.new('0_3_1_cassette') }.should raise_error(/The VCR cassette 0_3_1_cassette uses an old format that is now deprecated/)
+      lambda { VCR::Cassette.new('0_3_1_cassette') }.should raise_error(/The VCR cassette 0_3_1_cassette.yml uses an old format that is now deprecated/)
     end
 
     it "raises an error if given an invalid record mode" do
@@ -94,10 +94,22 @@ describe VCR::Cassette do
         cassette_body('erb_with_no_vars').should == 'sum: <%= 1 + 2 %>'
       end
 
-      it "raises an error if the ERB template references variables that are not passed in the :erb hash" do
+      it "raises a helpful error if the ERB template references variables that are not passed in the :erb hash" do
         expect {
           cassette_body('erb_with_vars', :erb => { :var1 => 'a', :var2 => 'b' })
-        }.to raise_error(/undefined local variable or method `var3'/)
+        }.to raise_error(VCR::Cassette::MissingERBVariableError,
+          %{The ERB in the erb_with_vars.yml cassette file references undefined variable var3.  } +
+          %{Pass it to the cassette using :erb => #{ { :var1 => 'a', :var2 => 'b' }.merge(:var3 => 'some value').inspect }.}
+        )
+      end
+
+      it "raises a helpful error if the ERB template references variables and :erb => true is passed" do
+        expect {
+          cassette_body('erb_with_vars', :erb => true)
+        }.to raise_error(VCR::Cassette::MissingERBVariableError,
+          %{The ERB in the erb_with_vars.yml cassette file references undefined variable var1.  } +
+          %{Pass it to the cassette using :erb => {:var1=>"some value"}.}
+        )
       end
     end
 

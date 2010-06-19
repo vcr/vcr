@@ -4,6 +4,8 @@ require 'erb'
 
 module VCR
   class Cassette
+    class MissingERBVariableError < NameError; end
+
     VALID_RECORD_MODES = [:all, :none, :new_episodes].freeze
 
     attr_reader :name, :record_mode
@@ -38,10 +40,14 @@ module VCR
     end
 
     def file
-      File.join(VCR::Config.cassette_library_dir, "#{name.to_s.gsub(/[^\w\-\/]+/, '_')}.yml") if VCR::Config.cassette_library_dir
+      File.join(VCR::Config.cassette_library_dir, "#{sanitized_name}.yml") if VCR::Config.cassette_library_dir
     end
 
     private
+
+    def sanitized_name
+      name.to_s.gsub(/[^\w\-\/]+/, '_')
+    end
 
     def raise_error_unless_valid_record_mode(record_mode)
       unless VALID_RECORD_MODES.include?(record_mode)
@@ -76,7 +82,7 @@ module VCR
           YAML.load(raw_yaml_content)
         rescue TypeError
           raise unless raw_yaml_content =~ /VCR::RecordedResponse/
-          raise "The VCR cassette #{name} uses an old format that is now deprecated.  VCR provides a rake task to migrate your old cassettes to the new format.  See http://github.com/myronmarston/vcr/blob/master/CHANGELOG.md for more info."
+          raise "The VCR cassette #{sanitized_name}.yml uses an old format that is now deprecated.  VCR provides a rake task to migrate your old cassettes to the new format.  See http://github.com/myronmarston/vcr/blob/master/CHANGELOG.md for more info."
         end if File.exist?(file)
 
         recorded_interactions.replace(@original_recorded_interactions)
@@ -90,13 +96,24 @@ module VCR
       return content unless @erb
 
       template = ERB.new(content)
-      return template.result unless @erb.is_a?(Hash)
 
-      # create an object with methods for each desired local variable...
-      local_variables = Struct.new(*@erb.keys).new(*@erb.values)
+      begin
+        return template.result unless @erb.is_a?(Hash)
 
-      # instance_eval seems to be the only way to get the binding for ruby 1.9: http://redmine.ruby-lang.org/issues/show/2161
-      template.result(local_variables.instance_eval { binding })
+        # create an object with methods for each desired local variable...
+        local_variables = Struct.new(*@erb.keys).new(*@erb.values)
+
+        # instance_eval seems to be the only way to get the binding for ruby 1.9: http://redmine.ruby-lang.org/issues/show/2161
+        template.result(local_variables.instance_eval { binding })
+      rescue NameError => e
+        var_name = e.message[/undefined local variable or method `(.*)' for/, 1].to_sym
+        example_hash = (@erb.is_a?(Hash) ? @erb : {}).merge(var_name => 'some value')
+
+        raise MissingERBVariableError.new(
+          "The ERB in the #{sanitized_name}.yml cassette file references undefined variable #{var_name}.  " +
+          "Pass it to the cassette using :erb => #{ example_hash.inspect }."
+        )
+      end
     end
 
     def write_recorded_interactions_to_disk
