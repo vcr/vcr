@@ -22,7 +22,6 @@ Dir[File.expand_path(File.join(File.dirname(__FILE__),'support','**','*.rb'))].e
 Spec::Runner.configure do |config|
   config.extend TempCassetteLibraryDir
   config.extend DisableWarnings
-  config.extend Deprecated
 
   config.before(:each) do
     VCR::Config.default_cassette_options = { :record => :new_episodes }

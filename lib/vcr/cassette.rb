@@ -73,11 +73,8 @@ module VCR
         @original_recorded_interactions = begin
           YAML.load(raw_yaml_content)
         rescue TypeError
-          if raw_yaml_content =~ /VCR::RecordedResponse/
-            raise "The VCR cassette #{name} uses an old format that is now deprecated.  VCR provides a rake task to migrate your old cassettes to the new format.  See http://github.com/myronmarston/vcr/blob/master/CHANGELOG.md for more info."
-          else
-            raise
-          end
+          raise unless raw_yaml_content =~ /VCR::RecordedResponse/
+          raise "The VCR cassette #{name} uses an old format that is now deprecated.  VCR provides a rake task to migrate your old cassettes to the new format.  See http://github.com/myronmarston/vcr/blob/master/CHANGELOG.md for more info."
         end if File.exist?(file)
 
         recorded_interactions.replace(@original_recorded_interactions)
@@ -106,10 +103,6 @@ module VCR
         FileUtils.mkdir_p directory unless File.exist?(directory)
         File.open(file, 'w') { |f| f.write recorded_interactions.to_yaml }
       end
-    end
-
-    def unstub_requests
-      VCR.http_stubbing_adapter.unstub_requests(@original_recorded_interactions)
     end
   end
 end
