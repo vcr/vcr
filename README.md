@@ -38,10 +38,25 @@ will replay the response from example.com when the http request is made.  This t
 made anymore), deterministic (the test will continue to pass, even if you are offline, or example.com goes down for
 maintenance) and accurate (the response from example.com will contain the same headers and body you get from a real request).
 
+## Features
+
+* Automatically records and replays your HTTP interactions with minimal setup/configuration code.
+* Supports multiple HTTP stubbing libraries.  Currently FakeWeb and WebMock are supported, and the adapter interface
+  is easy to implement for any future libraries.
+* Supports multiple HTTP libraries: [Net::HTTP](http://www.ruby-doc.org/stdlib/libdoc/net/http/rdoc/index.html)
+  (all HTTP stubbing libraries), [Patron](http://github.com/toland/patron) (WebMock only),
+  [HTTPClient](http://github.com/nahi/httpclient) (WebMock only) and
+  [em-http-request](http://github.com/igrigorik/em-http-request) (WebMock only).
+* The same request can receive different responses in different tests--just use different cassettes.
+* The recorded requests and responses are stored on disk as YAML and can easily be inspected and edited.
+* Dynamic responses are supported using ERB.
+* Disables all HTTP requests that you don't explicitly allow.
+* Simple cucumber integration is provided using tags.
+
 ## Cassettes
 
-Cassettes are the medium to which VCR records HTTP interactions, and the medium from which it replays them.  
-While a cassette is in use, new HTTP requests (or "new episodes", as VCR calls them) either get 
+Cassettes are the medium to which VCR records HTTP interactions, and the medium from which it replays them.
+While a cassette is in use, new HTTP requests (or "new episodes", as VCR calls them) either get
 recorded, or an error will be raised, depending on the cassette's `:record` mode (see below).  When you use
 a cassette that contains previously recorded HTTP interactions, it registers them with the http stubbing
 library of your choice (fakeweb or webmock) so that HTTP requests get the recorded response.  Between test
@@ -50,32 +65,7 @@ runs, cassettes are stored on disk as YAML files in your configured cassette lib
 Each cassette can be configured with a couple options:
 
 * `:record`: Specifies a record mode for this cassette.
-* `:allow_real_http`: You can use this to force VCR to always allow a real HTTP request for particular URIs.
-
-For example, to prevent the VCR cassette from recording and replaying requests to google.com, you could use:
-
-    lambda { |uri| uri.host == 'google.com' }
-
-All non-google requests would be recorded/replayed as normal.  You can also set this to `:localhost`,
-which is syntactic sugar for:
-
-    lambda { |uri| uri.host == 'localhost' }
-
-This is particularly useful for using VCR with [capybara](http://github.com/jnicklas/capybara)
-and any of its javascript drivers (see below for more info).
-
-## Cassette Customization
-
-Cassettes are stored as simple plain text YAML files and can easily be edited to suit your needs.  One common need
-is for a particular request to be stubbed using a regex rather than the raw URL.  This is handy for URLs that contain
-non-deterministic portions (such as timestamps)--since the URL will be a bit different each time, the URL from the
-recorded request will not match the URL for future requests.  You can simply change the URL to an appropriate regex:
-
-    request: !ruby/struct:VCR::Request 
-      method: :get
-      uri: !ruby/regexp /example\.com\/reg/
-      body: 
-      headers: 
+* `:erb`: Used for dynamic cassettes (see below for more details).
 
 ## Record modes
 
@@ -93,6 +83,7 @@ and a per-cassette record mode when inserting a cassette.  The record modes are:
     VCR.config do |c|
       c.cassette_library_dir     = File.join(Rails.root, 'features', 'fixtures', 'cassette_library')
       c.http_stubbing_library    = :fakeweb
+      c.ignore_localhost         = true
       c.default_cassette_options = { :record => :none }
     end
 
@@ -105,7 +96,11 @@ configuration options:
   This is currently optional--VCR will try to guess based on the presence or absence of the `FakeWeb` or `WebMock`
   constants, but this is mostly done to assist users upgrading from VCR 0.3.1, which only worked with fakeweb and
   didn't have this option.  I recommend you explicitly configure this.
-* `default_cassette_options`: The default options for your cassettes.  These will be overriden by any options you
+* `ignore_localhost`: Defaults to false.  Setting it true does the following:
+    * Localhost requests will proceed as normal.  The "Real HTTP connections are disabled" error will not occur.
+    * Localhost requests will not be recorded.
+    * Previously recorded localhost requests will not be replayed.
+* `default_cassette_options`: The default options for your cassettes.  These will be overridden by any options you
   set on each individual cassette.
 
 ## Usage with your favorite ruby test/spec framework
@@ -160,8 +155,69 @@ If the last argument to `#tags` is a hash, VCR will use it as the options for th
 
 When you use any of the javascript-enabled drivers (selenium, celerity, culerity) with
 [capybara](http://github.com/jnicklas/capybara), it'll need to ping the app running on localhost.
-Set the `:allow_real_http => :localhost` option on your cassettes to allow this (or set it as a
-default cassette option in your configuration).
+Set the `ignore_localhost` option to true to allow this.
+
+## Cassette Customization
+
+Cassettes are stored as simple plain text YAML files and can easily be edited to suit your needs.  One common need
+is for a particular request to be stubbed using a regex rather than the raw URL.  This is handy for URLs that contain
+non-deterministic portions (such as timestamps)--since the URL will be a bit different each time, the URL from the
+recorded request will not match the URL for future requests.  You can simply change the URL to the YAML of the
+appropriate regex.
+
+Figure out the yaml in irb:
+
+    >> require 'yaml'
+    => true
+    >> puts /example\.com\/\d+/.to_yaml
+    --- !ruby/regexp /example\.com\/\d+/
+
+Edit your cassette file:
+
+    request: !ruby/struct:VCR::Request 
+      method: :get
+      uri: !ruby/regexp /example\.com\/\d+/
+      body: 
+      headers: 
+
+## Dynamic Cassettes
+
+VCR's default recording and replaying is static.  The exact response that is initially recorded will
+be replayed for all future requests.  Usually this is fine, but in some cases you need something more
+dynamic.  You can use [ERB](http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/) for this.
+
+Enable ERB evaluation of a cassette using the `:erb` option:
+
+    VCR.use_cassette('user-subscription', :erb => :true) do
+      # do something that makes an HTTP request
+    end
+
+You can use variables in your cassette's ERB by passing a hash:
+
+    VCR.use_cassette('user-subscription', :erb => { :user => User.last }) do
+      # do something that makes an HTTP request
+    end
+
+In your cassette:
+
+    request: !ruby/struct:VCR::Request 
+      method: :get
+      uri: http://some-domain.com:80/users/<%= user.id %>
+      body: 
+      headers: 
+      ...
+    response: !ruby/struct:VCR::Response 
+      ...
+      body: Hello, <%= user.name %>!
+
+## FakeWeb or WebMock?
+
+VCR works fine with either FakeWeb or WebMock.  Overall, WebMock has more features, and you'll need to use
+WebMock if you want to use VCR with an HTTP library besides `Net::HTTP`.  However, FakeWeb is currently
+about three times faster than WebMock, so you may want to stick with FakeWeb if you don't need WebMock's
+additional features.  You can see the
+[benchmarks](http://github.com/myronmarston/vcr/blob/master/benchmarks/http_stubbing_libraries.rb) for
+more details.
 
 ## Suggested Workflow
 
@@ -196,8 +252,7 @@ that it is making a new HTTP request, you'll be notified by an error as shown ab
 
 ## Ruby Version Compatibility
 
-VCR works on ruby [1.8.6](http://integrity186.heroku.com/vcr), [1.8.7](http://integrity187.heroku.com/vcr) and 
-[1.9.1](http://integrity191.heroku.com/vcr).
+VCR has been tested on ruby 1.8.6, 1.8.7 and 1.9.1.
 
 ## Notes, etc.
 

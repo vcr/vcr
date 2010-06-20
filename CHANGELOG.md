@@ -1,5 +1,39 @@
 #Changelog
 
+## 1.0.0 (June 22, 2010)
+
+* New Features
+  * Added support for [HTTPClient](http://github.com/nahi/httpclient), [Patron](http://github.com/toland/patron) and
+    [em-http-request](http://github.com/igrigorik/em-http-request) when WebMock is used.  Any future http libraries
+    WebMock supports should (theoretically, at least) work without any VCR code changes.  Thanks to 
+    [Bartosz Blimke](http://github.com/bblimke) for adding the necessary code to WebMock to make this happen!
+  * Added support for dynamic responses using ERB.  A cassette will be evaluated as ERB before the YAML
+    is deserialized if you pass it an `:erb => true` option.  You can pass variables using
+    `:erb => { :var1 => 'some value', :var2 => 'another value' }`.
+  * Added `ignore_localhost` configuration setting, which defaults to false.  Setting it true does the following:
+    * Localhost requests will proceed as normal.  The "Real HTTP connections are disabled" error will not occur.
+    * Localhost requests will not be recorded.
+    * Previously recorded localhost requests will not be replayed.
+  * Exposed the version number:
+    * `VCR.version`       => string (in the format "major.minor.patch")
+    * `VCR.version.parts` => array of integers
+    * `VCR.version.major` => integer
+    * `VCR.version.minor` => integer
+    * `VCR.version.patch` => integer
+  * Added test coverage and documentation of using a regex for non-deterministic URLs (i.e. URLs that include
+    a timestamp as a query parameter).  It turns out this feature worked before, and I just didn't realize it :).
+
+* Breaking Changes
+  * The `:allow_real_http => lambda { |uri| ... }` cassette option has been removed.  There was no way to get
+    this to work with the newly supported http libraries without extensive monkeypatching, and it was mostly
+    useful for localhost requests, which is more easily handled by the new `ignore_localhost` config setting.
+  * Removed methods and options that had been previously deprecated.  If you're upgrading from an old version,
+    I recommend upgrading to 0.4.1 first, deal with all the deprecation warnings, then upgrade to 1.0.0.
+
+* Misc Changes:
+  * Removed dependency on [jeweler](http://github.com/technicalpickles/jeweler).  Manage the gemspec by hand instead.
+  * Removed some extensions that are no longer necessary.
+
 ## 0.4.1 May 11, 2010
 * Fixed a bug: when `Net::HTTPResponse#read_body` was called after VCR had read the body to record a new request,
   it raised an error (`IOError: Net::HTTPResponse#read_body called twice`).  My fix extends Net::HTTPResponse
