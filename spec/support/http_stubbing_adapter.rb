@@ -111,12 +111,15 @@ shared_examples_for "an http stubbing adapter that supports some HTTP library" d
       test_real_http_request(http_allowed)
 
       unless http_allowed
-        %w(localhost 127.0.0.1).each do |localhost_alias|
+        let(:localhost_response) { 'A localhost response!' }
+        let(:localhost_server)   { VCR::LocalhostServer::STATIC_SERVERS[localhost_response] }
+
+        VCR::LOCALHOST_ALIASES.each do |localhost_alias|
           describe 'when ignore_localhost is true' do
             before(:each) { subject.ignore_localhost = true }
 
             it "allows requests to #{localhost_alias}" do
-              expect { make_http_request(:get, "http://#{localhost_alias}/") }.to_not raise_error(*NET_CONNECT_NOT_ALLOWED_ERROR)
+              get_body_string(make_http_request(:get, "http://#{localhost_alias}:#{localhost_server.port}/")).should == localhost_response
             end
           end
 
@@ -124,7 +127,7 @@ shared_examples_for "an http stubbing adapter that supports some HTTP library" d
             before(:each) { subject.ignore_localhost = false }
 
             it "does not allow requests to #{localhost_alias}" do
-              expect { make_http_request(:get, "http://#{localhost_alias}/") }.to raise_error(*NET_CONNECT_NOT_ALLOWED_ERROR)
+              expect { make_http_request(:get, "http://#{localhost_alias}:#{localhost_server.port}/") }.to raise_error(*NET_CONNECT_NOT_ALLOWED_ERROR)
             end
           end
         end

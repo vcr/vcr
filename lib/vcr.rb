@@ -12,6 +12,8 @@ require 'vcr/http_stubbing_adapters/base'
 module VCR
   extend self
 
+  LOCALHOST_ALIASES = %w( localhost 127.0.0.1 )
+
   def current_cassette
     cassettes.last
   end
@@ -59,9 +61,11 @@ module VCR
   end
 
   def record_http_interaction(interaction)
-    if cassette = current_cassette
-      cassette.record_http_interaction(interaction)
-    end
+    return unless cassette = current_cassette
+    return if http_stubbing_adapter.ignore_localhost &&
+      LOCALHOST_ALIASES.include?(URI.parse(interaction.uri).host)
+
+    cassette.record_http_interaction(interaction)
   end
 
   private

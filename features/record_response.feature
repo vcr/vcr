@@ -54,3 +54,11 @@ Feature: Record response
      When I make HTTP get requests to "http://example.com" and "http://example.com/foo" within the "temp/not_the_real_response" cassette
      Then the "temp/not_the_real_response" library file should have a response for "http://example.com" that matches /This is not the real response from example\.com/
       And the "temp/not_the_real_response" library file should have a response for "http://example.com/foo" that matches /The requested URL \/foo was not found/
+
+  Scenario: Ignore localhost setting allows localhost requests and does not record them
+    Given we do not have a "temp/localhost" cassette
+      And the ignore_localhost config setting is set to true
+      And a rack app is running on localhost that returns "hello world" for all requests
+     When I make an HTTP get request to the localhost rack app within the "temp/localhost" cassette
+     Then the response for the localhost rack app should match /hello world/
+      And there should not be a "temp/localhost" library file

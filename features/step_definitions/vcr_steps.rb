@@ -116,3 +116,19 @@ Then /^there should not be a "([^\"]*)" library file$/ do |cassette_name|
   yaml_file = File.join(VCR::Config.cassette_library_dir, "#{cassette_name}.yml")
   File.exist?(yaml_file).should be_false
 end
+
+Given /^the ignore_localhost config setting is set to true$/ do
+  VCR::Config.ignore_localhost = true
+end
+
+Given /^a rack app is running on localhost that returns "([^"]+)" for all requests$/ do |response_string|
+  @rack_server = VCR::LocalhostServer::STATIC_SERVERS[response_string]
+end
+
+When /^I make an HTTP get request to the localhost rack app within the "([^\"]*)" cassette$/ do |cassette|
+  When %{I make an HTTP get request to "http://localhost:#{@rack_server.port}" within the "#{cassette}" cassette}
+end
+
+Then /^the response for the localhost rack app should match \/(.*)\/$/ do |regex|
+  Then %{the response for "http://localhost:#{@rack_server.port}" should match /#{regex}/}
+end

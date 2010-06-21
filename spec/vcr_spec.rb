@@ -5,7 +5,7 @@ describe VCR do
     VCR.insert_cassette(:cassette_test)
   end
 
-  describe 'insert_cassette' do
+  describe '.insert_cassette' do
     it 'creates a new cassette' do
       insert_cassette.should be_instance_of(VCR::Cassette)
     end
@@ -18,7 +18,7 @@ describe VCR do
     end
   end
 
-  describe 'eject_cassette' do
+  describe '.eject_cassette' do
     it 'ejects the current cassette' do
       cassette = insert_cassette
       cassette.should_receive(:eject)
@@ -36,7 +36,7 @@ describe VCR do
     end
   end
 
-  describe 'use_cassette' do
+  describe '.use_cassette' do
     it 'inserts a new cassette' do
       new_cassette = VCR::Cassette.new(:use_cassette_test)
       VCR.should_receive(:insert_cassette).and_return(new_cassette)
@@ -60,7 +60,7 @@ describe VCR do
     end
   end
 
-  describe 'config' do
+  describe '.config' do
     it 'yields the configuration object' do
       yielded_object = nil
       VCR.config do |obj|
@@ -93,7 +93,7 @@ describe VCR do
     end
   end
 
-  describe 'cucumber_tags' do
+  describe '.cucumber_tags' do
     it 'yields a cucumber tags object' do
       yielded_object = nil
       VCR.cucumber_tags do |obj|
@@ -103,7 +103,7 @@ describe VCR do
     end
   end
 
-  describe '#http_stubbing_adapter' do
+  describe '.http_stubbing_adapter' do
     subject { VCR.http_stubbing_adapter }
     before(:each) do
       VCR.instance_variable_set(:@http_stubbing_adapter, nil)
@@ -125,6 +125,68 @@ describe VCR do
     it 'raises an error when library is not set' do
       VCR::Config.http_stubbing_library = nil
       lambda { subject }.should raise_error(/The http stubbing library is not configured correctly/)
+    end
+  end
+
+  describe '.record_http_interaction' do
+    before(:each) { VCR.stub!(:current_cassette).and_return(current_cassette) }
+
+    def self.with_ignore_localhost_set_to(value, &block)
+      context "when http_stubbing_adapter.ignore_localhost is #{value}" do
+        before(:each) { VCR.http_stubbing_adapter.stub!(:ignore_localhost).and_return(value) }
+
+        instance_eval(&block)
+      end
+    end
+
+    def self.it_records_requests_to(host)
+      it "records requests to #{host}" do
+        interaction = stub(:uri => "http://#{host}/")
+        current_cassette.should_receive(:record_http_interaction).with(interaction).once
+        VCR.record_http_interaction(interaction)
+      end
+    end
+
+    def self.it_does_not_record_requests_to(host)
+      it "does not record requests to #{host}" do
+        interaction = stub(:uri => "http://#{host}/")
+        current_cassette.should_receive(:record_http_interaction).never
+        VCR.record_http_interaction(interaction)
+      end
+    end
+
+    context 'when there is a current cassette' do
+      let(:current_cassette) { mock('current casette') }
+
+      with_ignore_localhost_set_to(true) do
+        it_records_requests_to "example.com"
+
+        VCR::LOCALHOST_ALIASES.each do |host|
+          it_does_not_record_requests_to host
+        end
+      end
+
+      with_ignore_localhost_set_to(false) do
+        (VCR::LOCALHOST_ALIASES + ['example.com']).each do |host|
+          it_records_requests_to host
+        end
+      end
+    end
+
+    context 'when there is not a current cassette' do
+      let(:current_cassette) { nil }
+
+      with_ignore_localhost_set_to(true) do
+        (VCR::LOCALHOST_ALIASES + ['example.com']).each do |host|
+          it_does_not_record_requests_to host
+        end
+      end
+
+      with_ignore_localhost_set_to(false) do
+        (VCR::LOCALHOST_ALIASES + ['example.com']).each do |host|
+          it_does_not_record_requests_to host
+        end
+      end
     end
   end
 end

@@ -1,4 +1,5 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib')
+$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../spec/support')
 
 if ENV['HTTP_STUBBING_ADAPTER'].to_s == ''
   ENV['HTTP_STUBBING_ADAPTER'] = 'fakeweb'
@@ -17,6 +18,7 @@ require ENV['HTTP_LIB']
 puts "\n\n---------------- Running features using #{ENV['HTTP_STUBBING_ADAPTER']} and #{ENV['HTTP_LIB']} -----------------\n"
 
 require 'vcr'
+require 'vcr_localhost_server'
 
 begin
   require 'ruby-debug'
@@ -51,6 +53,8 @@ After do |scenario|
 end
 
 Before do |scenario|
+  VCR::Config.ignore_localhost = false
+
   VCR.current_cucumber_scenario = scenario
   temp_dir = File.join(VCR::Config.cassette_library_dir, 'temp')
   FileUtils.rm_rf(temp_dir) if File.exist?(temp_dir)

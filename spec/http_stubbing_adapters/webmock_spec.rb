@@ -10,7 +10,7 @@ describe VCR::HttpStubbingAdapters::WebMock do
     def make_http_request(method, url, body = {})
       uri = URI.parse(url)
       sess = Patron::Session.new
-      sess.base_url = "#{uri.scheme}://#{uri.host}"
+      sess.base_url = "#{uri.scheme}://#{uri.host}:#{uri.port}"
 
       case method
         when :get

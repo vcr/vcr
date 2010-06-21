@@ -15,7 +15,7 @@ module PatronAdapter
 
   def patron_session(uri)
     sess = Patron::Session.new
-    sess.base_url = uri.host
+    sess.base_url = "#{uri.host}:#{uri.port}"
     sess
   end
 

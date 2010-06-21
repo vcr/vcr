@@ -2,7 +2,7 @@ module VCR
   class Cassette
     def allow_real_http_requests_to?(uri)
       warn "WARNING: VCR::Cassette#allow_real_http_requests_to? is deprecated and should no longer be used."
-      VCR.http_stubbing_adapter.ignore_localhost && %w(localhost 127.0.0.1).include?(uri.host)
+      VCR.http_stubbing_adapter.ignore_localhost && VCR::LOCALHOST_ALIASES.include?(uri.host)
     end
 
     private
