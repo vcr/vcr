@@ -109,7 +109,7 @@ shared_examples_for "an http stubbing adapter that supports some HTTP library" d
           describe 'when ignore_localhost is true' do
             before(:each) { subject.ignore_localhost = true }
 
-            it 'allows requests to localhost' do
+            it "allows requests to #{localhost_alias}" do
               expect { make_http_request(:get, "http://#{localhost_alias}/") }.to_not raise_error(*NET_CONNECT_NOT_ALLOWED_ERROR)
             end
           end
@@ -117,7 +117,7 @@ shared_examples_for "an http stubbing adapter that supports some HTTP library" d
           describe 'when ignore_localhost is false' do
             before(:each) { subject.ignore_localhost = false }
 
-            it 'does not allow requests to localhost' do
+            it "does not allow requests to #{localhost_alias}" do
               expect { make_http_request(:get, "http://#{localhost_alias}/") }.to raise_error(*NET_CONNECT_NOT_ALLOWED_ERROR)
             end
           end
