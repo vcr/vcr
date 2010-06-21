@@ -2,9 +2,20 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe "Net::HTTP Response extensions" do
   context 'extending an already read response' do
-    # disable VCR for this spec...
-    before(:each) { VCR.insert_cassette('response_extension') }
-    after(:each)  { VCR.eject_cassette }
+    # WebMock uses this extension, too, and to prevent it from automatically being included
+    # (and hence, causing issues with this spec), we remove all callbacks for the duration
+    # of this spec, since the absence of any callbacks will prevent WebMock from reading the response
+    # and extending the response with the response extension.
+    before(:all) do
+      @orig_webmock_callbacks = ::WebMock::CallbackRegistry.callbacks.dup
+      ::WebMock::CallbackRegistry.reset
+    end
+
+    after(:all) do
+      @orig_webmock_callbacks.each do |cb|
+        ::WebMock::CallbackRegistry.add_callback(cb[:options], cb[:block])
+      end
+    end
 
     def self.it_allows_the_body_to_be_read_again
       let(:expected_regex) { /You have reached this web page by typing.*example\.com/ }
