@@ -1,4 +1,9 @@
+share_as :HttpStubbingAdapterStubbed do
+  before(:each) { VCR.stub!(:http_stubbing_adapter).and_return(subject) }
+end
+
 shared_examples_for "an http stubbing adapter" do
+  include HttpStubbingAdapterStubbed
   subject { described_class }
 
   describe '#request_uri' do
@@ -58,6 +63,7 @@ shared_examples_for "an http stubbing adapter that supports Net::HTTP" do
 end
 
 shared_examples_for "an http stubbing adapter that supports some HTTP library" do
+  include HttpStubbingAdapterStubbed
   subject { described_class }
 
   NET_CONNECT_NOT_ALLOWED_ERROR = [StandardError, /You can use VCR to automatically record this request and replay it later/] unless defined?(NET_CONNECT_NOT_ALLOWED_ERROR)
