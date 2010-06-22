@@ -28,7 +28,11 @@ class VCR::LocalhostServer < Capybara::Server
 
     at_exit do
       Process.kill('INT', pid)
-      Process.wait(pid)
+      begin
+        Process.wait(pid)
+      rescue Errno::ECHILD
+        # ignore this error...I think it means the child process has already exited.
+      end
     end
 
     self
