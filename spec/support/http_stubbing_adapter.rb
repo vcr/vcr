@@ -111,23 +111,26 @@ shared_examples_for "an http stubbing adapter that supports some HTTP library" d
       test_real_http_request(http_allowed)
 
       unless http_allowed
-        let(:localhost_response) { 'A localhost response!' }
-        let(:localhost_server)   { VCR::LocalhostServer::STATIC_SERVERS[localhost_response] }
+        describe 'ignore_localhost' do
+          extend PendingOnHeroku
+          let(:localhost_response) { 'A localhost response!' }
+          let(:localhost_server)   { VCR::LocalhostServer::STATIC_SERVERS[localhost_response] }
 
-        VCR::LOCALHOST_ALIASES.each do |localhost_alias|
-          describe 'when ignore_localhost is true' do
-            before(:each) { subject.ignore_localhost = true }
+          VCR::LOCALHOST_ALIASES.each do |localhost_alias|
+            describe 'when set to true' do
+              before(:each) { subject.ignore_localhost = true }
 
-            it "allows requests to #{localhost_alias}" do
-              get_body_string(make_http_request(:get, "http://#{localhost_alias}:#{localhost_server.port}/")).should == localhost_response
+              it "allows requests to #{localhost_alias}" do
+                get_body_string(make_http_request(:get, "http://#{localhost_alias}:#{localhost_server.port}/")).should == localhost_response
+              end
             end
-          end
 
-          describe 'when ignore_localhost is false' do
-            before(:each) { subject.ignore_localhost = false }
+            describe 'when set to false' do
+              before(:each) { subject.ignore_localhost = false }
 
-            it "does not allow requests to #{localhost_alias}" do
-              expect { make_http_request(:get, "http://#{localhost_alias}:#{localhost_server.port}/") }.to raise_error(*NET_CONNECT_NOT_ALLOWED_ERROR)
+              it "does not allow requests to #{localhost_alias}" do
+                expect { make_http_request(:get, "http://#{localhost_alias}:#{localhost_server.port}/") }.to raise_error(*NET_CONNECT_NOT_ALLOWED_ERROR)
+              end
             end
           end
         end
