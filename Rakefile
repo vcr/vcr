@@ -46,6 +46,9 @@ begin
             { sanitized_http_lib => "#{features_subtasks.last}_prep" },
             "Run the features using #{http_stubbing_adapter} and #{http_lib}") do |t|
               t.cucumber_opts = ['--tags', "@all_http_libs,@#{sanitized_http_lib}"]
+
+              # disable scenarios on heroku that can't pass due to heroku's restrictions
+              t.cucumber_opts += ['--tags', '~@spawns_localhost_server'] if ENV.keys.include?('HEROKU_SLUG')
           end
         end
       end

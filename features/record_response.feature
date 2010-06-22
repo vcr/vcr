@@ -55,6 +55,7 @@ Feature: Record response
      Then the "temp/not_the_real_response" library file should have a response for "http://example.com" that matches /This is not the real response from example\.com/
       And the "temp/not_the_real_response" library file should have a response for "http://example.com/foo" that matches /The requested URL \/foo was not found/
 
+  @spawns_localhost_server
   Scenario: Ignore localhost setting allows localhost requests and does not record them
     Given we do not have a "temp/localhost" cassette
       And the ignore_localhost config setting is set to true
