@@ -21,14 +21,16 @@ rescue LoadError
 end
 
 begin
-  features_subtasks = []
+  permutations = {
+    'fakeweb' => %w( net/http ),
+    'webmock' => %w( net/http patron httpclient )
+  }
 
   require 'cucumber/rake/task'
   namespace :features do
-    {
-      'fakeweb' => %w( net/http ),
-      'webmock' => %w( net/http patron httpclient )
-    }.each do |http_stubbing_adapter, http_libraries|
+    permutations.each do |http_stubbing_adapter, http_libraries|
+      features_subtasks = []
+
       namespace http_stubbing_adapter do
         http_libraries.each do |http_lib|
 
@@ -47,11 +49,14 @@ begin
           end
         end
       end
+
+      desc "Run the features using #{http_stubbing_adapter} and each of #{http_stubbing_adapter}'s supported http libraries"
+      task http_stubbing_adapter => features_subtasks
     end
   end
 
   desc "Run the features using each supported permutation of http stubbing library and http library."
-  task :features => features_subtasks
+  task :features => permutations.keys.map { |a| "features:#{a}" }
 rescue LoadError
   task :features do
     abort "Cucumber is not available. In order to run features, you must: sudo gem install cucumber"
