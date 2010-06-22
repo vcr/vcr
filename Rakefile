@@ -88,9 +88,11 @@ end
 # This is borrowed from jeweler:
 # http://github.com/technicalpickles/jeweler/blob/v1.4.0/lib/jeweler/commands/check_dependencies.rb#L10-31
 task :check_dependencies do
+  requirement_method = nil
   missing_dependencies = gemspec.dependencies.select do |dependency|
+    requirement_method = [:requirement?, :version_requirements].detect { |m| dependency.respond_to?(m) }
     begin
-      Gem.activate dependency.name, dependency.requirement.to_s
+      Gem.activate dependency.name, dependency.send(requirement_method).to_s
       false
     rescue LoadError => e
       true
@@ -102,7 +104,7 @@ task :check_dependencies do
   else
     puts "Missing some dependencies. Install them with the following commands:"
     missing_dependencies.each do |dependency|
-      puts %Q{\tgem install #{dependency.name} --version "#{dependency.requirement}"}
+      puts %Q{\tgem install #{dependency.name} --version "#{dependency.send(requirement_method)}"}
     end
 
     abort "Run the specified gem commands before trying to run this again: #{$0} #{ARGV.join(' ')}"
