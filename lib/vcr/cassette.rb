@@ -79,7 +79,15 @@ module VCR
 
       if file
         @original_recorded_interactions = begin
-          YAML.load(raw_yaml_content)
+          interactions = YAML.load(raw_yaml_content)
+
+          if VCR.http_stubbing_adapter.ignore_localhost
+            interactions.reject! do |i|
+              i.uri.is_a?(String) && VCR::LOCALHOST_ALIASES.include?(URI.parse(i.uri).host)
+            end
+          end
+
+          interactions
         rescue TypeError
           raise unless raw_yaml_content =~ /VCR::RecordedResponse/
           raise "The VCR cassette #{sanitized_name}.yml uses an old format that is now deprecated.  VCR provides a rake task to migrate your old cassettes to the new format.  See http://github.com/myronmarston/vcr/blob/master/CHANGELOG.md for more info."

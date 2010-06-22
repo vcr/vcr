@@ -157,6 +157,20 @@ describe VCR::Cassette do
 
         cassette = VCR::Cassette.new('example', :record => record_mode)
       end
+
+      if load_interactions
+        [true, false].each do |ignore_localhost|
+          expected_uri_hosts = %w(example.com)
+          expected_uri_hosts += VCR::LOCALHOST_ALIASES unless ignore_localhost
+
+          it "#{ ignore_localhost ? 'does not load' : 'loads' } localhost interactions from the cassette file when http_stubbing_adapter.ignore_localhost is set to #{ignore_localhost}" do
+            VCR.http_stubbing_adapter.stub!(:ignore_localhost).and_return(ignore_localhost)
+            VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
+            cassette = VCR::Cassette.new('with_localhost_requests', :record => record_mode)
+            cassette.recorded_interactions.map { |i| URI.parse(i.uri).host }.should =~ expected_uri_hosts
+          end
+        end
+      end
     end
   end
 

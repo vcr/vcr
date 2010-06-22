@@ -1,6 +1,17 @@
 require 'tmpdir'
 
 module VCRHelpers
+  def static_rack_server(response_string)
+    orig_ignore_localhost = VCR.http_stubbing_adapter.ignore_localhost
+    VCR.http_stubbing_adapter.ignore_localhost = true
+
+    begin
+      VCR::LocalhostServer::STATIC_SERVERS[response_string]
+    ensure
+      VCR.http_stubbing_adapter.ignore_localhost = orig_ignore_localhost
+    end
+  end
+
   def have_expected_response(url, regex_str)
     simple_matcher("a response from #{url} that matches /#{regex_str}/") do |responses|
       selector = case url
@@ -117,12 +128,12 @@ Then /^there should not be a "([^\"]*)" library file$/ do |cassette_name|
   File.exist?(yaml_file).should be_false
 end
 
-Given /^the ignore_localhost config setting is set to true$/ do
-  VCR::Config.ignore_localhost = true
+Given /^the ignore_localhost config setting is set to (true|false)$/ do |value|
+  VCR::Config.ignore_localhost = eval(value)
 end
 
 Given /^a rack app is running on localhost that returns "([^"]+)" for all requests$/ do |response_string|
-  @rack_server = VCR::LocalhostServer::STATIC_SERVERS[response_string]
+  @rack_server = static_rack_server(response_string)
 end
 
 When /^I make an HTTP get request to the localhost rack app within the "([^\"]*)" cassette$/ do |cassette|
@@ -131,4 +142,9 @@ end
 
 Then /^the response for the localhost rack app should match \/(.*)\/$/ do |regex|
   Then %{the response for "http://localhost:#{@rack_server.port}" should match /#{regex}/}
+end
+
+Given /^the "([^\"]*)" library file has a response for localhost that matches \/(.*)\/$/ do |cassette, regex|
+  port = static_rack_server('localhost response').port
+  Given %{the "#{cassette}" library file has a response for "http://localhost:#{port}/" that matches /#{regex}/}
 end

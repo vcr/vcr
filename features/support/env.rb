@@ -67,6 +67,24 @@ Before('@copy_not_the_real_response_to_temp') do
   FileUtils.cp orig_file, temp_file
 end
 
+Before('@create_replay_localhost_cassette') do
+  orig_file = File.join(VCR::Config.cassette_library_dir, 'replay_localhost_cassette.yml')
+  temp_file = File.join(VCR::Config.cassette_library_dir, 'temp', 'replay_localhost_cassette.yml')
+  FileUtils.mkdir_p(File.join(VCR::Config.cassette_library_dir, 'temp'))
+
+  # the port varies each time, so create a temp cassette with the correct port.
+  port = static_rack_server('localhost response').port
+
+  interactions = YAML.load(File.read(orig_file))
+  interactions.each do |i|
+    uri = URI.parse(i.request.uri)
+    uri.port = port
+    i.request.uri = uri.to_s
+  end
+
+  File.open(temp_file, 'w') { |f| f.write interactions.to_yaml }
+end
+
 at_exit do
   %w(record_cassette1 record_cassette2).each do |tag|
     file = File.join(VCR::Config.cassette_library_dir, 'cucumber_tags', "#{tag}.yml")

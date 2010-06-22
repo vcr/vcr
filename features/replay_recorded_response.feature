@@ -79,3 +79,18 @@ Feature: Replay recorded response
      When I make an HTTP get request to "http://example.com/embedded_ruby_code" within the "erb_cassette" cassette using cassette options: { :record => :none, :erb => { :some_variable => 'foo-bar' } }
      Then the response for "http://example.com/embedded_ruby_code" should match /Some embedded ruby code: 7[\S\s]*The value of some_variable is: foo-bar/
 
+  @create_replay_localhost_cassette @spawns_localhost_server
+  Scenario: Replay recorded localhost response with ignore_localhost = false
+    Given the ignore_localhost config setting is set to false
+      And the "temp/replay_localhost_cassette" library file has a response for localhost that matches /This is a fake response/
+      And a rack app is running on localhost that returns "localhost response" for all requests
+     When I make an HTTP get request to the localhost rack app within the "temp/replay_localhost_cassette" cassette
+     Then the response for the localhost rack app should match /This is a fake response/
+
+  @create_replay_localhost_cassette @spawns_localhost_server
+  Scenario: Replay recorded localhost response with ignore_localhost = true
+    Given the ignore_localhost config setting is set to true
+      And the "temp/replay_localhost_cassette" library file has a response for localhost that matches /This is a fake response/
+      And a rack app is running on localhost that returns "localhost response" for all requests
+     When I make an HTTP get request to the localhost rack app within the "temp/replay_localhost_cassette" cassette
+     Then the response for the localhost rack app should match /localhost response/
