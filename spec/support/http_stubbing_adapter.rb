@@ -112,12 +112,12 @@ shared_examples_for "an http stubbing adapter that supports some HTTP library" d
 
       unless http_allowed
         describe 'ignore_localhost' do
-          extend PendingOnHeroku
           let(:localhost_response) { 'A localhost response!' }
           let(:localhost_server)   { VCR::LocalhostServer::STATIC_SERVERS[localhost_response] }
 
           VCR::LOCALHOST_ALIASES.each do |localhost_alias|
             describe 'when set to true' do
+              extend PendingOnHeroku
               before(:each) { subject.ignore_localhost = true }
 
               it "allows requests to #{localhost_alias}" do
