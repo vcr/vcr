@@ -5,7 +5,7 @@ module VCR
   module HttpStubbingAdapters
     class WebMock < Base
       class << self
-        VERSION_REQUIREMENT = '1.1.0'
+        VERSION_REQUIREMENT = '1.3.0'
 
         def check_version!
           unless meets_version_requirement?(::WebMock.version, VERSION_REQUIREMENT)
