@@ -5,7 +5,7 @@ module Net
     def request_with_vcr(request, body = nil, &block)
       uri = URI.parse(VCR.http_stubbing_adapter.request_uri(self, request))
 
-      if VCR::LOCALHOST_ALIASES.include?(uri.host) && VCR.http_stubbing_adapter.ignore_localhost
+      if VCR::LOCALHOST_ALIASES.include?(uri.host) && VCR.http_stubbing_adapter.ignore_localhost?
         VCR.http_stubbing_adapter.with_http_connections_allowed_set_to(true) do
           return request_without_vcr(request, body, &block)
         end

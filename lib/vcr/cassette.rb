@@ -81,7 +81,7 @@ module VCR
         @original_recorded_interactions = begin
           interactions = YAML.load(raw_yaml_content)
 
-          if VCR.http_stubbing_adapter.ignore_localhost
+          if VCR.http_stubbing_adapter.ignore_localhost?
             interactions.reject! do |i|
               i.uri.is_a?(String) && VCR::LOCALHOST_ALIASES.include?(URI.parse(i.uri).host)
             end

@@ -55,7 +55,7 @@ module VCR
           ::WebMock::Config.instance.allow_localhost = value
         end
 
-        def ignore_localhost
+        def ignore_localhost?
           ::WebMock::Config.instance.allow_localhost
         end
 

@@ -41,7 +41,7 @@ module VCR
     yield VCR::Config
     http_stubbing_adapter.check_version!
     http_stubbing_adapter.http_connections_allowed = false
-    http_stubbing_adapter.ignore_localhost = VCR::Config.ignore_localhost
+    http_stubbing_adapter.ignore_localhost = VCR::Config.ignore_localhost?
   end
 
   def cucumber_tags(&block)
@@ -62,7 +62,7 @@ module VCR
 
   def record_http_interaction(interaction)
     return unless cassette = current_cassette
-    return if http_stubbing_adapter.ignore_localhost &&
+    return if http_stubbing_adapter.ignore_localhost? &&
       LOCALHOST_ALIASES.include?(URI.parse(interaction.uri).host)
 
     cassette.record_http_interaction(interaction)

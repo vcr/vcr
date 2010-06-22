@@ -133,7 +133,7 @@ describe VCR do
 
     def self.with_ignore_localhost_set_to(value, &block)
       context "when http_stubbing_adapter.ignore_localhost is #{value}" do
-        before(:each) { VCR.http_stubbing_adapter.stub!(:ignore_localhost).and_return(value) }
+        before(:each) { VCR.http_stubbing_adapter.stub!(:ignore_localhost?).and_return(value) }
 
         instance_eval(&block)
       end

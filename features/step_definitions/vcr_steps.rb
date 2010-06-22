@@ -2,7 +2,7 @@ require 'tmpdir'
 
 module VCRHelpers
   def static_rack_server(response_string)
-    orig_ignore_localhost = VCR.http_stubbing_adapter.ignore_localhost
+    orig_ignore_localhost = VCR.http_stubbing_adapter.ignore_localhost?
     VCR.http_stubbing_adapter.ignore_localhost = true
 
     begin

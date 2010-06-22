@@ -27,8 +27,8 @@ module VCR
         @ignore_localhost = value
       end
 
-      def ignore_localhost
-        VCR.http_stubbing_adapter ? VCR.http_stubbing_adapter.ignore_localhost : @ignore_localhost
+      def ignore_localhost?
+        VCR.http_stubbing_adapter ? VCR.http_stubbing_adapter.ignore_localhost? : @ignore_localhost
       end
     end
   end

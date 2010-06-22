@@ -60,7 +60,10 @@ module VCR
           "#{protocol}://#{userinfo}#{net_http.address}:#{net_http.port}#{path}"
         end
 
-        attr_accessor :ignore_localhost
+        attr_writer :ignore_localhost
+        def ignore_localhost?
+          @ignore_localhost
+        end
 
         private
 
