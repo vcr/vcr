@@ -3,6 +3,7 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'rubygems'
 require 'patron'
 require 'httpclient'
+require 'em-http'
 require 'vcr'
 require 'spec'
 require 'spec/autorun'

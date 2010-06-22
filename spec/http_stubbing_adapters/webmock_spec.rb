@@ -40,6 +40,25 @@ describe VCR::HttpStubbingAdapters::WebMock do
     it_should_behave_like 'an http stubbing adapter that supports some HTTP library'
   end
 
+  context "using em-http-request" do
+    def get_body_string(response)
+      response.response
+    end
+
+    def make_http_request(method, url, body = {})
+      EventMachine.run do
+        http = case method
+          when :get  then EventMachine::HttpRequest.new(url).get
+          when :post then EventMachine::HttpRequest.new(url).post :body => body
+        end
+
+        http.callback { EventMachine.stop; return http }
+      end
+    end
+
+    it_should_behave_like 'an http stubbing adapter that supports some HTTP library'
+  end
+
   describe '#check_version!' do
     before(:each) { WebMock.should respond_to(:version) }
 

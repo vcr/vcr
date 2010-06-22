@@ -18,11 +18,12 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 1.8.6'
   s.required_rubygems_version = '>= 1.3.5'
 
-  s.add_development_dependency "rspec",      ["~> 1.3.0"]
-  s.add_development_dependency "cucumber",   ["~> 0.6.4"]
-  s.add_development_dependency "fakeweb",    ["~> 1.2.8"]
-  s.add_development_dependency "webmock",    ["~> 1.2.0"]
-  s.add_development_dependency "httpclient", ["~> 2.1.5.2"]
-  s.add_development_dependency "patron",     ["~> 0.4.6"]
-  s.add_development_dependency "capybara",   ["~> 0.3.8"]
+  s.add_development_dependency "rspec",           ["~> 1.3.0"]
+  s.add_development_dependency "cucumber",        ["~> 0.6.4"]
+  s.add_development_dependency "fakeweb",         ["~> 1.2.8"]
+  s.add_development_dependency "webmock",         ["~> 1.2.0"]
+  s.add_development_dependency "httpclient",      ["~> 2.1.5.2"]
+  s.add_development_dependency "patron",          ["~> 0.4.6"]
+  s.add_development_dependency "em-http-request", ["~> 0.2.7"]
+  s.add_development_dependency "capybara",        ["~> 0.3.8"]
 end
