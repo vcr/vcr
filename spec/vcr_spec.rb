@@ -150,7 +150,7 @@ describe VCR do
     def self.it_does_not_record_requests_to(host)
       it "does not record requests to #{host}" do
         interaction = stub(:uri => "http://#{host}/")
-        current_cassette.should_receive(:record_http_interaction).never
+        current_cassette.should_receive(:record_http_interaction).never unless current_cassette.nil?
         VCR.record_http_interaction(interaction)
       end
     end
