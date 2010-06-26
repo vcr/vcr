@@ -33,6 +33,7 @@ begin
 
       namespace http_stubbing_adapter do
         http_libraries.each do |http_lib|
+          next if RUBY_PLATFORM =~ /java/ && %w( patron em-http ).include?(http_lib)
 
           sanitized_http_lib = http_lib.gsub('/', '_')
           features_subtasks << "features:#{http_stubbing_adapter}:#{sanitized_http_lib}"
@@ -89,7 +90,14 @@ end
 # http://github.com/technicalpickles/jeweler/blob/v1.4.0/lib/jeweler/commands/check_dependencies.rb#L10-31
 task :check_dependencies do
   requirement_method = nil
-  missing_dependencies = gemspec.dependencies.select do |dependency|
+  required_dependencies = gemspec.dependencies
+
+  # ignore libraries that can't be installed on jruby
+  if RUBY_PLATFORM =~ /java/
+    required_dependencies.reject! { |d| %w( patron em-http-request ).include?(d.name) }
+  end
+
+  missing_dependencies = required_dependencies.select do |dependency|
     requirement_method = [:requirement?, :version_requirements].detect { |m| dependency.respond_to?(m) }
     begin
       Gem.activate dependency.name, dependency.send(requirement_method).to_s

@@ -21,7 +21,7 @@ describe VCR::HttpStubbingAdapters::WebMock do
     end
 
     it_should_behave_like 'an http stubbing adapter that supports some HTTP library'
-  end
+  end unless RUBY_PLATFORM =~ /java/
 
   context "using httpclient" do
     def get_body_string(response)
@@ -57,7 +57,7 @@ describe VCR::HttpStubbingAdapters::WebMock do
     end
 
     it_should_behave_like 'an http stubbing adapter that supports some HTTP library'
-  end
+  end unless RUBY_PLATFORM =~ /java/
 
   describe '#check_version!' do
     before(:each) { WebMock.should respond_to(:version) }
