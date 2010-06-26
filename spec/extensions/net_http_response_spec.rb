@@ -18,6 +18,7 @@ describe "Net::HTTP Response extensions" do
     end
 
     def self.it_allows_the_body_to_be_read_again
+      subject { @response.clone }
       let(:expected_regex) { /You have reached this web page by typing.*example\.com/ }
 
       it 'allows the body to be read using #body' do
@@ -60,24 +61,22 @@ describe "Net::HTTP Response extensions" do
     end
 
     context 'when the body has already been read using #read_body and a dest string' do
-      subject do
+      before(:all) do
         http = Net::HTTP.new('example.com', 80)
         dest = ''
-        response = http.request_get('/') { |res| res.read_body(dest) }
-        response.extend VCR::Net::HTTPResponse
-        response
+        @response = http.request_get('/') { |res| res.read_body(dest) }
+        @response.extend VCR::Net::HTTPResponse
       end
 
       it_allows_the_body_to_be_read_again
     end
 
     context 'when the body has already been read using #body' do
-      subject do
+      before(:all) do
         http = Net::HTTP.new('example.com', 80)
-        response = http.request_get('/')
-        response.body
-        response.extend VCR::Net::HTTPResponse
-        response
+        @response = http.request_get('/')
+        @response.body
+        @response.extend VCR::Net::HTTPResponse
       end
 
       it_allows_the_body_to_be_read_again
