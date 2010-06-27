@@ -34,6 +34,7 @@ begin
       namespace http_stubbing_adapter do
         http_libraries.each do |http_lib|
           next if RUBY_PLATFORM =~ /java/ && %w( patron em-http ).include?(http_lib)
+          next if RUBY_VERSION == '1.9.2' && http_lib == 'patron'
 
           sanitized_http_lib = http_lib.gsub('/', '_')
           features_subtasks << "features:#{http_stubbing_adapter}:#{sanitized_http_lib}"

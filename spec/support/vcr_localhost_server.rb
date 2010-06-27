@@ -43,7 +43,7 @@ class VCR::LocalhostServer < Capybara::Server
   rescue Timeout::Error
     Capybara.log "Rack application timed out during boot"
     exit
-  end unless RUBY_PLATFORM =~ /java/
+  end unless (RUBY_PLATFORM =~ /java/ || RUBY_VERSION == '1.9.2')
 
   STATIC_SERVERS = Hash.new do |h, k|
     h[k] = server = new(lambda { |env| [200, {}, StringIO.new(k)] })
