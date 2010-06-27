@@ -252,7 +252,7 @@ that it is making a new HTTP request, you'll be notified by an error as shown ab
 
 ## Ruby Version Compatibility
 
-VCR has been tested on MRI ruby 1.8.6, 1.8.7 and 1.9.1 and jruby 1.5.1.
+VCR has been tested on MRI 1.8.6, 1.8.7, 1.9.1 and 1.9.2-preview3 and jruby 1.5.1.
 
 ## Notes, etc.
 
