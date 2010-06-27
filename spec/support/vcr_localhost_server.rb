@@ -15,6 +15,7 @@ class VCR::LocalhostServer < Capybara::Server
     Capybara.log "booting Rack applicartion on port #{port}"
 
     pid = Process.fork do
+      trap(:INT) { Rack::Handler::WEBrick.shutdown }
       Rack::Handler::WEBrick.run(Identify.new(@app), :Port => port, :AccessLog => [])
       exit # manually exit; otherwise this sub-process will re-run the specs that haven't run yet.
     end
@@ -43,7 +44,7 @@ class VCR::LocalhostServer < Capybara::Server
   rescue Timeout::Error
     Capybara.log "Rack application timed out during boot"
     exit
-  end unless (RUBY_PLATFORM =~ /java/ || RUBY_VERSION == '1.9.2')
+  end unless RUBY_PLATFORM =~ /java/
 
   STATIC_SERVERS = Hash.new do |h, k|
     h[k] = server = new(lambda { |env| [200, {}, StringIO.new(k)] })
