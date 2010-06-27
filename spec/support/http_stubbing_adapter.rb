@@ -139,7 +139,7 @@ shared_examples_for "an http stubbing adapter that supports some HTTP library" d
       context 'when some requests are stubbed, after setting a checkpoint' do
         before(:each) do
           subject.create_stubs_checkpoint(:my_checkpoint)
-          @recorded_interactions = YAML.load(File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', RUBY_VERSION, 'fake_example.com_responses.yml')))
+          @recorded_interactions = YAML.load(File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', YAML_SERIALIZATION_VERSION, 'fake_example.com_responses.yml')))
           subject.stub_requests(@recorded_interactions)
         end
 

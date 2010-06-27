@@ -37,7 +37,7 @@ describe VCR::Cassette do
 
   describe 'on creation' do
     it 'raises an error with a helpful message when loading an old unsupported cassette' do
-      VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}")
+      VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}")
       lambda { VCR::Cassette.new('0_3_1_cassette') }.should raise_error(/The VCR cassette 0_3_1_cassette.yml uses an old format that is now deprecated/)
     end
 
@@ -68,7 +68,7 @@ describe VCR::Cassette do
       end
 
       def cassette_body(name, options = {})
-        VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
+        VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
         VCR::Cassette.new(name, options.merge(:record => :new_episodes)).recorded_interactions.first.response.body
       end
 
@@ -122,7 +122,7 @@ describe VCR::Cassette do
 
     { :new_episodes => true, :all => false, :none => true }.each do |record_mode, load_interactions|
       it "#{load_interactions ? 'loads' : 'does not load'} the recorded interactions from the library yml file when the record mode is #{record_mode}" do
-        VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
+        VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
         cassette = VCR::Cassette.new('example', :record => record_mode)
 
         if load_interactions
@@ -147,7 +147,7 @@ describe VCR::Cassette do
       end
 
       it "#{load_interactions ? 'stubs' : 'does not stub'} the recorded requests with the http stubbing adapter when the record mode is #{record_mode}" do
-        VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
+        VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
 
         if load_interactions
           VCR.http_stubbing_adapter.should_receive(:stub_requests).with([an_instance_of(VCR::HTTPInteraction)]*3)
@@ -165,7 +165,7 @@ describe VCR::Cassette do
 
           it "#{ ignore_localhost ? 'does not load' : 'loads' } localhost interactions from the cassette file when http_stubbing_adapter.ignore_localhost is set to #{ignore_localhost}" do
             VCR.http_stubbing_adapter.stub!(:ignore_localhost?).and_return(ignore_localhost)
-            VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
+            VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
             cassette = VCR::Cassette.new('with_localhost_requests', :record => record_mode)
             cassette.recorded_interactions.map { |i| URI.parse(i.uri).host }.should =~ expected_uri_hosts
           end
@@ -212,7 +212,7 @@ describe VCR::Cassette do
     end
 
     it "writes both old and new recorded interactions to disk" do
-      file = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec/example.yml")
+      file = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec/example.yml")
       FileUtils.cp file, File.join(@temp_dir, 'previously_recorded_interactions.yml')
       cassette = VCR::Cassette.new('previously_recorded_interactions')
       cassette.should have(3).recorded_interactions
@@ -227,14 +227,14 @@ describe VCR::Cassette do
 
   describe '#eject for a cassette with previously recorded interactions' do
     it "restore the stubs checkpoint on the http stubbing adapter" do
-      VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
+      VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
       cassette = VCR::Cassette.new('example', :record => :none)
       VCR.http_stubbing_adapter.should_receive(:restore_stubs_checkpoint).with('example')
       cassette.eject
     end
 
     it "does not re-write to disk the previously recorded interactions if there are no new ones" do
-      VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/cassette_spec")
+      VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
       yaml_file = File.join(VCR::Config.cassette_library_dir, 'example.yml')
       cassette = VCR::Cassette.new('example', :record => :none)
       File.should_not_receive(:open).with(cassette.file, 'w')

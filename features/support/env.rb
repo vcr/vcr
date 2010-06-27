@@ -30,8 +30,11 @@ end
 
 require 'spec'
 
+# Ruby 1.9.1 has a different yaml serialization format.
+YAML_SERIALIZATION_VERSION = RUBY_VERSION == '1.9.1' ? '1.9.1' : 'not_1.9.1'
+
 VCR.config do |c|
-  c.cassette_library_dir = File.join(File.dirname(__FILE__), '..', 'fixtures', 'vcr_cassettes', RUBY_VERSION)
+  c.cassette_library_dir = File.join(File.dirname(__FILE__), '..', 'fixtures', 'vcr_cassettes', YAML_SERIALIZATION_VERSION)
   c.http_stubbing_library = ENV['HTTP_STUBBING_ADAPTER'].to_sym
 end
 

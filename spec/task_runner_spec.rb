@@ -6,7 +6,7 @@ describe VCR::TaskRunner do
     temp_dir File.expand_path(File.dirname(__FILE__) + '/fixtures/task_runner')
 
     let(:file_name)      { '0_3_1_cassette.yml' }
-    let(:orig_file_name) { File.dirname(__FILE__) + "/fixtures/#{RUBY_VERSION}/#{file_name}" }
+    let(:orig_file_name) { File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/#{file_name}" }
     let(:test_dir)       { @temp_dir + '/migrate_cassettes' }
 
     def migrate
