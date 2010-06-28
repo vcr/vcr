@@ -188,7 +188,7 @@ dynamic.  You can use [ERB](http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/) for
 
 Enable ERB evaluation of a cassette using the `:erb` option:
 
-    VCR.use_cassette('user-subscription', :erb => :true) do
+    VCR.use_cassette('user-subscription', :erb => true) do
       # do something that makes an HTTP request
     end
 
