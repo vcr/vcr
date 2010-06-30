@@ -1,7 +1,32 @@
 require 'forwardable'
 
 module VCR
+  module HeaderNormalizer
+    def initialize(*args)
+      super
+      normalize_headers
+    end
+
+    private
+
+    def normalize_headers
+      new_headers = {}
+
+      headers.each do |k, v|
+        new_headers[k.downcase] = case v
+          when Array then v
+          when nil then []
+          else [v]
+        end
+      end if headers
+
+      self.headers = new_headers
+    end
+  end
+
   class Request < Struct.new(:method, :uri, :body, :headers)
+    include HeaderNormalizer
+
     def self.from_net_http_request(net_http, request)
       new(
         request.method.downcase.to_sym,
@@ -19,6 +44,8 @@ module VCR
   end
 
   class Response < Struct.new(:status, :headers, :body, :http_version)
+    include HeaderNormalizer
+
     def self.from_net_http_response(response)
       new(
         ResponseStatus.from_net_http_response(response),

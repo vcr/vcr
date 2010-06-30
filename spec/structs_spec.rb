@@ -1,5 +1,24 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
+shared_examples_for "a header normalizer" do
+  let(:instance) do
+    with_headers('Some_Header' => 'value1', 'aNother' => ['a', 'b'], 'third' => [], 'FOURTH' => nil)
+  end
+
+  it 'normalizes the hash to lower case keys and arrays of values' do
+    instance.headers.should == {
+      'some_header' => ['value1'],
+      'another'     => ['a', 'b'],
+      'third'       => [],
+      'fourth'      => []
+    }
+  end
+
+  it 'set nil header to an empty hash' do
+    with_headers(nil).headers.should == {}
+  end
+end
+
 describe VCR::Request do
   describe '.from_net_http_request' do
     let(:net_http) { YAML.load(File.read(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/example_net_http.yml")) }
@@ -24,6 +43,11 @@ describe VCR::Request do
       subject.uri.should == 'foo/bar'
     end
   end
+
+  def with_headers(headers)
+    described_class.new(:get, 'http://example.com/', nil, headers)
+  end
+  it_should_behave_like 'a header normalizer'
 end
 
 describe VCR::ResponseStatus do
@@ -62,6 +86,11 @@ describe VCR::Response do
       subject.status.should == :the_status
     end
   end
+
+  def with_headers(headers)
+    described_class.new(:status, headers, nil, '1.1')
+  end
+  it_should_behave_like 'a header normalizer'
 end
 
 describe VCR::HTTPInteraction do

@@ -8,6 +8,7 @@ Feature: Record response
     Given we do not have a "temp/cassette" cassette
      When I make an HTTP get request to "http://example.com" within the "temp/cassette" cassette
      Then the "temp/cassette" library file should have a response for "http://example.com" that matches /You have reached this web page by typing.*example\.com/
+      And the "temp/cassette" library file should have normalized headers for all recorded interactions
 
   @record_cassette1
   Scenario: Record a response using a tagged scenario

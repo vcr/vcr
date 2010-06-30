@@ -26,6 +26,17 @@ module VCRHelpers
     end
   end
 
+  def have_normalized_headers
+    simple_matcher("should have normalized headers") do |object, matcher|
+      headers = object.headers
+      headers.should be_instance_of(Hash)
+      headers.keys.map { |k| k.downcase }.should == headers.keys
+      headers.values.each do |val|
+        val.should be_instance_of(Array)
+      end
+    end
+  end
+
   def recorded_interactions_for(cassette_name)
     yaml_file = File.join(VCR::Config.cassette_library_dir, "#{cassette_name}.yml")
     yaml = File.open(yaml_file, 'r') { |f| f.read }
@@ -104,6 +115,14 @@ end
 Then /^the "([^\"]*)" library file should have exactly (\d+) response$/ do |cassette_name, response_count|
   interactions = recorded_interactions_for(cassette_name)
   interactions.should have(response_count.to_i).responses
+end
+
+Then /^the "([^"]*)" library file should have normalized headers for all recorded interactions$/ do |cassette_name|
+  interactions = recorded_interactions_for(cassette_name)
+  interactions.each do |i|
+    i.request.should have_normalized_headers
+    i.response.should have_normalized_headers
+  end
 end
 
 Then /^I can test the scenario cassette's recorded responses in the next scenario, after the cassette has been ejected$/ do

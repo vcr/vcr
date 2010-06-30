@@ -46,7 +46,7 @@ describe VCR::TaskRunner do
         its(:method)  { should == :post }
         its(:uri)     { should == 'http://example.com:80/' }
         its(:body)    { should be_nil }
-        its(:headers) { should be_nil }
+        its(:headers) { should == {} }
       end
 
       it 'assigns the response using VCR::Response.from_net_http_response' do
