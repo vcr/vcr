@@ -51,8 +51,8 @@ module VCR
           path = URI.parse(request.path).request_uri if request.path =~ /^http/
 
           if request["authorization"] =~ /^Basic /
-            userinfo = FakeWeb::Utility.decode_userinfo_from_header(request["authorization"])
-            userinfo = FakeWeb::Utility.encode_unsafe_chars_in_userinfo(userinfo) + "@"
+            userinfo = ::FakeWeb::Utility.decode_userinfo_from_header(request["authorization"])
+            userinfo = ::FakeWeb::Utility.encode_unsafe_chars_in_userinfo(userinfo) + "@"
           else
             userinfo = ""
           end
