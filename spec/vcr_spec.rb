@@ -58,6 +58,12 @@ describe VCR do
       VCR.should_receive(:eject_cassette)
       lambda { VCR.use_cassette(:cassette_test) { raise StandardError } }.should raise_error
     end
+
+    it 'does not eject a cassette if there was an error inserting it' do
+      VCR.should_receive(:insert_cassette).and_raise(StandardError.new('Boom!'))
+      VCR.should_not_receive(:eject_cassette)
+      lambda { VCR.use_cassette(:test) { } }.should raise_error(StandardError, 'Boom!')
+    end
   end
 
   describe '.config' do

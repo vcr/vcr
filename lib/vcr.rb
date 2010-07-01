@@ -32,9 +32,12 @@ module VCR
 
   def use_cassette(*args)
     insert_cassette(*args)
-    yield
-  ensure
-    eject_cassette
+
+    begin
+      yield
+    ensure
+      eject_cassette
+    end
   end
 
   def config
