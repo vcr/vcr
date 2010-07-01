@@ -20,6 +20,10 @@ puts "\n\n---------------- Running features using #{ENV['HTTP_STUBBING_ADAPTER']
 require 'vcr'
 require 'vcr_localhost_server'
 
+require 'rubygems'
+require 'bundler'
+Bundler.setup
+
 begin
   require 'ruby-debug'
   Debugger.start

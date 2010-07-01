@@ -1,6 +1,9 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'rubygems'
+require 'bundler'
+Bundler.setup
+
 require 'patron' unless RUBY_PLATFORM =~ /java/
 require 'httpclient'
 require 'em-http' unless RUBY_PLATFORM =~ /java/
