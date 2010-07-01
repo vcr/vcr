@@ -50,14 +50,6 @@ describe VCR::Cassette do
       VCR::Cassette.new('example')
     end
 
-    VCR::Cassette::VALID_RECORD_MODES.each do |mode|
-      it "defaults the record mode to #{mode} when VCR::Config.default_cassette_options[:record] is #{mode}" do
-        VCR::Config.default_cassette_options = { :record => mode }
-        cassette = VCR::Cassette.new(:test)
-        cassette.record_mode.should == mode
-      end
-    end
-
     describe 'ERB support' do
       before(:each) do
         @orig_default_options = VCR::Config.default_cassette_options
@@ -113,61 +105,73 @@ describe VCR::Cassette do
       end
     end
 
-    { :new_episodes => true, :all => true, :none => false }.each do |record_mode, http_connections_allowed|
-      it "sets http_connections_allowed to #{http_connections_allowed} on the http stubbing adapter when the record mode is #{record_mode}" do
-        VCR.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(http_connections_allowed)
-        VCR::Cassette.new(:name, :record => record_mode)
-      end
-    end
+    VCR::Cassette::VALID_RECORD_MODES.each do |record_mode|
+      http_connections_allowed = (record_mode != :none)
+      load_interactions = (record_mode != :all)
 
-    { :new_episodes => true, :all => false, :none => true }.each do |record_mode, load_interactions|
-      it "#{load_interactions ? 'loads' : 'does not load'} the recorded interactions from the library yml file when the record mode is #{record_mode}" do
-        VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
-        cassette = VCR::Cassette.new('example', :record => record_mode)
+      context "when VCR::Config.default_cassette_options[:record] is :#{record_mode}" do
+        before(:each) { VCR::Config.default_cassette_options = { :record => record_mode } }
 
-        if load_interactions
-          cassette.should have(3).recorded_interactions
-
-          i1, i2, i3 = *cassette.recorded_interactions
-
-          i1.request.method.should == :get
-          i1.request.uri.should == 'http://example.com:80/'
-          i1.response.body.should =~ /You have reached this web page by typing.+example\.com/
-
-          i2.request.method.should == :get
-          i2.request.uri.should == 'http://example.com:80/foo'
-          i2.response.body.should =~ /foo was not found on this server/
-
-          i3.request.method.should == :get
-          i3.request.uri.should == 'http://example.com:80/'
-          i3.response.body.should =~ /Another example\.com response/
-        else
-          cassette.should have(0).recorded_interactions
+        it "defaults the record mode to #{record_mode} when VCR::Config.default_cassette_options[:record] is #{record_mode}" do
+          cassette = VCR::Cassette.new(:test)
+          cassette.record_mode.should == record_mode
         end
       end
 
-      it "#{load_interactions ? 'stubs' : 'does not stub'} the recorded requests with the http stubbing adapter when the record mode is #{record_mode}" do
-        VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
-
-        if load_interactions
-          VCR.http_stubbing_adapter.should_receive(:stub_requests).with([an_instance_of(VCR::HTTPInteraction)]*3)
-        else
-          VCR.http_stubbing_adapter.should_receive(:stub_requests).never
+      context "when the record mode is :#{record_mode}" do
+        it "sets http_connections_allowed to #{http_connections_allowed} on the http stubbing adapter" do
+          VCR.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(http_connections_allowed)
+          VCR::Cassette.new(:name, :record => record_mode)
         end
 
-        cassette = VCR::Cassette.new('example', :record => record_mode)
-      end
+        it "#{load_interactions ? 'loads' : 'does not load'} the recorded interactions from the library yml file" do
+          VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
+          cassette = VCR::Cassette.new('example', :record => record_mode)
 
-      if load_interactions
-        [true, false].each do |ignore_localhost|
-          expected_uri_hosts = %w(example.com)
-          expected_uri_hosts += VCR::LOCALHOST_ALIASES unless ignore_localhost
+          if load_interactions
+            cassette.should have(3).recorded_interactions
 
-          it "#{ ignore_localhost ? 'does not load' : 'loads' } localhost interactions from the cassette file when http_stubbing_adapter.ignore_localhost is set to #{ignore_localhost}" do
-            VCR.http_stubbing_adapter.stub!(:ignore_localhost?).and_return(ignore_localhost)
-            VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
-            cassette = VCR::Cassette.new('with_localhost_requests', :record => record_mode)
-            cassette.recorded_interactions.map { |i| URI.parse(i.uri).host }.should =~ expected_uri_hosts
+            i1, i2, i3 = *cassette.recorded_interactions
+
+            i1.request.method.should == :get
+            i1.request.uri.should == 'http://example.com:80/'
+            i1.response.body.should =~ /You have reached this web page by typing.+example\.com/
+
+            i2.request.method.should == :get
+            i2.request.uri.should == 'http://example.com:80/foo'
+            i2.response.body.should =~ /foo was not found on this server/
+
+            i3.request.method.should == :get
+            i3.request.uri.should == 'http://example.com:80/'
+            i3.response.body.should =~ /Another example\.com response/
+          else
+            cassette.should have(0).recorded_interactions
+          end
+        end
+
+        it "#{load_interactions ? 'stubs' : 'does not stub'} the recorded requests with the http stubbing adapter" do
+          VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
+
+          if load_interactions
+            VCR.http_stubbing_adapter.should_receive(:stub_requests).with([an_instance_of(VCR::HTTPInteraction)]*3)
+          else
+            VCR.http_stubbing_adapter.should_receive(:stub_requests).never
+          end
+
+          cassette = VCR::Cassette.new('example', :record => record_mode)
+        end
+
+        if load_interactions
+          [true, false].each do |ignore_localhost|
+            expected_uri_hosts = %w(example.com)
+            expected_uri_hosts += VCR::LOCALHOST_ALIASES unless ignore_localhost
+
+            it "#{ ignore_localhost ? 'does not load' : 'loads' } localhost interactions from the cassette file when http_stubbing_adapter.ignore_localhost is set to #{ignore_localhost}" do
+              VCR.http_stubbing_adapter.stub!(:ignore_localhost?).and_return(ignore_localhost)
+              VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
+              cassette = VCR::Cassette.new('with_localhost_requests', :record => record_mode)
+              cassette.recorded_interactions.map { |i| URI.parse(i.uri).host }.should =~ expected_uri_hosts
+            end
           end
         end
       end
