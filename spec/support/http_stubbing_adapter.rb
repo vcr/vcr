@@ -12,6 +12,13 @@ shared_examples_for "an http stubbing adapter" do
       request = Net::HTTP::Get.new('/foo/bar')
       subject.request_uri(net_http, request).should == 'http://example.com:80/foo/bar'
     end
+
+    it 'handles basic auth' do
+      net_http = Net::HTTP.new('example.com',80)
+      request = Net::HTTP::Get.new('/auth.txt')
+      request.basic_auth 'user', 'pass'
+      subject.request_uri(net_http, request).should == 'http://user:pass@example.com:80/auth.txt'
+    end
   end
 
   describe "#with_http_connections_allowed_set_to" do
