@@ -3,7 +3,7 @@ module VCR
 
   def version
     @version ||= begin
-      string = [1, 0, 0].join('.')
+      string = [1, 0, 1].join('.')
 
       def string.parts; VCR.version.split('.').map { |p| p.to_i }; end
       def string.major; parts[0]; end

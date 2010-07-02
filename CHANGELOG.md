@@ -1,5 +1,15 @@
 #Changelog
 
+## 1.0.1 (July 1, 2010)
+
+* Fixed specs and features so they pass on MRI 1.9.2-preview3 and JRuby 1.5.1.
+* Normalized response and request headers so that they are stored the same (i.e. lower case keys, arrays of values)
+  in the cassette yaml files, regardless of which HTTP library is used.  This is the same way Net::HTTP normalizes
+  HTTP headers.
+* Fixed `VCR.use_cassette` so that it doesn't eject a cassette if an exception occurs while inserting one.
+* Fixed FakeWeb adapter so that it works for requests that use basic auth. Patch submitted by
+  [Eric Allam](http://github.com/rubymaverick).
+
 ## 1.0.0 (June 22, 2010)
 
 * New Features
