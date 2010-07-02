@@ -26,10 +26,10 @@ or
 
     class VCRTest < Test::Unit::TestCase
       def test_example_dot_com
-        response = VCR.use_cassette('synopsis', :record => :new_episodes) do
-          Net::HTTP.get_response(URI.parse('http://example.com/'))
+        VCR.use_cassette('synopsis', :record => :new_episodes) do
+          response = Net::HTTP.get_response(URI.parse('http://example.com/'))
+          assert_match /You have reached this web page by typing.*example\.com/, response.body
         end
-        assert_match /You have reached this web page by typing.*example\.com/, response.body
       end
     end
 
@@ -250,9 +250,15 @@ record the HTTP interaction.  I usually remove the record mode at this point so 
 of `:none` in the future.  Future test runs will get the recorded response, and if your code changes so 
 that it is making a new HTTP request, you'll be notified by an error as shown above.
 
-## Ruby Version Compatibility
+## Ruby Interpreter Compatibility
 
-VCR has been tested on MRI 1.8.6, 1.8.7, 1.9.1 and 1.9.2-preview3 and jruby 1.5.1.
+VCR has been tested on the following ruby interpreters:
+
+* MRI 1.8.6
+* MRI 1.8.7
+* MRI 1.9.1
+* MRI 1.9.2 preview 3
+* JRuby 1.5.1
 
 ## Notes, etc.
 
@@ -286,6 +292,13 @@ VCR has been tested on MRI 1.8.6, 1.8.7, 1.9.1 and 1.9.2-preview3 and jruby 1.5.
 * [Chris Kampmeier](http://github.com/chrisk) for [FakeWeb](http://github.com/chrisk/fakeweb).
 * [Chris Young](http://github.com/chrisyoung) for [NetRecorder](http://github.com/chrisyoung/netrecorder),
   the inspiration for VCR.
+
+Thanks also to the following people who have contributed patches or helpful suggestions:
+
+* [Aaron Brethorst](http://github.com/aaronbrethorst)
+* [Bartosz Blimke](http://github.com/bblimke)
+* [Ben Hutton](http://github.com/benhutton)
+* [Eric Allam](http://github.com/rubymaverick)
 
 ## Copyright
 
