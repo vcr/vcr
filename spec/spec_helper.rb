@@ -10,14 +10,6 @@ require 'vcr/http_stubbing_adapters/webmock'
 require 'spec'
 require 'spec/autorun'
 
-begin
-  require 'ruby-debug'
-  Debugger.start
-  Debugger.settings[:autoeval] = true if Debugger.respond_to?(:settings)
-rescue LoadError
-  # ruby-debug wasn't available so neither can the debugging be
-end
-
 # Ruby 1.9.1 has a different yaml serialization format.
 YAML_SERIALIZATION_VERSION = RUBY_VERSION == '1.9.1' ? '1.9.1' : 'not_1.9.1'
 
