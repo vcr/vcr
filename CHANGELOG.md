@@ -1,5 +1,13 @@
 #Changelog
 
+## 1.0.2 (July 6, 2010)
+
+* Fixed VCR to work with [rest-client](http://github.com/archiloque/rest-client).  Rest-client extends the Net::HTTP
+  response body string with a module containing additional data, which got serialized to the cassette file YAML
+  and occasionally caused problems when the YAML was deserialized.  Bug reported by
+  [Thibaud Guillaume-Gentil](http://github.com/thibaudgg).
+* Setup bundler to manage development dependencies.
+
 ## 1.0.1 (July 1, 2010)
 
 * Fixed specs and features so they pass on MRI 1.9.2-preview3 and JRuby 1.5.1.

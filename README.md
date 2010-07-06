@@ -53,6 +53,13 @@ maintenance) and accurate (the response from example.com will contain the same h
 * Disables all HTTP requests that you don't explicitly allow.
 * Simple cucumber integration is provided using tags.
 
+## Development
+
+* Source hosted on [GitHub](http://github.com/myronmarston/vcr).
+* Report issues and feature suggestions on [GitHub Issues](http://github.com/myronmarston/vcr/issues).
+* Pull requests are very welcome! Please include spec and/or feature coverage for every patch,
+  and create a topic branch for every separate change you make.
+
 ## Cassettes
 
 Cassettes are the medium to which VCR records HTTP interactions, and the medium from which it replays them.
@@ -274,16 +281,7 @@ VCR has been tested on the following ruby interpreters:
 * VCR maintains a simple stack of cassettes.  This allows you to nest them as deeply as you want.
   This is particularly useful when you have a cucumber step definition that uses a cassette, and
   you also want to use a cassette for the entire scenario using the tagging support.
-
-## Note on Patches/Pull Requests
-
-* Fork the project.
-* Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
-  future version unintentionally.
-* Commit, do not mess with rakefile, version, or history.
-  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
+* If you find VCR useful, please recommend me on [working with rails](http://workingwithrails.com/person/16590-myron-marston).
 
 ## Thanks
 
