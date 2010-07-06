@@ -91,6 +91,13 @@ describe VCR::Response do
     described_class.new(:status, headers, nil, '1.1')
   end
   it_should_behave_like 'a header normalizer'
+
+  it "ensures the body is serialized to yaml as a raw string" do
+    body = "My String"
+    body.instance_variable_set(:@foo, 7)
+    instance = described_class.new(:status, {}, body, :version)
+    instance.body.to_yaml.should == "My String".to_yaml
+  end
 end
 
 describe VCR::HTTPInteraction do
