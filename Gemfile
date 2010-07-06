@@ -9,6 +9,7 @@ group :development do
   gem 'patron',             '~> 0.4.6' unless RUBY_PLATFORM == 'java'
   gem 'em-http-request' ,   '~> 0.2.7' unless RUBY_PLATFORM == 'java'
   gem 'capybara',           '~> 0.3.9'
+  gem 'rack',               '1.2.0'
 end
 
 group :test do
