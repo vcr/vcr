@@ -6,6 +6,8 @@ begin
   Spec::Rake::SpecTask.new(:spec => :check_dependencies) do |spec|
     spec.libs << 'lib' << 'spec'
     spec.spec_files = FileList['spec/**/*_spec.rb']
+    spec.spec_opts = ['--color', '--format', 'progress']
+    spec.spec_opts << '--debugger' unless RUBY_PLATFORM == 'java'
   end
 
   Spec::Rake::SpecTask.new(:rcov) do |spec|
