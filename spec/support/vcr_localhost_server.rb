@@ -16,7 +16,7 @@ class VCR::LocalhostServer < Capybara::Server
 
     pid = Process.fork do
       trap(:INT) { Rack::Handler::WEBrick.shutdown }
-      Rack::Handler::WEBrick.run(Identify.new(@app), :Port => port, :AccessLog => [])
+      Rack::Handler::WEBrick.run(Identify.new(@app), :Port => port, :AccessLog => [], :Logger => WEBrick::BasicLog.new(StringIO.new))
       exit # manually exit; otherwise this sub-process will re-run the specs that haven't run yet.
     end
     Capybara.log "checking if application has booted"
