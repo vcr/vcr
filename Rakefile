@@ -3,7 +3,7 @@ require 'rake'
 
 begin
   require 'spec/rake/spectask'
-  Spec::Rake::SpecTask.new(:spec => :check_dependencies) do |spec|
+  Spec::Rake::SpecTask.new(:spec) do |spec|
     spec.libs << 'lib' << 'spec'
     spec.spec_files = FileList['spec/**/*_spec.rb']
     spec.spec_opts = ['--color', '--format', 'progress']
@@ -40,7 +40,7 @@ begin
           sanitized_http_lib = http_lib.gsub('/', '_')
           features_subtasks << "features:#{http_stubbing_adapter}:#{sanitized_http_lib}"
 
-          task "#{sanitized_http_lib}_prep" => :check_dependencies do
+          task "#{sanitized_http_lib}_prep" do
             ENV['HTTP_STUBBING_ADAPTER'] = http_stubbing_adapter
             ENV['HTTP_LIB'] = http_lib
           end
@@ -85,39 +85,6 @@ def gemspec
   @gemspec ||= begin
     file = File.expand_path('../vcr.gemspec', __FILE__)
     eval(File.read(file), binding, file)
-  end
-end
-
-# This is borrowed from jeweler:
-# http://github.com/technicalpickles/jeweler/blob/v1.4.0/lib/jeweler/commands/check_dependencies.rb#L10-31
-task :check_dependencies do
-  requirement_method = nil
-  required_dependencies = gemspec.dependencies
-
-  # ignore libraries that can't be installed on jruby
-  if RUBY_PLATFORM =~ /java/
-    required_dependencies.reject! { |d| %w( patron em-http-request ).include?(d.name) }
-  end
-
-  missing_dependencies = required_dependencies.select do |dependency|
-    requirement_method = [:requirement?, :version_requirements].detect { |m| dependency.respond_to?(m) }
-    begin
-      Gem.activate dependency.name, dependency.send(requirement_method).to_s
-      false
-    rescue LoadError => e
-      true
-    end
-  end
-
-  if missing_dependencies.empty?
-    puts "All dependencies seem to be installed."
-  else
-    puts "Missing some dependencies. Install them with the following commands:"
-    missing_dependencies.each do |dependency|
-      puts %Q{\tgem install #{dependency.name} --version "#{dependency.send(requirement_method)}"}
-    end
-
-    abort "Run the specified gem commands before trying to run this again: #{$0} #{ARGV.join(' ')}"
   end
 end
 
