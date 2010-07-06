@@ -54,7 +54,7 @@ module VCR
       # or attributes, so that it is serialized to YAML as a raw string.
       # This is needed for rest-client.  See this ticket for more info:
       # http://github.com/myronmarston/vcr/issues/4
-      self.body = String.new(body)
+      self.body = String.new(body) if body
     end
 
     def self.from_net_http_response(response)
