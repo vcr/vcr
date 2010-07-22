@@ -54,6 +54,12 @@ module VCRHelpers
     end
     @http_requests[url] += [result]
   end
+
+  def be_tagged_with(tag)
+    simple_matcher("be tagged with #{tag}") do |object|
+      object.source_tag_names.include?(tag)
+    end
+  end
 end
 World(VCRHelpers)
 
