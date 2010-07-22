@@ -12,7 +12,7 @@ group :development do
 
   platforms :ruby do
     gem 'patron',           '~> 0.4.6'
-    gem 'em-http-request',  '~> 0.2.7'
+    gem 'em-http-request',  '0.2.7'
   end
 end
 
