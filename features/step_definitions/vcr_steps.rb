@@ -1,5 +1,51 @@
 require 'tmpdir'
 
+RSpec::Matchers.define :have_expected_response do |url, regex_str|
+  def responses_for_url(responses, url)
+    selector = case url
+      when String then lambda { |r| URI.parse(r.uri) == URI.parse(url) }
+      when Regexp then lambda { |r| r.uri == url }
+      else raise ArgumentError.new("Unexpected url: #{url.class.to_s}: #{url.inspect}")
+    end
+
+    responses.select(&selector)
+  end
+
+  match do |responses|
+    regex = /#{regex_str}/i
+    responses_for_url(responses, url).detect { |r| get_body_string(r.response) =~ regex }
+  end
+
+  failure_message_for_should do |responses|
+    responses = responses_for_url(responses, url)
+    response_bodies = responses.map { |r| get_body_string(r.response) }
+    "expected a response for #{url.inspect} to match /#{regex_str}/.  Responses for #{url.inspect}:\n\n #{response_bodies.join("\n\n")}"
+  end
+end
+
+RSpec::Matchers.define :be_tagged_with do |tag|
+  match do |scenario|
+    scenario.source_tag_names.include?(tag)
+  end
+
+  failure_message_for_should do |scenario|
+    "expected scenario to be tagged with #{tag}.  Tags: #{scenario.source_tag_names.inspect}"
+  end
+end
+
+RSpec::Matchers.define :have_normalized_headers do
+  match do |object|
+    headers = object.headers
+    headers.is_a?(Hash) &&
+      headers.keys.map { |k| k.downcase } == headers.keys &&
+      headers.values.all? { |val| val.is_a?(Array) }
+  end
+
+  failure_message_for_should do |object|
+    "expected headers to be normalized to have lower cased keys and arrays as values.  Actual headers: #{object.headers.inspect}"
+  end
+end
+
 module VCRHelpers
   def static_rack_server(response_string)
     orig_ignore_localhost = VCR.http_stubbing_adapter.ignore_localhost?
@@ -9,31 +55,6 @@ module VCRHelpers
       VCR::LocalhostServer::STATIC_SERVERS[response_string]
     ensure
       VCR.http_stubbing_adapter.ignore_localhost = orig_ignore_localhost
-    end
-  end
-
-  def have_expected_response(url, regex_str)
-    simple_matcher("a response from #{url} that matches /#{regex_str}/") do |responses|
-      selector = case url
-        when String then lambda { |r| URI.parse(r.uri) == URI.parse(url) }
-        when Regexp then lambda { |r| r.uri == url }
-        else raise ArgumentError.new("Unexpected url: #{url.class.to_s}: #{url.inspect}")
-      end
-
-      responses = responses.select(&selector)
-      regex = /#{regex_str}/i
-      responses.detect { |r| get_body_string(r.response) =~ regex }
-    end
-  end
-
-  def have_normalized_headers
-    simple_matcher("should have normalized headers") do |object, matcher|
-      headers = object.headers
-      headers.should be_instance_of(Hash)
-      headers.keys.map { |k| k.downcase }.should == headers.keys
-      headers.values.each do |val|
-        val.should be_instance_of(Array)
-      end
     end
   end
 
@@ -55,11 +76,6 @@ module VCRHelpers
     @http_requests[url] += [result]
   end
 
-  def be_tagged_with(tag)
-    simple_matcher("be tagged with #{tag}") do |object|
-      object.source_tag_names.include?(tag)
-    end
-  end
 end
 World(VCRHelpers)
 

@@ -1,7 +1,7 @@
 source :rubygems
 
 group :development do
-  gem 'rspec',              '~> 1.3.0'
+  gem 'rspec',              '>= 2.0.0.beta.19'
   gem 'cucumber',           '>= 0.8.5'
   gem 'fakeweb',            '~> 1.2.8'
   gem 'webmock',            '~> 1.3.0'
@@ -16,7 +16,11 @@ group :development do
   end
 end
 
-group :test do
+# Additional gems that are useful, but not required for development.
+# These will not be added to the gemspec as development dependencies.
+group :extras do
+  gem 'rcov'
+
   platforms :ruby_18 do
     gem 'ruby-debug'
   end

@@ -54,18 +54,18 @@ end
 
 shared_examples_for "an http stubbing adapter that supports Net::HTTP" do
   context "using Net::HTTP" do
-    def get_body_string(response); response.body; end
+    it_should_behave_like 'an http stubbing adapter that supports some HTTP library' do
+      def get_body_string(response); response.body; end
 
-    def make_http_request(method, url, body = {})
-      case method
-        when :get
-          Net::HTTP.get_response(URI.parse(url))
-        when :post
-          Net::HTTP.post_form(URI.parse(url), body)
+      def make_http_request(method, url, body = {})
+        case method
+          when :get
+            Net::HTTP.get_response(URI.parse(url))
+          when :post
+            Net::HTTP.post_form(URI.parse(url), body)
+        end
       end
     end
-
-    it_should_behave_like 'an http stubbing adapter that supports some HTTP library'
   end
 end
 

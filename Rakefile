@@ -1,25 +1,17 @@
 require 'rubygems'
 require 'rake'
+require "rspec/core/rake_task"
 
-begin
-  require 'spec/rake/spectask'
-  Spec::Rake::SpecTask.new(:spec) do |spec|
-    spec.libs << 'lib' << 'spec'
-    spec.spec_files = FileList['spec/**/*_spec.rb']
-    spec.spec_opts = ['--color', '--format', 'progress']
-    spec.spec_opts << '--debugger' unless RUBY_PLATFORM == 'java'
-  end
+RSpec::Core::RakeTask.new(:spec)
 
-  Spec::Rake::SpecTask.new(:rcov) do |spec|
-    spec.libs << 'lib' << 'spec'
-    spec.pattern = 'spec/**/*_spec.rb'
-    spec.rcov = true
-    spec.rcov_opts = ['--exclude', '.rvm']
-  end
-rescue LoadError
-  task :spec do
-    abort "Rspec is not available. In order to run specs, you must: sudo gem install rspec"
-  end
+desc "Run all examples using rcov"
+RSpec::Core::RakeTask.new :rcov => :cleanup_rcov_files do |t|
+  t.rcov = true
+  t.rcov_opts =  %[-Ilib -Ispec --exclude "spec/*,gems/*" --text-report --sort coverage --aggregate coverage.data]
+end
+
+task :cleanup_rcov_files do
+  rm_rf 'coverage.data'
 end
 
 begin

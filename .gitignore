@@ -16,6 +16,7 @@ tags
 
 ## PROJECT::GENERAL
 coverage
+coverage.data
 rdoc
 pkg
 

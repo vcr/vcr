@@ -32,8 +32,6 @@ rescue LoadError
   # ruby-debug wasn't available so neither can the debugging be
 end
 
-require 'spec'
-
 # Ruby 1.9.1 has a different yaml serialization format.
 YAML_SERIALIZATION_VERSION = RUBY_VERSION == '1.9.1' ? '1.9.1' : 'not_1.9.1'
 

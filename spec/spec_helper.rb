@@ -10,8 +10,7 @@ require 'em-http' unless RUBY_PLATFORM =~ /java/
 require 'vcr'
 require 'vcr/http_stubbing_adapters/fakeweb'
 require 'vcr/http_stubbing_adapters/webmock'
-require 'spec'
-require 'spec/autorun'
+require 'rspec'
 
 # Ruby 1.9.1 has a different yaml serialization format.
 YAML_SERIALIZATION_VERSION = RUBY_VERSION == '1.9.1' ? '1.9.1' : 'not_1.9.1'
@@ -20,9 +19,11 @@ YAML_SERIALIZATION_VERSION = RUBY_VERSION == '1.9.1' ? '1.9.1' : 'not_1.9.1'
 # in ./support/ and its subdirectories.
 Dir[File.expand_path(File.join(File.dirname(__FILE__),'support','**','*.rb'))].each {|f| require f}
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
   config.extend TempCassetteLibraryDir
   config.extend DisableWarnings
+
+  config.color_enabled = true
 
   config.before(:each) do
     VCR::Config.default_cassette_options = { :record => :new_episodes }
