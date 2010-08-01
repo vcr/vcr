@@ -22,7 +22,7 @@ module VCR
         cassette_name = "cucumber_tags/#{tag_name.gsub(/\A@/, '')}"
 
         @main_object.Around(tag_name) do |scenario, block|
-          VCR.use_cassette(cassette_name, options) { block.call }
+          VCR.use_cassette(cassette_name, options, &block)
         end
 
         self.class.add_tag(tag_name)
