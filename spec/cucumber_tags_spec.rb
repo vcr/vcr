@@ -1,71 +1,55 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe VCR::CucumberTags do
-  before(:each) do
-    @args =   { :before => [], :after => [] }
-    @blocks = { :before => [], :after => [] }
+  subject { described_class.new(self) }
+  let(:blocks_for_tags) { {} }
+
+  # define our own Around so we can test this in isolation from cucumber's implementation.
+  def Around(tag, &block)
+    blocks_for_tags[tag.sub('@', '')] = block
   end
 
-  def Before(*args, &block)
-    @args[:before]   << args
-    @blocks[:before] << block
+  def test_tag(cassette_attribute, tag, expected_value)
+    VCR.current_cassette.should be_nil
+
+    cassette_during_scenario, scenario = nil, lambda { cassette_during_scenario = VCR.current_cassette }
+    blocks_for_tags[tag].call(:scenario_name, scenario)
+    cassette_during_scenario.send(cassette_attribute).should == expected_value
+
+    VCR.current_cassette.should be_nil
   end
 
-  def After(*args, &block)
-    @args[:after]   << args
-    @blocks[:after] << block
-  end
+  %w(tags tag).each do |tag_method|
+    describe "##{tag_method}" do
+      it "creates a cucumber Around hook for each given tag so that the scenario runs with the cassette inserted" do
+        subject.send(tag_method, 'tag1', 'tag2')
 
-  describe '#tag' do
-    [:before, :after].each do |hook|
-      it "sets up a cucumber #{hook} hook for the given tag that creates a new cassette" do
-        VCR.cucumber_tags { |t| t.tag 'tag_test' }
-
-        @args[hook].should == [['@tag_test']]
-
-        if hook == :before
-          VCR.should_receive(:insert_cassette).with('cucumber_tags/tag_test', {})
-        else
-          VCR.should_receive(:eject_cassette)
-        end
-        @blocks[hook].should have(1).block
-        @blocks[hook].first.call
-      end
-
-      it "sets up separate hooks for each tag, passing the given options to each cassette" do
-        VCR.cucumber_tags { |t| t.tag 'tag_test1', 'tag_test2', :record => :none }
-        @args[hook].should == [['@tag_test1'], ['@tag_test2']]
-
-        if hook == :before
-          VCR.should_receive(:insert_cassette).with('cucumber_tags/tag_test1', { :record => :none }).once
-          VCR.should_receive(:insert_cassette).with('cucumber_tags/tag_test2', { :record => :none }).once
-        else
-          VCR.should_receive(:eject_cassette).twice
-        end
-        @blocks[hook].should have(2).blocks
-        @blocks[hook].each { |b| b.call }
+        test_tag(:name, 'tag1', 'cucumber_tags/tag1')
+        test_tag(:name, 'tag2', 'cucumber_tags/tag2')
       end
 
       it "works with tags that start with an @" do
-        VCR.cucumber_tags { |t| t.tag '@tag_test' }
-        @args[hook].should == [['@tag_test']]
+        subject.send(tag_method, '@tag1', '@tag2')
 
-        if hook == :before
-          VCR.should_receive(:insert_cassette).with('cucumber_tags/tag_test', {})
-        else
-          VCR.should_receive(:eject_cassette)
-        end
-        @blocks[hook].should have(1).block
-        @blocks[hook].first.call
+        test_tag(:name, 'tag1', 'cucumber_tags/tag1')
+        test_tag(:name, 'tag2', 'cucumber_tags/tag2')
+      end
+
+      it "passes along the given options to the cassette" do
+        subject.send(tag_method, 'tag1', :record => :none)
+        subject.send(tag_method, 'tag2', :record => :new_episodes)
+
+        test_tag(:record_mode, 'tag1', :none)
+        test_tag(:record_mode, 'tag2', :new_episodes)
       end
     end
   end
 
   describe '.tags' do
     it 'returns the list of cucumber tags' do
-      VCR.cucumber_tags { |t| t.tag 'tag1' }
-      VCR.cucumber_tags { |t| t.tags 'tag7', 'tag12' }
-      VCR::CucumberTags.tags[-3, 3].should == %w(@tag1 @tag7 @tag12)
+      subject.tags 'tag1', 'tag2'
+      subject.tags 'tag3', 'tag4'
+      described_class.tags[-4, 4].should == %w(@tag1 @tag2 @tag3 @tag4)
     end
   end
 end
