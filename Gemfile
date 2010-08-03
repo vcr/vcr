@@ -4,7 +4,7 @@ group :development do
   gem 'rspec',              '>= 2.0.0.beta.19'
   gem 'cucumber',           '>= 0.8.5'
   gem 'fakeweb',            '~> 1.2.8'
-  gem 'webmock',            '~> 1.3.0'
+  gem 'webmock',            '~> 1.3.3'
   gem 'httpclient',         '~> 2.1.5.2'
   gem 'capybara',           '~> 0.3.9'
   gem 'rack',               '1.2.0'

@@ -57,6 +57,10 @@ shared_examples_for "an http stubbing adapter that supports Net::HTTP" do
     it_should_behave_like 'an http stubbing adapter that supports some HTTP library' do
       def get_body_string(response); response.body; end
 
+      def get_header(header_key, response)
+        response.get_fields(header_key)
+      end
+
       def make_http_request(method, url, body = {})
         case method
           when :get
@@ -169,6 +173,18 @@ shared_examples_for "an http stubbing adapter that supports some HTTP library" d
         it 'gets the stubbed responses when requests are made to http://example.com/foo, and does not record them' do
           VCR.should_receive(:record_http_interaction).never
           get_body_string(make_http_request(:get, 'http://example.com/foo')).should == 'example.com get response with path=foo'
+        end
+
+        it "correctly handles stubbing multiple values for the same header" do
+          perform_test = lambda do
+            get_header('Set-Cookie', make_http_request(:get, 'http://example.com/two_set_cookie_headers')).should =~ ['bar=bazz', 'foo=bar']
+          end
+
+          if subject == VCR::HttpStubbingAdapters::FakeWeb
+            pending("waiting for my fakeweb fix to be merged into fakeweb and released", &perform_test)
+          else
+            perform_test.call
+          end
         end
 
         context 'when we restore our previous check point' do

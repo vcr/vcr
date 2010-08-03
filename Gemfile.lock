@@ -80,7 +80,7 @@ GEM
     term-ansicolor (1.0.5)
     trollop (1.16.2)
     weakling (0.0.4-java)
-    webmock (1.3.2)
+    webmock (1.3.3)
       addressable (>= 2.1.1)
       crack (>= 0.1.7)
 
@@ -101,4 +101,4 @@ DEPENDENCIES
   rspec (>= 2.0.0.beta.19)
   ruby-debug
   ruby-debug19
-  webmock (~> 1.3.0)
+  webmock (~> 1.3.3)

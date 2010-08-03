@@ -88,3 +88,19 @@
       - bytes
     :body: example.com post response with id=3
     :http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  :request: !ruby/struct:VCR::Request 
+    :method: :get
+    :uri: http://example.com:80/two_set_cookie_headers
+    :body: 
+    :headers: 
+  :response: !ruby/struct:VCR::Response 
+    :status: !ruby/struct:VCR::ResponseStatus 
+      :code: 200
+      :message: OK
+    :headers: 
+      set-cookie: 
+      - bar=bazz
+      - foo=bar
+    :body: this response has two set-cookie headers
+    :http_version: "1.1"
