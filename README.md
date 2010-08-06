@@ -227,6 +227,15 @@ additional features.  You can see the
 [benchmarks](http://github.com/myronmarston/vcr/blob/master/benchmarks/http_stubbing_libraries.rb) for
 more details.
 
+Note that FakeWeb also currently has a bug that prevents it from properly dealing with multiple values
+for the same response header.  See [this FakeWeb issue](http://github.com/chrisk/fakeweb/issues/17) for
+more info.
+
+You should not need to directly interact with either FakeWeb or WebMock.  VCR will take care of disallowing
+http connections when no cassette is inserted, and it will clean up all stubs/registrations when a cassette
+is ejected.  If you ever decide to switch HTTP stubbing libraries, you'll just have to update the VCR config
+setting.
+
 ## Suggested Workflow
 
 First, configure VCR as I have above.  I like setting the default record mode to `:none` 
