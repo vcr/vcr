@@ -56,7 +56,8 @@ maintenance) and accurate (the response from example.com will contain the same h
 ## Development
 
 * Source hosted on [GitHub](http://github.com/myronmarston/vcr).
-* Report issues and feature suggestions on [GitHub Issues](http://github.com/myronmarston/vcr/issues).
+* Direct questions and discussions to the [mailing list](http://groups.google.com/group/vcr-ruby).
+* Report issues on [GitHub Issues](http://github.com/myronmarston/vcr/issues).
 * Pull requests are very welcome! Please include spec and/or feature coverage for every patch,
   and create a topic branch for every separate change you make.
 
