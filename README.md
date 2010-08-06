@@ -239,7 +239,8 @@ setting.
 ## Suggested Workflow
 
 First, configure VCR as I have above.  I like setting the default record mode to `:none` 
-so that no new HTTP requests are made without me explicitly allowing it.
+so that no new HTTP requests are made without me explicitly allowing it, but if you may prefer to
+set it to `:new_episodes`.
 
 When an HTTP request is made, you'll get an error such as:
 
@@ -266,6 +267,9 @@ If the HTTP request that triggered the error is new, you'll have to record it fo
 record the HTTP interaction.  I usually remove the record mode at this point so that it uses the default
 of `:none` in the future.  Future test runs will get the recorded response, and if your code changes so 
 that it is making a new HTTP request, you'll be notified by an error as shown above.
+
+VCR is designed to be used very granularly.  Rather than inserting a global cassette, I recommend you wrap individual
+blocks of code in `VCR.use_cassette` and record logically grouped sets of requests.
 
 ## Ruby Interpreter Compatibility
 
