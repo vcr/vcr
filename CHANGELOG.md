@@ -1,5 +1,15 @@
 #Changelog
 
+## 1.0.3 (August 5, 2010)
+
+* Upgraded VCR specs to RSpec 2.
+* Updated `VCR::CucumberTags` so that it uses an `around` hook rather than a `before` hook and an `after` hook.
+  Around hooks were added to Cucumber in the 0.7.3 release, so you'll have to be on that version or higher to use
+  the `VCR::CucumberTags` feature.
+* Updated the WebMock version requirement to 1.3.3 or greater.  1.3.2 and earlier versions did not properly handle
+  multiple value for the same response header.
+* Miscellaneous documentation updates.
+
 ## 1.0.2 (July 6, 2010)
 
 * Fixed VCR to work with [rest-client](http://github.com/archiloque/rest-client).  Rest-client extends the Net::HTTP
