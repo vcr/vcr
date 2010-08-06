@@ -128,9 +128,23 @@ Alternately, you can insert and eject a cassette with individual method calls fr
 
       it "does something that makes an HTTP request"
 
+      it "does something else that makes an HTTP request"
+
       after(:each) do
         VCR.eject_cassette
       end
+    end
+
+If you're using RSpec 2, you can use the new `around` hook:
+
+    describe "Some object that makes an HTTP request" do
+      around(:each) do |example|
+        VCR.use_cassette('geocoding/Seattle, WA', :record => :new_episodes, &example)
+      end
+
+      it "does something that makes an HTTP request"
+
+      it "does something else that makes an HTTP request"
     end
 
 ## Usage with Cucumber
