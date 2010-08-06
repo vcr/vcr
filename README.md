@@ -312,6 +312,15 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Ben Hutton](http://github.com/benhutton)
 * [Eric Allam](http://github.com/rubymaverick)
 
+## Similar Libraries
+
+If VCR doesn't meet your needs, please [open an issue](http://github.com/myronmarston/vcr/issues) and let me know
+how VCR could be improved.  You may also want to try one of these similar libraries:
+
+* [Stale Fish](http://github.com/jsmestad/stale_fish)
+* [NetRecorder](http://github.com/chrisyoung/netrecorder)
+* [Ephemeral Response](http://github.com/sandro/ephemeral_response)
+
 ## Copyright
 
 Copyright (c) 2010 Myron Marston. See LICENSE for details.
