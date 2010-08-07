@@ -1,5 +1,11 @@
 #Changelog
 
+## In Git
+
+* Removed VCR::TaskRunner and the corresponding rake task definition.  The rake task migrated cassettes from the
+  0.3.1 format to the 0.4+ format.  If you are still on 0.3.1 or earlier, I recommend you upgrade to 0.4.1 first,
+  migrate your cassettes and deal with migration warnings, then upgrade to the current release.
+
 ## 1.0.3 (August 5, 2010)
 
 * Upgraded VCR specs to RSpec 2.
