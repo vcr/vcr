@@ -6,7 +6,7 @@ Bundler.setup
 
 require 'patron' unless RUBY_PLATFORM =~ /java/
 require 'httpclient'
-require 'em-http' unless RUBY_PLATFORM =~ /java/
+require 'em-http-request' unless RUBY_PLATFORM =~ /java/
 require 'vcr'
 require 'vcr/http_stubbing_adapters/fakeweb'
 require 'vcr/http_stubbing_adapters/webmock'

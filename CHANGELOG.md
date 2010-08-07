@@ -10,6 +10,7 @@
 * Optimized ERB rendering a bit.  Rather than creating a new struct subclass for each time we render an ERB
   cassette with locals, we keep a cache of reusable struct subclasses based on the desired attributes.
   [Benchmarking](http://gist.github.com/512948) reveals this is about 28% faster.
+* Upgraded tests to use em-http-request 0.2.10 rather than 0.2.7.
 
 ## 1.0.3 (August 5, 2010)
 

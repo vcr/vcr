@@ -59,14 +59,16 @@ describe VCR::HttpStubbingAdapters::WebMock do
       end
 
       def make_http_request(method, url, body = {})
+        http = nil
         EventMachine.run do
           http = case method
             when :get  then EventMachine::HttpRequest.new(url).get
             when :post then EventMachine::HttpRequest.new(url).post :body => body
           end
 
-          http.callback { EventMachine.stop; return http }
+          http.callback { EventMachine.stop }
         end
+        http
       end
     end
   end unless RUBY_PLATFORM =~ /java/

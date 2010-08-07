@@ -40,7 +40,7 @@ module HTTPClientAdapter
   end
 end
 
-module EmHTTPAdapter
+module EmHTTPRequestAdapter
   def get_body_string(response)
     if response.respond_to?(:body)
       response.body
@@ -53,18 +53,20 @@ module EmHTTPAdapter
     url = uri.to_s
     url << '/' if uri.path == ''
 
+    http = nil
     EventMachine.run do
       http = EventMachine::HttpRequest.new(url).get
-      http.callback { EventMachine.stop; return http }
+      http.callback { EventMachine.stop }
     end
+    http
   end
 end
 
 World case ENV['HTTP_LIB']
-  when 'patron'      then PatronAdapter
-  when 'httpclient'  then HTTPClientAdapter
-  when 'net/http'    then NetHTTPAdapter
-  when 'em-http'     then EmHTTPAdapter
+  when 'patron'          then PatronAdapter
+  when 'httpclient'      then HTTPClientAdapter
+  when 'net/http'        then NetHTTPAdapter
+  when 'em-http-request' then EmHTTPRequestAdapter
   else raise ArgumentError.new("Unexpected HTTP_LIB: #{ENV['HTTP_LIB']}")
 end
 
