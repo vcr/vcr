@@ -12,6 +12,11 @@ module VCR
 
     def initialize(name, options = {})
       options = VCR::Config.default_cassette_options.merge(options)
+      invalid_options = options.keys - [:record, :erb, :allow_real_http]
+
+      if invalid_options.size > 0
+        raise ArgumentError.new("You passed the following invalid options to VCR::Cassette.new: #{invalid_options.inspect}.")
+      end
 
       @name = name
       @record_mode = options[:record]

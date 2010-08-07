@@ -5,6 +5,8 @@
 * Removed VCR::TaskRunner and the corresponding rake task definition.  The rake task migrated cassettes from the
   0.3.1 format to the 0.4+ format.  If you are still on 0.3.1 or earlier, I recommend you upgrade to 0.4.1 first,
   migrate your cassettes and deal with migration warnings, then upgrade to the current release.
+* Added some code to VCR::Cassette.new to check the options passed to the cassette and raise an error if any
+  invalid options are passed.
 
 ## 1.0.3 (August 5, 2010)
 

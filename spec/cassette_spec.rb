@@ -45,6 +45,12 @@ describe VCR::Cassette do
       lambda { VCR::Cassette.new(:test, :record => :not_a_record_mode) }.should raise_error(ArgumentError)
     end
 
+    it 'raises an error if given invalid options' do
+      expect {
+        VCR::Cassette.new(:test, :invalid => :option)
+      }.to raise_error(ArgumentError)
+    end
+
     it 'creates a stubs checkpoint on the http_stubbing_adapter' do
       VCR.http_stubbing_adapter.should_receive(:create_stubs_checkpoint).with('example').once
       VCR::Cassette.new('example')
