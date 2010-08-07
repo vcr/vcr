@@ -40,7 +40,7 @@ begin
           Cucumber::Rake::Task.new(
             { sanitized_http_lib => "#{features_subtasks.last}_prep" },
             "Run the features using #{http_stubbing_adapter} and #{http_lib}") do |t|
-              t.cucumber_opts = ['--format', 'progress', '--tags', "@all_http_libs,@#{sanitized_http_lib}"]
+              t.cucumber_opts = ['--format', 'progress', '--tags', "@#{http_stubbing_adapter},@all_http_libs,@#{sanitized_http_lib}"]
 
               # disable scenarios on heroku that can't pass due to heroku's restrictions
               t.cucumber_opts += ['--tags', '~@spawns_localhost_server'] if ENV.keys.include?('HEROKU_SLUG')

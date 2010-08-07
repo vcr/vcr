@@ -1,0 +1,35 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  :request: !ruby/struct:VCR::Request 
+    :method: :post
+    :uri: http://example.com:80/
+    :body: foo=bar
+    :headers: 
+      x-http-user: 
+      - bob
+  :response: !ruby/struct:VCR::Response 
+    :status: !ruby/struct:VCR::ResponseStatus 
+      :code: 200
+      :message: OK
+    :headers: 
+      etag: 
+      - "\"24ec5-1b6-4059a80bfd280\""
+    :body: foo=bar response | bob response
+    :http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  :request: !ruby/struct:VCR::Request 
+    :method: :post
+    :uri: http://example.com:80/
+    :body: bar=bazz
+    :headers: 
+      x-http-user: 
+      - joe
+  :response: !ruby/struct:VCR::Response 
+    :status: !ruby/struct:VCR::ResponseStatus 
+      :code: 200
+      :message: OK
+    :headers: 
+      etag: 
+      - "\"24ec5-1b6-4059a80bfd280\""
+    :body: bar=bazz response | joe response
+    :http_version: "1.1"

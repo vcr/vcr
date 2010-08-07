@@ -5,12 +5,13 @@ module NetHTTPAdapter
     response.get_fields(header_key)
   end
 
-  def make_http_request(method, url, body = {})
+  def make_http_request(method, url, body = {}, headers = {})
+    uri = URI.parse(url)
     case method
       when :get
-        Net::HTTP.get_response(URI.parse(url))
+        Net::HTTP.get_response(uri)
       when :post
-        Net::HTTP.post_form(URI.parse(url), body)
+        Net::HTTP.new(uri.host, uri.port).post(uri.path, body, headers)
     end
   end
 end
@@ -22,7 +23,7 @@ module PatronAdapter
     response.headers[header_key]
   end
 
-  def make_http_request(method, url, body = {})
+  def make_http_request(method, url, body = {}, headers = {})
     uri = URI.parse(url)
     sess = Patron::Session.new
     sess.base_url = "#{uri.scheme}://#{uri.host}:#{uri.port}"
@@ -31,7 +32,7 @@ module PatronAdapter
       when :get
         sess.get(uri.path)
       when :post
-        sess.post(uri.path, body)
+        sess.post(uri.path, body, headers)
     end
   end
 end
@@ -46,12 +47,12 @@ module HTTPClientAdapter
     response.header[header_key]
   end
 
-  def make_http_request(method, url, body = {})
+  def make_http_request(method, url, body = {}, headers = {})
     case method
       when :get
         HTTPClient.new.get(url)
       when :post
-        HTTPClient.new.post(url, body)
+        HTTPClient.new.post(url, body, headers)
     end
   end
 end
@@ -65,12 +66,12 @@ module EmHTTPRequestAdapter
     response.response_header[header_key.upcase.gsub('-', '_')].split(', ')
   end
 
-  def make_http_request(method, url, body = {})
+  def make_http_request(method, url, body = {}, headers = {})
     http = nil
     EventMachine.run do
       http = case method
         when :get  then EventMachine::HttpRequest.new(url).get
-        when :post then EventMachine::HttpRequest.new(url).post :body => body
+        when :post then EventMachine::HttpRequest.new(url).post :body => body, :head => headers
       end
 
       http.callback { EventMachine.stop }

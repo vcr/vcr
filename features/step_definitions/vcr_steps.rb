@@ -1,23 +1,38 @@
 require 'tmpdir'
 
-RSpec::Matchers.define :have_expected_response do |url, regex_str|
-  def responses_for_url(responses, url)
+RSpec::Matchers.define :have_expected_response do |regex_str, request_attributes|
+  def matched_responses(responses, request_attributes)
+    url, request_body, request_headers = request_attributes[:url], request_attributes[:request_body], request_attributes[:request_headers]
+
     selector = case url
       when String then lambda { |r| URI.parse(r.uri) == URI.parse(url) }
       when Regexp then lambda { |r| r.uri == url }
       else raise ArgumentError.new("Unexpected url: #{url.class.to_s}: #{url.inspect}")
     end
 
-    responses.select(&selector)
+    matched = responses.select(&selector)
+
+    if request_body
+      matched = matched.select { |r| r.request.body == request_body }
+    end
+
+    (request_headers || {}).each do |r_key, r_val|
+      matched = matched.select do |r|
+        r.request.headers.any? { |k, v| k.downcase == r_key.downcase && v == [r_val] }
+      end
+    end
+
+    matched
   end
 
   match do |responses|
     regex = /#{regex_str}/i
-    responses_for_url(responses, url).detect { |r| r.response.body =~ regex }
+    matched_responses(responses, request_attributes).detect { |r| r.response.body =~ regex }
   end
 
   failure_message_for_should do |responses|
-    responses = responses_for_url(responses, url)
+    url = request_attributes[:url]
+    responses = matched_responses(responses, request_attributes)
     response_bodies = responses.map { |r| r.response.body }
     "expected a response for #{url.inspect} to match /#{regex_str}/.  Responses for #{url.inspect}:\n\n #{response_bodies.join("\n\n")}"
   end
@@ -98,7 +113,15 @@ Given /^the "([^\"]*)" library file has a response for "([^\"]*)" that matches \
 end
 
 Given /^the "([^\"]*)" library file has a response for \/(\S+)\/ that matches \/(.+)\/$/ do |cassette_name, url_regex, body_regex|
-  recorded_interactions_for(cassette_name).should have_expected_response(/#{url_regex}/, body_regex)
+  recorded_interactions_for(cassette_name).should have_expected_response(body_regex, :url => /#{url_regex}/)
+end
+
+Given /^the "([^"]*)" library file has a response for "([^"]*)" with the request body "([^"]*)" that matches \/(.+)\/$/ do |cassette_name, url, request_body, response_regex|
+  recorded_interactions_for(cassette_name).should have_expected_response(response_regex, :url => url, :request_body => request_body)
+end
+
+Given /^the "([^"]*)" library file has a response for "([^"]*)" with the request header "([^"]*)=([^"]*)" that matches \/(.+)\/$/ do |cassette_name, url, header_key, header_value, response_regex|
+  recorded_interactions_for(cassette_name).should have_expected_response(response_regex, :url => url, :request_headers => { header_key => header_value })
 end
 
 Given /^this scenario is tagged with the vcr cassette tag: "([^\"]+)"$/ do |tag|
@@ -119,6 +142,18 @@ When /^I make (?:an )?HTTP get request to "([^\"]*)"$/ do |url|
   end
 end
 
+When /^I make an HTTP post request to "([^"]*)" with request body "([^"]*)"$/ do |url, request_body|
+  capture_response(url) do |uri, path|
+    make_http_request(:post, url, request_body)
+  end
+end
+
+When /^I make an HTTP post request to "([^"]*)" with request header "([^"]*)=([^"]*)"$/ do |url, header_key, header_val|
+  capture_response(url) do |uri, path|
+    make_http_request(:post, url, '', { header_key => header_val })
+  end
+end
+
 When /^I make (.*) requests? to "([^\"]*)"(?: and "([^\"]*)")? within the "([^\"]*)" cassette(?: using cassette options: (.*))?$/ do |http_request_type, url1, url2, cassette_name, options|
   options = options.to_s == '' ? { :record => :new_episodes } : eval(options)
   urls = [url1, url2].select { |u| u.to_s.size > 0 }
@@ -129,9 +164,23 @@ When /^I make (.*) requests? to "([^\"]*)"(?: and "([^\"]*)")? within the "([^\"
   end
 end
 
+When /^I make an HTTP post request to "([^"]*)" with request body "([^"]*)" within the "([^"]*)" cassette(?: using cassette options: (.*))?$/ do |url, request_body, cassette_name, options|
+  options = options.to_s == '' ? { :record => :new_episodes } : eval(options)
+  VCR.use_cassette(cassette_name, options) do
+    When %{I make an HTTP post request to "#{url}" with request body "#{request_body}"}
+  end
+end
+
+When /^I make an HTTP post request to "([^"]*)" with request header "([^"]*)=([^"]*)" within the "([^"]*)" cassette(?: using cassette options: (.*))?$/ do |url, header_key, header_value, cassette_name, options|
+  options = options.to_s == '' ? { :record => :new_episodes } : eval(options)
+  VCR.use_cassette(cassette_name, options) do
+    When %{I make an HTTP post request to "#{url}" with request header "#{header_key}=#{header_value}"}
+  end
+end
+
 Then /^the "([^\"]*)" library file should have a response for "([^\"]*)" that matches \/(.+)\/$/ do |cassette_name, url, regex_str|
   interactions = recorded_interactions_for(cassette_name)
-  interactions.should have_expected_response(url, regex_str)
+  interactions.should have_expected_response(regex_str, :url => url)
 end
 
 Then /^the "([^\"]*)" library file should have exactly (\d+) response$/ do |cassette_name, response_count|
