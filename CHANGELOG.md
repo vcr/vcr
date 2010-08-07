@@ -7,6 +7,9 @@
   migrate your cassettes and deal with migration warnings, then upgrade to the current release.
 * Added some code to VCR::Cassette.new to check the options passed to the cassette and raise an error if any
   invalid options are passed.
+* Optimized ERB rendering a bit.  Rather than creating a new struct subclass for each time we render an ERB
+  cassette with locals, we keep a cache of reusable struct subclasses based on the desired attributes.
+  [Benchmarking](http://gist.github.com/512948) reveals this is about 28% faster.
 
 ## 1.0.3 (August 5, 2010)
 

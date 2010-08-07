@@ -104,6 +104,10 @@ module VCR
       VCR.http_stubbing_adapter.stub_requests(recorded_interactions)
     end
 
+    @@struct_cache = Hash.new do |hash, attributes|
+      hash[attributes] = Struct.new(*attributes)
+    end
+
     def raw_yaml_content
       content = File.read(file)
       return content unless @erb
@@ -114,7 +118,7 @@ module VCR
         return template.result unless @erb.is_a?(Hash)
 
         # create an object with methods for each desired local variable...
-        local_variables = Struct.new(*@erb.keys).new(*@erb.values)
+        local_variables = @@struct_cache[@erb.keys].new(*@erb.values)
 
         # instance_eval seems to be the only way to get the binding for ruby 1.9: http://redmine.ruby-lang.org/issues/show/2161
         template.result(local_variables.instance_eval { binding })
