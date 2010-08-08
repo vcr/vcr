@@ -6,70 +6,19 @@ describe VCR::HttpStubbingAdapters::WebMock do
 
   context "using patron" do
     it_should_behave_like 'an http stubbing adapter that supports some HTTP library' do
-      def get_body_string(response); response.body; end
-
-      def get_header(header_key, response)
-        response.headers[header_key]
-      end
-
-      def make_http_request(method, url, body = {})
-        uri = URI.parse(url)
-        sess = Patron::Session.new
-        sess.base_url = "#{uri.scheme}://#{uri.host}:#{uri.port}"
-
-        case method
-          when :get
-            sess.get(uri.path)
-          when :post
-            sess.post(uri.path, body)
-        end
-      end
+      include PatronAdapter
     end
   end unless RUBY_PLATFORM =~ /java/
 
   context "using httpclient" do
     it_should_behave_like 'an http stubbing adapter that supports some HTTP library' do
-      def get_body_string(response)
-        response.body.content
-      end
-
-      def get_header(header_key, response)
-        response.header[header_key]
-      end
-
-      def make_http_request(method, url, body = {})
-        case method
-          when :get
-            HTTPClient.new.get(url)
-          when :post
-            HTTPClient.new.post(url, body)
-        end
-      end
+      include HTTPClientAdapter
     end
   end
 
   context "using em-http-request" do
     it_should_behave_like 'an http stubbing adapter that supports some HTTP library' do
-      def get_body_string(response)
-        response.response
-      end
-
-      def get_header(header_key, response)
-        response.response_header[header_key.upcase.gsub('-', '_')].split(', ')
-      end
-
-      def make_http_request(method, url, body = {})
-        http = nil
-        EventMachine.run do
-          http = case method
-            when :get  then EventMachine::HttpRequest.new(url).get
-            when :post then EventMachine::HttpRequest.new(url).post :body => body
-          end
-
-          http.callback { EventMachine.stop }
-        end
-        http
-      end
+      include EmHTTPRequestAdapter
     end
   end unless RUBY_PLATFORM =~ /java/
 

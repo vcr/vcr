@@ -13,12 +13,12 @@ RSpec::Matchers.define :have_expected_response do |url, regex_str|
 
   match do |responses|
     regex = /#{regex_str}/i
-    responses_for_url(responses, url).detect { |r| get_body_string(r.response) =~ regex }
+    responses_for_url(responses, url).detect { |r| r.response.body =~ regex }
   end
 
   failure_message_for_should do |responses|
     responses = responses_for_url(responses, url)
-    response_bodies = responses.map { |r| get_body_string(r.response) }
+    response_bodies = responses.map { |r| r.response.body }
     "expected a response for #{url.inspect} to match /#{regex_str}/.  Responses for #{url.inspect}:\n\n #{response_bodies.join("\n\n")}"
   end
 end
@@ -115,7 +115,7 @@ end
 
 When /^I make (?:an )?HTTP get request to "([^\"]*)"$/ do |url|
   capture_response(url) do |uri, path|
-    http_get(uri)
+    make_http_request(:get, url)
   end
 end
 
