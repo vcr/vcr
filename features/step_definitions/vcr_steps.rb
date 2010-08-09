@@ -178,11 +178,11 @@ Given /^a rack app is running on localhost that returns "([^"]+)" for all reques
 end
 
 When /^I make an HTTP get request to the localhost rack app within the "([^\"]*)" cassette$/ do |cassette|
-  When %{I make an HTTP get request to "http://localhost:#{@rack_server.port}" within the "#{cassette}" cassette}
+  When %{I make an HTTP get request to "http://localhost:#{@rack_server.port}/" within the "#{cassette}" cassette}
 end
 
 Then /^the response for the localhost rack app should match \/(.*)\/$/ do |regex|
-  Then %{the response for "http://localhost:#{@rack_server.port}" should match /#{regex}/}
+  Then %{the response for "http://localhost:#{@rack_server.port}/" should match /#{regex}/}
 end
 
 Given /^the "([^\"]*)" library file has a response for localhost that matches \/(.*)\/$/ do |cassette, regex|
