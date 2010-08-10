@@ -23,4 +23,5 @@ pkg
 ## PROJECT::SPECIFIC
 features/fixtures/vcr_cassettes/**/temp/
 *.rbc
+.bundle
 
