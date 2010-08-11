@@ -52,19 +52,106 @@ shared_examples_for "an http stubbing adapter" do
   end
 end
 
-shared_examples_for "an http stubbing adapter that supports Net::HTTP" do
+shared_examples_for "an http stubbing adapter that supports Net::HTTP" do |*args|
   context "using Net::HTTP" do
-    it_should_behave_like 'an http stubbing adapter that supports some HTTP library' do
+    it_should_behave_like 'an http stubbing adapter that supports some HTTP library', *args do
       include NetHTTPAdapter
     end
   end
 end
 
-shared_examples_for "an http stubbing adapter that supports some HTTP library" do
+shared_examples_for "an http stubbing adapter that supports some HTTP library" do |*supported_request_match_attributes|
   include HttpStubbingAdapterStubbed
   subject { described_class }
 
   NET_CONNECT_NOT_ALLOWED_ERROR = [StandardError, /You can use VCR to automatically record this request and replay it later/] unless defined?(NET_CONNECT_NOT_ALLOWED_ERROR)
+
+  describe 'stubbing using specific match_attributes' do
+    before(:each) { subject.http_connections_allowed = false }
+    let(:interactions) { YAML.load(File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', YAML_SERIALIZATION_VERSION, 'match_requests_on.yml'))) }
+
+    @supported_request_match_attributes = supported_request_match_attributes
+    def self.matching_on(attribute, &block)
+      supported_request_match_attributes = @supported_request_match_attributes
+
+      describe attribute do
+        let(:perform_stubbing) { subject.stub_requests(interactions, [attribute]) }
+
+        if supported_request_match_attributes.include?(attribute)
+          before(:each) { perform_stubbing }
+          module_eval(&block)
+        else
+          it 'raises an error indicating matching requests on this attribute is not supported' do
+            expect { perform_stubbing }.to raise_error(/does not support matching requests on #{attribute}/)
+          end
+        end
+      end
+    end
+
+    matching_on :method do
+      [:get, :post].each do |http_method|
+        it "returns the expected response for a :#{http_method}" do
+          get_body_string(make_http_request(http_method, 'http://some-wrong-domain.com/')).should == "#{http_method} method response"
+        end
+      end
+
+      it 'raises an error for another method' do
+        expect { make_http_request(:put, 'http://some-wrong-domain.com/') }.to raise_error(*NET_CONNECT_NOT_ALLOWED_ERROR)
+      end
+    end
+
+    matching_on :host do
+      1.upto(2) do |i|
+        it "returns the expected response from example#{i}.com" do
+          get_body_string(make_http_request(:get, "http://example#{i}.com/some-wrong-path")).should == "example#{i}.com host response"
+        end
+      end
+
+      it 'raises an error for another host' do
+        expect { make_http_request(:get, 'http://example3.com/some-wrong-path') }.to raise_error(*NET_CONNECT_NOT_ALLOWED_ERROR)
+      end
+    end
+
+    matching_on :uri do
+      1.upto(2) do |i|
+        it "returns the expected response from example.com/uri#{i}" do
+          get_body_string(make_http_request(:get, "http://example.com/uri#{i}")).should == "uri#{i} response"
+        end
+      end
+
+      it 'raises an error for another uri' do
+        expect { make_http_request(:get, 'http://example.com/uri3') }.to raise_error(*NET_CONNECT_NOT_ALLOWED_ERROR)
+      end
+    end
+
+    matching_on :body do
+      1.upto(2) do |i|
+        it "returns the expected response for request body 'param=val#{i}'" do
+          get_body_string(make_http_request(:put, "http://wrong-domain.com/wrong/path", "param=val#{i}")).should == "val#{i} body response"
+        end
+      end
+
+      it 'raises an error for another request body' do
+        expect {
+          res = make_http_request(:put, "http://wrong-domain.com/wrong/path", "param=val3")
+        }.to raise_error(*NET_CONNECT_NOT_ALLOWED_ERROR)
+      end
+    end
+
+    matching_on :headers do
+      1.upto(2) do |i|
+        it "returns the expected response for request header 'X-HTTP-HEADER1 = val#{i}'" do
+          get_body_string(make_http_request(:get, "http://wrong-domain.com/wrong/path", {}, 'X-HTTP-HEADER1' => "val#{i}")).should == "val#{i} header response"
+        end
+      end
+
+      it 'raises an error for another request header' do
+        expect {
+          make_http_request(:get, "http://wrong-domain.com/wrong/path", {}, 'X-HTTP-HEADER1' => "val3")
+        }.to raise_error(*NET_CONNECT_NOT_ALLOWED_ERROR)
+      end
+    end
+  end
 
   def self.test_real_http_request(http_allowed)
     if http_allowed

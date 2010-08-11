@@ -5,14 +5,9 @@ module NetHTTPAdapter
     response.get_fields(header_key)
   end
 
-  def make_http_request(method, url, body = {}, headers = {})
+  def make_http_request(method, url, body = '', headers = {})
     uri = URI.parse(url)
-    case method
-      when :get
-        Net::HTTP.get_response(uri)
-      when :post
-        Net::HTTP.new(uri.host, uri.port).post(uri.path, body, headers)
-    end
+    Net::HTTP.new(uri.host, uri.port).send_request(method.to_s.upcase, uri.path, body, headers)
   end
 end
 
@@ -23,17 +18,8 @@ module PatronAdapter
     response.headers[header_key]
   end
 
-  def make_http_request(method, url, body = {}, headers = {})
-    uri = URI.parse(url)
-    sess = Patron::Session.new
-    sess.base_url = "#{uri.scheme}://#{uri.host}:#{uri.port}"
-
-    case method
-      when :get
-        sess.get(uri.path)
-      when :post
-        sess.post(uri.path, body, headers)
-    end
+  def make_http_request(method, url, body = '', headers = {})
+    Patron::Session.new.request(method, url, headers, :data => body)
   end
 end
 
@@ -47,13 +33,8 @@ module HTTPClientAdapter
     response.header[header_key]
   end
 
-  def make_http_request(method, url, body = {}, headers = {})
-    case method
-      when :get
-        HTTPClient.new.get(url)
-      when :post
-        HTTPClient.new.post(url, body, headers)
-    end
+  def make_http_request(method, url, body = '', headers = {})
+    HTTPClient.new.request(method, url, nil, body, headers)
   end
 end
 
@@ -66,14 +47,10 @@ module EmHTTPRequestAdapter
     response.response_header[header_key.upcase.gsub('-', '_')].split(', ')
   end
 
-  def make_http_request(method, url, body = {}, headers = {})
+  def make_http_request(method, url, body = '', headers = {})
     http = nil
     EventMachine.run do
-      http = case method
-        when :get  then EventMachine::HttpRequest.new(url).get
-        when :post then EventMachine::HttpRequest.new(url).post :body => body, :head => headers
-      end
-
+      http = EventMachine::HttpRequest.new(url).send(method, :body => body, :head => headers)
       http.callback { EventMachine.stop }
     end
     http

@@ -99,7 +99,7 @@ module VCR
         recorded_interactions.replace(@original_recorded_interactions)
       end
 
-      VCR.http_stubbing_adapter.stub_requests(recorded_interactions)
+      VCR.http_stubbing_adapter.stub_requests(recorded_interactions, match_requests_on)
     end
 
     @@struct_cache = Hash.new do |hash, attributes|

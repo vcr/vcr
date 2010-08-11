@@ -3,6 +3,8 @@ module VCR
     autoload :FakeWeb, 'vcr/http_stubbing_adapters/fakeweb'
     autoload :WebMock, 'vcr/http_stubbing_adapters/webmock'
 
+    class UnsupportedRequestMatchAttributeError < ArgumentError; end
+
     class Base
       class << self
         def with_http_connections_allowed_set_to(value)

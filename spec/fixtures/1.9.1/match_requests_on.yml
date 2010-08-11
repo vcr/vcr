@@ -1,0 +1,155 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  :request: !ruby/struct:VCR::Request 
+    :method: :post
+    :uri: http://example.com:80/method
+    :body: 
+    :headers: 
+  :response: !ruby/struct:VCR::Response 
+    :status: !ruby/struct:VCR::ResponseStatus 
+      :code: 200
+      :message: OK
+    :headers: 
+      etag: 
+      - "\"24ec5-1b6-4059a80bfd280\""
+    :body: post method response
+    :http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  :request: !ruby/struct:VCR::Request 
+    :method: :get
+    :uri: http://example.com:80/method
+    :body: 
+    :headers: 
+  :response: !ruby/struct:VCR::Response 
+    :status: !ruby/struct:VCR::ResponseStatus 
+      :code: 200
+      :message: OK
+    :headers: 
+      etag: 
+      - "\"24ec5-1b6-4059a80bfd280\""
+    :body: get method response
+    :http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  :request: !ruby/struct:VCR::Request 
+    :method: :post
+    :uri: http://example1.com:80/host
+    :body: 
+    :headers: 
+  :response: !ruby/struct:VCR::Response 
+    :status: !ruby/struct:VCR::ResponseStatus 
+      :code: 200
+      :message: OK
+    :headers: 
+      etag: 
+      - "\"24ec5-1b6-4059a80bfd280\""
+    :body: example1.com host response
+    :http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  :request: !ruby/struct:VCR::Request 
+    :method: :post
+    :uri: http://example2.com:80/host
+    :body: 
+    :headers: 
+  :response: !ruby/struct:VCR::Response 
+    :status: !ruby/struct:VCR::ResponseStatus 
+      :code: 200
+      :message: OK
+    :headers: 
+      etag: 
+      - "\"24ec5-1b6-4059a80bfd280\""
+    :body: example2.com host response
+    :http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  :request: !ruby/struct:VCR::Request 
+    :method: :post
+    :uri: http://example.com:80/uri1
+    :body: 
+    :headers: 
+  :response: !ruby/struct:VCR::Response 
+    :status: !ruby/struct:VCR::ResponseStatus 
+      :code: 200
+      :message: OK
+    :headers: 
+      etag: 
+      - "\"24ec5-1b6-4059a80bfd280\""
+    :body: uri1 response
+    :http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  :request: !ruby/struct:VCR::Request 
+    :method: :post
+    :uri: http://example.com:80/uri2
+    :body: 
+    :headers: 
+  :response: !ruby/struct:VCR::Response 
+    :status: !ruby/struct:VCR::ResponseStatus 
+      :code: 200
+      :message: OK
+    :headers: 
+      etag: 
+      - "\"24ec5-1b6-4059a80bfd280\""
+    :body: uri2 response
+    :http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  :request: !ruby/struct:VCR::Request 
+    :method: :post
+    :uri: http://example.com:80/
+    :body: param=val1
+    :headers: 
+  :response: !ruby/struct:VCR::Response 
+    :status: !ruby/struct:VCR::ResponseStatus 
+      :code: 200
+      :message: OK
+    :headers: 
+      etag: 
+      - "\"24ec5-1b6-4059a80bfd280\""
+    :body: val1 body response
+    :http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  :request: !ruby/struct:VCR::Request 
+    :method: :post
+    :uri: http://example.com:80/
+    :body: param=val2
+    :headers: 
+  :response: !ruby/struct:VCR::Response 
+    :status: !ruby/struct:VCR::ResponseStatus 
+      :code: 200
+      :message: OK
+    :headers: 
+      etag: 
+      - "\"24ec5-1b6-4059a80bfd280\""
+    :body: val2 body response
+    :http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  :request: !ruby/struct:VCR::Request 
+    :method: :post
+    :uri: http://example.com:80/
+    :body: 
+    :headers: 
+      :x-http-header1: 
+      - val1
+  :response: !ruby/struct:VCR::Response 
+    :status: !ruby/struct:VCR::ResponseStatus 
+      :code: 200
+      :message: OK
+    :headers: 
+      etag: 
+      - "\"24ec5-1b6-4059a80bfd280\""
+    :body: val1 header response
+    :http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  :request: !ruby/struct:VCR::Request 
+    :method: :post
+    :uri: http://example.com:80/
+    :body: 
+    :headers: 
+      :x-http-header1: 
+      - val2
+  :response: !ruby/struct:VCR::Response 
+    :status: !ruby/struct:VCR::ResponseStatus 
+      :code: 200
+      :message: OK
+    :headers: 
+      etag: 
+      - "\"24ec5-1b6-4059a80bfd280\""
+    :body: val2 header response
+    :http_version: "1.1"

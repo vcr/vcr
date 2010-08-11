@@ -1,23 +1,25 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe VCR::HttpStubbingAdapters::WebMock do
+  supported_match_attributes = [:method, :uri, :host, :body, :headers]
+
   it_should_behave_like 'an http stubbing adapter'
-  it_should_behave_like 'an http stubbing adapter that supports Net::HTTP'
+  it_should_behave_like 'an http stubbing adapter that supports Net::HTTP', *supported_match_attributes
 
   context "using patron" do
-    it_should_behave_like 'an http stubbing adapter that supports some HTTP library' do
+    it_should_behave_like 'an http stubbing adapter that supports some HTTP library', *supported_match_attributes do
       include PatronAdapter
     end
   end unless RUBY_PLATFORM =~ /java/
 
   context "using httpclient" do
-    it_should_behave_like 'an http stubbing adapter that supports some HTTP library' do
+    it_should_behave_like 'an http stubbing adapter that supports some HTTP library', *supported_match_attributes do
       include HTTPClientAdapter
     end
   end
 
   context "using em-http-request" do
-    it_should_behave_like 'an http stubbing adapter that supports some HTTP library' do
+    it_should_behave_like 'an http stubbing adapter that supports some HTTP library', *supported_match_attributes do
       include EmHTTPRequestAdapter
     end
   end unless RUBY_PLATFORM =~ /java/

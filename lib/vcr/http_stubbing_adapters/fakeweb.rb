@@ -5,6 +5,8 @@ module VCR
   module HttpStubbingAdapters
     class FakeWeb < Base
       class << self
+        UNSUPPORTED_REQUEST_MATCH_ATTRIBUTES = [:body, :headers].freeze
+
         def check_version!
           unless meets_version_requirement?(::FakeWeb::VERSION, '1.2.8')
             raise "You are using FakeWeb #{::FakeWeb::VERSION}.  VCR requires version 1.2.8 or greater."
@@ -19,15 +21,24 @@ module VCR
           ::FakeWeb.allow_net_connect = value
         end
 
-        def stub_requests(http_interactions)
+        def stub_requests(http_interactions, match_attributes = RequestMatcher::DEFAULT_MATCH_ATTRIBUTES)
+          invalid_attributes = match_attributes & UNSUPPORTED_REQUEST_MATCH_ATTRIBUTES
+          if invalid_attributes.size > 0
+            raise UnsupportedRequestMatchAttributeError.new("FakeWeb does not support matching requests on #{invalid_attributes.join(' or ')}")
+          end
+
           requests = Hash.new([])
 
           http_interactions.each do |i|
-            requests[[i.request.method, i.request.uri]] += [i.response]
+            requests[i.request.matcher(match_attributes)] += [i.response]
           end
 
-          requests.each do |request, responses|
-            ::FakeWeb.register_uri(request.first, request.last, responses.map{ |r| response_hash(r) })
+          requests.each do |request_matcher, responses|
+            ::FakeWeb.register_uri(
+              request_matcher.method || :any,
+              request_matcher.uri,
+              responses.map{ |r| response_hash(r) }
+            )
           end
         end
 

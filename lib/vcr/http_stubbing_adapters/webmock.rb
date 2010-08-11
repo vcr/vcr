@@ -21,17 +21,23 @@ module VCR
           ::WebMock::Config.instance.allow_net_connect = value
         end
 
-        def stub_requests(recorded_responses)
+        def stub_requests(http_interactions, match_attributes = RequestMatcher::DEFAULT_MATCH_ATTRIBUTES)
           requests = Hash.new([])
 
-          # TODO: use the entire request signature, but make it configurable.
-          recorded_responses.each do |rr|
-            requests[[rr.method, rr.uri]] += [rr.response]
+          http_interactions.each do |i|
+            requests[i.request.matcher(match_attributes)] += [i.response]
           end
 
-          requests.each do |request, responses|
-            ::WebMock.stub_request(request.first, request.last).
-              to_return(responses.map{ |r| response_hash(r) })
+          requests.each do |request_matcher, responses|
+            stub = ::WebMock.stub_request(request_matcher.method || :any, request_matcher.uri)
+
+            with_hash = {}
+            with_hash[:body]    = request_matcher.body    if request_matcher.match_requests_on?(:body)
+            with_hash[:headers] = request_matcher.headers if request_matcher.match_requests_on?(:headers)
+
+            stub = stub.with(with_hash) if with_hash.size > 0
+
+            stub.to_return(responses.map{ |r| response_hash(r) })
           end
         end
 
