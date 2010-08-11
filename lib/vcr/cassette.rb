@@ -8,7 +8,7 @@ module VCR
 
     VALID_RECORD_MODES = [:all, :none, :new_episodes].freeze
 
-    attr_reader :name, :record_mode
+    attr_reader :name, :record_mode, :match_requests_on
 
     def initialize(name, options = {})
       options = VCR::Config.default_cassette_options.merge(options)
@@ -18,9 +18,7 @@ module VCR
         raise ArgumentError.new("You passed the following invalid options to VCR::Cassette.new: #{invalid_options.inspect}.")
       end
 
-      @name = name
-      @record_mode = options[:record]
-      @erb = options[:erb]
+      @name, @record_mode, @erb, @match_requests_on = name, options[:record], options[:erb], options[:match_requests_on]
 
       deprecate_old_cassette_options(options)
       raise_error_unless_valid_record_mode(record_mode)

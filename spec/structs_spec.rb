@@ -20,6 +20,18 @@ shared_examples_for "a header normalizer" do
 end
 
 describe VCR::Request do
+  describe '#matcher' do
+    it 'returns a matcher with the given request' do
+      req = VCR::Request.new
+      req.matcher([:uri]).request.should == req
+    end
+
+    it 'returns a matcher with the given match_attributes' do
+      req = VCR::Request.new
+      req.matcher([:uri, :headers]).match_attributes.to_a.should == [:uri, :headers]
+    end
+  end
+
   describe '.from_net_http_request' do
     let(:net_http) { YAML.load(File.read(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/example_net_http.yml")) }
     let(:request)  { YAML.load(File.read(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/example_net_http_request.yml")) }

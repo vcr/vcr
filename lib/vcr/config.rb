@@ -12,6 +12,8 @@ module VCR
       attr_writer :default_cassette_options
       def default_cassette_options
         @default_cassette_options ||= {}
+        @default_cassette_options.merge!(:match_requests_on => RequestMatcher::DEFAULT_MATCH_ATTRIBUTES) unless @default_cassette_options.has_key?(:match_requests_on)
+        @default_cassette_options
       end
 
       attr_writer :http_stubbing_library

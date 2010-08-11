@@ -3,6 +3,7 @@ require 'set'
 module VCR
   class RequestMatcher
     VALID_MATCH_ATTRIBUTES = [:method, :uri, :host, :headers, :body].freeze
+    DEFAULT_MATCH_ATTRIBUTES = [:method, :uri].freeze
 
     attr_reader :request, :match_attributes
 

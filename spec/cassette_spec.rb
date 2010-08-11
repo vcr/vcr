@@ -35,6 +35,20 @@ describe VCR::Cassette do
     end
   end
 
+  describe '#match_requests_on' do
+    before(:each) { VCR::Config.default_cassette_options.merge!(:match_requests_on => [:uri, :method]) }
+
+    it "returns the provided options" do
+      c = VCR::Cassette.new('example', :match_requests_on => [:uri])
+      c.match_requests_on.should == [:uri]
+    end
+
+    it "returns a the default #match_requests_on when it has not been specified for the cassette" do
+      c = VCR::Cassette.new('example')
+      c.match_requests_on.should == [:uri, :method]
+    end
+  end
+
   describe 'on creation' do
     it 'raises an error with a helpful message when loading an old unsupported cassette' do
       VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}")
