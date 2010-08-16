@@ -47,6 +47,7 @@ maintenance) and accurate (the response from example.com will contain the same h
   (all HTTP stubbing libraries), [Patron](http://github.com/toland/patron) (WebMock only),
   [HTTPClient](http://github.com/nahi/httpclient) (WebMock only) and
   [em-http-request](http://github.com/igrigorik/em-http-request) (WebMock only).
+* Request matching is configurable based on HTTP method, URI, host, body and headers.
 * The same request can receive different responses in different tests--just use different cassettes.
 * The recorded requests and responses are stored on disk as YAML and can easily be inspected and edited.
 * Dynamic responses are supported using ERB.
@@ -74,6 +75,7 @@ Each cassette can be configured with a couple options:
 
 * `:record`: Specifies a record mode for this cassette.
 * `:erb`: Used for dynamic cassettes (see below for more details).
+* `:match_requests_on`: An array of request attributes to match on (see below for more details).
 
 ## Record modes
 
@@ -83,6 +85,33 @@ and a per-cassette record mode when inserting a cassette.  The record modes are:
 * `:new_episodes`: Previously recorded HTTP interactions will be replayed.  New HTTP interactions will be recorded.
 * `:all`: Previously recorded HTTP interactions will be ignored.  All HTTP interactions will be recorded.
 * `:none`: Previously recorded HTTP interactions will be replayed.  New HTTP interactions will result in an error.
+
+## Request Matching
+
+In order to properly replay previously recorded request, VCR must match new HTTP requests to a previously
+recorded one.  By default, it matches on HTTP method and URI, since that is usually deterministic and
+fully identifies the resource and action for typical RESTful APIs.  In some cases (such as SOAP webservices)
+this may not work so well, and VCR allows you to customize how requests are matched.
+
+Cassettes take a `:match_requests_on` option that expects an array of request attributes to match on.
+Supported attributes are:
+
+* `:method`: The HTTP method (i.e. GET, POST, PUT or DELETE) of the request.
+* `:uri`: The full URI of the request.
+* `:host`: The host of the URI.  You can use this as an alternative to `:uri` to cause VCR to match using
+  a regex such as `/https?:\/\/example\.com/i`.
+* `:body`: The body of the request.
+* `:headers`: The request headers.
+
+By default, VCR uses a `:match_requests_on` option like:
+
+    :match_requests_on => [:uri, :method]
+
+If you want to match on body, just add it to the array:
+
+    :match_requests_on => [:uri, :method, :body]
+
+Note that FakeWeb cannot match on `:body` or `:headers`.
 
 ## Configuration
 

@@ -2,6 +2,7 @@
 
 ## In Git
 
+* Added `:match_requests_on` cassette option, which determines how VCR matches requests.
 * Removed VCR::TaskRunner and the corresponding rake task definition.  The rake task migrated cassettes from the
   0.3.1 format to the 0.4+ format.  If you are still on 0.3.1 or earlier, I recommend you upgrade to 0.4.1 first,
   migrate your cassettes and deal with migration warnings, then upgrade to the current release.
