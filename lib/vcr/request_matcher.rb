@@ -57,7 +57,7 @@ module VCR
     end
 
     def hash
-      (%w( match_attributes method uri headers body ).map { |attr| send(attr) }).hash
+      [match_attributes, method, uri, headers, body].hash
     end
   end
 end
