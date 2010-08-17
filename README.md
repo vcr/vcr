@@ -88,7 +88,7 @@ and a per-cassette record mode when inserting a cassette.  The record modes are:
 
 ## Request Matching
 
-In order to properly replay previously recorded request, VCR must match new HTTP requests to a previously
+In order to properly replay previously recorded requests, VCR must match new HTTP requests to a previously
 recorded one.  By default, it matches on HTTP method and URI, since that is usually deterministic and
 fully identifies the resource and action for typical RESTful APIs.  In some cases (such as SOAP webservices)
 this may not work so well, and VCR allows you to customize how requests are matched.
@@ -195,8 +195,8 @@ Then let VCR know about this tag, in `features/support/vcr.rb` (or some similar 
       t.tags '@another_scenario_tag'
     end
 
-For each of the tags you specify in your `cucumber_tags` block, VCR will set up the appropriate
-[Before and After hooks](http://wiki.github.com/aslakhellesoy/cucumber/hooks) to use a cassette
+For each of the tags you specify in your `cucumber_tags` block, VCR will set up an appropriate
+[After hook](http://wiki.github.com/aslakhellesoy/cucumber/hooks) to use a cassette
 for the entire scenario.  The tag (minus the '@') will be used as the cassette name, and it'll
 go in the `cucumber_tags` subdirectory of the configured cassette library directory.
 
@@ -264,7 +264,7 @@ In your cassette:
 ## FakeWeb or WebMock?
 
 VCR works fine with either FakeWeb or WebMock.  Overall, WebMock has more features, and you'll need to use
-WebMock if you want to use VCR with an HTTP library besides `Net::HTTP`.  However, FakeWeb is currently
+WebMock if you want to use VCR with an HTTP library besides Net::HTTP.  However, FakeWeb is currently
 about three times faster than WebMock, so you may want to stick with FakeWeb if you don't need WebMock's
 additional features.  You can see the
 [benchmarks](http://github.com/myronmarston/vcr/blob/master/benchmarks/http_stubbing_libraries.rb) for
