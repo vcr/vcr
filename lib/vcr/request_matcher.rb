@@ -20,6 +20,8 @@ module VCR
     end
 
     def uri
+      return request.uri unless request.uri.is_a?(String)
+
       matchers = [:uri, :host].select { |m| match_requests_on?(m) }
       raise ArgumentError.new("match_attributes must include only one of :uri and :host, but you have specified #{matchers.inspect}") if matchers.size > 1
 

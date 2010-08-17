@@ -29,6 +29,13 @@ describe VCR::RequestMatcher do
       matcher = VCR::RequestMatcher.new(stub(:uri => uri), [])
       matcher.uri.should == /.*/
     end
+
+    it "returns the request's URI when it is a regex, regardless of the match attributes" do
+      [:uri, :host].each do |attribute|
+        matcher = VCR::RequestMatcher.new(stub(:uri => /some regex/), [attribute])
+        matcher.uri.should == /some regex/
+      end
+    end
   end
 
   describe '#method' do
