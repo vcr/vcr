@@ -13,10 +13,11 @@ module Net
         end
       end
 
+      request_headers = request.to_hash # get the request headers before Net::HTTP adds some defaults
       response = request_without_vcr(request, body)
 
       if started? && !VCR.http_stubbing_adapter.request_stubbed?(request.method.downcase.to_sym, uri)
-        VCR.record_http_interaction VCR::HTTPInteraction.from_net_http_objects(self, request, response)
+        VCR.record_http_interaction VCR::HTTPInteraction.from_net_http_objects(self, request, request_headers, response)
         response.extend VCR::Net::HTTPResponse # "unwind" the response
       end
 

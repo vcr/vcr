@@ -14,12 +14,20 @@ describe "Net::HTTP Extensions" do
       end
     end
 
-    it "gets request headers to record, before the real request is made to not record headers 'host' and 'content-type' added during request by Net::HTTP" do
-      VCR::HTTPInteraction.should_receive(:from_net_http_objects) do |_, request, _|
-        request.to_hash.should_not have_key('content-type')
-        request.to_hash.should_not have_key('host')
+    it "does not record headers for which Net::HTTP sets defaults near the end of the real request" do
+      VCR.should_receive(:record_http_interaction) do |interaction|
+        interaction.request.headers.should_not have_key('content-type')
+        interaction.request.headers.should_not have_key('host')
       end
-      Net::HTTP.new('example.com', 80).post('/', "")
+      Net::HTTP.new('example.com', 80).send_request('POST', '/', '', {})
+    end
+
+    it "records headers for which Net::HTTP usually sets defaults when the user manually sets their values" do
+      VCR.should_receive(:record_http_interaction) do |interaction|
+        interaction.request.headers['content-type'].should == ['foo/bar']
+        interaction.request.headers['host'].should == ['my-example.com']
+      end
+      Net::HTTP.new('example.com', 80).send_request('POST', '/', '', { 'Content-Type' => 'foo/bar', 'Host' => 'my-example.com' })
     end
 
     it 'calls VCR.record_http_interaction' do

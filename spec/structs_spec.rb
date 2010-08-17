@@ -35,7 +35,7 @@ describe VCR::Request do
   describe '.from_net_http_request' do
     let(:net_http) { YAML.load(File.read(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/example_net_http.yml")) }
     let(:request)  { YAML.load(File.read(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/example_net_http_request.yml")) }
-    subject { described_class.from_net_http_request(net_http, request) }
+    subject { described_class.from_net_http_request(net_http, request, { 'accept' => ['*/*'] }) }
 
     before(:each) do
       VCR.http_stubbing_adapter.should respond_to(:request_uri)
@@ -45,10 +45,7 @@ describe VCR::Request do
     it            { should be_instance_of(VCR::Request) }
     its(:method)  { should == :post  }
     its(:body)    { should == 'id=7'  }
-    its(:headers) { should == {
-      'accept'       => ['*/*'],
-      'content-type' => ['application/x-www-form-urlencoded']
-    } }
+    its(:headers) { should == { 'accept' => ['*/*'] } }
 
     it 'sets the uri using the http_stubbing_adapter.request_uri' do
       VCR.http_stubbing_adapter.should_receive(:request_uri).with(net_http, request).and_return('foo/bar')
@@ -117,11 +114,11 @@ describe VCR::HTTPInteraction do
     let(:response) { YAML.load(File.read(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/example_net_http_response.yml")) }
     let(:net_http) { YAML.load(File.read(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/example_net_http.yml")) }
     let(:request)  { YAML.load(File.read(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/example_net_http_request.yml")) }
-    subject { described_class.from_net_http_objects(net_http, request, response) }
+    subject { described_class.from_net_http_objects(net_http, request, { 'some-request-header' => ['value'] }, response) }
 
     it 'returns a new record with the proper values' do
       VCR::Request.should respond_to(:from_net_http_request)
-      VCR::Request.should_receive(:from_net_http_request).with(net_http, request).and_return(:the_request)
+      VCR::Request.should_receive(:from_net_http_request).with(net_http, request, { 'some-request-header' => ['value'] }).and_return(:the_request)
 
       VCR::Response.should respond_to(:from_net_http_response)
       VCR::Response.should_receive(:from_net_http_response).with(response).and_return(:the_response)
