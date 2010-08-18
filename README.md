@@ -118,7 +118,7 @@ Note that FakeWeb cannot match on `:body` or `:headers`.
     require 'vcr'
 
     VCR.config do |c|
-      c.cassette_library_dir     = File.join(Rails.root, 'features', 'fixtures', 'cassette_library')
+      c.cassette_library_dir     = 'fixtures/cassette_library'
       c.http_stubbing_library    = :fakeweb
       c.ignore_localhost         = true
       c.default_cassette_options = { :record => :none }
@@ -128,7 +128,10 @@ This can go pretty much wherever, as long as this code is run before your tests,
 to put it in `spec/support/vcr.rb`, `test/support/vcr.rb` or `features/support/vcr.rb`.  You can set the following
 configuration options:
 
-* `cassette_library_dir`: VCR will save the cassette YAML files to this directory.
+* `cassette_library_dir`: VCR will save the cassette YAML files to this directory.  If you are using Rails 3 and
+  ActiveRecord YAML fixtures, you will probably want to avoid putting VCR cassettes in a sub-directory of
+  `RAILS_ROOT/test/fixtures`.  Rails will assume your cassette YAML files are ActiveRecord fixtures and raise an
+  error when the content doesn't conform to its expectations.
 * `http_stubbing_library`: Which http stubbing library to use.  Currently `:fakeweb` and `:webmock` are supported.
   This is currently optional--VCR will try to guess based on the presence or absence of the `FakeWeb` or `WebMock`
   constants, but this is mostly done to assist users upgrading from VCR 0.3.1, which only worked with fakeweb and
