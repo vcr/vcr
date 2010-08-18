@@ -22,11 +22,7 @@ module VCR
         end
 
         def stub_requests(http_interactions, match_attributes = RequestMatcher::DEFAULT_MATCH_ATTRIBUTES)
-          invalid_attributes = match_attributes & UNSUPPORTED_REQUEST_MATCH_ATTRIBUTES
-          if invalid_attributes.size > 0
-            raise UnsupportedRequestMatchAttributeError.new("FakeWeb does not support matching requests on #{invalid_attributes.join(' or ')}")
-          end
-
+          validate_match_attributes(match_attributes)
           requests = Hash.new([])
 
           http_interactions.each do |i|
@@ -50,8 +46,9 @@ module VCR
           ::FakeWeb::Registry.instance.uri_map = checkpoints.delete(checkpoint_name)
         end
 
-        def request_stubbed?(method, uri)
-          ::FakeWeb.registered_uri?(method, uri)
+        def request_stubbed?(request, match_attributes)
+          validate_match_attributes(match_attributes)
+          ::FakeWeb.registered_uri?(request.method, request.uri)
         end
 
         def request_uri(net_http, request)
@@ -87,6 +84,13 @@ module VCR
             :body   => response.body,
             :status => [response.status.code.to_s, response.status.message]
           )
+        end
+
+        def validate_match_attributes(match_attributes)
+          invalid_attributes = match_attributes & UNSUPPORTED_REQUEST_MATCH_ATTRIBUTES
+          if invalid_attributes.size > 0
+            raise UnsupportedRequestMatchAttributeError.new("FakeWeb does not support matching requests on #{invalid_attributes.join(' or ')}")
+          end
         end
       end
     end

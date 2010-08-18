@@ -3,9 +3,30 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe "Net::HTTP Extensions" do
   let(:uri) { URI.parse('http://example.com') }
 
+  it 'checks if the request is stubbed using a VCR::Request' do
+    VCR.http_stubbing_adapter.should_receive(:request_stubbed?) do |request, _|
+      request.uri.should == 'http://example.com:80/'
+      request.method.should == :get
+      true
+    end
+    Net::HTTP.get(uri)
+  end
+
+  it "checks if the request is stubbed using the current VCR cassette's match_request_on option" do
+    VCR.should_receive(:current_cassette).and_return(stub(:match_requests_on => [:body, :header]))
+    VCR.http_stubbing_adapter.should_receive(:request_stubbed?).with(anything, [:body, :header]).and_return(true)
+    Net::HTTP.get(uri)
+  end
+
+  it "checks if the request is stubbed using the default match attributes when there is no current cassette" do
+    VCR.should_receive(:current_cassette).and_return(nil)
+    VCR.http_stubbing_adapter.should_receive(:request_stubbed?).with(anything, VCR::RequestMatcher::DEFAULT_MATCH_ATTRIBUTES).and_return(true)
+    Net::HTTP.get(uri)
+  end
+
   describe 'a request that is not registered with the http stubbing adapter' do
     before(:each) do
-      VCR.http_stubbing_adapter.should_receive(:request_stubbed?).with(anything, uri).and_return(false)
+      VCR.http_stubbing_adapter.stub(:request_stubbed?).and_return(false)
     end
 
     def perform_get_with_returning_block
@@ -31,9 +52,7 @@ describe "Net::HTTP Extensions" do
     end
 
     it 'calls VCR.record_http_interaction' do
-      interaction = VCR::HTTPInteraction.new
-      VCR::HTTPInteraction.should_receive(:from_net_http_objects).and_return(interaction)
-      VCR.should_receive(:record_http_interaction).with(interaction)
+      VCR.should_receive(:record_http_interaction).with(instance_of(VCR::HTTPInteraction))
       Net::HTTP.get(uri)
     end
 
@@ -50,7 +69,7 @@ describe "Net::HTTP Extensions" do
 
   describe 'a request that is registered with the http stubbing adapter' do
     it 'does not call #record_http_interaction on the current cassette' do
-      VCR.http_stubbing_adapter.should_receive(:request_stubbed?).with(:get, uri).and_return(true)
+      VCR.http_stubbing_adapter.stub(:request_stubbed?).and_return(true)
       VCR.should_receive(:record_http_interaction).never
       Net::HTTP.get(uri)
     end

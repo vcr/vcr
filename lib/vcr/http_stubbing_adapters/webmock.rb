@@ -31,10 +31,7 @@ module VCR
           requests.each do |request_matcher, responses|
             stub = ::WebMock.stub_request(request_matcher.method || :any, request_matcher.uri)
 
-            with_hash = {}
-            with_hash[:body]    = request_matcher.body    if request_matcher.match_requests_on?(:body)
-            with_hash[:headers] = request_matcher.headers if request_matcher.match_requests_on?(:headers)
-
+            with_hash = request_signature_hash(request_matcher)
             stub = stub.with(with_hash) if with_hash.size > 0
 
             stub.to_return(responses.map{ |r| response_hash(r) })
@@ -49,8 +46,9 @@ module VCR
           ::WebMock::RequestRegistry.instance.request_stubs = checkpoints.delete(checkpoint_name)
         end
 
-        def request_stubbed?(method, uri)
-          !!::WebMock.registered_request?(::WebMock::RequestSignature.new(method, uri.to_s))
+        def request_stubbed?(request, match_attributes)
+          matcher = request.matcher(match_attributes)
+          !!::WebMock.registered_request?(::WebMock::RequestSignature.new(matcher.method || :any, request.uri, request_signature_hash(matcher)))
         end
 
         def request_uri(net_http, request)
@@ -66,6 +64,13 @@ module VCR
         end
 
         private
+
+        def request_signature_hash(request_matcher)
+          signature = {}
+          signature[:body]    = request_matcher.body    if request_matcher.match_requests_on?(:body)
+          signature[:headers] = request_matcher.headers if request_matcher.match_requests_on?(:headers)
+          signature
+        end
 
         def response_hash(response)
           {

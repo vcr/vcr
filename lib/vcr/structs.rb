@@ -27,12 +27,12 @@ module VCR
   class Request < Struct.new(:method, :uri, :body, :headers)
     include HeaderNormalizer
 
-    def self.from_net_http_request(net_http, request, request_headers)
+    def self.from_net_http_request(net_http, request)
       new(
         request.method.downcase.to_sym,
         VCR.http_stubbing_adapter.request_uri(net_http, request),
         request.body,
-        request_headers
+        request.to_hash
       )
     end
 
@@ -73,14 +73,6 @@ module VCR
 
   class HTTPInteraction < Struct.new(:request, :response)
     extend ::Forwardable
-
     def_delegators :request, :uri, :method
-
-    def self.from_net_http_objects(net_http, request, request_headers, response)
-      new(
-        Request.from_net_http_request(net_http, request, request_headers),
-        Response.from_net_http_response(response)
-      )
-    end
   end
 end

@@ -81,53 +81,103 @@ shared_examples_for "an http stubbing adapter that supports some HTTP library" d
           before(:each) { perform_stubbing }
           module_eval(&block)
         else
+          let(:expected_error) { /does not support matching requests on #{attribute}/ }
+
           it 'raises an error indicating matching requests on this attribute is not supported' do
-            expect { perform_stubbing }.to raise_error(/does not support matching requests on #{attribute}/)
+            expect { perform_stubbing }.to raise_error(expected_error)
+          end
+
+          it 'raises an error from #request_stubbed? indicating matching requests on this attribute is not supported' do
+            expect { subject.request_stubbed?(VCR::Request.new, [attribute]) }.to raise_error(expected_error)
           end
         end
       end
     end
 
     matching_on :method do
+      def request(http_method)
+        VCR::Request.new(http_method, 'http://some-wrong-domain.com/', nil, {})
+      end
+
       [:get, :post].each do |http_method|
         it "returns the expected response for a :#{http_method}" do
           get_body_string(make_http_request(http_method, 'http://some-wrong-domain.com/')).should == "#{http_method} method response"
+        end
+
+        it "returns true from #request_stubbed? for a :#{http_method} request" do
+          subject.request_stubbed?(request(http_method), [:method]).should be_true
         end
       end
 
       it 'raises an error for another method' do
         expect { make_http_request(:put, 'http://some-wrong-domain.com/') }.to raise_error(*NET_CONNECT_NOT_ALLOWED_ERROR)
       end
+
+      it "returns false from #request_stubbed? for another http method"  do
+        subject.request_stubbed?(request(:put), [:method]).should be_false
+      end
     end
 
     matching_on :host do
+      def request(host)
+        VCR::Request.new(:get, "http://#{host}/some/wrong/path", nil, {})
+      end
+
       1.upto(2) do |i|
         it "returns the expected response from example#{i}.com" do
           get_body_string(make_http_request(:get, "http://example#{i}.com/some-wrong-path")).should == "example#{i}.com host response"
+        end
+
+        it "returns true from #request_stubbed? for a example#{i}.com request" do
+          subject.request_stubbed?(request("example#{i}.com"), [:host]).should be_true
         end
       end
 
       it 'raises an error for another host' do
         expect { make_http_request(:get, 'http://example3.com/some-wrong-path') }.to raise_error(*NET_CONNECT_NOT_ALLOWED_ERROR)
       end
+
+      it "returns false from #request_stubbed? for a another host" do
+        subject.request_stubbed?(request("example3.com"), [:host]).should be_false
+      end
     end
 
     matching_on :uri do
+      def request(uri)
+        VCR::Request.new(:get, uri, nil, {})
+      end
+
       1.upto(2) do |i|
         it "returns the expected response from example.com/uri#{i}" do
           get_body_string(make_http_request(:get, "http://example.com/uri#{i}")).should == "uri#{i} response"
+        end
+
+        it "returns true from #request_stubbed? for a example.com/uri#{i} request" do
+          subject.request_stubbed?(request("http://example.com/uri#{i}"), [:uri]).should be_true
         end
       end
 
       it 'raises an error for another uri' do
         expect { make_http_request(:get, 'http://example.com/uri3') }.to raise_error(*NET_CONNECT_NOT_ALLOWED_ERROR)
       end
+
+      it "returns true from #request_stubbed? for another uri" do
+        subject.request_stubbed?(request("http://example.com/uri3"), [:uri]).should be_false
+      end
     end
 
     matching_on :body do
+      def request(body)
+        VCR::Request.new(:put, "http://wrong-domain.com/wrong/path", body, {})
+      end
+
       1.upto(2) do |i|
         it "returns the expected response for request body 'param=val#{i}'" do
           get_body_string(make_http_request(:put, "http://wrong-domain.com/wrong/path", "param=val#{i}")).should == "val#{i} body response"
+        end
+
+        it "returns true from #request_stubbed? for a request with body 'param=val#{i}'" do
+          subject.request_stubbed?(request("param=val#{i}"), [:body]).should be_true
         end
       end
 
@@ -136,12 +186,24 @@ shared_examples_for "an http stubbing adapter that supports some HTTP library" d
           res = make_http_request(:put, "http://wrong-domain.com/wrong/path", "param=val3")
         }.to raise_error(*NET_CONNECT_NOT_ALLOWED_ERROR)
       end
+
+      it "returns true from #request_stubbed? for a request with a different body" do
+        subject.request_stubbed?(request("param=val3"), [:body]).should be_false
+      end
     end
 
     matching_on :headers do
+      def request(headers)
+        VCR::Request.new(:get, "http://wrong-domain.com/wrong/path", nil, headers)
+      end
+
       1.upto(2) do |i|
         it "returns the expected response for request header 'X-HTTP-HEADER1 = val#{i}'" do
           get_body_string(make_http_request(:get, "http://wrong-domain.com/wrong/path", {}, 'X-HTTP-HEADER1' => "val#{i}")).should == "val#{i} header response"
+        end
+
+        it "returns true from #request_stubbed? for a request with header 'X-HTTP-HEADER1 = val#{i}'" do
+          subject.request_stubbed?(request('X-HTTP-HEADER1' => "val#{i}"), [:headers]).should be_true
         end
       end
 
@@ -149,6 +211,10 @@ shared_examples_for "an http stubbing adapter that supports some HTTP library" d
         expect {
           make_http_request(:get, "http://wrong-domain.com/wrong/path", {}, 'X-HTTP-HEADER1' => "val3")
         }.to raise_error(*NET_CONNECT_NOT_ALLOWED_ERROR)
+      end
+
+      it "returns true from #request_stubbed? for a request with a different header" do
+        subject.request_stubbed?(request('X-HTTP-HEADER1' => "val3"), [:headers]).should be_false
       end
     end
   end
@@ -181,8 +247,7 @@ shared_examples_for "an http stubbing adapter that supports some HTTP library" d
   end
 
   def test_request_stubbed(method, url, expected)
-    subject.request_stubbed?(method, url).should == expected
-    subject.request_stubbed?(method, URI.parse(url)).should == expected
+    subject.request_stubbed?(VCR::Request.new(method, url), [:method, :uri]).should == expected
   end
 
   [true, false].each do |http_allowed|
