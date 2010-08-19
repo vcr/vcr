@@ -24,7 +24,7 @@ RSpec.configure do |config|
   config.extend DisableWarnings
 
   config.color_enabled = true
-  config.debug = true
+  config.debug = RUBY_PLATFORM != 'java'
 
   config.before(:each) do
     VCR::Config.default_cassette_options = { :record => :new_episodes }
