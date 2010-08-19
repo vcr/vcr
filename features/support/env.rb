@@ -14,16 +14,8 @@ end
 # The HTTP library must be loaded before VCR since WebMock looks for the presence of the HTTB library class constant
 # to decide whether or not to hook into it.
 require ENV['HTTP_LIB']
-
 require 'http_library_adapters'
-
-World case ENV['HTTP_LIB']
-  when 'patron'          then PatronAdapter
-  when 'httpclient'      then HTTPClientAdapter
-  when 'net/http'        then NetHTTPAdapter
-  when 'em-http-request' then EmHTTPRequestAdapter
-  else raise ArgumentError.new("Unexpected HTTP_LIB: #{ENV['HTTP_LIB']}")
-end
+World(HTTP_LIBRARY_ADAPTERS[ENV['HTTP_LIB']])
 
 puts "\n\n---------------- Running features using #{ENV['HTTP_STUBBING_ADAPTER']} and #{ENV['HTTP_LIB']} -----------------\n"
 
