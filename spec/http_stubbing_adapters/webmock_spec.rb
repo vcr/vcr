@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe VCR::HttpStubbingAdapters::WebMock do
   it_should_behave_like 'an http stubbing adapter',
     %w[net/http patron httpclient em-http-request],
-    [:method, :uri, :host, :body, :headers]
+    [:method, :uri, :host, :path, :body, :headers]
 
   describe '#check_version!' do
     before(:each) { WebMock.should respond_to(:version) }

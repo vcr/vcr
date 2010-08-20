@@ -95,6 +95,12 @@ shared_examples_for "an http stubbing adapter" do |supported_http_libraries, sup
       end
     end
 
+    matching_on :path, '/path1', '/path2', '/path3' do
+      def request(path)
+        VCR::Request.new(:get, "http://example.com#{path}", nil, {})
+      end
+    end
+
     matching_on :body, 'param=val1', 'param=val2', 'param=val3' do
       def request(body)
         VCR::Request.new(:put, "http://wrong-domain.com/wrong/path", body, {})

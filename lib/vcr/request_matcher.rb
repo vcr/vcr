@@ -2,7 +2,7 @@ require 'set'
 
 module VCR
   class RequestMatcher
-    VALID_MATCH_ATTRIBUTES = [:method, :uri, :host, :headers, :body].freeze
+    VALID_MATCH_ATTRIBUTES = [:method, :uri, :host, :path, :headers, :body].freeze
     DEFAULT_MATCH_ATTRIBUTES = [:method, :uri].freeze
 
     attr_reader :request, :match_attributes
@@ -21,14 +21,17 @@ module VCR
 
     def uri
       return request.uri unless request.uri.is_a?(String)
+      uri_matchers = match_attributes.to_a & [:uri, :host, :path]
 
-      matchers = [:uri, :host].select { |m| match_requests_on?(m) }
-      raise ArgumentError.new("match_attributes must include only one of :uri and :host, but you have specified #{matchers.inspect}") if matchers.size > 1
-
-      case matchers.first
-        when :uri  then request.uri
-        when :host then %r{\Ahttps?://#{Regexp.escape(URI.parse(request.uri).host)}}i
-        else /.*/
+      case Set.new(uri_matchers)
+        when Set.new then /.*/
+        when Set.new([:uri]) then request.uri
+        when Set.new([:host]) then %r{\Ahttps?://((\w+:)?\w+@)?#{Regexp.escape(URI(request.uri).host)}(:\d+)?/}i
+        when Set.new([:path]) then %r{\Ahttps?://[^/]+#{Regexp.escape(URI(request.uri).path)}/?(\?.*)?\z}i
+        when Set.new([:host, :path])
+          uri = URI(request.uri)
+          %r{\Ahttps?://((\w+:)?\w+@)?#{Regexp.escape(uri.host)}(:\d+)?#{Regexp.escape(uri.path)}/?(\?.*)?\z}i
+        else raise ArgumentError.new("match_attributes cannot include #{uri_matchers.join(' and ')}")
       end
     end
 

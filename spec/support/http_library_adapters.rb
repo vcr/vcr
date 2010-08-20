@@ -125,6 +125,12 @@ module HttpLibrarySpecs
           end
         end
 
+        matching_on :path, { '/path1' => 'path1 response', '/path2' => 'path2 response' }, '/path3' do
+          def make_http_request(path)
+            super(:get, "http://some.wrong.domain.com#{path}?p=q", nil, {})
+          end
+        end
+
         matching_on :uri, { 'http://example.com/uri1' => 'uri1 response', 'http://example.com/uri2' => 'uri2 response' }, 'http://example.com/uri3' do
           def make_http_request(uri)
             super(:get, uri, nil, {})

@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe VCR::HttpStubbingAdapters::FakeWeb do
-  it_should_behave_like 'an http stubbing adapter', ['net/http'], [:method, :uri, :host]
+  it_should_behave_like 'an http stubbing adapter', ['net/http'], [:method, :uri, :host, :path]
 
   describe '#check_version!' do
     disable_warnings

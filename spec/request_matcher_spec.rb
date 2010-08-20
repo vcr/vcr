@@ -8,30 +8,80 @@ describe VCR::RequestMatcher do
   end
 
   describe '#uri' do
+    def self.for_matcher(*attributes, &block)
+      context "for match_attributes = #{attributes.inspect}" do
+        subject { matcher = VCR::RequestMatcher.new(stub(:uri => uri), attributes).uri }
+        module_eval(&block)
+      end
+    end
+
     let(:uri) { 'http://foo.example.com/path/to/something?param=value' }
 
-    it 'returns the full uri when the match attributes include :uri' do
-      matcher = VCR::RequestMatcher.new(stub(:uri => uri), [:uri])
-      matcher.uri.should == uri
+    for_matcher do
+      it("returns a regex that matches any URI") { should == /.*/ }
     end
 
-    it 'returns a host regex when the match attributes include :host' do
-      matcher = VCR::RequestMatcher.new(stub(:uri => uri), [:host])
-      matcher.uri.should == %r{\Ahttps?://foo\.example\.com}i
+    for_matcher :uri do
+      it("returns the exact uri") { should == uri }
     end
 
-    it 'raises an error if the match attributes include both :uri and :host' do
-      matcher = VCR::RequestMatcher.new(stub(:uri => uri), [:uri, :host])
-      expect { matcher.uri }.to raise_error(/match_attributes must include only one of :uri and :host/)
+    for_matcher :host do
+      it("matches a basic URL for the same host") { should =~ 'http://foo.example.com/some/path' }
+      it("matches an https URL") { should =~ 'https://foo.example.com/some/path' }
+      it("ignores the case of the URL") { should =~ 'HTTP://FOO.EXAMPLE.COM/SOME/PATH' }
+      it("matches when the URL has the normal port") { should =~ 'http://foo.example.com:80/some/path' }
+      it("matches when the URL has another port") { should =~ 'http://foo.example.com:3750/some/path' }
+      it("matches when the URL has a username") { should =~ 'http://someone@foo.example.com/some/path' }
+      it("matches when the URL has a username and password") { should =~ 'http://admin:s3cr3t@foo.example.com/some/path' }
+
+      it("does not match when the host is wrong") { should_not =~ 'http://fof.example.com/path/to/something?param=value' }
+      it("does not match when the host includes some additional parts")  { should_not =~ 'http://foo.example.com.more.domain.parts/path/to/something?param=value' }
     end
 
-    it 'returns a wildcard regex if the match attributes include neither :uri or :host' do
-      matcher = VCR::RequestMatcher.new(stub(:uri => uri), [])
-      matcher.uri.should == /.*/
+    for_matcher :path do
+      it("matches a basic URL for the same path") { should =~ 'http://domain.tld/path/to/something?p=v&q=r' }
+      it("matches an https URL") { should =~ 'http://domain.tld/path/to/something?p=v&q=r' }
+      it("ignores the case of the URL") { should =~ 'HTTP://DOMAIN.TLD/PATH/TO/SOMETHING?P=V&Q=R' }
+      it("matches with a trailing slash") { should =~ 'http://domain.tld/path/to/something/' }
+      it("matches without a trailing slash") { should =~ 'http://domain.tld/path/to/something' }
+      it("matches when the URL has the normal port") { should =~ 'http://domain.tld:80/path/to/something' }
+      it("matches when the URL has another port") { should =~ 'http://domain.tld:3750/path/to/something' }
+      it("matches when the URL has a username") { should =~ 'http://someone@domain.tld/path/to/something' }
+      it("matches when the URL has a username and password") { should =~ 'http://admin:s3cr3t@domain.tld/path/to/something' }
+
+      it("does not match when the path is wrong") { should_not =~ 'http://foo.example.com/some/other/path?param=value' }
+      it("does not match when the path includes some additional parts") { should_not =~ 'http://foo.example.com/path/to/something/else?param=value' }
+    end
+
+    for_matcher :host, :path do
+      it("matches a basic URL for the same host and path") { should =~ 'http://foo.example.com/path/to/something?p=v' }
+      it("matches an https URL") { should =~ 'https://foo.example.com/path/to/something?p=v&q=r' }
+      it("ignores the case of the URL") { should =~ 'HTTP://FOO.EXAMPLE.COM/PATH/TO/SOMETHING?P=V&Q=R' }
+      it("matches with a trailing slash and some query params") { should =~ 'http://foo.example.com/path/to/something/?p=v&q=r' }
+      it("matches with a trailing slash and no query params") { should =~ 'http://foo.example.com/path/to/something/' }
+      it("matches without a trailing slash and some query params") { should =~ 'http://foo.example.com/path/to/something?p=v&q=r' }
+      it("matches without a trailing slash and no query params") { should =~ 'http://foo.example.com/path/to/something' }
+      it("matches when the URL has the normal port") { should =~ 'http://foo.example.com:80/path/to/something?p=v' }
+      it("matches when the URL has another port") { should =~ 'http://foo.example.com:3750/path/to/something?p=v' }
+      it("matches when the URL has a username") { should =~ 'http://someone@foo.example.com/path/to/something?p=v' }
+      it("matches when the URL has a username and password") { should =~ 'http://admin:s3r3t@foo.example.com/path/to/something?p=v' }
+
+      it("does not match when the host is wrong") { should_not =~ 'http://fof.example.com/path/to/something?p=v' }
+      it("does not match when the path is wrong") { should_not =~ 'http://foo.example.com/pth/to/something?p=v' }
+      it("does not match when the host includes some additional parts") { should_not =~ 'http://foo.example.com.and.more.parts/path/to/something?p=v' }
+      it("does not match when the path includes some additional parts") { should_not =~ 'http://foo.example.com/path/to/something/else?p=v' }
+    end
+
+    [[:uri, :host], [:uri, :path], [:uri, :host, :path]].each do |attributes|
+      for_matcher *attributes do
+        it "raises an appropriate error" do
+          expect { subject }.to raise_error(/match_attributes cannot include/)
+        end
+      end
     end
 
     it "returns the request's URI when it is a regex, regardless of the match attributes" do
-      [:uri, :host].each do |attribute|
+      [:uri, :host, :path].each do |attribute|
         matcher = VCR::RequestMatcher.new(stub(:uri => /some regex/), [attribute])
         matcher.uri.should == /some regex/
       end

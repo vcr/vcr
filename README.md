@@ -98,8 +98,10 @@ Supported attributes are:
 
 * `:method`: The HTTP method (i.e. GET, POST, PUT or DELETE) of the request.
 * `:uri`: The full URI of the request.
-* `:host`: The host of the URI.  You can use this as an alternative to `:uri` to cause VCR to match using
-  a regex such as `/https?:\/\/example\.com/i`.
+* `:host`: The host of the URI.  You can use this (alone, or in combination with `:path`) as an alternative
+  to `:uri` to cause VCR to match using a regex that matches the host.
+* `:path`: The path of the URI.  You can use this (alone, or in combination with `:host`) as an alternative
+  to `:uri` to cause VCR to match using a regex that matches the path.
 * `:body`: The body of the request.
 * `:headers`: The request headers.
 
@@ -107,11 +109,12 @@ By default, VCR uses a `:match_requests_on` option like:
 
     :match_requests_on => [:uri, :method]
 
-If you want to match on body, just add it to the array:
+If you want to match on another attribute, just add it to the array:
 
     :match_requests_on => [:uri, :method, :body]
 
-Note that FakeWeb cannot match on `:body` or `:headers`.
+Note that FakeWeb cannot match on `:body` or `:headers`.  In general, it is recommended that you configure
+your cassettes to match on the most specific set of attributes that is deterministic.
 
 ## Configuration
 
@@ -233,6 +236,10 @@ Edit your cassette file:
       uri: !ruby/regexp /example\.com\/\d+/
       body: 
       headers: 
+
+Note that it may be simpler (and better!) to use the `:match_requests_on` cassette option with `:host` and/or `:path`,
+as that gives you a a URL regex without the need to manually edit the cassette file.  If you do change a url to a regex
+in a cassette file, VCR will use it, regardless of the `:match_requests_on` setting.
 
 ## Dynamic Cassettes
 
