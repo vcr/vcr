@@ -83,9 +83,9 @@ shared_examples_for "an http stubbing adapter" do |supported_http_libraries, sup
       end
     end
 
-    matching_on :host, 'http://example1.com', 'http://example2.com', 'http://example3.com' do
+    matching_on :host, 'example1.com', 'example2.com', 'example3.com' do
       def request(host)
-        VCR::Request.new(:get, host, nil, {})
+        VCR::Request.new(:get, "http://#{host}/some/wrong/path", nil, {})
       end
     end
 
