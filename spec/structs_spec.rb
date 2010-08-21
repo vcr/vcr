@@ -28,7 +28,7 @@ describe VCR::Request do
 
     it 'returns a matcher with the given match_attributes' do
       req = VCR::Request.new
-      req.matcher([:uri, :headers]).match_attributes.to_a.should == [:uri, :headers]
+      req.matcher([:uri, :headers]).match_attributes.to_a.should =~ [:uri, :headers]
     end
   end
 
