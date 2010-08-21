@@ -3,6 +3,7 @@ source :rubygems
 group :development do
   gem 'rspec',              '>= 2.0.0.beta.19'
   gem 'rspec-core',         :git => 'git://github.com/rspec/rspec-core.git'
+  gem 'rspec-expectations', :git => 'git://github.com/rspec/rspec-expectations.git'
   gem 'cucumber',           '>= 0.8.5'
   gem 'fakeweb',            '~> 1.2.8'
   gem 'webmock',            '~> 1.3.3'
