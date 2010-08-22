@@ -2,7 +2,7 @@ source :rubygems
 
 group :development do
   gem 'rspec',              '>= 2.0.0.beta.19'
-  gem 'rspec-core',         :git => 'git://github.com/rspec/rspec-core.git'
+  gem 'rspec-core',         :git => 'git://github.com/myronmarston/rspec-core.git', :branch => 'parameterized_example_group_186'
   gem 'rspec-expectations', :git => 'git://github.com/rspec/rspec-expectations.git'
   gem 'cucumber',           '>= 0.8.5'
   gem 'fakeweb',            '~> 1.2.8'

@@ -1,6 +1,7 @@
 GIT
-  remote: git://github.com/rspec/rspec-core.git
-  revision: fae5db0
+  remote: git://github.com/myronmarston/rspec-core.git
+  revision: ec3001f
+  branch: parameterized_example_group_186
   specs:
     rspec-core (2.0.0.beta.19)
 
