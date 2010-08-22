@@ -16,6 +16,10 @@ module VCR
     end
 
     def match_attributes=(attributes)
+      # Unfortunately, 1.9.2 doesn't give the same hash code
+      # for two sets of the same elements unless they are ordered
+      # the same, so we sort the attributes here.
+      attributes = attributes.sort { |a, b| a.to_s <=> b.to_s }
       @match_attributes = Set.new(attributes)
     end
 
