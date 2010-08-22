@@ -250,15 +250,7 @@ module HttpLibrarySpecs
             end
 
             it "correctly handles stubbing multiple values for the same header" do
-              perform_test = lambda do
                 get_header('Set-Cookie', make_http_request(:get, 'http://example.com/two_set_cookie_headers')).should =~ ['bar=bazz', 'foo=bar']
-              end
-
-              if subject == VCR::HttpStubbingAdapters::FakeWeb
-                pending("waiting for my fakeweb fix to be merged into fakeweb and released", &perform_test)
-              else
-                perform_test.call
-              end
             end
 
             context 'when we restore our previous check point' do
