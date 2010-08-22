@@ -81,6 +81,10 @@ module HttpLibrarySpecs
     describe "using #{adapter_module.http_library_name}" do
       include adapter_module
 
+      # Necessary for ruby 1.9.2.  On 1.9.2 we get an error when we use super,
+      # so this gives us another alias we can use for the original method.
+      alias make_request make_http_request
+
       describe '#stub_requests using specific match_attributes' do
         before(:each) { subject.http_connections_allowed = false }
         let(:interactions) { YAML.load(File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', YAML_SERIALIZATION_VERSION, 'match_requests_on.yml'))) }
@@ -115,37 +119,37 @@ module HttpLibrarySpecs
 
         matching_on :method, { :get => "get method response", :post => "post method response" }, :put do
           def make_http_request(http_method)
-            super(http_method, 'http://some-wrong-domain.com/', nil, {})
+            make_request(http_method, 'http://some-wrong-domain.com/', nil, {})
           end
         end
 
         matching_on :host, { 'example1.com' => 'example1.com host response', 'example2.com' => 'example2.com host response' }, 'example3.com' do
           def make_http_request(host)
-            super(:get, "http://#{host}/some/wrong/path", nil, {})
+            make_request(:get, "http://#{host}/some/wrong/path", nil, {})
           end
         end
 
         matching_on :path, { '/path1' => 'path1 response', '/path2' => 'path2 response' }, '/path3' do
           def make_http_request(path)
-            super(:get, "http://some.wrong.domain.com#{path}?p=q", nil, {})
+            make_request(:get, "http://some.wrong.domain.com#{path}?p=q", nil, {})
           end
         end
 
         matching_on :uri, { 'http://example.com/uri1' => 'uri1 response', 'http://example.com/uri2' => 'uri2 response' }, 'http://example.com/uri3' do
           def make_http_request(uri)
-            super(:get, uri, nil, {})
+            make_request(:get, uri, nil, {})
           end
         end
 
         matching_on :body, { 'param=val1' => 'val1 body response', 'param=val2' => 'val2 body response' }, 'param=val3' do
           def make_http_request(body)
-            super(:put, "http://wrong-domain.com/wrong/path", body, {})
+            make_request(:put, "http://wrong-domain.com/wrong/path", body, {})
           end
         end
 
         matching_on :headers, {{ 'X-HTTP-HEADER1' => 'val1' } => 'val1 header response', { 'X-HTTP-HEADER1' => 'val2' } => 'val2 header response' }, { 'X-HTTP-HEADER1' => 'val3' } do
           def make_http_request(headers)
-            super(:get, "http://wrong-domain.com/wrong/path", nil, headers)
+            make_request(:get, "http://wrong-domain.com/wrong/path", nil, headers)
           end
         end
       end
