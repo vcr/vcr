@@ -1,6 +1,6 @@
 #Changelog
 
-## In Git
+## 1.1.0 (August 22, 2010)
 
 * Added `:match_requests_on` cassette option, which determines how VCR matches requests.
 * Removed VCR::TaskRunner and the corresponding rake task definition.  The rake task migrated cassettes from the
