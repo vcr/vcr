@@ -67,9 +67,9 @@ HTTP_LIBRARY_ADAPTERS['em-http-request'] = Module.new do
   end
 end
 
-module HttpLibrarySpecs
-  NET_CONNECT_NOT_ALLOWED_ERROR = /You can use VCR to automatically record this request and replay it later/ unless defined?(NET_CONNECT_NOT_ALLOWED_ERROR)
+NET_CONNECT_NOT_ALLOWED_ERROR = /You can use VCR to automatically record this request and replay it later/
 
+module HttpLibrarySpecs
   def test_http_library(library, supported_request_match_attributes)
     # patron and em-http-client cannot be installed on jruby
     return if %w[patron em-http-request].include?(library) && RUBY_PLATFORM == 'java'
