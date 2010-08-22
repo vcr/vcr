@@ -1,4 +1,4 @@
-require 'spec_helper'
+require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe VCR::RequestMatcher do
   it 'raises an error when given invalid match attributes' do
