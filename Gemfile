@@ -21,13 +21,15 @@ end
 # Additional gems that are useful, but not required for development.
 # These will not be added to the gemspec as development dependencies.
 group :extras do
-  gem 'rcov'
+  platforms :mri, :jruby do
+    gem 'rcov'
+  end
 
-  platforms :ruby_18 do
+  platforms :mri_18 do
     gem 'ruby-debug'
   end
 
-  platforms :ruby_19 do
+  platforms :mri_19 do
     gem 'ruby-debug19'
   end
 end
