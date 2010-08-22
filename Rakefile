@@ -2,7 +2,9 @@ require 'rubygems'
 require 'rake'
 require "rspec/core/rake_task"
 
-RSpec::Core::RakeTask.new(:spec)
+RSpec::Core::RakeTask.new(:spec) do |t|
+  #t.spec_opts = %w[--format documentation]
+end
 
 desc "Run all examples using rcov"
 RSpec::Core::RakeTask.new :rcov => :cleanup_rcov_files do |t|
