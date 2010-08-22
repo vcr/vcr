@@ -53,6 +53,9 @@ maintenance) and accurate (the response from example.com will contain the same h
 * Dynamic responses are supported using ERB.
 * Disables all HTTP requests that you don't explicitly allow.
 * Simple cucumber integration is provided using tags.
+* Known to work well with many popular ruby libraries including RSpec, Cucumber, Test::Unit, Capybara, Mechanize and
+  Rest-Client.
+* Extensively tested on 5 different ruby interpretters.
 
 ## Development
 
@@ -328,10 +331,10 @@ blocks of code in `VCR.use_cassette` and record logically grouped sets of reques
 
 VCR has been tested on the following ruby interpreters:
 
-* MRI 1.8.6
-* MRI 1.8.7
-* MRI 1.9.1
-* MRI 1.9.2 preview 3
+* MRI 1.8.6-p399
+* MRI 1.8.7-p302
+* MRI 1.9.1-p378
+* MRI 1.9.2
 * JRuby 1.5.1
 
 ## Notes, etc.
