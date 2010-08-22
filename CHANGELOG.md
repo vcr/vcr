@@ -4,6 +4,7 @@
 
 * Updated to use and require FakeWeb 1.3.0. It includes a fix for a bug related to multiple values for the
   same response header.
+* Use new `FakeWeb::Utility.request_uri_as_string` method rather than our own logic to construct a request uri.
 * Optimized `VCR.http_stubbing_adapter.stub_requests` a bit.
 
 ## 1.1.0 (August 22, 2010)
