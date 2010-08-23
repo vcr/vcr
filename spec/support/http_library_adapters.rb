@@ -225,7 +225,7 @@ module HttpLibrarySpecs
             before(:each) do
               subject.create_stubs_checkpoint(:my_checkpoint)
               @recorded_interactions = YAML.load(File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', YAML_SERIALIZATION_VERSION, 'fake_example.com_responses.yml')))
-              subject.stub_requests(@recorded_interactions)
+              subject.stub_requests(@recorded_interactions, VCR::RequestMatcher::DEFAULT_MATCH_ATTRIBUTES)
             end
 
             it 'returns true from #request_stubbed? for the requests that are stubbed' do

@@ -21,7 +21,7 @@ module VCR
           ::FakeWeb.allow_net_connect = value
         end
 
-        def stub_requests(http_interactions, match_attributes = RequestMatcher::DEFAULT_MATCH_ATTRIBUTES)
+        def stub_requests(http_interactions, match_attributes)
           validate_match_attributes(match_attributes)
           requests = Hash.new([])
 

@@ -21,7 +21,7 @@ module VCR
           ::WebMock::Config.instance.allow_net_connect = value
         end
 
-        def stub_requests(http_interactions, match_attributes = RequestMatcher::DEFAULT_MATCH_ATTRIBUTES)
+        def stub_requests(http_interactions, match_attributes)
           requests = Hash.new([])
 
           http_interactions.each do |i|
