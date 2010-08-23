@@ -1,5 +1,9 @@
 #Changelog
 
+## In Git
+
+* Optimized `VCR.http_stubbing_adapter.stub_requests` a bit.
+
 ## 1.1.0 (August 22, 2010)
 
 * Added `:match_requests_on` cassette option, which determines how VCR matches requests.

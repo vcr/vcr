@@ -22,10 +22,10 @@ module VCR
         end
 
         def stub_requests(http_interactions, match_attributes)
-          requests = Hash.new([])
+          requests = Hash.new { |h,k| h[k] = [] }
 
           http_interactions.each do |i|
-            requests[i.request.matcher(match_attributes)] += [i.response]
+            requests[i.request.matcher(match_attributes)] << i.response
           end
 
           requests.each do |request_matcher, responses|
