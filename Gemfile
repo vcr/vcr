@@ -5,7 +5,7 @@ group :development do
   gem 'rspec-core',         :git => 'git://github.com/myronmarston/rspec-core.git', :branch => 'parameterized_example_group_186'
   gem 'rspec-expectations', :git => 'git://github.com/rspec/rspec-expectations.git'
   gem 'cucumber',           '>= 0.8.5'
-  gem 'fakeweb',            '~> 1.2.8'
+  gem 'fakeweb',            '~> 1.3.0'
   gem 'webmock',            '~> 1.3.3'
   gem 'httpclient',         '~> 2.1.5.2'
   gem 'capybara',           '~> 0.3.9'
