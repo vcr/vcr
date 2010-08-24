@@ -61,7 +61,7 @@ describe "Net::HTTP Response extensions" do
     end
 
     context 'when the body has already been read using #read_body and a dest string' do
-      before(:all) do
+      before(:each) do
         http = Net::HTTP.new('example.com', 80)
         dest = ''
         @response = http.request_get('/') { |res| res.read_body(dest) }
@@ -72,7 +72,7 @@ describe "Net::HTTP Response extensions" do
     end
 
     context 'when the body has already been read using #body' do
-      before(:all) do
+      before(:each) do
         http = Net::HTTP.new('example.com', 80)
         @response = http.request_get('/')
         @response.body

@@ -18,36 +18,6 @@ shared_examples_for "an http stubbing adapter" do |supported_http_libraries, sup
     end
   end
 
-  describe "#with_http_connections_allowed_set_to" do
-    it 'sets http_connections_allowed for the duration of the block to the provided value' do
-      [true, false].each do |expected|
-        yielded_value = :not_set
-        subject.with_http_connections_allowed_set_to(expected) { yielded_value = subject.http_connections_allowed? }
-        yielded_value.should == expected
-      end
-    end
-
-    it 'returns the value returned by the block' do
-      subject.with_http_connections_allowed_set_to(true) { :return_value }.should == :return_value
-    end
-
-    it 'reverts http_connections_allowed when the block completes' do
-      [true, false].each do |expected|
-        subject.http_connections_allowed = expected
-        subject.with_http_connections_allowed_set_to(true) { }
-        subject.http_connections_allowed?.should == expected
-      end
-    end
-
-    it 'reverts http_connections_allowed when the block completes, even if an error is raised' do
-      [true, false].each do |expected|
-        subject.http_connections_allowed = expected
-        lambda { subject.with_http_connections_allowed_set_to(true) { raise RuntimeError } }.should raise_error(RuntimeError)
-        subject.http_connections_allowed?.should == expected
-      end
-    end
-  end
-
   describe '#request_stubbed? using specific match_attributes' do
     let(:interactions) { YAML.load(File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', YAML_SERIALIZATION_VERSION, 'match_requests_on.yml'))) }
 

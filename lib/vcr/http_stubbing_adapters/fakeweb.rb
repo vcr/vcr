@@ -6,6 +6,7 @@ module VCR
     class FakeWeb < Base
       class << self
         UNSUPPORTED_REQUEST_MATCH_ATTRIBUTES = [:body, :headers].freeze
+        LOCALHOST_REGEX = %r|\Ahttps?://((\w+:)?\w+@)?(#{VCR::LOCALHOST_ALIASES.map { |a| Regexp.escape(a) }.join('|')})(:\d+)?/|i
 
         def check_version!
           unless meets_version_requirement?(::FakeWeb::VERSION, '1.2.8')
@@ -14,11 +15,12 @@ module VCR
         end
 
         def http_connections_allowed?
-          ::FakeWeb.allow_net_connect?
+          !!::FakeWeb.allow_net_connect?("http://some.url/besides/localhost")
         end
 
         def http_connections_allowed=(value)
-          ::FakeWeb.allow_net_connect = value
+          @http_connections_allowed = value
+          update_fakeweb_allow_net_connect
         end
 
         def stub_requests(http_interactions, match_attributes)
@@ -55,12 +57,26 @@ module VCR
           ::FakeWeb::Utility.request_uri_as_string(net_http, request)
         end
 
-        attr_writer :ignore_localhost
+        def ignore_localhost=(value)
+          @ignore_localhost = value
+          update_fakeweb_allow_net_connect
+        end
+
         def ignore_localhost?
           @ignore_localhost
         end
 
         private
+
+        def update_fakeweb_allow_net_connect
+          ::FakeWeb.allow_net_connect = if @http_connections_allowed
+            true
+          elsif @ignore_localhost
+            LOCALHOST_REGEX
+          else
+            false
+          end
+        end
 
         def checkpoints
           @checkpoints ||= {}
