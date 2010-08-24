@@ -9,8 +9,8 @@ module VCR
         LOCALHOST_REGEX = %r|\Ahttps?://((\w+:)?\w+@)?(#{VCR::LOCALHOST_ALIASES.map { |a| Regexp.escape(a) }.join('|')})(:\d+)?/|i
 
         def check_version!
-          unless meets_version_requirement?(::FakeWeb::VERSION, '1.2.8')
-            raise "You are using FakeWeb #{::FakeWeb::VERSION}.  VCR requires version 1.2.8 or greater."
+          unless meets_version_requirement?(::FakeWeb::VERSION, '1.3.0')
+            raise "You are using FakeWeb #{::FakeWeb::VERSION}.  VCR requires version 1.3.0 or greater."
           end
         end
 
