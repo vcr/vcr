@@ -8,6 +8,8 @@
 * Use new `FakeWeb.allow_net_connect = /url regex/` feature to power the `ignore_localhost` VCR option rather
   then toggling `FakeWeb.allow_net_connect` in our Net::HTTP extension.
 * Optimized `VCR.http_stubbing_adapter.stub_requests` a bit.
+* Changed the http stubbing adapters to be modules rather than classes.  They should never be instantiated and
+  don't really hold state, so a module is more appropriate.
 
 ## 1.1.0 (August 22, 2010)
 

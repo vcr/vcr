@@ -8,7 +8,7 @@ require 'vcr/version'
 
 require 'vcr/extensions/net_http_response'
 
-require 'vcr/http_stubbing_adapters/base'
+require 'vcr/http_stubbing_adapters/common'
 
 module VCR
   extend self

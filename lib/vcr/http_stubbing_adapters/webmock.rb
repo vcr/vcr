@@ -3,86 +3,87 @@ require 'vcr/extensions/net_http'
 
 module VCR
   module HttpStubbingAdapters
-    class WebMock < Base
-      class << self
-        VERSION_REQUIREMENT = '1.3.3'
+    module WebMock
+      include VCR::HttpStubbingAdapters::Common
+      extend self
 
-        def check_version!
-          unless meets_version_requirement?(::WebMock.version, VERSION_REQUIREMENT)
-            raise "You are using WebMock #{::WebMock.version}.  VCR requires version #{VERSION_REQUIREMENT} or greater."
-          end
+      VERSION_REQUIREMENT = '1.3.3'
+
+      def check_version!
+        unless meets_version_requirement?(::WebMock.version, VERSION_REQUIREMENT)
+          raise "You are using WebMock #{::WebMock.version}.  VCR requires version #{VERSION_REQUIREMENT} or greater."
+        end
+      end
+
+      def http_connections_allowed?
+        ::WebMock::Config.instance.allow_net_connect
+      end
+
+      def http_connections_allowed=(value)
+        ::WebMock::Config.instance.allow_net_connect = value
+      end
+
+      def stub_requests(http_interactions, match_attributes)
+        requests = Hash.new { |h,k| h[k] = [] }
+
+        http_interactions.each do |i|
+          requests[i.request.matcher(match_attributes)] << i.response
         end
 
-        def http_connections_allowed?
-          ::WebMock::Config.instance.allow_net_connect
+        requests.each do |request_matcher, responses|
+          stub = ::WebMock.stub_request(request_matcher.method || :any, request_matcher.uri)
+
+          with_hash = request_signature_hash(request_matcher)
+          stub = stub.with(with_hash) if with_hash.size > 0
+
+          stub.to_return(responses.map{ |r| response_hash(r) })
         end
+      end
 
-        def http_connections_allowed=(value)
-          ::WebMock::Config.instance.allow_net_connect = value
-        end
+      def create_stubs_checkpoint(checkpoint_name)
+        checkpoints[checkpoint_name] = ::WebMock::RequestRegistry.instance.request_stubs.dup
+      end
 
-        def stub_requests(http_interactions, match_attributes)
-          requests = Hash.new { |h,k| h[k] = [] }
+      def restore_stubs_checkpoint(checkpoint_name)
+        ::WebMock::RequestRegistry.instance.request_stubs = checkpoints.delete(checkpoint_name)
+      end
 
-          http_interactions.each do |i|
-            requests[i.request.matcher(match_attributes)] << i.response
-          end
+      def request_stubbed?(request, match_attributes)
+        matcher = request.matcher(match_attributes)
+        !!::WebMock.registered_request?(::WebMock::RequestSignature.new(matcher.method || :any, request.uri, request_signature_hash(matcher)))
+      end
 
-          requests.each do |request_matcher, responses|
-            stub = ::WebMock.stub_request(request_matcher.method || :any, request_matcher.uri)
+      def request_uri(net_http, request)
+        ::WebMock::NetHTTPUtility.request_signature_from_request(net_http, request).uri.to_s
+      end
 
-            with_hash = request_signature_hash(request_matcher)
-            stub = stub.with(with_hash) if with_hash.size > 0
+      def ignore_localhost=(value)
+        ::WebMock::Config.instance.allow_localhost = value
+      end
 
-            stub.to_return(responses.map{ |r| response_hash(r) })
-          end
-        end
+      def ignore_localhost?
+        ::WebMock::Config.instance.allow_localhost
+      end
 
-        def create_stubs_checkpoint(checkpoint_name)
-          checkpoints[checkpoint_name] = ::WebMock::RequestRegistry.instance.request_stubs.dup
-        end
+      private
 
-        def restore_stubs_checkpoint(checkpoint_name)
-          ::WebMock::RequestRegistry.instance.request_stubs = checkpoints.delete(checkpoint_name)
-        end
+      def request_signature_hash(request_matcher)
+        signature = {}
+        signature[:body]    = request_matcher.body    if request_matcher.match_requests_on?(:body)
+        signature[:headers] = request_matcher.headers if request_matcher.match_requests_on?(:headers)
+        signature
+      end
 
-        def request_stubbed?(request, match_attributes)
-          matcher = request.matcher(match_attributes)
-          !!::WebMock.registered_request?(::WebMock::RequestSignature.new(matcher.method || :any, request.uri, request_signature_hash(matcher)))
-        end
+      def response_hash(response)
+        {
+          :body    => response.body,
+          :status  => [response.status.code.to_i, response.status.message],
+          :headers => response.headers
+        }
+      end
 
-        def request_uri(net_http, request)
-          ::WebMock::NetHTTPUtility.request_signature_from_request(net_http, request).uri.to_s
-        end
-
-        def ignore_localhost=(value)
-          ::WebMock::Config.instance.allow_localhost = value
-        end
-
-        def ignore_localhost?
-          ::WebMock::Config.instance.allow_localhost
-        end
-
-        private
-
-        def request_signature_hash(request_matcher)
-          signature = {}
-          signature[:body]    = request_matcher.body    if request_matcher.match_requests_on?(:body)
-          signature[:headers] = request_matcher.headers if request_matcher.match_requests_on?(:headers)
-          signature
-        end
-
-        def response_hash(response)
-          {
-            :body    => response.body,
-            :status  => [response.status.code.to_i, response.status.message],
-            :headers => response.headers
-          }
-        end
-
-        def checkpoints
-          @checkpoints ||= {}
-        end
+      def checkpoints
+        @checkpoints ||= {}
       end
     end
   end
