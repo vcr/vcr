@@ -1,25 +1,12 @@
 source :rubygems
+gemspec
 
 group :development do
-  gem 'rspec',              '>= 2.0.0.beta.19'
-  gem 'rspec-core',         :git => 'git://github.com/myronmarston/rspec-core.git', :branch => 'parameterized_example_group_186'
-  gem 'rspec-expectations', :git => 'git://github.com/rspec/rspec-expectations.git'
-  gem 'cucumber',           '>= 0.8.5'
-  gem 'fakeweb',            '~> 1.3.0'
-  gem 'webmock',            '~> 1.3.3'
-  gem 'httpclient',         '~> 2.1.5.2'
-  gem 'capybara',           '~> 0.3.9'
-  gem 'rack',               '1.2.0'
-  gem 'rake',               '~> 0.8.7'
-
-  platforms :ruby do
-    gem 'patron',           '~> 0.4.6'
-    gem 'em-http-request',  '~> 0.2.7'
-  end
+  # Our specs rely on something in rspec-core master that hasn't been released yet.
+  gem 'rspec-core', :git => 'git://github.com/rspec/rspec-core.git'
 end
 
 # Additional gems that are useful, but not required for development.
-# These will not be added to the gemspec as development dependencies.
 group :extras do
   platforms :mri, :jruby do
     gem 'rcov'

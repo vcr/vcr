@@ -1,21 +1,18 @@
 GIT
-  remote: git://github.com/myronmarston/rspec-core.git
-  revision: ec3001f
-  branch: parameterized_example_group_186
+  remote: git://github.com/rspec/rspec-core.git
+  revision: 6258abe
   specs:
-    rspec-core (2.0.0.beta.19)
+    rspec-core (2.0.0.beta.20)
 
-GIT
-  remote: git://github.com/rspec/rspec-expectations.git
-  revision: c1ce142
+PATH
+  remote: .
   specs:
-    rspec-expectations (2.0.0.beta.19)
-      diff-lcs (>= 1.1.2)
+    vcr (1.1.0)
 
 GEM
   remote: http://rubygems.org/
   specs:
-    addressable (2.1.2)
+    addressable (2.2.0)
     archive-tar-minitar (0.5.2)
     builder (2.1.2)
     capybara (0.3.9)
@@ -33,9 +30,9 @@ GEM
       gherkin (~> 2.1.4)
       json_pure (~> 1.4.3)
       term-ansicolor (~> 1.0.4)
-    culerity (0.2.10)
+    culerity (0.2.12)
     diff-lcs (1.1.2)
-    em-http-request (0.2.10)
+    em-http-request (0.2.11)
       addressable (>= 2.0.0)
       eventmachine (>= 0.12.9)
     eventmachine (0.12.10)
@@ -48,7 +45,7 @@ GEM
     gherkin (2.1.5-java)
       trollop (~> 1.16.2)
     httpclient (2.1.5.2)
-    json_pure (1.4.5)
+    json_pure (1.4.6)
     linecache (0.43)
     linecache19 (0.5.11)
       ruby_core_source (>= 0.1.4)
@@ -63,17 +60,19 @@ GEM
     rake (0.8.7)
     rcov (0.9.8)
     rcov (0.9.8-java)
-    rspec (2.0.0.beta.19)
-      rspec-core (= 2.0.0.beta.19)
-      rspec-expectations (= 2.0.0.beta.19)
-      rspec-mocks (= 2.0.0.beta.19)
-    rspec-mocks (2.0.0.beta.19)
+    rspec (2.0.0.beta.20)
+      rspec-core (= 2.0.0.beta.20)
+      rspec-expectations (= 2.0.0.beta.20)
+      rspec-mocks (= 2.0.0.beta.20)
+    rspec-expectations (2.0.0.beta.20)
+      diff-lcs (>= 1.1.2)
+    rspec-mocks (2.0.0.beta.20)
     ruby-debug (0.10.3)
       columnize (>= 0.1)
       ruby-debug-base (~> 0.10.3.0)
     ruby-debug-base (0.10.3)
       linecache (>= 0.3)
-    ruby-debug-base19 (0.11.23)
+    ruby-debug-base19 (0.11.24)
       columnize (>= 0.3.1)
       linecache19 (>= 0.5.11)
       ruby_core_source (>= 0.1.4)
@@ -84,14 +83,14 @@ GEM
     ruby_core_source (0.1.4)
       archive-tar-minitar (>= 0.5.2)
     rubyzip (0.9.4)
-    selenium-webdriver (0.0.27)
+    selenium-webdriver (0.0.28)
       ffi (>= 0.6.1)
       json_pure
       rubyzip
     term-ansicolor (1.0.5)
     trollop (1.16.2)
     weakling (0.0.4-java)
-    webmock (1.3.3)
+    webmock (1.3.4)
       addressable (>= 2.1.1)
       crack (>= 0.1.7)
 
@@ -100,8 +99,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bundler (~> 1.0.0.rc6)
   capybara (~> 0.3.9)
-  cucumber (>= 0.8.5)
+  cucumber (~> 0.8.5)
   em-http-request (~> 0.2.7)
   fakeweb (~> 1.3.0)
   httpclient (~> 2.1.5.2)
@@ -109,9 +109,9 @@ DEPENDENCIES
   rack (= 1.2.0)
   rake (~> 0.8.7)
   rcov
-  rspec (>= 2.0.0.beta.19)
+  rspec (~> 2.0.0.beta.20)
   rspec-core!
-  rspec-expectations!
   ruby-debug
   ruby-debug19
+  vcr!
   webmock (~> 1.3.3)

@@ -1,4 +1,3 @@
-$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib')
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../spec/support')
 
 if ENV['HTTP_STUBBING_ADAPTER'].to_s == ''
