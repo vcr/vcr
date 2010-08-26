@@ -10,6 +10,8 @@
 * Optimized `VCR.http_stubbing_adapter.stub_requests` a bit.
 * Changed the http stubbing adapters to be modules rather than classes.  They should never be instantiated and
   don't really hold state, so a module is more appropriate.
+* Warn when FakeWeb or WebMock are a minor or major version number ahead of the required version, as the new
+  version isn't known to work with VCR.
 
 ## 1.1.0 (August 22, 2010)
 

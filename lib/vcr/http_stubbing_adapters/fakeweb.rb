@@ -10,11 +10,7 @@ module VCR
       UNSUPPORTED_REQUEST_MATCH_ATTRIBUTES = [:body, :headers].freeze
       LOCALHOST_REGEX = %r|\Ahttps?://((\w+:)?\w+@)?(#{VCR::LOCALHOST_ALIASES.map { |a| Regexp.escape(a) }.join('|')})(:\d+)?/|i
 
-      def check_version!
-        unless meets_version_requirement?(::FakeWeb::VERSION, '1.3.0')
-          raise "You are using FakeWeb #{::FakeWeb::VERSION}.  VCR requires version 1.3.0 or greater."
-        end
-      end
+      VERSION_REQUIREMENT = '1.3.0'
 
       def http_connections_allowed?
         !!::FakeWeb.allow_net_connect?("http://some.url/besides/localhost")
@@ -69,6 +65,10 @@ module VCR
       end
 
       private
+
+      def version
+        ::FakeWeb::VERSION
+      end
 
       def update_fakeweb_allow_net_connect
         ::FakeWeb.allow_net_connect = if @http_connections_allowed

@@ -9,12 +9,6 @@ module VCR
 
       VERSION_REQUIREMENT = '1.3.3'
 
-      def check_version!
-        unless meets_version_requirement?(::WebMock.version, VERSION_REQUIREMENT)
-          raise "You are using WebMock #{::WebMock.version}.  VCR requires version #{VERSION_REQUIREMENT} or greater."
-        end
-      end
-
       def http_connections_allowed?
         ::WebMock::Config.instance.allow_net_connect
       end
@@ -66,6 +60,10 @@ module VCR
       end
 
       private
+
+      def version
+        ::WebMock.version
+      end
 
       def request_signature_hash(request_matcher)
         signature = {}
