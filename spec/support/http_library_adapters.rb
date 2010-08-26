@@ -196,7 +196,7 @@ module HttpLibrarySpecs
           test_real_http_request(http_allowed)
 
           unless http_allowed
-            describe 'ignore_localhost' do
+            describe '.ignore_localhost =' do
               let(:localhost_response) { 'A localhost response!' }
               let(:localhost_server)   { VCR::LocalhostServer::STATIC_SERVERS[localhost_response] }
 

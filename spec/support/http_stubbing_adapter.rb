@@ -18,6 +18,15 @@ shared_examples_for "an http stubbing adapter" do |supported_http_libraries, sup
     end
   end
 
+  describe '.ignore_localhost?' do
+    [true, false].each do |val|
+      it "returns #{val} when ignore_localhost is set to #{val}" do
+        subject.ignore_localhost = val
+        subject.ignore_localhost?.should == val
+      end
+    end
+  end
+
   describe '#request_stubbed? using specific match_attributes' do
     let(:interactions) { YAML.load(File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', YAML_SERIALIZATION_VERSION, 'match_requests_on.yml'))) }
 
