@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
     'cucumber'        => '~> 0.8.5',
 
     'fakeweb'         => '~> 1.3.0',
-    'webmock'         => '~> 1.3.3',
+    'webmock'         => '1.3.3',
 
     'httpclient'      => '~> 2.1.5.2',
 
