@@ -1,6 +1,6 @@
 #Changelog
 
-## In Git
+## 1.1.1 (August 26, 2010)
 
 * Updated to use and require FakeWeb 1.3.0. It includes a fix for a bug related to multiple values for the
   same response header.
