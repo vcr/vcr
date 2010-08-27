@@ -18,6 +18,7 @@ group :extras do
 
   platforms :mri_19 do
     gem 'ruby-debug19'
+    gem 'ruby-debug-base19', '0.11.23'
   end
 end
 
