@@ -210,7 +210,9 @@ Then /^(?:the )?response(?: (\d+))? for "([^\"]*)" should match \/(.+)\/$/ do |r
   response_num = response_num.to_i || 0
   response_num -= 1 if response_num > 0 # translate to 0-based array index.
   regex = /#{regex_str}/i
-  get_body_string(@http_requests[url][response_num]).should =~ regex
+  response = @http_requests[url][response_num]
+  raise response if response.is_a?(Exception)
+  get_body_string(response).should =~ regex
 end
 
 Then /^there should not be a "([^\"]*)" library file$/ do |cassette_name|
