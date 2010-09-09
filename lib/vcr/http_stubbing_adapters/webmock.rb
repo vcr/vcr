@@ -59,6 +59,12 @@ module VCR
         ::WebMock::Config.instance.allow_localhost
       end
 
+      def should_unwind_response?(response)
+        class << response
+          !ancestors.include?(::WebMock::Net::HTTPResponse)
+        end
+      end
+
       private
 
       def version

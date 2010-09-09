@@ -5,6 +5,19 @@ describe VCR::HttpStubbingAdapters::WebMock do
     %w[net/http patron httpclient em-http-request],
     [:method, :uri, :host, :path, :body, :headers]
 
+  describe '#should_unwind_response?' do
+    let(:response) { ::Net::HTTPOK.new('1.1', 200, 'OK') }
+
+    it 'returns true when the response has not been extended with WebMock::Net::HTTPResponse' do
+      described_class.should_unwind_response?(response).should be_true
+    end
+
+    it 'returns false when the response has been extended with WebMock::Net::HTTPResponse' do
+      response.extend WebMock::Net::HTTPResponse
+      described_class.should_unwind_response?(response).should be_false
+    end
+  end
+
   describe '#check_version!' do
     before(:each) { WebMock.should respond_to(:version) }
 

@@ -19,8 +19,8 @@ When /^I make a replayed asynchronous Net::HTTP get request to "([^\"]*)"$/ do |
   capture_response(url) do |uri, path|
     result_body = ''
     result = Net::HTTP.new(uri.host, uri.port).request_get(path) { |r| r.read_body { |fragment| result_body << fragment } }
-    result.body.should == result_body
-    result
+    def result_body.body; self; end # make the string a fake response (so response.body can be called on it)
+    result_body
   end
 end
 

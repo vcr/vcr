@@ -3,6 +3,14 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe VCR::HttpStubbingAdapters::FakeWeb do
   it_should_behave_like 'an http stubbing adapter', ['net/http'], [:method, :uri, :host, :path]
 
+  describe '#should_unwind_response?' do
+    let(:response) { ::Net::HTTPOK.new('1.1', 200, 'OK') }
+
+    it 'returns true' do
+      described_class.should_unwind_response?(response).should be_true
+    end
+  end
+
   describe '#check_version!' do
     disable_warnings
     before(:each) { @orig_version = FakeWeb::VERSION }
