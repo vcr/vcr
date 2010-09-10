@@ -1,5 +1,17 @@
 #Changelog
 
+## 1.1.2 (September 9, 2010)
+
+* Fixed a minor bug with the WebMock integration: WebMock extends each `Net::HTTPResponse` with an extension
+  module after reading the body, and VCR was doing the same thing, leading to some slight deviance from
+  standard Net::HTTP behavior.  The fix prevents VCR from adding the same extension to a `Net::HTTPResponse`
+  that has already been extende by WebMock.
+* Fixed a minor bug in the `VCR::Net::HTTPResponse` module so that it correctly handles nil bodies (such as
+  for a HEAD request).
+* Refactored `VCR::Net::HTTPResponse` module so it is implemented in a much simpler manner.
+* Updated specs and features so they pass against the latest WebMock release (1.3.5).
+* Minor documentation updates.
+
 ## 1.1.1 (August 26, 2010)
 
 * Updated to use and require FakeWeb 1.3.0. It includes a fix for a bug related to multiple values for the

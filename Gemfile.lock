@@ -7,7 +7,7 @@ GIT
 PATH
   remote: .
   specs:
-    vcr (1.1.1)
+    vcr (1.1.2)
 
 GEM
   remote: http://rubygems.org/
