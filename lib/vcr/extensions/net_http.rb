@@ -2,9 +2,7 @@ require 'net/http'
 
 module Net
   class HTTP
-    alias_method :request_without_vcr, :request
-
-    def request(request, body = nil, &block)
+    def request_with_vcr(request, body = nil, &block)
       vcr_request = VCR::Request.from_net_http_request(self, request)
       response = request_without_vcr(request, body)
 
@@ -20,5 +18,8 @@ module Net
       yield response if block_given?
       response
     end
+
+    alias request_without_vcr request
+    alias request request_with_vcr
   end
 end

@@ -2,6 +2,8 @@ require 'rubygems'
 require 'bundler'
 Bundler.setup
 
+require 'monkey_patches'
+
 require 'patron' unless RUBY_PLATFORM =~ /java/
 require 'httpclient'
 require 'em-http-request' unless RUBY_PLATFORM =~ /java/
@@ -38,3 +40,6 @@ RSpec.configure do |config|
   config.filter_run :focus => true
   config.run_all_when_everything_filtered = true
 end
+
+MonkeyPatches.init
+
