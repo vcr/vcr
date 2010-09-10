@@ -47,7 +47,7 @@ maintenance) and accurate (the response from example.com will contain the same h
   (all HTTP stubbing libraries), [Patron](http://github.com/toland/patron) (WebMock only),
   [HTTPClient](http://github.com/nahi/httpclient) (WebMock only) and
   [em-http-request](http://github.com/igrigorik/em-http-request) (WebMock only).
-* Request matching is configurable based on HTTP method, URI, host, body and headers.
+* Request matching is configurable based on HTTP method, URI, host, path, body and headers.
 * The same request can receive different responses in different tests--just use different cassettes.
 * The recorded requests and responses are stored on disk as YAML and can easily be inspected and edited.
 * Dynamic responses are supported using ERB.
