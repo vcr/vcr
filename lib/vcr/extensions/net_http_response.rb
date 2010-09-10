@@ -17,9 +17,11 @@ module VCR
         return @body if dest.nil? && block.nil?
         raise ArgumentError.new("both arg and block given for HTTP method") if dest && block
 
-        dest ||= ::Net::ReadAdapter.new(block)
-        dest << @body
-        @body = dest
+        if @body
+          dest ||= ::Net::ReadAdapter.new(block)
+          dest << @body
+          @body = dest
+        end
       ensure
         # allow subsequent calls to #read_body to proceed as normal, without our hack...
         @__read_body_previously_called = true
