@@ -27,11 +27,11 @@ describe VCR::Cassette do
   end
 
   describe '#record_http_interaction' do
-    it 'adds the interaction to #recorded_interactions' do
+    it 'adds the interaction to #new_recorded_interactions' do
       cassette = VCR::Cassette.new(:test_cassette)
-      cassette.recorded_interactions.should == []
+      cassette.new_recorded_interactions.should == []
       cassette.record_http_interaction(:the_interaction)
-      cassette.recorded_interactions.should == [:the_interaction]
+      cassette.new_recorded_interactions.should == [:the_interaction]
     end
   end
 
@@ -127,7 +127,7 @@ describe VCR::Cassette do
 
     VCR::Cassette::VALID_RECORD_MODES.each do |record_mode|
       http_connections_allowed = (record_mode != :none)
-      load_interactions = (record_mode != :all)
+      stub_requests = (record_mode != :all)
 
       context "when VCR::Config.default_cassette_options[:record] is :#{record_mode}" do
         before(:each) { VCR::Config.default_cassette_options = { :record => record_mode } }
@@ -144,41 +144,40 @@ describe VCR::Cassette do
           VCR::Cassette.new(:name, :record => record_mode)
         end
 
-        if load_interactions
+        [true, false].each do |ignore_localhost|
+          expected_uri_hosts = %w(example.com)
+          expected_uri_hosts += VCR::LOCALHOST_ALIASES unless ignore_localhost
 
-          [true, false].each do |ignore_localhost|
-            expected_uri_hosts = %w(example.com)
-            expected_uri_hosts += VCR::LOCALHOST_ALIASES unless ignore_localhost
-
-            it "#{ ignore_localhost ? 'does not load' : 'loads' } localhost interactions from the cassette file when http_stubbing_adapter.ignore_localhost is set to #{ignore_localhost}" do
-              VCR.http_stubbing_adapter.stub!(:ignore_localhost?).and_return(ignore_localhost)
-              VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
-              cassette = VCR::Cassette.new('with_localhost_requests', :record => record_mode)
-              cassette.recorded_interactions.map { |i| URI.parse(i.uri).host }.should =~ expected_uri_hosts
-            end
-          end
-
-          it "loads the recorded interactions from the library yml file" do
+          it "#{ ignore_localhost ? 'does not load' : 'loads' } localhost interactions from the cassette file when http_stubbing_adapter.ignore_localhost is set to #{ignore_localhost}" do
+            VCR.http_stubbing_adapter.stub!(:ignore_localhost?).and_return(ignore_localhost)
             VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
-            cassette = VCR::Cassette.new('example', :record => record_mode)
-
-            cassette.should have(3).recorded_interactions
-
-            i1, i2, i3 = *cassette.recorded_interactions
-
-            i1.request.method.should == :get
-            i1.request.uri.should == 'http://example.com:80/'
-            i1.response.body.should =~ /You have reached this web page by typing.+example\.com/
-
-            i2.request.method.should == :get
-            i2.request.uri.should == 'http://example.com:80/foo'
-            i2.response.body.should =~ /foo was not found on this server/
-
-            i3.request.method.should == :get
-            i3.request.uri.should == 'http://example.com:80/'
-            i3.response.body.should =~ /Another example\.com response/
+            cassette = VCR::Cassette.new('with_localhost_requests', :record => record_mode)
+            cassette.recorded_interactions.map { |i| URI.parse(i.uri).host }.should =~ expected_uri_hosts
           end
+        end
 
+        it "loads the recorded interactions from the library yml file" do
+          VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
+          cassette = VCR::Cassette.new('example', :record => record_mode)
+
+          cassette.should have(3).recorded_interactions
+
+          i1, i2, i3 = *cassette.recorded_interactions
+
+          i1.request.method.should == :get
+          i1.request.uri.should == 'http://example.com:80/'
+          i1.response.body.should =~ /You have reached this web page by typing.+example\.com/
+
+          i2.request.method.should == :get
+          i2.request.uri.should == 'http://example.com:80/foo'
+          i2.response.body.should =~ /foo was not found on this server/
+
+          i3.request.method.should == :get
+          i3.request.uri.should == 'http://example.com:80/'
+          i3.response.body.should =~ /Another example\.com response/
+        end
+
+        if stub_requests
           it "stubs the recorded requests with the http stubbing adapter" do
             VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
             VCR.http_stubbing_adapter.should_receive(:stub_requests).with([an_instance_of(VCR::HTTPInteraction)]*3, anything)
@@ -190,21 +189,12 @@ describe VCR::Cassette do
             VCR.http_stubbing_adapter.should_receive(:stub_requests).with(anything, [:body, :headers])
             cassette = VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:body, :headers])
           end
-
         else
-
           it "does not stub the recorded requests with the http stubbing adapter" do
             VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
             VCR.http_stubbing_adapter.should_not_receive(:stub_requests)
             cassette = VCR::Cassette.new('example', :record => record_mode)
           end
-
-          it "does not load the recorded interactions from the library yml file" do
-            VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
-            cassette = VCR::Cassette.new('example', :record => record_mode)
-            cassette.should have(0).recorded_interactions
-          end
-
         end
       end
     end
@@ -230,7 +220,7 @@ describe VCR::Cassette do
       ]
 
       cassette = VCR::Cassette.new(:eject_test)
-      cassette.stub!(:recorded_interactions).and_return(recorded_interactions)
+      cassette.stub!(:new_recorded_interactions).and_return(recorded_interactions)
 
       lambda { cassette.eject }.should change { File.exist?(cassette.file) }.from(false).to(true)
       saved_recorded_interactions = File.open(cassette.file, "r") { |f| YAML.load(f.read) }
@@ -240,41 +230,98 @@ describe VCR::Cassette do
     it "writes the recorded interactions to a subdirectory if the cassette name includes a directory" do
       recorded_interactions = [VCR::HTTPInteraction.new(:the_request, :the_response)]
       cassette = VCR::Cassette.new('subdirectory/test_cassette')
-      cassette.stub!(:recorded_interactions).and_return(recorded_interactions)
+      cassette.stub!(:new_recorded_interactions).and_return(recorded_interactions)
 
       lambda { cassette.eject }.should change { File.exist?(cassette.file) }.from(false).to(true)
       saved_recorded_interactions = File.open(cassette.file, "r") { |f| YAML.load(f.read) }
       saved_recorded_interactions.should == recorded_interactions
     end
 
-    it "writes both old and new recorded interactions to disk" do
-      file = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec/example.yml")
-      FileUtils.cp file, File.join(@temp_dir, 'previously_recorded_interactions.yml')
-      cassette = VCR::Cassette.new('previously_recorded_interactions')
-      cassette.should have(3).recorded_interactions
-      new_recorded_interaction = VCR::HTTPInteraction.new(:the_request, :the_response)
-      cassette.record_http_interaction(new_recorded_interaction)
-      cassette.eject
-      saved_recorded_interactions = File.open(cassette.file, "r") { |f| YAML.load(f.read) }
-      saved_recorded_interactions.should have(4).recorded_interactions
-      saved_recorded_interactions.last.should == new_recorded_interaction
-    end
-  end
+    [:all, :none, :new_episodes].each do |record_mode|
+      context "for a :record => :#{record_mode} cassette with previously recorded interactions" do
+        temp_dir File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec/temp"), :assign_to_cassette_library_dir => true
 
-  describe '#eject for a cassette with previously recorded interactions' do
-    it "restore the stubs checkpoint on the http stubbing adapter" do
-      VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
-      cassette = VCR::Cassette.new('example', :record => :none)
-      VCR.http_stubbing_adapter.should_receive(:restore_stubs_checkpoint).with('example')
-      cassette.eject
-    end
+        subject { VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:uri]) }
 
-    it "does not re-write to disk the previously recorded interactions if there are no new ones" do
-      VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
-      yaml_file = File.join(VCR::Config.cassette_library_dir, 'example.yml')
-      cassette = VCR::Cassette.new('example', :record => :none)
-      File.should_not_receive(:open).with(cassette.file, 'w')
-      lambda { cassette.eject }.should_not change { File.mtime(yaml_file) }
+        before(:each) do
+          base_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
+          FileUtils.cp(base_dir + "/example.yml", base_dir + "/temp/example.yml")
+        end
+
+        it "restore the stubs checkpoint on the http stubbing adapter" do
+          VCR.http_stubbing_adapter.should_receive(:restore_stubs_checkpoint).with('example')
+          subject.eject
+        end
+
+        it "does not re-write to disk the previously recorded interactions if there are no new ones" do
+          yaml_file = subject.file
+          File.should_not_receive(:open).with(subject.file, 'w')
+          lambda { subject.eject }.should_not change { File.mtime(yaml_file) }
+        end
+
+        context 'when some new interactions have been recorded' do
+          let(:new_interaction_1) { VCR::HTTPInteraction.new(VCR::Request.new, :response_1) }
+          let(:new_interaction_2) { VCR::HTTPInteraction.new(VCR::Request.new, :response_2) }
+          let(:new_interaction_3) { VCR::HTTPInteraction.new(VCR::Request.new, :response_3) }
+
+          let(:old_interaction_1) { subject.recorded_interactions[0] }
+          let(:old_interaction_2) { subject.recorded_interactions[1] }
+          let(:old_interaction_3) { subject.recorded_interactions[2] }
+
+          let(:saved_recorded_interactions) { YAML.load(File.read(subject.file)) }
+
+          before(:each) do
+            old_interaction_1.request.stub(:matcher => :matcher_c)
+            old_interaction_2.request.stub(:matcher => :matcher_d)
+            old_interaction_3.request.stub(:matcher => :matcher_c)
+
+            new_interaction_1.request.stub(:matcher => :matcher_a)
+            new_interaction_2.request.stub(:matcher => :matcher_b)
+            new_interaction_3.request.stub(:matcher => :matcher_c)
+
+            [new_interaction_1, new_interaction_2, new_interaction_3].each do |i|
+              subject.record_http_interaction(i)
+            end
+          end
+
+          if record_mode == :all
+            it 'removes the old interactions that match new requests, and saves the new interactions follow the old ones' do
+              subject.eject
+
+              saved_recorded_interactions.should == [
+                old_interaction_2,
+                new_interaction_1,
+                new_interaction_2,
+                new_interaction_3
+              ]
+            end
+
+            it "matches old requests to new ones using the cassette's match attributes" do
+              [
+                old_interaction_1, old_interaction_2, old_interaction_3,
+                new_interaction_1, new_interaction_2, new_interaction_3
+              ].each do |i|
+                i.request.should_receive(:matcher).with(subject.match_requests_on).and_return(:the_matcher)
+              end
+
+              subject.eject
+            end
+          else
+            it 'saves the old interactions followed by the new ones to disk' do
+              subject.eject
+
+              saved_recorded_interactions.should == [
+                old_interaction_1,
+                old_interaction_2,
+                old_interaction_3,
+                new_interaction_1,
+                new_interaction_2,
+                new_interaction_3
+              ]
+            end
+          end
+        end
+      end
     end
   end
 end

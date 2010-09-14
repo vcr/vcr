@@ -1,6 +1,7 @@
 require 'fileutils'
 require 'yaml'
 require 'erb'
+require 'set'
 
 module VCR
   class Cassette
@@ -39,7 +40,11 @@ module VCR
     end
 
     def record_http_interaction(interaction)
-      recorded_interactions << interaction
+      new_recorded_interactions << interaction
+    end
+
+    def new_recorded_interactions
+      @new_recorded_interactions ||= []
     end
 
     def file
@@ -58,12 +63,16 @@ module VCR
       end
     end
 
-    def new_recorded_interactions
-      recorded_interactions - @original_recorded_interactions
+    def should_allow_http_connections?
+      record_mode != :none
     end
 
-    def should_allow_http_connections?
-      [:new_episodes, :all].include?(record_mode)
+    def should_stub_requests?
+      record_mode != :all
+    end
+
+    def should_remove_matching_existing_interactions?
+      record_mode == :all
     end
 
     def set_http_connections_allowed
@@ -77,11 +86,9 @@ module VCR
 
     def load_recorded_interactions
       VCR.http_stubbing_adapter.create_stubs_checkpoint(name)
-      @original_recorded_interactions = []
-      return if record_mode == :all
 
-      if file
-        @original_recorded_interactions = begin
+      if file && File.exist?(file)
+        begin
           interactions = YAML.load(raw_yaml_content)
 
           if VCR.http_stubbing_adapter.ignore_localhost?
@@ -90,16 +97,16 @@ module VCR
             end
           end
 
-          interactions
+          recorded_interactions.replace(interactions)
         rescue TypeError
           raise unless raw_yaml_content =~ /VCR::RecordedResponse/
           raise "The VCR cassette #{sanitized_name}.yml uses an old format that is now deprecated.  VCR provides a rake task to migrate your old cassettes to the new format.  See http://github.com/myronmarston/vcr/blob/master/CHANGELOG.md for more info."
-        end if File.exist?(file)
-
-        recorded_interactions.replace(@original_recorded_interactions)
+        end
       end
 
-      VCR.http_stubbing_adapter.stub_requests(recorded_interactions, match_requests_on)
+      if should_stub_requests?
+        VCR.http_stubbing_adapter.stub_requests(recorded_interactions, match_requests_on)
+      end
     end
 
     @@struct_cache = Hash.new do |hash, attributes|
@@ -131,11 +138,29 @@ module VCR
       end
     end
 
+    def merged_interactions
+      old_interactions = recorded_interactions
+
+      if should_remove_matching_existing_interactions?
+        match_attributes = match_requests_on
+
+        new_request_matchers = Set.new new_recorded_interactions.map do |i|
+          i.request.matcher(match_attributes)
+        end
+
+        old_interactions = old_interactions.reject do |i|
+          new_request_matchers.include?(i.request.matcher(match_attributes))
+        end
+      end
+
+      old_interactions + new_recorded_interactions
+    end
+
     def write_recorded_interactions_to_disk
       if VCR::Config.cassette_library_dir && new_recorded_interactions.size > 0
         directory = File.dirname(file)
         FileUtils.mkdir_p directory unless File.exist?(directory)
-        File.open(file, 'w') { |f| f.write recorded_interactions.to_yaml }
+        File.open(file, 'w') { |f| f.write merged_interactions.to_yaml }
       end
     end
   end

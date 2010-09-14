@@ -7,6 +7,9 @@ group :development do
     gem 'patron',           '~> 0.4.6'
     gem 'em-http-request',  '~> 0.2.7'
   end
+
+  # I've got a fix that allows a stubbed object to be serialized properly.  It's waiting to be merged in to rspec-mocks.
+  gem 'rspec-mocks', :git => 'git://github.com/myronmarston/rspec-mocks.git', :branch => 'fix_yaml_serialization'
 end
 
 # Additional gems that are useful, but not required for development.

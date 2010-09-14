@@ -66,11 +66,13 @@ Before do |scenario|
   FileUtils.rm_rf(temp_dir) if File.exist?(temp_dir)
 end
 
-Before('@copy_not_the_real_response_to_temp') do
-  orig_file = File.join(VCR::Config.cassette_library_dir, 'not_the_real_response.yml')
-  temp_file = File.join(VCR::Config.cassette_library_dir, 'temp', 'not_the_real_response.yml')
-  FileUtils.mkdir_p(File.join(VCR::Config.cassette_library_dir, 'temp'))
-  FileUtils.cp orig_file, temp_file
+%w[not_the_real_response record_all].each do |cassette|
+  Before("@copy_#{cassette}_to_temp") do
+    orig_file = File.join(VCR::Config.cassette_library_dir, "#{cassette}.yml")
+    temp_file = File.join(VCR::Config.cassette_library_dir, 'temp', "#{cassette}.yml")
+    FileUtils.mkdir_p(File.join(VCR::Config.cassette_library_dir, 'temp'))
+    FileUtils.cp orig_file, temp_file
+  end
 end
 
 Before('@create_replay_localhost_cassette') do

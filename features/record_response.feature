@@ -37,10 +37,23 @@ Feature: Record response
      Then the "cucumber_tags/record_cassette2" library file should have a response for "http://example.com/before_nested" that matches /The requested URL \/before_nested was not found/
       And the "cucumber_tags/record_cassette2" library file should have a response for "http://example.com/after_nested" that matches /The requested URL \/after_nested was not found/
 
-  Scenario: Make an HTTP request in a cassette with record mode set to :all
+  Scenario: Make an HTTP request in a cassette with record mode set to :all when the cassette does not already exist
     Given we do not have a "temp/record_all_cassette" cassette
      When I make an HTTP get request to "http://example.com/" within the "temp/record_all_cassette" cassette using cassette options: { :record => :all }
      Then the "temp/record_all_cassette" library file should have a response for "http://example.com/" that matches /You have reached this web page by typing.*example\.com/
+
+  @copy_record_all_to_temp
+  Scenario: Make an HTTP request in a cassette with record mode set to :all when the cassette already exists
+    Given the "temp/record_all" library file has a response for "http://example.com/a" that matches /a response 1/
+      And the "temp/record_all" library file has a response for "http://example.com/a" that matches /a response 2/
+      And the "temp/record_all" library file has a response for "http://example.com/b" that matches /b response 1/
+      And the "temp/record_all" library file has a response for "http://example.com/b" that matches /b response 2/
+     When I make an HTTP get request to "http://example.com/a" within the "temp/record_all" cassette using cassette options: { :record => :all }
+     Then the "temp/record_all" library file should have a response for "http://example.com/a" that matches /The requested URL \/a was not found/
+      And the "temp/record_all" library file should not have a response for "http://example.com/a" that matches /a response 1/
+      And the "temp/record_all" library file should not have a response for "http://example.com/a" that matches /a response 2/
+      And the "temp/record_all" library file should have a response for "http://example.com/b" that matches /b response 1/
+      And the "temp/record_all" library file should have a response for "http://example.com/b" that matches /b response 2/
 
   Scenario: Make an HTTP request in a cassette with record mode set to :none
     Given we do not have a "temp/record_none_cassette" cassette

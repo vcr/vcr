@@ -1,5 +1,10 @@
 #Changelog
 
+## In git
+
+* Improved the `:all` record mode so that it keeps previously recorded interactions that do not match the
+  new recorded interactions.  Previously, all of the previously recorded interactions were deleted.
+
 ## 1.1.2 (September 9, 2010)
 
 * Fixed a minor bug with the WebMock integration: WebMock extends each `Net::HTTPResponse` with an extension

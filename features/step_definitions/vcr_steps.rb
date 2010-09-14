@@ -178,9 +178,10 @@ When /^I make an HTTP post request to "([^"]*)" with request header "([^"]*)=([^
   end
 end
 
-Then /^the "([^\"]*)" library file should have a response for "([^\"]*)" that matches \/(.+)\/$/ do |cassette_name, url, regex_str|
+Then /^the "([^\"]*)" library file (should(?: not)?) have a response for "([^\"]*)" that matches \/(.+)\/$/ do |cassette_name, expectation, url, regex_str|
+  expectation = expectation.gsub(' ', '_')
   interactions = recorded_interactions_for(cassette_name)
-  interactions.should have_expected_response(regex_str, :url => url)
+  interactions.send(expectation, have_expected_response(regex_str, :url => url))
 end
 
 Then /^the "([^\"]*)" library file should have exactly (\d+) response$/ do |cassette_name, response_count|
