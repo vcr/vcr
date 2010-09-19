@@ -13,13 +13,18 @@ module VCR
 
     def initialize(name, options = {})
       options = VCR::Config.default_cassette_options.merge(options)
-      invalid_options = options.keys - [:record, :erb, :allow_real_http, :match_requests_on]
+      invalid_options = options.keys - [:record, :erb, :allow_real_http, :match_requests_on, :re_record_interval]
 
       if invalid_options.size > 0
         raise ArgumentError.new("You passed the following invalid options to VCR::Cassette.new: #{invalid_options.inspect}.")
       end
 
-      @name, @record_mode, @erb, @match_requests_on = name, options[:record], options[:erb], options[:match_requests_on]
+      @name               = name
+      @record_mode        = options[:record]
+      @erb                = options[:erb]
+      @match_requests_on  = options[:match_requests_on]
+      @re_record_interval = options[:re_record_interval]
+      @record_mode        = :all if should_re_record?
 
       deprecate_old_cassette_options(options)
       raise_error_unless_valid_record_mode(record_mode)
@@ -61,6 +66,12 @@ module VCR
       unless VALID_RECORD_MODES.include?(record_mode)
         raise ArgumentError.new("#{record_mode} is not a valid cassette record mode.  Valid options are: #{VALID_RECORD_MODES.inspect}")
       end
+    end
+
+    def should_re_record?
+      @re_record_interval &&
+      File.exist?(file) &&
+      File.stat(file).mtime + @re_record_interval < Time.now
     end
 
     def should_allow_http_connections?

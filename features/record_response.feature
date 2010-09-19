@@ -77,3 +77,19 @@ Feature: Record response
      When I make an HTTP get request to the localhost rack app while using the "temp/localhost" cassette
      Then the response for the localhost rack app should match /hello world/
       And there should not be a "temp/localhost" library file
+
+  @copy_not_the_real_response_to_temp
+  Scenario: The response is not automatically recorded when not enough time has passed
+    Given the "temp/not_the_real_response" library file has a response for "http://example.com/" that matches /This is not the real response from example.com/
+      And 6 days have passed since the "temp/not_the_real_response" library file last changed
+     When I make an HTTP get request to "http://example.com/" while using the "temp/not_the_real_response" cassette using cassette options: { :record => :none, :re_record_interval => 7.days }
+     Then the response for "http://example.com/" should match /This is not the real response from example.com/
+      And the "temp/not_the_real_response" library file should have a response for "http://example.com/" that matches /This is not the real response from example.com/
+
+  @copy_not_the_real_response_to_temp
+  Scenario: The response is automatically recorded when enough time has passed
+    Given the "temp/not_the_real_response" library file has a response for "http://example.com/" that matches /This is not the real response from example.com/
+      And 8 days have passed since the "temp/not_the_real_response" library file last changed
+     When I make an HTTP get request to "http://example.com/" while using the "temp/not_the_real_response" cassette using cassette options: { :record => :none, :re_record_interval => 7.days }
+     Then the response for "http://example.com/" should match /You have reached this web page by typing.*example\.com/
+      And the "temp/not_the_real_response" library file should have a response for "http://example.com/" that matches /You have reached this web page by typing.*example\.com/

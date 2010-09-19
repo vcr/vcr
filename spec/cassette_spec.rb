@@ -138,7 +138,45 @@ describe VCR::Cassette do
         end
       end
 
-      context "when the record mode is :#{record_mode}" do
+      context "when :#{record_mode} is passed as the record option" do
+        unless record_mode == :all
+          context "and re_record_interval is 7.days" do
+            let(:file_name) { File.join(VCR::Config.cassette_library_dir, "cassette_name.yml") }
+            subject { VCR::Cassette.new(File.basename(file_name).gsub('.yml', ''), :record => record_mode, :re_record_interval => 7.days) }
+
+            context 'when the cassette file does not exist' do
+              before(:each) { File.stub(:exist?).with(file_name).and_return(false) }
+
+              it "has :#{record_mode} for the record mode" do
+                subject.record_mode.should == record_mode
+              end
+            end
+
+            context 'when the cassette file does exist' do
+              before(:each) do
+                File.stub(:exist?).with(file_name).and_return(true)
+                File.stub(:read).with(file_name).and_return([].to_yaml)
+              end
+
+              context 'and the file was last modified less than 7 days ago' do
+                before(:each) { File.stub(:stat).with(file_name).and_return(stub(:mtime => Time.now - 7.days + 60)) }
+
+                it "has :#{record_mode} for the record mode" do
+                  subject.record_mode.should == record_mode
+                end
+              end
+
+              context 'and the file was last modified more than 7 days ago' do
+                before(:each) { File.stub(:stat).with(file_name).and_return(stub(:mtime => Time.now - 7.days - 60)) }
+
+                it "has :all for the record mode" do
+                  subject.record_mode.should == :all
+                end
+              end
+            end
+          end
+        end
+
         it "sets http_connections_allowed to #{http_connections_allowed} on the http stubbing adapter" do
           VCR.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(http_connections_allowed)
           VCR::Cassette.new(:name, :record => record_mode)

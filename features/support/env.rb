@@ -20,10 +20,13 @@ puts "\n\n---------------- Running features using #{ENV['HTTP_STUBBING_ADAPTER']
 
 require 'vcr'
 require 'vcr_localhost_server'
+require 'fixnum_extension'
 
 require 'rubygems'
 require 'bundler'
 Bundler.setup
+
+require 'timecop'
 
 begin
   require 'ruby-debug'
@@ -52,6 +55,7 @@ VCR.module_eval do
 end
 
 After do |scenario|
+  Timecop.return
   if raised_error = (@http_requests || {}).values.flatten.detect { |result| result.is_a?(Exception) && result.message !~ /VCR/ }
     raise raised_error
   end

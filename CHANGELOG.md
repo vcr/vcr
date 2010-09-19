@@ -4,6 +4,8 @@
 
 * Improved the `:all` record mode so that it keeps previously recorded interactions that do not match the
   new recorded interactions.  Previously, all of the previously recorded interactions were deleted.
+* Added `:re_record_interval` cassette option.  This option causes a cassette to be re-recorded when the
+  existing file is older than the specified interval.
 
 ## 1.1.2 (September 9, 2010)
 

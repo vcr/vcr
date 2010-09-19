@@ -74,9 +74,11 @@ module VCRHelpers
   end
 
   def recorded_interactions_for(cassette_name)
-    yaml_file = File.join(VCR::Config.cassette_library_dir, "#{cassette_name}.yml")
-    yaml = File.open(yaml_file, 'r') { |f| f.read }
-    interactions = YAML.load(yaml)
+    interactions = YAML.load(File.read(file_name(cassette_name)))
+  end
+
+  def file_name(cassette_name)
+    File.join(VCR::Config.cassette_library_dir, "#{cassette_name}.yml")
   end
 
   def capture_response(url)
@@ -95,12 +97,11 @@ end
 World(VCRHelpers)
 
 Given /^we do not have a "([^\"]*)" cassette$/ do |cassette_name|
-  fixture_file = File.join(VCR::Config.cassette_library_dir, "#{cassette_name}.yml")
-  File.exist?(fixture_file).should be_false
+  File.exist?(file_name(cassette_name)).should be_false
 end
 
-Given /^we have a "([^\"]*)" library file with (a|no) previously recorded response for "([^\"]*)"$/ do |file_name, a_or_no, url|
-  fixture_file = File.join(VCR::Config.cassette_library_dir, "#{file_name}.yml")
+Given /^we have a "([^\"]*)" library file with (a|no) previously recorded response for "([^\"]*)"$/ do |cassette_name, a_or_no, url|
+  fixture_file = file_name(cassette_name)
   File.exist?(fixture_file).should be_true
   responses = File.open(fixture_file, 'r') { |f| YAML.load(f.read) }
   should_method = a_or_no == 'a' ? :should : :should_not
@@ -217,8 +218,7 @@ Then /^(?:the )?response(?: (\d+))? for "([^\"]*)" should match \/(.+)\/$/ do |r
 end
 
 Then /^there should not be a "([^\"]*)" library file$/ do |cassette_name|
-  yaml_file = File.join(VCR::Config.cassette_library_dir, "#{cassette_name}.yml")
-  File.exist?(yaml_file).should be_false
+  File.exist?(file_name(cassette_name)).should be_false
 end
 
 Given /^the ignore_localhost config setting is set to (true|false)$/ do |value|
@@ -241,3 +241,9 @@ Given /^the "([^\"]*)" library file has a response for localhost that matches \/
   port = static_rack_server('localhost response').port
   Given %{the "#{cassette}" library file has a response for "http://localhost:#{port}/" that matches /#{regex}/}
 end
+
+Given /^(\d+) days have passed since the "([^"]*)" library file last changed$/ do |day_count, file|
+  last_changed_at = File.new(file_name(file)).mtime
+  Timecop.travel(last_changed_at + day_count.to_i.days)
+end
+
