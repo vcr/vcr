@@ -9,7 +9,8 @@ Gem::Specification.new do |s|
   s.email = "myron.marston@gmail.com"
   s.require_path = "lib"
   s.files        = `git ls-files`.split("\n")
-  s.executables  = `git ls-files`.split("\n").map{|f| f =~ /^bin\/(.*)/ ? $1 : nil}.compact
+  s.test_files   = `git ls-files -- {test,spec,features}/*`.split("\n")
+  s.executables  = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
 
   s.version = VCR.version
   s.platform = Gem::Platform::RUBY
