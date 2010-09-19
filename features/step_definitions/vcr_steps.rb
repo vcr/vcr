@@ -154,7 +154,7 @@ When /^I make an HTTP post request to "([^"]*)" with request header "([^"]*)=([^
   end
 end
 
-When /^I make (.*) requests? to "([^\"]*)"(?: and "([^\"]*)")? within the "([^\"]*)" cassette(?: using cassette options: (.*))?$/ do |http_request_type, url1, url2, cassette_name, options|
+When /^I make (.*) requests? to "([^\"]*)"(?: and "([^\"]*)")? while using the "([^\"]*)" cassette(?: using cassette options: (.*))?$/ do |http_request_type, url1, url2, cassette_name, options|
   options = options.to_s == '' ? { :record => :new_episodes } : eval(options)
   urls = [url1, url2].select { |u| u.to_s.size > 0 }
   VCR.use_cassette(cassette_name, options) do
@@ -164,14 +164,14 @@ When /^I make (.*) requests? to "([^\"]*)"(?: and "([^\"]*)")? within the "([^\"
   end
 end
 
-When /^I make an HTTP post request to "([^"]*)" with request body "([^"]*)" within the "([^"]*)" cassette(?: using cassette options: (.*))?$/ do |url, request_body, cassette_name, options|
+When /^I make an HTTP post request to "([^"]*)" with request body "([^"]*)" while using the "([^"]*)" cassette(?: using cassette options: (.*))?$/ do |url, request_body, cassette_name, options|
   options = options.to_s == '' ? { :record => :new_episodes } : eval(options)
   VCR.use_cassette(cassette_name, options) do
     When %{I make an HTTP post request to "#{url}" with request body "#{request_body}"}
   end
 end
 
-When /^I make an HTTP post request to "([^"]*)" with request header "([^"]*)=([^"]*)" within the "([^"]*)" cassette(?: using cassette options: (.*))?$/ do |url, header_key, header_value, cassette_name, options|
+When /^I make an HTTP post request to "([^"]*)" with request header "([^"]*)=([^"]*)" while using the "([^"]*)" cassette(?: using cassette options: (.*))?$/ do |url, header_key, header_value, cassette_name, options|
   options = options.to_s == '' ? { :record => :new_episodes } : eval(options)
   VCR.use_cassette(cassette_name, options) do
     When %{I make an HTTP post request to "#{url}" with request header "#{header_key}=#{header_value}"}
@@ -229,8 +229,8 @@ Given /^a rack app is running on localhost that returns "([^"]+)" for all reques
   @rack_server = static_rack_server(response_string)
 end
 
-When /^I make an HTTP get request to the localhost rack app within the "([^\"]*)" cassette$/ do |cassette|
-  When %{I make an HTTP get request to "http://localhost:#{@rack_server.port}/" within the "#{cassette}" cassette}
+When /^I make an HTTP get request to the localhost rack app while using the "([^\"]*)" cassette$/ do |cassette|
+  When %{I make an HTTP get request to "http://localhost:#{@rack_server.port}/" while using the "#{cassette}" cassette}
 end
 
 Then /^the response for the localhost rack app should match \/(.*)\/$/ do |regex|
