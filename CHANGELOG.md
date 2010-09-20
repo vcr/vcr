@@ -6,6 +6,8 @@
   new recorded interactions.  Previously, all of the previously recorded interactions were deleted.
 * Added `:re_record_interval` cassette option.  This option causes a cassette to be re-recorded when the
   existing file is older than the specified interval.
+* Improved RSpec support.  Added #use_vcr_cassette RSpec macro method that sets up a cassette for an RSpec
+  example group.
 
 ## 1.1.2 (September 9, 2010)
 

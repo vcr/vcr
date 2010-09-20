@@ -247,3 +247,6 @@ Given /^(\d+) days have passed since the "([^"]*)" library file last changed$/ d
   Timecop.travel(last_changed_at + day_count.to_i.days)
 end
 
+Given /the following files do not exist:/ do |files|
+  check_file_presence(files.raw.map{|file_row| file_row[0]}, false)
+end
