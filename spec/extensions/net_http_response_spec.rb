@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 
 describe VCR::Net::HTTPResponse do
   # Disable the VCR/FakeWeb/WebMock Net::HTTP monkey patches so we don't have collisions with these specs
