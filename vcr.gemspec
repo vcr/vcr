@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
 
     'rspec'           => '~> 2.0.0.beta.22',
     'cucumber'        => '~> 0.8.5',
+    'aruba'           => '~> 0.2.1',
 
     'fakeweb'         => '~> 1.3.0',
     'webmock'         => '~> 1.3.5',
