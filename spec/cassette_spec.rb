@@ -169,8 +169,14 @@ describe VCR::Cassette do
               context 'and the file was last modified more than 7 days ago' do
                 before(:each) { File.stub(:stat).with(file_name).and_return(stub(:mtime => Time.now - 7.days - 60)) }
 
-                it "has :all for the record mode" do
+                it "has :all for the record mode when there is an internet connection available" do
+                  VCR::InternetConnection.stub(:available? => true)
                   subject.record_mode.should == :all
+                end
+
+                it "has :#{record_mode} for the record mode when there is no internet connection available" do
+                  VCR::InternetConnection.stub(:available? => false)
+                  subject.record_mode.should == record_mode
                 end
               end
             end

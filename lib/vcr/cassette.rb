@@ -71,7 +71,8 @@ module VCR
     def should_re_record?
       @re_record_interval &&
       File.exist?(file) &&
-      File.stat(file).mtime + @re_record_interval < Time.now
+      File.stat(file).mtime + @re_record_interval < Time.now &&
+      InternetConnection.available?
     end
 
     def should_allow_http_connections?
