@@ -1,4 +1,4 @@
-require 'ping'
+require 'vcr/ping'
 
 module VCR
   module InternetConnection
