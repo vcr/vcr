@@ -1,5 +1,4 @@
 require 'webmock'
-require 'vcr/extensions/net_http'
 
 module VCR
   module HttpStubbingAdapters
@@ -93,7 +92,7 @@ module VCR
   end
 end
 
-WebMock.after_request(:except => [:net_http], :real_requests_only => true) do |request, response|
+WebMock.after_request(:real_requests_only => true) do |request, response|
   http_interaction = VCR::HTTPInteraction.new(
     VCR::Request.new(
       request.method,

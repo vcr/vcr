@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe "Net::HTTP Extensions" do
+  without_webmock_callbacks
+
   let(:uri) { URI.parse('http://example.com') }
 
   it 'checks if the request is stubbed using a VCR::Request' do

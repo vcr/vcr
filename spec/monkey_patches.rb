@@ -1,6 +1,13 @@
 module MonkeyPatches
   extend self
 
+  module RSpecMacros
+    def without_monkey_patches(scope)
+      before(:each) { MonkeyPatches.disable!(scope) }
+      after(:each)  { MonkeyPatches.enable!(scope)  }
+    end
+  end
+
   NET_HTTP_SINGLETON = class << Net::HTTP; self; end
 
   MONKEY_PATCHES = [
@@ -10,15 +17,27 @@ module MonkeyPatches
     [NET_HTTP_SINGLETON, :socket_type]
   ]
 
-  def enable!
-    MONKEY_PATCHES.each do |mp|
-      realias mp.first, mp.last, :with_monkeypatches
+  def enable!(scope)
+    case scope
+      when :all
+        MONKEY_PATCHES.each do |mp|
+          realias mp.first, mp.last, :with_monkeypatches
+        end
+      when :vcr
+        realias Net::HTTP, :request, :with_vcr
+      else raise ArgumentError.new("Unexpected scope: #{scope}")
     end
   end
 
-  def disable!
-    MONKEY_PATCHES.each do |mp|
-      realias mp.first, mp.last, :without_monkeypatches
+  def disable!(scope)
+    case scope
+      when :all
+        MONKEY_PATCHES.each do |mp|
+          realias mp.first, mp.last, :without_monkeypatches
+        end
+      when :vcr
+        realias Net::HTTP, :request, :without_vcr
+      else raise ArgumentError.new("Unexpected scope: #{scope}")
     end
   end
 

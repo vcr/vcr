@@ -8,8 +8,8 @@ require 'patron' unless RUBY_PLATFORM =~ /java/
 require 'httpclient'
 require 'em-http-request' unless RUBY_PLATFORM =~ /java/
 require 'vcr'
-require 'vcr/http_stubbing_adapters/fakeweb'
 require 'vcr/http_stubbing_adapters/webmock'
+require 'vcr/http_stubbing_adapters/fakeweb'
 require 'rspec'
 
 # Ruby 1.9.1 has a different yaml serialization format.
@@ -22,6 +22,8 @@ Dir[File.expand_path(File.join(File.dirname(__FILE__),'support','**','*.rb'))].e
 RSpec.configure do |config|
   config.extend TempCassetteLibraryDir
   config.extend DisableWarnings
+  config.extend MonkeyPatches::RSpecMacros
+  config.extend WebMockMacros
 
   config.color_enabled = true
   config.debug = RUBY_PLATFORM != 'java'

@@ -1,3 +1,5 @@
+require 'open-uri'
+
 module NetHTTPHelpers
   def perform_net_http_get_with_returning_block(uri, path)
     Net::HTTP.new(uri.host, uri.port).request(Net::HTTP::Get.new(path, {})) do |response|
@@ -35,3 +37,13 @@ When /^I make a returning block Net::HTTP get request to "([^\"]*)"$/ do |url|
     perform_net_http_get_with_returning_block(uri, path)
   end
 end
+
+When /^I make an open uri Net::HTTP get request to "([^"]*)"$/ do |url|
+  capture_response(url) do |uri, path|
+    result = open(url)
+    # #open returns a StringIO rather than a Net::HTTPResponse, so we add #body to make it conform to the same interface
+    def result.body; read; end
+    result
+  end
+end
+

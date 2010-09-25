@@ -1,9 +1,7 @@
 require 'spec_helper'
 
 describe VCR::Net::HTTPResponse do
-  # Disable the VCR/FakeWeb/WebMock Net::HTTP monkey patches so we don't have collisions with these specs
-  before(:all) { MonkeyPatches.disable! }
-  after(:all)  { MonkeyPatches.enable!  }
+  without_monkey_patches :all
 
   def self.it_allows_the_body_to_be_read(expected_regex)
     it 'allows the body to be read using #body' do
