@@ -1,4 +1,4 @@
-#Changelog
+# Changelog
 
 ## In git
 
@@ -8,6 +8,9 @@
   existing file is older than the specified interval.
 * Improved RSpec support.  Added #use_vcr_cassette RSpec macro method that sets up a cassette for an RSpec
   example group.
+* Fixed VCR/Net::HTTP/WebMock integration so that VCR no longer loads its Net::HTTP monkey patch when
+  WebMock is used, and relies upon WebMock's after_request callback to record Net::HTTP instead.  This
+  fixes [a bug](http://github.com/myronmarston/vcr/issues/14) when using WebMock and Open URI.
 
 ## 1.1.2 (September 9, 2010)
 
