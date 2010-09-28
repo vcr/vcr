@@ -56,6 +56,29 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
+    uri: http://0.0.0.0:80/
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      content-type: 
+      - text/html; charset=iso-8859-1
+      connection: 
+      - close
+      server: 
+      - Apache/2.2.3 (CentOS)
+      date: 
+      - Thu, 25 Feb 2010 07:53:52 GMT
+      content-length: 
+      - "277"
+    body: 127.0.0.1 response
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
     uri: http://example.com:80/
     body: 
     headers: 

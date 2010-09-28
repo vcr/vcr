@@ -14,7 +14,7 @@ require 'vcr/http_stubbing_adapters/common'
 module VCR
   extend self
 
-  LOCALHOST_ALIASES = %w( localhost 127.0.0.1 )
+  LOCALHOST_ALIASES = %w( localhost 127.0.0.1 0.0.0.0 )
 
   def current_cassette
     cassettes.last
