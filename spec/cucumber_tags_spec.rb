@@ -12,7 +12,8 @@ describe VCR::CucumberTags do
   def test_tag(cassette_attribute, tag, expected_value)
     VCR.current_cassette.should be_nil
 
-    cassette_during_scenario, scenario = nil, lambda { cassette_during_scenario = VCR.current_cassette }
+    cassette_during_scenario = nil
+    scenario = lambda { cassette_during_scenario = VCR.current_cassette }
     blocks_for_tags[tag].call(:scenario_name, scenario)
     cassette_during_scenario.send(cassette_attribute).should == expected_value
 
