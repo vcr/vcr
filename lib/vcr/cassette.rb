@@ -140,11 +140,10 @@ module VCR
         # instance_eval seems to be the only way to get the binding for ruby 1.9: http://redmine.ruby-lang.org/issues/show/2161
         template.result(local_variables.instance_eval { binding })
       rescue NameError => e
-        var_name = e.message[/undefined local variable or method `(.*)' for/, 1].to_sym
-        example_hash = (@erb.is_a?(Hash) ? @erb : {}).merge(var_name => 'some value')
+        example_hash = (@erb.is_a?(Hash) ? @erb : {}).merge(e.name => 'some value')
 
         raise MissingERBVariableError.new(
-          "The ERB in the #{sanitized_name}.yml cassette file references undefined variable #{var_name}.  " +
+          "The ERB in the #{sanitized_name}.yml cassette file references undefined variable #{e.name}.  " +
           "Pass it to the cassette using :erb => #{ example_hash.inspect }."
         )
       end
