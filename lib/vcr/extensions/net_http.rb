@@ -1,4 +1,5 @@
 require 'net/http'
+require 'vcr/extensions/net_http_response'
 
 module Net
   class HTTP

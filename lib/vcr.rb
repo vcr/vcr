@@ -6,9 +6,6 @@ require 'vcr/internet_connection'
 require 'vcr/request_matcher'
 require 'vcr/structs'
 require 'vcr/version'
-
-require 'vcr/extensions/net_http_response'
-
 require 'vcr/http_stubbing_adapters/common'
 
 module VCR
