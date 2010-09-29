@@ -19,6 +19,10 @@ module VCR
       private
 
       def infer_cassette_name
+        # RSpec 1 exposes #description_parts; use that if its available
+        return description_parts.join("/") if respond_to?(:description_parts)
+
+        # Otherwise use RSpec 2 metadata...
         group_descriptions = []
         klass = self
 
