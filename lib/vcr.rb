@@ -1,7 +1,6 @@
 require 'vcr/cassette'
 require 'vcr/config'
 require 'vcr/deprecations'
-require 'vcr/internet_connection'
 require 'vcr/request_matcher'
 require 'vcr/structs'
 require 'vcr/version'
@@ -10,8 +9,9 @@ require 'vcr/http_stubbing_adapters/common'
 module VCR
   extend self
 
-  autoload :CucumberTags, 'vcr/cucumber_tags'
-  autoload :RSpec,        'vcr/rspec'
+  autoload :CucumberTags,       'vcr/cucumber_tags'
+  autoload :InternetConnection, 'vcr/internet_connection'
+  autoload :RSpec,              'vcr/rspec'
 
   LOCALHOST_ALIASES = %w( localhost 127.0.0.1 0.0.0.0 )
 
