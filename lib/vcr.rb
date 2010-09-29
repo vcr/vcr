@@ -1,6 +1,5 @@
 require 'vcr/cassette'
 require 'vcr/config'
-require 'vcr/cucumber_tags'
 require 'vcr/deprecations'
 require 'vcr/internet_connection'
 require 'vcr/request_matcher'
@@ -10,6 +9,8 @@ require 'vcr/http_stubbing_adapters/common'
 
 module VCR
   extend self
+
+  autoload :CucumberTags, 'vcr/cucumber_tags'
 
   LOCALHOST_ALIASES = %w( localhost 127.0.0.1 0.0.0.0 )
 
