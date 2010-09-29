@@ -10,7 +10,7 @@ Feature: RSpec integration
         | cassettes/net_http_example.yml                                        |
       And a file named "use_vcr_cassette_for_rspec_2_spec.rb" with:
       """
-      require 'vcr/rspec'
+      require 'vcr'
 
       VCR.config do |c|
         c.cassette_library_dir     = 'cassettes'
@@ -60,7 +60,7 @@ Feature: RSpec integration
       require 'spec'
       require 'spec/autorun'
 
-      require 'vcr/rspec'
+      require 'vcr'
 
       VCR.config do |c|
         c.cassette_library_dir     = 'cassettes'

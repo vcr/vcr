@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'vcr/rspec'
 
 describe VCR::RSpec::Macros do
   extend described_class

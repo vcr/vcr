@@ -11,6 +11,7 @@ module VCR
   extend self
 
   autoload :CucumberTags, 'vcr/cucumber_tags'
+  autoload :RSpec,        'vcr/rspec'
 
   LOCALHOST_ALIASES = %w( localhost 127.0.0.1 0.0.0.0 )
 
