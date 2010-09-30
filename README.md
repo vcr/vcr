@@ -159,32 +159,66 @@ VCR can easily be used with any ruby test or spec framework.  Usually, you'll wa
       # do something that makes an HTTP request
     end
 
-Alternately, you can insert and eject a cassette with individual method calls from setup/before and teardown/after:
+Alternately, with a framework like [shoulda](http://github.com/thoughtbot/shoulda), you can insert and eject a
+cassette with individual method calls from setup and teardown:
 
-    describe "Some object that makes an HTTP request" do
-      before(:each) do
+    context "Some object that makes an HTTP request" do
+      setup do
         VCR.insert_cassette('geocoding/Seattle, WA', :record => :new_episodes)
       end
 
-      it "does something that makes an HTTP request"
+      should "make an HTTP request" do
+        # ...
+      end
 
-      it "does something else that makes an HTTP request"
+      should "make another HTTP request" do
+        # ...
+      end
 
-      after(:each) do
+      teardown do
         VCR.eject_cassette
       end
     end
 
-If you're using RSpec 2, you can use the new `around` hook:
+## Usage with RSpec
 
-    describe "Some object that makes an HTTP request" do
-      around(:each) do |example|
-        VCR.use_cassette('geocoding/Seattle, WA', :record => :new_episodes, &example)
+If you're using RSpec, you can use a special macro provided by VCR:
+
+    describe MyApiClient do
+      context "create" do
+        # Pass use_vcr_cassette the same args you would pass VCR.use_cassette.
+        use_vcr_cassette "my_api_client/create", :record => :new_episodes
+
+        it "makes an HTTP request"
+        it "makes another HTTP request"
       end
 
-      it "does something that makes an HTTP request"
+      context "destroy" do
+        # You can leave off the cassette name and it will be inferred from the example group
+        # descriptions--in this case "MyApiClient/destroy".
+        # You can also leave off the options hash--the configured default options will be used.
+        use_vcr_cassette :record => :new_episodes, :match_requests_on => [:uri, :method, :body]
 
-      it "does something else that makes an HTTP request"
+        it "makes an HTTP request"
+        it "makes another HTTP request"
+      end
+    end
+
+To use this, you need to configure RSpec to make the `use_vcr_cassette` available as a macro.
+Here's how to do that for RSpec 1:
+
+    require 'vcr'
+
+    Spec::Runner.configure do |c|
+      c.extend VCR::RSpec::Macros
+    end
+
+Or for RSpec 2:
+
+    require 'vcr'
+
+    RSpec.configure do |c|
+      c.extend VCR::RSpec::Macros
     end
 
 ## Usage with Cucumber
