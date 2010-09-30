@@ -64,10 +64,6 @@ module VCR
         @ignore_localhost
       end
 
-      def should_unwind_response?(response)
-        true
-      end
-
       private
 
       def version
