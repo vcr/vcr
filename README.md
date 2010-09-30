@@ -51,6 +51,7 @@ maintenance) and accurate (the response from example.com will contain the same h
 * The same request can receive different responses in different tests--just use different cassettes.
 * The recorded requests and responses are stored on disk as YAML and can easily be inspected and edited.
 * Dynamic responses are supported using ERB.
+* Automatically re-records cassettes on a configurable regular interval to keep them fresh and current.
 * Disables all HTTP requests that you don't explicitly allow.
 * Simple cucumber integration is provided using tags.
 * Known to work well with many popular ruby libraries including RSpec, Cucumber, Test::Unit, Capybara, Mechanize and
@@ -79,6 +80,7 @@ Each cassette can be configured with a couple options:
 * `:record`: Specifies a record mode for this cassette.
 * `:erb`: Used for dynamic cassettes (see below for more details).
 * `:match_requests_on`: An array of request attributes to match on (see below for more details).
+* `:re_record_interval`: Controls automatic re-recording of the cassette (see below for more details).
 
 ## Record modes
 
@@ -273,6 +275,21 @@ In your cassette:
     response: !ruby/struct:VCR::Response 
       ...
       body: Hello, <%= user.name %>!
+
+## Automatic cassette re-recording
+
+Over time, your cassettes may get out-of-date.  APIs change and sites you scrape get updated.  VCR provides
+a facility to automatically re-record your cassettes.  You enable re-recording using the
+`:re_record_interval` option:
+
+    A_WEEK = 7 * 24 * 60 * 60 # or use 7.days if you're using ActiveSupport
+
+    VCR.use_cassette('my_cassette', :re_record_interval => A_WEEK) { ... }
+
+If the cassette file was last modified more than 7 days ago, VCR will use the `:all` record mode (regardless
+of the configured record mode) to allow new HTTP requests and record them.  VCR will check to make sure you
+have an internet connection before doing this, so if you are running the tests without one, the automatic
+re-recording will not kick in.
 
 ## FakeWeb or WebMock?
 
