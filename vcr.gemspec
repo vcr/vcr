@@ -1,4 +1,5 @@
-require File.expand_path("../lib/vcr/version", __FILE__)
+$LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
+require "vcr/version"
 
 Gem::Specification.new do |s|
   s.name = "vcr"

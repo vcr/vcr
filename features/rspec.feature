@@ -94,7 +94,7 @@ Feature: RSpec integration
         end
       end
       """
-    When I run "ruby ./use_vcr_cassette_for_rspec_1_spec.rb"
+    When I run "ruby -I'../../lib' ./use_vcr_cassette_for_rspec_1_spec.rb"
     Then the output should contain "2 examples, 0 failures"
      And the file "cassettes/VCR-RSpec_integration/without_an_explicit_cassette_name.yml" should contain "You have reached this web page by typing"
      And the file "cassettes/net_http_example.yml" should contain "You have reached this web page by typing"
