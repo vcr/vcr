@@ -6,6 +6,7 @@ group :development do
   platforms :ruby do
     gem 'patron',           '~> 0.4.6'
     gem 'em-http-request',  '~> 0.2.7'
+    gem 'curb',             '~> 0.7.8'
   end
 
   # I've got a fix that allows a stubbed object to be serialized properly.  It's waiting to be merged in to rspec-mocks.
