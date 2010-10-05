@@ -27,7 +27,6 @@ Gem::Specification.new do |s|
     'aruba'           => '~> 0.2.1',
 
     'fakeweb'         => '~> 1.3.0',
-    'webmock'         => '~> 1.3.5',
 
     'httpclient'      => '~> 2.1.5.2',
 

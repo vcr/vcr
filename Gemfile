@@ -11,6 +11,8 @@ group :development do
   # I've got a fix that allows a stubbed object to be serialized properly.  It's waiting to be merged in to rspec-mocks.
   gem 'rspec-mocks', :git => 'git://github.com/myronmarston/rspec-mocks.git', :branch => 'fix_yaml_serialization'
   gem 'rspec-core',  :git => 'git://github.com/rspec/rspec-core.git'
+
+  gem 'webmock', :git => 'git://github.com/bblimke/webmock.git'
 end
 
 # Additional gems that are useful, but not required for development.

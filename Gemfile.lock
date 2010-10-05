@@ -1,4 +1,12 @@
 GIT
+  remote: git://github.com/bblimke/webmock.git
+  revision: aaf774b6fe38f1516cddedd3df32f222eb3a1a45
+  specs:
+    webmock (1.3.5)
+      addressable (>= 2.1.1)
+      crack (>= 0.1.7)
+
+GIT
   remote: git://github.com/myronmarston/rspec-mocks.git
   revision: ca6a7ce31a79d0368972285fa6512a41a85c294c
   branch: fix_yaml_serialization
@@ -76,9 +84,6 @@ GEM
     term-ansicolor (1.0.5)
     timecop (0.3.5)
     trollop (1.16.2)
-    webmock (1.3.5)
-      addressable (>= 2.1.1)
-      crack (>= 0.1.7)
 
 PLATFORMS
   java
@@ -103,4 +108,4 @@ DEPENDENCIES
   ruby-debug19
   timecop (~> 0.3.5)
   vcr!
-  webmock (~> 1.3.5)
+  webmock!
