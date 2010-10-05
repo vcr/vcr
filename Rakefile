@@ -21,7 +21,7 @@ end
 
 permutations = {
   'fakeweb' => %w( net/http ),
-  'webmock' => %w( net/http httpclient patron em-http-request )
+  'webmock' => %w( net/http httpclient patron em-http-request curb )
 }
 
 require 'cucumber/rake/task'
@@ -31,7 +31,7 @@ namespace :features do
 
     namespace http_stubbing_adapter do
       http_libraries.each do |http_lib|
-        next if RUBY_PLATFORM =~ /java/ && %w( patron em-http-request ).include?(http_lib)
+        next if RUBY_PLATFORM == 'java' && %w( patron em-http-request curb ).include?(http_lib)
 
         sanitized_http_lib = http_lib.gsub('/', '_')
         features_subtasks << "features:#{http_stubbing_adapter}:#{sanitized_http_lib}"

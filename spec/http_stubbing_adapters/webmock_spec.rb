@@ -4,7 +4,7 @@ describe VCR::HttpStubbingAdapters::WebMock do
   without_monkey_patches :vcr
 
   it_should_behave_like 'an http stubbing adapter',
-    %w[net/http patron httpclient em-http-request],
+    %w[net/http patron httpclient em-http-request curb],
     [:method, :uri, :host, :path, :body, :headers]
 
   describe '#check_version!' do

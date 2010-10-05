@@ -4,9 +4,13 @@ Bundler.setup
 
 require 'monkey_patches'
 
-require 'patron' unless RUBY_PLATFORM =~ /java/
 require 'httpclient'
-require 'em-http-request' unless RUBY_PLATFORM =~ /java/
+unless RUBY_PLATFORM == 'java'
+  require 'patron'
+  require 'em-http-request'
+  require 'curb'
+end
+
 require 'vcr'
 require 'vcr/http_stubbing_adapters/webmock'
 require 'vcr/http_stubbing_adapters/fakeweb'

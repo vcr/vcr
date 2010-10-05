@@ -67,6 +67,35 @@ HTTP_LIBRARY_ADAPTERS['em-http-request'] = Module.new do
   end
 end
 
+HTTP_LIBRARY_ADAPTERS['curb'] = Module.new do
+  def self.http_library_name; "Curb"; end
+
+  def get_body_string(response)
+    response.body_str
+  end
+
+  def get_header(header_key, response)
+    headers = response.header_str.split("\r\n")[1..-1]
+    headers.each do |h|
+      if h =~ /^#{Regexp.escape(header_key)}: (.*)$/
+        return $1.split(', ')
+      end
+    end
+  end
+
+  def make_http_request(method, url, body = nil, headers = {})
+    Curl::Easy.new(url) do |c|
+      c.headers = headers
+      case method
+        when :get    then c.http_get
+        when :post   then c.http_post(body)
+        when :put    then c.http_put(body)
+        when :delete then c.http_delete
+      end
+    end
+  end
+end
+
 NET_CONNECT_NOT_ALLOWED_ERROR = /You can use VCR to automatically record this request and replay it later/
 
 module HttpLibrarySpecs

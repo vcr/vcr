@@ -12,6 +12,8 @@
   WebMock is used, and relies upon WebMock's after_request callback to record Net::HTTP instead.  This
   fixes [a bug](http://github.com/myronmarston/vcr/issues/14) when using WebMock and Open URI.
 * Consider 0.0.0.0 to be a localhost alias (previously only "localhost" and 127.0.0.1 were considered).
+* Added spec and feature coverage for Curb integration.  Works out of the box with no changes required
+  to VCR due to [Pete Higgins](http://github.com/phiggins) great work to add Curb support to WebMock.
 
 ## 1.1.2 (September 9, 2010)
 

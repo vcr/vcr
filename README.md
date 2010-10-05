@@ -45,6 +45,7 @@ maintenance) and accurate (the response from example.com will contain the same h
   is easy to implement for any future libraries.
 * Supports multiple HTTP libraries: [Net::HTTP](http://www.ruby-doc.org/stdlib/libdoc/net/http/rdoc/index.html)
   (all HTTP stubbing libraries), [Patron](http://github.com/toland/patron) (WebMock only),
+  [Curb](http://github.com/taf2/curb) (WebMock only),
   [HTTPClient](http://github.com/nahi/httpclient) (WebMock only) and
   [em-http-request](http://github.com/igrigorik/em-http-request) (WebMock only).
 * Request matching is configurable based on HTTP method, URI, host, path, body and headers.
