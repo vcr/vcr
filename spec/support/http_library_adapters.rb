@@ -206,7 +206,6 @@ module HttpLibrarySpecs
                   before(:each) { subject.ignore_localhost = true }
 
                   it "allows requests to #{localhost_alias}" do
-                    pending "Waiting for WebMock to add 0.0.0.0 as a localhost alias as well" if localhost_alias == '0.0.0.0' && subject == VCR::HttpStubbingAdapters::WebMock
                     get_body_string(make_http_request(:get, "http://#{localhost_alias}:#{localhost_server.port}/")).should == localhost_response
                   end
                 end
