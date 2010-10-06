@@ -43,11 +43,14 @@ maintenance) and accurate (the response from example.com will contain the same h
 * Automatically records and replays your HTTP interactions with minimal setup/configuration code.
 * Supports multiple HTTP stubbing libraries.  Currently FakeWeb and WebMock are supported, and the adapter interface
   is easy to implement for any future libraries.
-* Supports multiple HTTP libraries: [Net::HTTP](http://www.ruby-doc.org/stdlib/libdoc/net/http/rdoc/index.html)
-  (all HTTP stubbing libraries), [Patron](http://github.com/toland/patron) (WebMock only),
-  [Curb](http://github.com/taf2/curb) (WebMock only),
-  [HTTPClient](http://github.com/nahi/httpclient) (WebMock only) and
-  [em-http-request](http://github.com/igrigorik/em-http-request) (WebMock only).
+* Supports multiple HTTP libraries:
+  * [Patron](http://github.com/toland/patron) (WebMock)
+  * [Curb](http://github.com/taf2/curb) (WebMock)
+  * [HTTPClient](http://github.com/nahi/httpclient) (WebMock)
+  * [em-http-request](http://github.com/igrigorik/em-http-request) (WebMock only)
+  * [Net::HTTP](http://www.ruby-doc.org/stdlib/libdoc/net/http/rdoc/index.html) (FakeWeb and WebMock)
+  * And of course any library built on Net::HTTP, such as [Mechanize](http://github.com/tenderlove/mechanize),
+    [HTTParty](http://github.com/jnunemaker/httparty) or [Rest Client](http://github.com/archiloque/rest-client).
 * Request matching is configurable based on HTTP method, URI, host, path, body and headers.
 * The same request can receive different responses in different tests--just use different cassettes.
 * The recorded requests and responses are stored on disk as YAML and can easily be inspected and edited.
