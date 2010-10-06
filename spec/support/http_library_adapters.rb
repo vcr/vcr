@@ -86,11 +86,11 @@ HTTP_LIBRARY_ADAPTERS['curb'] = Module.new do
   def make_http_request(method, url, body = nil, headers = {})
     Curl::Easy.new(url) do |c|
       c.headers = headers
-      case method
-        when :get    then c.http_get
-        when :post   then c.http_post(body)
-        when :put    then c.http_put(body)
-        when :delete then c.http_delete
+
+      if [:post, :put].include?(method)
+        c.send("http_#{method}", body)
+      else
+        c.send("http_#{method}")
       end
     end
   end
