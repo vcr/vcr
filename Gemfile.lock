@@ -6,21 +6,6 @@ GIT
       addressable (>= 2.1.1)
       crack (>= 0.1.7)
 
-GIT
-  remote: git://github.com/myronmarston/rspec-mocks.git
-  revision: ca6a7ce31a79d0368972285fa6512a41a85c294c
-  branch: fix_yaml_serialization
-  specs:
-    rspec-mocks (2.0.0.beta.22)
-      rspec-core (= 2.0.0.beta.22)
-      rspec-expectations (= 2.0.0.beta.22)
-
-GIT
-  remote: git://github.com/rspec/rspec-core.git
-  revision: 6557d682a99e8992c06775b6f102dc4aa293257e
-  specs:
-    rspec-core (2.0.0.beta.22)
-
 PATH
   remote: .
   specs:
@@ -61,12 +46,16 @@ GEM
     rack (1.1.0)
     rake (0.8.7)
     rcov (0.9.9)
-    rspec (2.0.0.beta.22)
-      rspec-core (= 2.0.0.beta.22)
-      rspec-expectations (= 2.0.0.beta.22)
-      rspec-mocks (= 2.0.0.beta.22)
-    rspec-expectations (2.0.0.beta.22)
+    rspec (2.0.0.rc)
+      rspec-core (= 2.0.0.rc)
+      rspec-expectations (= 2.0.0.rc)
+      rspec-mocks (= 2.0.0.rc)
+    rspec-core (2.0.0.rc)
+    rspec-expectations (2.0.0.rc)
       diff-lcs (>= 1.1.2)
+    rspec-mocks (2.0.0.rc)
+      rspec-core (= 2.0.0.rc)
+      rspec-expectations (= 2.0.0.rc)
     ruby-debug (0.10.3)
       columnize (>= 0.1)
       ruby-debug-base (~> 0.10.3.0)
@@ -102,9 +91,7 @@ DEPENDENCIES
   rack (= 1.1.0)
   rake (~> 0.8.7)
   rcov
-  rspec (~> 2.0.0.beta.22)
-  rspec-core!
-  rspec-mocks!
+  rspec (~> 2.0.0.rc)
   ruby-debug
   ruby-debug-base19 (= 0.11.23)
   ruby-debug19
