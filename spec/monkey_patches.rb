@@ -87,3 +87,22 @@ module MonkeyPatches
   end
 end
 
+# Require all the HTTP libraries--these must be required before WebMock
+# for WebMock to work with them.
+require 'httpclient'
+unless RUBY_PLATFORM == 'java'
+  require 'patron'
+  require 'em-http-request'
+  require 'curb'
+end
+
+# The FakeWeb adapter must be required after WebMock's so
+# that VCR's Net::HTTP monkey patch is loaded last.
+# This allows us to disable it (i.e. by realiasing to
+# the version of Net::HTTP's methods before it was loaded)
+require 'vcr/http_stubbing_adapters/webmock'
+require 'vcr/http_stubbing_adapters/fakeweb'
+
+# All Net::HTTP monkey patches have now been loaded, so capture the
+# appropriate method definitions so we can disable them later.
+MonkeyPatches.init

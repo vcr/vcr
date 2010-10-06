@@ -2,18 +2,8 @@ require 'rubygems'
 require 'bundler'
 Bundler.setup
 
-require 'monkey_patches'
-
-require 'httpclient'
-unless RUBY_PLATFORM == 'java'
-  require 'patron'
-  require 'em-http-request'
-  require 'curb'
-end
-
 require 'vcr'
-require 'vcr/http_stubbing_adapters/webmock'
-require 'vcr/http_stubbing_adapters/fakeweb'
+require 'monkey_patches'
 require 'rspec'
 
 # Ruby 1.9.1 has a different yaml serialization format.
@@ -46,6 +36,4 @@ RSpec.configure do |config|
   config.filter_run :focus => true
   config.run_all_when_everything_filtered = true
 end
-
-MonkeyPatches.init
 
