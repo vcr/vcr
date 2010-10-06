@@ -100,8 +100,8 @@ NET_CONNECT_NOT_ALLOWED_ERROR = /You can use VCR to automatically record this re
 
 module HttpLibrarySpecs
   def test_http_library(library, supported_request_match_attributes)
-    # patron and em-http-client cannot be installed on jruby
-    return if %w[patron em-http-request].include?(library) && RUBY_PLATFORM == 'java'
+    # curb, patron and em-http-client cannot be installed on jruby
+    return if %w[curb patron em-http-request].include?(library) && RUBY_PLATFORM == 'java'
 
     unless adapter_module = HTTP_LIBRARY_ADAPTERS[library]
       raise ArgumentError.new("No http library adapter module could be found for #{library}")
