@@ -2,6 +2,8 @@
 
 ## In git
 
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.1.2...master)
+
 * Improved the `:all` record mode so that it keeps previously recorded interactions that do not match the
   new recorded interactions.  Previously, all of the previously recorded interactions were deleted.
 * Added `:re_record_interval` cassette option.  This option causes a cassette to be re-recorded when the
@@ -17,6 +19,8 @@
 
 ## 1.1.2 (September 9, 2010)
 
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.1.1...v1.1.2)
+
 * Fixed a minor bug with the WebMock integration: WebMock extends each `Net::HTTPResponse` with an extension
   module after reading the body, and VCR was doing the same thing, leading to some slight deviance from
   standard Net::HTTP behavior.  The fix prevents VCR from adding the same extension to a `Net::HTTPResponse`
@@ -28,6 +32,8 @@
 * Minor documentation updates.
 
 ## 1.1.1 (August 26, 2010)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.1.0...v1.1.1)
 
 * Updated to use and require FakeWeb 1.3.0. It includes a fix for a bug related to multiple values for the
   same response header.
@@ -42,6 +48,8 @@
 
 ## 1.1.0 (August 22, 2010)
 
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.0.3...v1.1.0)
+
 * Added `:match_requests_on` cassette option, which determines how VCR matches requests.
 * Removed VCR::TaskRunner and the corresponding rake task definition.  The rake task migrated cassettes from the
   0.3.1 format to the 0.4+ format.  If you are still on 0.3.1 or earlier, I recommend you upgrade to 0.4.1 first,
@@ -55,6 +63,8 @@
 
 ## 1.0.3 (August 5, 2010)
 
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.0.2...v1.0.3)
+
 * Upgraded VCR specs to RSpec 2.
 * Updated `VCR::CucumberTags` so that it uses an `around` hook rather than a `before` hook and an `after` hook.
   Around hooks were added to Cucumber in the 0.7.3 release, so you'll have to be on that version or higher to use
@@ -65,6 +75,8 @@
 
 ## 1.0.2 (July 6, 2010)
 
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.0.1...v1.0.2)
+
 * Fixed VCR to work with [rest-client](http://github.com/archiloque/rest-client).  Rest-client extends the Net::HTTP
   response body string with a module containing additional data, which got serialized to the cassette file YAML
   and occasionally caused problems when the YAML was deserialized.  Bug reported by
@@ -72,6 +84,8 @@
 * Setup bundler to manage development dependencies.
 
 ## 1.0.1 (July 1, 2010)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.0.0...v1.0.1)
 
 * Fixed specs and features so they pass on MRI 1.9.2-preview3 and JRuby 1.5.1.
 * Normalized response and request headers so that they are stored the same (i.e. lower case keys, arrays of values)
@@ -82,6 +96,8 @@
   [Eric Allam](http://github.com/rubymaverick).
 
 ## 1.0.0 (June 22, 2010)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v0.4.1...v1.0.0)
 
 * New Features
   * Added support for [HTTPClient](http://github.com/nahi/httpclient), [Patron](http://github.com/toland/patron) and
@@ -116,11 +132,17 @@
   * Removed some extensions that are no longer necessary.
 
 ## 0.4.1 May 11, 2010
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v0.4.0...v0.4.1)
+
 * Fixed a bug: when `Net::HTTPResponse#read_body` was called after VCR had read the body to record a new request,
   it raised an error (`IOError: Net::HTTPResponse#read_body called twice`).  My fix extends Net::HTTPResponse
   so that it no longer raises this error.
 
 ## 0.4.0 April 28, 2010
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v0.3.1...v0.4.0)
+
 * Added support for webmock.  All the fakeweb-specific code is now in an adapter (as is the webmock code).
 
 * Changed the format of the VCR cassettes.  The old format was tied directly to Net::HTTP, but webmock supports
@@ -146,9 +168,15 @@
 * Lots of other refactoring.
 
 ## 0.3.1 April 10, 2010
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v0.3.0...v0.3.1)
+
 * Fixed a bug: when `Net::HTTP#request` was called with a block that had a return statement, the response was not being recorded.
 
 ## 0.3.0 March 24, 2010
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v0.2.0...v0.3.0)
+
 * Renamed a bunch of methods, replacing them with method names that more clearly fit the VCR/cassette metaphor:
   * `VCR.create_cassette!` => `VCR.insert_cassette`
   * `VCR.destroy_cassette!` => `VCR.eject_cassette`
@@ -161,12 +189,18 @@
 * All the old methods still work, but you'll get deprecation warnings.
 
 ## 0.2.0 March 9, 2010
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v0.1.2...v0.2.0)
+
 * Added `:allow_real_http` cassette option, which allows VCR to work with capybara and a javascript driver.
   Bug reported by [Ben Hutton](http://github.com/benhutton).
 
 * Deprecated the `default_cassette_record_mode` option.  Use `default_cassette_options[:record_mode]` instead.
 
 ## 0.1.2 March 4, 2010
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v0.1.1...v0.1.2)
+
 * Added explanatory note about VCR to `FakeWeb::NetConnectNotAllowedError#message`.
 
 * Got things to work for when a cassette records multiple requests made to the same URL with the same HTTP verb,
@@ -176,7 +210,13 @@
   Internally, `Net::HTTP#request` recursively calls itself (passing slightly different arguments) in certain circumstances.
 
 ## 0.1.1 February 25, 2010
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v0.1.0...v0.1.1)
+
 * Handle asynchronous HTTP requests (such as for mechanize).  Bug reported by [Thibaud Guillaume-Gentil](http://github.com/thibaudgg).
 
 ## 0.1.0 February 25, 2010
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/d2577f79247d7db60bf160881b1b64e9fa10e4fd...v0.1.0)
+
 * Initial release.  Basic recording and replaying of responses works.
