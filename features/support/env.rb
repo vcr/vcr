@@ -19,6 +19,7 @@ World(HTTP_LIBRARY_ADAPTERS[ENV['HTTP_LIB']])
 puts "\n\n---------------- Running features using #{ENV['HTTP_STUBBING_ADAPTER']} and #{ENV['HTTP_LIB']} -----------------\n"
 
 require 'vcr'
+require 'ruby_interpreter'
 require 'vcr_localhost_server'
 require 'fixnum_extension'
 

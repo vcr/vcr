@@ -60,7 +60,7 @@ maintenance) and accurate (the response from example.com will contain the same h
 * Simple cucumber integration is provided using tags.
 * Known to work well with many popular ruby libraries including RSpec, Cucumber, Test::Unit, Capybara, Mechanize and
   Rest-Client.
-* Extensively tested on 6 different ruby interpretters.
+* Extensively tested on 7 different ruby interpretters.
 
 ## Development
 
@@ -388,6 +388,7 @@ VCR has been tested on the following ruby interpreters:
 * MRI 1.9.2-p0
 * REE 1.8.7-2010.02
 * JRuby 1.5.1
+* Rubinius 1.1
 
 ## Notes, etc.
 

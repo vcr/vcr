@@ -16,6 +16,7 @@
 * Consider 0.0.0.0 to be a localhost alias (previously only "localhost" and 127.0.0.1 were considered).
 * Added spec and feature coverage for Curb integration.  Works out of the box with no changes required
   to VCR due to [Pete Higgins](http://github.com/phiggins) great work to add Curb support to WebMock.
+* Got specs and features to pass on rubinius.
 
 ## 1.1.2 (September 9, 2010)
 

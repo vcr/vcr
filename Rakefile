@@ -4,6 +4,9 @@ Bundler::GemHelper.install_tasks
 
 require 'rake'
 require "rspec/core/rake_task"
+$LOAD_PATH.unshift 'spec'
+
+require 'support/ruby_interpreter'
 
 RSpec::Core::RakeTask.new(:spec) do |t|
   #t.rspec_opts = %w[--format documentation]
@@ -31,7 +34,7 @@ namespace :features do
 
     namespace http_stubbing_adapter do
       http_libraries.each do |http_lib|
-        next if RUBY_PLATFORM == 'java' && %w( patron em-http-request curb ).include?(http_lib)
+        next if RUBY_INTERPRETER != :mri && %w( patron em-http-request curb ).include?(http_lib)
 
         sanitized_http_lib = http_lib.gsub('/', '_')
         features_subtasks << "features:#{http_stubbing_adapter}:#{sanitized_http_lib}"

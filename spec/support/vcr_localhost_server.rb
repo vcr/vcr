@@ -53,10 +53,7 @@ module VCR
     end
 
     def concurrently
-      if RUBY_PLATFORM == 'java'
-        # JRuby doesn't support forking.
-        Thread.new { yield }
-      else
+      if RUBY_INTERPRETER == :mri
         # Patron times out when the server is running in a separate thread in the same process,
         # so use a separate process.
         pid = Process.fork do
@@ -72,6 +69,11 @@ module VCR
             # ignore this error...I think it means the child process has already exited.
           end
         end
+      else
+        # JRuby doesn't support forking.
+        # Rubinius does, but there's a weird issue with the booted? check not working,
+        # so we're just using a thread for now.
+        Thread.new { yield }
       end
     end
 

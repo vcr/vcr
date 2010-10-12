@@ -90,7 +90,8 @@ end
 # Require all the HTTP libraries--these must be required before WebMock
 # for WebMock to work with them.
 require 'httpclient'
-unless RUBY_PLATFORM == 'java'
+
+if RUBY_INTERPRETER == :mri
   require 'patron'
   require 'em-http-request'
   require 'curb'
