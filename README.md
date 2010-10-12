@@ -58,8 +58,8 @@ maintenance) and accurate (the response from example.com will contain the same h
 * Automatically re-records cassettes on a configurable regular interval to keep them fresh and current.
 * Disables all HTTP requests that you don't explicitly allow.
 * Simple cucumber integration is provided using tags.
-* Known to work well with many popular ruby libraries including RSpec, Cucumber, Test::Unit, Capybara, Mechanize and
-  Rest-Client.
+* Known to work well with many popular ruby libraries including RSpec 1 & 2, Cucumber, Test::Unit,
+  Capybara, Mechanize and Rest-Client.
 * Extensively tested on 7 different ruby interpretters.
 
 ## Development
@@ -79,7 +79,10 @@ a cassette that contains previously recorded HTTP interactions, it registers the
 library of your choice (fakeweb or webmock) so that HTTP requests get the recorded response.  Between test
 runs, cassettes are stored on disk as YAML files in your configured cassette library directory.
 
-Each cassette can be configured with a couple options:
+Each cassette acts a bit like a sandbox: it has an effect on HTTP requests during the current test while it
+is inserted, but has no effect on the rest of your test suite.
+
+Cassettes can be configured with a few options:
 
 * `:record`: Specifies a record mode for this cassette.
 * `:erb`: Used for dynamic cassettes (see below for more details).
@@ -92,8 +95,18 @@ VCR supports 3 record modes.  You can set a default record mode in your configur
 and a per-cassette record mode when inserting a cassette.  The record modes are:
 
 * `:new_episodes`: Previously recorded HTTP interactions will be replayed.  New HTTP interactions will be recorded.
+  This is generally the most useful mode.  VCR will automatically record and replay new HTTP requests as your
+  codebase evolves to make new requests.
 * `:all`: Previously recorded HTTP interactions will be ignored.  All HTTP interactions will be recorded.
+  This is useful if you're interested in using VCR to log your HTTP interactions but don't care to ever replay
+  them.  Alternately, you can temporarily change your record mode to `:all` to force it to re-record all requests.
 * `:none`: Previously recorded HTTP interactions will be replayed.  New HTTP interactions will result in an error.
+  This mode is useful when your code makes potentially dangerous HTTP requests (i.e. it hits a production
+  server rather than a sandbox/staging server), as it will prevent any new requests from completing, raising
+  an error instead.  Generally, you will temporarily use the `:new_episodes` or `:all` record modes
+  to perform the initial recording before changing it to `:none`.
+
+When no cassette is inserted, all HTTP requests will result in a `Real HTTP connections are disabled` error.
 
 ## Request Matching
 
@@ -145,9 +158,7 @@ configuration options:
   `RAILS_ROOT/test/fixtures`.  Rails will assume your cassette YAML files are ActiveRecord fixtures and raise an
   error when the content doesn't conform to its expectations.
 * `http_stubbing_library`: Which http stubbing library to use.  Currently `:fakeweb` and `:webmock` are supported.
-  This is currently optional--VCR will try to guess based on the presence or absence of the `FakeWeb` or `WebMock`
-  constants, but this is mostly done to assist users upgrading from VCR 0.3.1, which only worked with fakeweb and
-  didn't have this option.  I recommend you explicitly configure this.
+  VCR will automatically configure FakeWeb/WebMock for you; you do not need to reference either one at all.
 * `ignore_localhost`: Defaults to false.  Setting it true does the following:
     * Localhost requests will proceed as normal.  The "Real HTTP connections are disabled" error will not occur.
     * Localhost requests will not be recorded.
