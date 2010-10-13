@@ -8,8 +8,6 @@ group :development do
     gem 'em-http-request',  '~> 0.2.7'
     gem 'curb',             '~> 0.7.8'
   end
-
-  gem 'webmock', :git => 'git://github.com/bblimke/webmock.git'
 end
 
 # Additional gems that are useful, but not required for development.

@@ -17,6 +17,7 @@
 * Added spec and feature coverage for Curb integration.  Works out of the box with no changes required
   to VCR due to [Pete Higgins'](http://github.com/phiggins) great work to add Curb support to WebMock.
 * Got specs and features to pass on rubinius.
+* Changed WebMock version requirement to 1.4.0.
 
 ## 1.1.2 (September 9, 2010)
 
