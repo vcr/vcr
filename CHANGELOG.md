@@ -1,8 +1,8 @@
 # Changelog
 
-## In git
+## 1.2.0 (October 13, 2010)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.1.2...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.1.2...v1.2.0)
 
 * Improved the `:all` record mode so that it keeps previously recorded interactions that do not match the
   new recorded interactions.  Previously, all of the previously recorded interactions were deleted.
