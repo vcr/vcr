@@ -52,7 +52,7 @@ maintenance) and accurate (the response from example.com will contain the same h
 
 ## Usage
 
-Visit the [wiki](http://github.com/myronmarston/vcr/wiki)
+Visit the [wiki](http://github.com/myronmarston/vcr/wiki) for usage info and documentation.
 
 ## Development
 
