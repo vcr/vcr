@@ -112,7 +112,7 @@ if defined?(WebMock::NetConnectNotAllowedError)
   module WebMock
     class NetConnectNotAllowedError
       def message
-        super + ".  You can use VCR to automatically record this request and replay it later.  For more details, see the VCR README at: http://github.com/myronmarston/vcr/tree/v#{VCR.version}"
+        super + ".  You can use VCR to automatically record this request and replay it later.  For more details, see the VCR Wiki at: http://github.com/myronmarston/vcr/wiki"
       end
     end
   end
