@@ -99,12 +99,5 @@ WebMock.after_request(:real_requests_only => true) do |request, response|
   VCR.record_http_interaction(http_interaction)
 end
 
-if defined?(WebMock::NetConnectNotAllowedError)
-  module WebMock
-    class NetConnectNotAllowedError
-      def message
-        super + ".  You can use VCR to automatically record this request and replay it later.  For more details, see the VCR Wiki at: http://github.com/myronmarston/vcr/wiki"
-      end
-    end
-  end
-end
+VCR::HttpStubbingAdapters::Common.add_vcr_info_to_exception_message(WebMock::NetConnectNotAllowedError)
+

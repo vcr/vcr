@@ -6,6 +6,15 @@ module VCR
     class UnsupportedRequestMatchAttributeError < ArgumentError; end
 
     module Common
+      def self.add_vcr_info_to_exception_message(exception_klass)
+        exception_klass.class_eval do
+          def message
+            super + ".  You can use VCR to automatically record this request and replay it later.  " +
+            "For more details, see the VCR README at: http://github.com/myronmarston/vcr/wiki"
+          end
+        end
+      end
+
       def check_version!
         version_too_low, version_too_high = compare_version
 

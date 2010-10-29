@@ -101,12 +101,5 @@ module VCR
   end
 end
 
-if defined?(FakeWeb::NetConnectNotAllowedError)
-  module FakeWeb
-    class NetConnectNotAllowedError
-      def message
-        super + ".  You can use VCR to automatically record this request and replay it later.  For more details, see the VCR README at: http://github.com/myronmarston/vcr/wiki"
-      end
-    end
-  end
-end
+VCR::HttpStubbingAdapters::Common.add_vcr_info_to_exception_message(FakeWeb::NetConnectNotAllowedError)
+
