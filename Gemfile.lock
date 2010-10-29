@@ -1,3 +1,11 @@
+GIT
+  remote: git://github.com/dbalatero/typhoeus.git
+  revision: a70f322bd6da04ffacd2e5c26e8bbf81a04b5e50
+  branch: vcr_changes
+  specs:
+    typhoeus (0.1.31)
+      rack
+
 PATH
   remote: .
   specs:
@@ -106,5 +114,6 @@ DEPENDENCIES
   ruby-debug-base19 (= 0.11.23)
   ruby-debug19
   timecop (~> 0.3.5)
+  typhoeus!
   vcr!
   webmock (>= 1.4.0, < 1.6.0)

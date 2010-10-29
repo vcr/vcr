@@ -7,6 +7,7 @@ group :development do
     gem 'patron',           '~> 0.4.6'
     gem 'em-http-request',  '~> 0.2.7'
     gem 'curb',             '~> 0.7.8'
+    gem 'typhoeus', :git => 'git://github.com/dbalatero/typhoeus.git', :branch => 'vcr_changes'
   end
 end
 
