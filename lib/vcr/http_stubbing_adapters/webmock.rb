@@ -41,15 +41,6 @@ module VCR
         ::WebMock::RequestRegistry.instance.request_stubs = checkpoints.delete(checkpoint_name)
       end
 
-      def request_stubbed?(request, match_attributes)
-        matcher = request.matcher(match_attributes)
-        !!::WebMock.registered_request?(::WebMock::RequestSignature.new(matcher.method || :any, request.uri, request_signature_hash(matcher)))
-      end
-
-      def request_uri(net_http, request)
-        ::WebMock::NetHTTPUtility.request_signature_from_request(net_http, request).uri.to_s
-      end
-
       def ignore_localhost=(value)
         ::WebMock::Config.instance.allow_localhost = value
       end

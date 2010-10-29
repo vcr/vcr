@@ -99,7 +99,7 @@ end
 NET_CONNECT_NOT_ALLOWED_ERROR = /You can use VCR to automatically record this request and replay it later/
 
 module HttpLibrarySpecs
-  def test_http_library(library, supported_request_match_attributes)
+  def test_http_library(library, supported_request_match_attributes, *other)
     # curb, patron and em-http-client cannot be installed on jruby
     return if %w[curb patron em-http-request].include?(library) && RUBY_INTERPRETER != :mri
 
@@ -257,14 +257,16 @@ module HttpLibrarySpecs
               subject.stub_requests(@recorded_interactions, VCR::RequestMatcher::DEFAULT_MATCH_ATTRIBUTES)
             end
 
-            it 'returns true from #request_stubbed? for the requests that are stubbed' do
-              test_request_stubbed(:post, 'http://example.com', true)
-              test_request_stubbed(:get, 'http://example.com/foo', true)
-            end
+            if other.include?(:needs_net_http_extension)
+              it 'returns true from #request_stubbed? for the requests that are stubbed' do
+                test_request_stubbed(:post, 'http://example.com', true)
+                test_request_stubbed(:get, 'http://example.com/foo', true)
+              end
 
-            it 'returns false from #request_stubbed? for requests that are not stubbed' do
-              test_request_stubbed(:post, 'http://example.com/foo', false)
-              test_request_stubbed(:get, 'http://google.com', false)
+              it 'returns false from #request_stubbed? for requests that are not stubbed' do
+                test_request_stubbed(:post, 'http://example.com/foo', false)
+                test_request_stubbed(:get, 'http://google.com', false)
+              end
             end
 
             it 'gets the stubbed responses when multiple post requests are made to http://example.com, and does not record them' do
@@ -287,10 +289,12 @@ module HttpLibrarySpecs
 
               test_real_http_request(http_allowed)
 
-              it 'returns false from #request_stubbed?' do
-                test_request_stubbed(:get, 'http://example.com/foo', false)
-                test_request_stubbed(:post, 'http://example.com', false)
-                test_request_stubbed(:get, 'http://google.com', false)
+              if other.include?(:needs_net_http_extension)
+                it 'returns false from #request_stubbed?' do
+                  test_request_stubbed(:get, 'http://example.com/foo', false)
+                  test_request_stubbed(:post, 'http://example.com', false)
+                  test_request_stubbed(:get, 'http://google.com', false)
+                end
               end
             end
           end
