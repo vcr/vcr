@@ -3,7 +3,7 @@ require 'spec_helper'
 describe VCR::HttpStubbingAdapters::FakeWeb do
   without_webmock_callbacks
 
-  it_should_behave_like 'an http stubbing adapter', ['net/http'], [:method, :uri, :host, :path]
+  it_behaves_like 'an http stubbing adapter', ['net/http'], [:method, :uri, :host, :path]
 
   describe '#check_version!' do
     disable_warnings
