@@ -9,6 +9,7 @@ require 'vcr/http_stubbing_adapters/common'
 module VCR
   extend self
 
+  autoload :BasicObject,        'vcr/basic_object'
   autoload :CucumberTags,       'vcr/cucumber_tags'
   autoload :InternetConnection, 'vcr/internet_connection'
   autoload :RSpec,              'vcr/rspec'
