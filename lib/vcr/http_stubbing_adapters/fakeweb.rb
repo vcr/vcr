@@ -12,13 +12,22 @@ module VCR
 
       VERSION_REQUIREMENT = '1.3.0'
 
+      def http_connections_allowed=(value)
+        @http_connections_allowed = value
+        update_fakeweb_allow_net_connect
+      end
+
       def http_connections_allowed?
         !!::FakeWeb.allow_net_connect?("http://some.url/besides/localhost")
       end
 
-      def http_connections_allowed=(value)
-        @http_connections_allowed = value
+      def ignore_localhost=(value)
+        @ignore_localhost = value
         update_fakeweb_allow_net_connect
+      end
+
+      def ignore_localhost?
+        @ignore_localhost
       end
 
       def stub_requests(http_interactions, match_attributes)
@@ -53,15 +62,6 @@ module VCR
 
       def request_uri(net_http, request)
         ::FakeWeb::Utility.request_uri_as_string(net_http, request)
-      end
-
-      def ignore_localhost=(value)
-        @ignore_localhost = value
-        update_fakeweb_allow_net_connect
-      end
-
-      def ignore_localhost?
-        @ignore_localhost
       end
 
       private

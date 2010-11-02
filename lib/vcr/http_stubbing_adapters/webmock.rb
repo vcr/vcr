@@ -8,12 +8,20 @@ module VCR
 
       VERSION_REQUIREMENT = '1.4.0'
 
+      def http_connections_allowed=(value)
+        ::WebMock::Config.instance.allow_net_connect = value
+      end
+
       def http_connections_allowed?
         ::WebMock::Config.instance.allow_net_connect
       end
 
-      def http_connections_allowed=(value)
-        ::WebMock::Config.instance.allow_net_connect = value
+      def ignore_localhost=(value)
+        ::WebMock::Config.instance.allow_localhost = value
+      end
+
+      def ignore_localhost?
+        ::WebMock::Config.instance.allow_localhost
       end
 
       def stub_requests(http_interactions, match_attributes)
@@ -39,14 +47,6 @@ module VCR
 
       def restore_stubs_checkpoint(checkpoint_name)
         ::WebMock::RequestRegistry.instance.request_stubs = checkpoints.delete(checkpoint_name)
-      end
-
-      def ignore_localhost=(value)
-        ::WebMock::Config.instance.allow_localhost = value
-      end
-
-      def ignore_localhost?
-        ::WebMock::Config.instance.allow_localhost
       end
 
       private
