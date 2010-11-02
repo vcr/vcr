@@ -277,7 +277,16 @@ module HttpLibrarySpecs
 
             it 'gets the stubbed responses when requests are made to http://example.com/foo, and does not record them' do
               VCR.should_receive(:record_http_interaction).never
-              get_body_string(make_http_request(:get, 'http://example.com/foo')).should == 'example.com get response with path=foo'
+              get_body_string(make_http_request(:get, 'http://example.com/foo')).should == 'example.com get response 1 with path=foo'
+            end
+
+            it 'rotates through multiple responses for the same request' do
+              get_body_string(make_http_request(:get, 'http://example.com/foo')).should == 'example.com get response 1 with path=foo'
+              get_body_string(make_http_request(:get, 'http://example.com/foo')).should == 'example.com get response 2 with path=foo'
+
+              # subsequent requests keep getting the last one
+              get_body_string(make_http_request(:get, 'http://example.com/foo')).should == 'example.com get response 2 with path=foo'
+              get_body_string(make_http_request(:get, 'http://example.com/foo')).should == 'example.com get response 2 with path=foo'
             end
 
             it "correctly handles stubbing multiple values for the same header" do

@@ -57,7 +57,38 @@
       - "3285"
       accept-ranges: 
       - bytes
-    body: example.com get response with path=foo
+    body: example.com get response 1 with path=foo
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://example.com:80/foo
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      last-modified: 
+      - Tue, 15 Nov 2005 13:24:10 GMT
+      connection: 
+      - Keep-Alive
+      etag: 
+      - "\"24ec5-1b6-4059a80bfd280\""
+      content-type: 
+      - text/html; charset=UTF-8
+      date: 
+      - Wed, 31 Mar 2010 02:43:23 GMT
+      server: 
+      - Apache/2.2.3 (CentOS)
+      content-length: 
+      - "438"
+      age: 
+      - "3285"
+      accept-ranges: 
+      - bytes
+    body: example.com get response 2 with path=foo
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
