@@ -43,6 +43,16 @@ module VCR
       def library_name
         @library_name ||= self.to_s.split('::').last
       end
+
+      def grouped_responses(http_interactions, match_attributes)
+        responses = Hash.new { |h,k| h[k] = [] }
+
+        http_interactions.each do |i|
+          responses[i.request.matcher(match_attributes)] << i.response
+        end
+
+        responses
+      end
     end
   end
 end

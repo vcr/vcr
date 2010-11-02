@@ -25,13 +25,7 @@ module VCR
       end
 
       def stub_requests(http_interactions, match_attributes)
-        requests = Hash.new { |h,k| h[k] = [] }
-
-        http_interactions.each do |i|
-          requests[i.request.matcher(match_attributes)] << i.response
-        end
-
-        requests.each do |request_matcher, responses|
+        grouped_responses(http_interactions, match_attributes).each do |request_matcher, responses|
           stub = ::WebMock.stub_request(request_matcher.method || :any, request_matcher.uri)
 
           with_hash = request_signature_hash(request_matcher)
