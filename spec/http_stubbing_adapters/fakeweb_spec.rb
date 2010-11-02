@@ -5,33 +5,18 @@ describe VCR::HttpStubbingAdapters::FakeWeb do
 
   it_behaves_like 'an http stubbing adapter', ['net/http'], [:method, :uri, :host, :path], :needs_net_http_extension
 
-  describe '#check_version!' do
+  it_performs('version checking',
+    :valid    => %w[ 1.3.0 1.3.1 1.3.99 ],
+    :too_low  => %w[ 1.2.8 1.1.30 0.30.30 ],
+    :too_high => %w[ 1.4.0 1.10.0 2.0.0 ]
+  ) do
     disable_warnings
     before(:each) { @orig_version = FakeWeb::VERSION }
     after(:each)  { FakeWeb::VERSION = @orig_version }
 
-    %w( 1.2.8 1.1.30 0.30.30 ).each do |version|
-      it "raises an error when FakeWeb's version is #{version}" do
-        FakeWeb::VERSION = version
-        described_class.should_not_receive(:warn)
-        expect { described_class.check_version! }.to raise_error(/You are using FakeWeb #{version}.  VCR requires version .* or greater/)
-      end
-    end
-
-    %w( 1.3.0 1.3.1 1.3.99 ).each do |version|
-      it "does nothing when FakeWeb's version is #{version}" do
-        FakeWeb::VERSION = version
-        described_class.should_not_receive(:warn)
-        expect { described_class.check_version! }.to_not raise_error
-      end
-    end
-
-    %w( 1.4.0 1.10.0 2.0.0 ).each do |version|
-      it "prints a warning when FakeWeb's version is #{version}" do
-        FakeWeb::VERSION = version
-        described_class.should_receive(:warn).with(/VCR is known to work with FakeWeb ~> .*\./)
-        expect { described_class.check_version! }.to_not raise_error
-      end
+    # Cannot be regular method def as that raises a "dynamic constant assignment" error
+    define_method :stub_version do |version|
+      FakeWeb::VERSION = version
     end
   end
 end

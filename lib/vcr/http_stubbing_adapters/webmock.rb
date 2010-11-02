@@ -6,7 +6,8 @@ module VCR
       include VCR::HttpStubbingAdapters::Common
       extend self
 
-      VERSION_REQUIREMENT = '1.4.0'
+      MINIMUM_VERSION = '1.4.0'
+      MAXIMUM_VERSION = '1.5'
 
       def http_connections_allowed=(value)
         ::WebMock::Config.instance.allow_net_connect = value

@@ -19,29 +19,39 @@ module VCR
         version_too_low, version_too_high = compare_version
 
         if version_too_low
-          raise "You are using #{library_name} #{version}.  VCR requires version #{self::VERSION_REQUIREMENT} or greater."
+          raise "You are using #{library_name} #{version}.  VCR requires version #{version_requirement}."
         elsif version_too_high
-          warn "You are using #{library_name} #{version}.  VCR is known to work with #{library_name} ~> #{self::VERSION_REQUIREMENT}.  It may not work with this version."
+          warn "You are using #{library_name} #{version}.  VCR is known to work with #{library_name} #{version_requirement}.  It may not work with this version."
         end
+      end
+
+      def library_name
+        @library_name ||= self.to_s.split('::').last
       end
 
       private
 
       def compare_version
-        major,     minor,     patch     = *version.split('.').map { |v| v.to_i }
-        req_major, req_minor, req_patch = *self::VERSION_REQUIREMENT.split('.').map { |v| v.to_i }
+        major,     minor,     patch     = parse_version(version)
+        min_major, min_minor, min_patch = parse_version(self::MINIMUM_VERSION)
+        max_major, max_minor            = parse_version(self::MAXIMUM_VERSION)
 
-        return true, false if major < req_major
-        return false, true if major > req_major
+        return true, false if major < min_major
+        return false, true if major > max_major
 
-        return true, false if minor < req_minor
-        return false, true if minor > req_minor
+        return true, false if minor < min_minor
+        return false, true if minor > max_minor
 
-        return patch < req_patch, false
+        return patch < min_patch, false
       end
 
-      def library_name
-        @library_name ||= self.to_s.split('::').last
+      def version_requirement
+        max_major, max_minor = parse_version(self::MAXIMUM_VERSION)
+        ">= #{self::MINIMUM_VERSION}, < #{max_major}.#{max_minor + 1}"
+      end
+
+      def parse_version(version)
+        version.split('.').map { |v| v.to_i }
       end
 
       def grouped_responses(http_interactions, match_attributes)
