@@ -6,6 +6,7 @@
 
 * Moved documentation from README to [Wiki](http://github.com/myronmarston/vcr/wiki).
 * Refactoring and code cleanup.
+* Fix InternetConnection.available? so that it memoizes correctly when a connection is not available.
 
 ## 1.2.0 (October 13, 2010)
 
