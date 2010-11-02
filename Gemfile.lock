@@ -66,7 +66,7 @@ GEM
     term-ansicolor (1.0.5)
     timecop (0.3.5)
     trollop (1.16.2)
-    webmock (1.4.0)
+    webmock (1.5.0)
       addressable (>= 2.2.2)
       crack (>= 0.1.7)
 
@@ -92,4 +92,4 @@ DEPENDENCIES
   ruby-debug19
   timecop (~> 0.3.5)
   vcr!
-  webmock (~> 1.4.0)
+  webmock (>= 1.4.0, < 1.6.0)
