@@ -65,7 +65,18 @@ module VCR
         hash = {}
 
         hash[:body]    = request_matcher.body    if request_matcher.match_requests_on?(:body)
-        hash[:headers] = request_matcher.headers if request_matcher.match_requests_on?(:headers)
+
+        if request_matcher.match_requests_on?(:headers)
+          # normalize the headers to a single value (rather than an array of values)
+          # since Typhoeus doesn't yet support multiple header values for a request
+          if headers = request_matcher.headers
+            headers.each do |k, v|
+              headers[k] = v.first
+            end
+          end
+
+          hash[:headers] = headers
+        end
 
         hash
       end
