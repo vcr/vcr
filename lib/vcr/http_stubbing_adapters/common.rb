@@ -10,7 +10,7 @@ module VCR
         exception_klass.class_eval do
           def message
             super + ".  You can use VCR to automatically record this request and replay it later.  " +
-            "For more details, see the VCR README at: http://github.com/myronmarston/vcr/wiki"
+            "For more details, visit the VCR wiki at: http://github.com/myronmarston/vcr/wiki"
           end
         end
       end
