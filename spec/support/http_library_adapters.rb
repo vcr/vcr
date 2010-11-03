@@ -135,7 +135,7 @@ module HttpLibrarySpecs
                 end
               end
 
-              it 'raises an error for another method' do
+              it "raises an error for a request with a different #{attribute}" do
                 expect { make_http_request(invalid) }.to raise_error(NET_CONNECT_NOT_ALLOWED_ERROR)
               end
             else
