@@ -2,6 +2,7 @@ module VCR
   module HttpStubbingAdapters
     autoload :FakeWeb, 'vcr/http_stubbing_adapters/fakeweb'
     autoload :WebMock, 'vcr/http_stubbing_adapters/webmock'
+    autoload :Typhoeus, 'vcr/http_stubbing_adapters/typhoeus'
 
     class UnsupportedRequestMatchAttributeError < ArgumentError; end
 

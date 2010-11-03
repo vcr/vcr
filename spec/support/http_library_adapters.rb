@@ -96,6 +96,22 @@ HTTP_LIBRARY_ADAPTERS['curb'] = Module.new do
   end
 end
 
+HTTP_LIBRARY_ADAPTERS['typhoeus'] = Module.new do
+  def self.http_library_name; "Typhoeus"; end
+
+  def get_body_string(response)
+    response.body
+  end
+
+  def get_header(header_key, response)
+    response.headers_hash[header_key]
+  end
+
+  def make_http_request(method, url, body = nil, headers = {})
+    Typhoeus::Request.send(method, url, :body => body, :headers => headers)
+  end
+end
+
 NET_CONNECT_NOT_ALLOWED_ERROR = /You can use VCR to automatically record this request and replay it later/
 
 module HttpLibrarySpecs
