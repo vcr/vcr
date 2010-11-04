@@ -34,9 +34,9 @@ module VCR
           ).and_return(
             responses.map do |response|
               ::Typhoeus::Response.new(
-                :code    => response.status.code,
-                :body    => response.body,
-                :headers => response.headers
+                :code         => response.status.code,
+                :body         => response.body,
+                :headers_hash => response.headers
               )
             end
           )
@@ -65,18 +65,7 @@ module VCR
         hash = {}
 
         hash[:body]    = request_matcher.body    if request_matcher.match_requests_on?(:body)
-
-        if request_matcher.match_requests_on?(:headers)
-          # normalize the headers to a single value (rather than an array of values)
-          # since Typhoeus doesn't yet support multiple header values for a request
-          if headers = request_matcher.headers
-            headers.each do |k, v|
-              headers[k] = v.first
-            end
-          end
-
-          hash[:headers] = headers
-        end
+        hash[:headers] = request_matcher.headers if request_matcher.match_requests_on?(:headers)
 
         hash
       end
@@ -96,11 +85,11 @@ Typhoeus::Hydra.after_request_before_on_complete do |request|
       VCR::Response.new(
         VCR::ResponseStatus.new(
           request.response.code,
-          "TODO" # Typhoeus doesn't expose this yet...
+          request.response.status_message
         ),
         request.response.headers,
         request.response.body,
-        '1.1' # Typhoeus doesn't expose this...
+        request.response.http_version
       )
     )
 

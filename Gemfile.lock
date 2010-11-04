@@ -1,10 +1,9 @@
 GIT
-  remote: git://github.com/dbalatero/typhoeus.git
-  revision: a70f322bd6da04ffacd2e5c26e8bbf81a04b5e50
+  remote: git://github.com/myronmarston/typhoeus.git
+  revision: ac92d55f7397ef0ee5c206f9ddbd1dc7639381e2
   branch: vcr_changes
   specs:
     typhoeus (0.1.31)
-      rack
 
 PATH
   remote: .
