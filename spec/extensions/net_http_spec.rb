@@ -4,6 +4,7 @@ describe "Net::HTTP Extensions" do
   without_webmock_callbacks
 
   let(:uri) { URI.parse('http://example.com') }
+  before(:each) { VCR.stub(:http_stubbing_adapter).and_return(VCR::HttpStubbingAdapters::FakeWeb) }
 
   it 'checks if the request is stubbed using a VCR::Request' do
     VCR.http_stubbing_adapter.should_receive(:request_stubbed?) do |request, _|
