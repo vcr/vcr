@@ -28,7 +28,7 @@ module VCR
       end
 
       def ignore_localhost?
-        @ignore_localhost
+        !!@ignore_localhost
       end
 
       def stub_requests(http_interactions, match_attributes)
@@ -53,7 +53,7 @@ module VCR
 
       def request_stubbed?(request, match_attributes)
         validate_match_attributes(match_attributes)
-        ::FakeWeb.registered_uri?(request.method, request.uri)
+        !!::FakeWeb.registered_uri?(request.method, request.uri)
       end
 
       def request_uri(net_http, request)

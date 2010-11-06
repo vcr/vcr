@@ -14,7 +14,7 @@ module VCR
       end
 
       def http_connections_allowed?
-        ::WebMock::Config.instance.allow_net_connect
+        !!::WebMock::Config.instance.allow_net_connect
       end
 
       def ignore_localhost=(value)
@@ -22,7 +22,7 @@ module VCR
       end
 
       def ignore_localhost?
-        ::WebMock::Config.instance.allow_localhost
+        !!::WebMock::Config.instance.allow_localhost
       end
 
       def stub_requests(http_interactions, match_attributes)

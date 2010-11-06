@@ -27,6 +27,11 @@ shared_examples_for "an http stubbing adapter" do |supported_http_libraries, sup
         subject.ignore_localhost?.should == val
       end
     end
+
+    it "returns false when ignore_localhost is set to nil" do
+      subject.ignore_localhost = nil
+      subject.ignore_localhost?.should == false
+    end
   end
 
   if other.include?(:needs_net_http_extension)
@@ -44,12 +49,12 @@ shared_examples_for "an http stubbing adapter" do |supported_http_libraries, sup
 
             [valid1, valid2].each do |val|
               it "returns true for a #{val.inspect} request" do
-                subject.request_stubbed?(request(val), [attribute]).should be_true
+                subject.request_stubbed?(request(val), [attribute]).should == true
               end
             end
 
             it "returns false for another #{attribute}"  do
-              subject.request_stubbed?(request(invalid), [attribute]).should be_false
+              subject.request_stubbed?(request(invalid), [attribute]).should == false
             end
           else
             it 'raises an error indicating matching requests on this attribute is not supported' do

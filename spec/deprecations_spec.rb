@@ -51,7 +51,7 @@ describe 'Deprecations' do
 
           it "sets the http_stubbing_adapter's ignore_localhost attribute to true" do
             subject
-            VCR.http_stubbing_adapter.ignore_localhost?.should be_true
+            VCR.http_stubbing_adapter.ignore_localhost?.should == true
           end
 
           it "prints a warning: VCR's :allow_real_http cassette option is deprecated.  Instead, use the ignore_localhost configuration option." do

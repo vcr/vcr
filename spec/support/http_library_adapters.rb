@@ -230,6 +230,11 @@ module HttpLibrarySpecs
         subject.request_stubbed?(VCR::Request.new(method, url), [:method, :uri]).should == expected
       end
 
+      it "returns false from #http_connections_allowed? when http_connections_allowed is set to nil" do
+        subject.http_connections_allowed = nil
+        subject.http_connections_allowed?.should == false
+      end
+
       [true, false].each do |http_allowed|
         context "when #http_connections_allowed is set to #{http_allowed}" do
           before(:each) { subject.http_connections_allowed = http_allowed }
