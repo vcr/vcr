@@ -25,7 +25,7 @@ RSpec.configure do |config|
 
   config.before(:each) do
     VCR::Config.default_cassette_options = { :record => :new_episodes }
-    VCR::Config.http_stubbing_library = :fakeweb
+    VCR::Config.stub_with :fakeweb
 
     WebMock.allow_net_connect!
     WebMock.reset_webmock

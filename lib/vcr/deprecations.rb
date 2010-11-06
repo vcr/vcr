@@ -1,4 +1,18 @@
 module VCR
+  class Config
+    class << self
+      def http_stubbing_library
+        warn "WARNING: `VCR::Config.http_stubbing_library` is deprecated.  Use `VCR::Config.http_stubbing_libraries` instead."
+        @http_stubbing_libraries && @http_stubbing_libraries.first
+      end
+
+      def http_stubbing_library=(library)
+        warn "WARNING: `VCR::Config.http_stubbing_library = #{library.inspect}` is deprecated.  Use `VCR::Config.stub_with #{library.inspect}` instead."
+        stub_with library
+      end
+    end
+  end
+
   class Cassette
     def allow_real_http_requests_to?(uri)
       warn "WARNING: VCR::Cassette#allow_real_http_requests_to? is deprecated and should no longer be used."

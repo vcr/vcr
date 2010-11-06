@@ -28,30 +28,10 @@ describe VCR::Config do
     end
   end
 
-  describe '#http_stubbing_library' do
-    it 'returns the configured value' do
-      [:fakeweb, :webmock].each do |setting|
-        VCR::Config.http_stubbing_library = setting
-        VCR::Config.http_stubbing_library.should == setting
-      end
-    end
-
-    context 'when set to nil' do
-      before(:each) { VCR::Config.http_stubbing_library = nil }
-
-      {
-        [:FakeWeb, :WebMock] => nil,
-        []                   => nil,
-        [:FakeWeb]           => :fakeweb,
-        [:WebMock]           => :webmock
-      }.each do |defined_constants, expected_return_value|
-        it "returns #{expected_return_value.inspect} when these constants are defined: #{defined_constants.inspect}" do
-          [:FakeWeb, :WebMock].each do |const|
-            Object.should_receive(:const_defined?).with(const).and_return(defined_constants.include?(const))
-          end
-          VCR::Config.http_stubbing_library.should == expected_return_value
-        end
-      end
+  describe '.stub_with' do
+    it 'stores the given symbols in http_stubbing_libraries' do
+      VCR::Config.stub_with :fakeweb, :typhoeus
+      VCR::Config.http_stubbing_libraries.should == [:fakeweb, :typhoeus]
     end
   end
 

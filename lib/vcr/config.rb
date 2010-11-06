@@ -16,12 +16,9 @@ module VCR
         @default_cassette_options
       end
 
-      attr_writer :http_stubbing_library
-      def http_stubbing_library
-        @http_stubbing_library ||= begin
-          defined_constants = [:FakeWeb, :WebMock].select { |c| Object.const_defined?(c) }
-          defined_constants[0].to_s.downcase.to_sym if defined_constants.size == 1
-        end
+      attr_reader :http_stubbing_libraries
+      def stub_with(*http_stubbing_libraries)
+        @http_stubbing_libraries = http_stubbing_libraries
       end
 
       def ignore_localhost=(value)

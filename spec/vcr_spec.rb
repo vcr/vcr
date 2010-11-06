@@ -115,22 +115,30 @@ describe VCR do
       VCR.instance_variable_set(:@http_stubbing_adapter, nil)
     end
 
-    {
-      :fakeweb => VCR::HttpStubbingAdapters::FakeWeb,
-      :webmock => VCR::HttpStubbingAdapters::WebMock
-    }.each do |setting, adapter|
-      context "when config http_stubbing_library = :#{setting.to_s}" do
-        before(:each) { VCR::Config.http_stubbing_library = setting }
-
-        it "returns #{adapter}" do
-          subject.should == adapter
-        end
-      end
+    it 'returns a multi object proxy for the configured stubbing libraries' do
+      VCR::Config.stub_with :fakeweb, :typhoeus
+      VCR.http_stubbing_adapter.proxied_objects.should == [
+        VCR::HttpStubbingAdapters::FakeWeb,
+        VCR::HttpStubbingAdapters::Typhoeus
+      ]
     end
 
-    it 'raises an error when library is not set' do
-      VCR::Config.http_stubbing_library = nil
-      lambda { subject }.should raise_error(/The http stubbing library is not configured correctly/)
+    it 'raises an error if both :fakeweb and :webmock are configured' do
+      VCR::Config.stub_with :fakeweb, :webmock
+
+      expect { VCR.http_stubbing_adapter }.to raise_error(ArgumentError, /cannot use both/)
+    end
+
+    it 'raises an error for unsupported stubbing libraries' do
+      VCR::Config.stub_with :unsupported_library
+
+      expect { VCR.http_stubbing_adapter }.to raise_error(ArgumentError, /unsupported_library is not a supported HTTP stubbing library/i)
+    end
+
+    it 'raises an error when no stubbing libraries are configured' do
+      VCR::Config.stub_with
+
+      expect { VCR.http_stubbing_adapter }.to raise_error(ArgumentError, /the http stubbing library is not configured/i)
     end
   end
 
