@@ -87,7 +87,7 @@ Typhoeus::Hydra.after_request_before_on_complete do |request|
           request.response.code,
           request.response.status_message
         ),
-        request.response.headers,
+        request.response.headers_hash,
         request.response.body,
         request.response.http_version
       )

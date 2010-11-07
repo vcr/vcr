@@ -213,6 +213,7 @@ module HttpLibrarySpecs
               interaction.response.status.code.should == 404
               interaction.response.status.message.should == 'Not Found'
               interaction.response.body.should =~ /The requested URL \/foo was not found/
+              interaction.response.headers['content-type'].should == ["text/html; charset=iso-8859-1"]
             end
 
             make_http_request(:get, 'http://example.com/foo')
