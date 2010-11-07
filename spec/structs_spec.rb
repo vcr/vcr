@@ -53,10 +53,11 @@ describe VCR::Request do
     end
   end
 
-  def with_headers(headers)
-    described_class.new(:get, 'http://example.com/', nil, headers)
+  it_behaves_like 'a header normalizer' do
+    def with_headers(headers)
+      described_class.new(:get, 'http://example.com/', nil, headers)
+    end
   end
-  it_should_behave_like 'a header normalizer'
 end
 
 describe VCR::ResponseStatus do
@@ -96,10 +97,11 @@ describe VCR::Response do
     end
   end
 
-  def with_headers(headers)
-    described_class.new(:status, headers, nil, '1.1')
+  it_behaves_like 'a header normalizer' do
+    def with_headers(headers)
+      described_class.new(:status, headers, nil, '1.1')
+    end
   end
-  it_should_behave_like 'a header normalizer'
 
   it "ensures the body is serialized to yaml as a raw string" do
     body = "My String"
