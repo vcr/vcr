@@ -208,7 +208,7 @@ module HttpLibrarySpecs
 
           it 'records new http requests' do
             VCR.should_receive(:record_http_interaction) do |interaction|
-              URI.parse(interaction.request.uri).to_s.should == URI.parse('http://example.com/foo').to_s
+              interaction.request.uri.should == 'http://example.com:80/foo'
               interaction.request.method.should == :get
               interaction.response.status.code.should == 404
               interaction.response.status.message.should == 'Not Found'

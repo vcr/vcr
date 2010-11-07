@@ -32,6 +32,28 @@ describe VCR::Request do
     end
   end
 
+  describe 'uri normalization' do
+    def request(uri)
+      VCR::Request.new(:get, uri, '', {})
+    end
+
+    it 'adds port 80 to an http URI that lacks a port' do
+      request('http://example.com/foo').uri.should == 'http://example.com:80/foo'
+    end
+
+    it 'keeps the existing port for an http URI' do
+      request('http://example.com:8000/foo').uri.should == 'http://example.com:8000/foo'
+    end
+
+    it 'adds port 443 to an https URI that lacks a port' do
+      request('https://example.com/foo').uri.should == 'https://example.com:443/foo'
+    end
+
+    it 'keeps the existing port for an https URI' do
+      request('https://example.com:8000/foo').uri.should == 'https://example.com:8000/foo'
+    end
+  end
+
   describe '.from_net_http_request' do
     let(:net_http) { YAML.load(File.read(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/example_net_http.yml")) }
     let(:request)  { YAML.load(File.read(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/example_net_http_request.yml")) }
