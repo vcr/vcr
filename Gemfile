@@ -9,6 +9,10 @@ group :development do
     gem 'curb',             '~> 0.7.8'
     gem 'typhoeus', :git => 'git://github.com/myronmarston/typhoeus.git', :branch => 'vcr_changes'
   end
+
+  platforms :jruby do
+    gem 'jruby-openssl'
+  end
 end
 
 # Additional gems that are useful, but not required for development.
