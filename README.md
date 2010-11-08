@@ -9,7 +9,7 @@ Record your test suite's HTTP interactions and replay them during future test ru
 
     VCR.config do |c|
       c.cassette_library_dir = 'fixtures/vcr_cassettes'
-      c.http_stubbing_library = :fakeweb # or :webmock
+      c.stub_with :webmock # or :fakeweb
     end
 
     class VCRTest < Test::Unit::TestCase
@@ -37,6 +37,7 @@ maintenance) and accurate (the response from example.com will contain the same h
   * [HTTPClient](http://github.com/nahi/httpclient) (WebMock)
   * [em-http-request](http://github.com/igrigorik/em-http-request) (WebMock)
   * [Net::HTTP](http://www.ruby-doc.org/stdlib/libdoc/net/http/rdoc/index.html) (FakeWeb and WebMock)
+  * [Typhoeus](https://github.com/pauldix/typhoeus)
   * And of course any library built on Net::HTTP, such as [Mechanize](http://github.com/tenderlove/mechanize),
     [HTTParty](http://github.com/jnunemaker/httparty) or [Rest Client](http://github.com/archiloque/rest-client).
 * Request matching is configurable based on HTTP method, URI, host, path, body and headers.
@@ -47,7 +48,7 @@ maintenance) and accurate (the response from example.com will contain the same h
 * Disables all HTTP requests that you don't explicitly allow.
 * Simple cucumber integration is provided using tags.
 * Known to work well with many popular ruby libraries including RSpec 1 & 2, Cucumber, Test::Unit,
-  Capybara, Mechanize and Rest-Client.
+  Capybara, Mechanize, Rest-Client and HTTParty.
 * Extensively tested on 7 different ruby interpretters.
 
 ## Usage
@@ -71,6 +72,8 @@ If you find VCR useful, please recommend me on [working with rails](http://worki
 * [Chris Kampmeier](http://github.com/chrisk) for [FakeWeb](http://github.com/chrisk/fakeweb).
 * [Chris Young](http://github.com/chrisyoung) for [NetRecorder](http://github.com/chrisyoung/netrecorder),
   the inspiration for VCR.
+* [David Balatero](https://github.com/dbalatero) for help with [Typhoeus](https://github.com/pauldix/typhoeus)
+  support.
 
 Thanks also to the following people who have contributed patches or helpful suggestions:
 

@@ -8,6 +8,9 @@
 * Refactoring and code cleanup.
 * Fix InternetConnection.available? so that it memoizes correctly when a connection is not available.
 * Fix WebMock version checking to allow newly released 1.5.0 to be used without a warning.
+* Add support for [Typhoeus](https://github.com/pauldix/typhoeus).  Thanks to
+  [David Balatero](https://github.com/dbalatero) for making the necessary changes in Typhoeus
+  to support VCR.
 
 ## 1.2.0 (October 13, 2010)
 
