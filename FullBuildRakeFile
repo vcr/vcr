@@ -2,8 +2,21 @@
 # already being installed.  This must be able to run w/o bundled gems installed.
 
 desc "Run a full build: install necessary gems with bundler, runs specs, run cukes"
-task :build do
+task :build => :ensure_bundler_installed do
   sh "bundle install"
   sh "rake"
 end
 
+task :ensure_bundler_installed do
+  installed = begin
+    require 'rubygems'
+    require 'bundler'
+    true
+  rescue LoadError
+    false
+  end
+
+  unless installed
+    sh "gem install bundler"
+  end
+end
