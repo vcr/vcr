@@ -70,7 +70,7 @@ module VCR
       end
 
       raise ArgumentError.new("The http stubbing library is not configured.") if adapters.empty?
-      HttpStubbingAdapters::MultiObjectProxy.new(*adapters)
+      HttpStubbingAdapters::MultiObjectProxy.for(*adapters)
     end
   end
 
