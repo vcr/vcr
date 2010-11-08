@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
     'bundler'         => '~> 1.0.0',
     'rake'            => '~> 0.8.7',
 
-    'rspec'           => '~> 2.0.0',
+    'rspec'           => '~> 2.1.0',
     'cucumber'        => '~> 0.8.5',
     'aruba'           => '~> 0.2.1',
 
