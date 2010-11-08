@@ -14,10 +14,10 @@ end
 # Additional gems that are useful, but not required for development.
 group :extras do
   gem 'guard-rspec'
-  gem 'rb-fsevent'
 
   platforms :mri do
     gem 'rcov'
+    gem 'rb-fsevent'
   end
 
   platforms :mri_18 do
