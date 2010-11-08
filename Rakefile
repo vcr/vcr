@@ -23,9 +23,12 @@ task :cleanup_rcov_files do
 end
 
 permutations = {
-  'fakeweb' => %w( net/http ),
-  'webmock' => %w( net/http httpclient patron em-http-request curb )
+  'fakeweb'  => %w( net/http typhoeus ),
+  'typhoeus' => %w( typhoeus ),
+  'webmock'  => %w( net/http typhoeus httpclient patron em-http-request curb )
 }
+
+permutations.delete('typhoeus') if RUBY_INTERPRETER == :jruby
 
 require 'cucumber/rake/task'
 namespace :features do
@@ -35,6 +38,7 @@ namespace :features do
     namespace http_stubbing_adapter do
       http_libraries.each do |http_lib|
         next if RUBY_INTERPRETER != :mri && %w( patron em-http-request curb ).include?(http_lib)
+        next if RUBY_INTERPRETER == :jruby && http_lib == 'typhoeus'
 
         sanitized_http_lib = http_lib.gsub('/', '_')
         features_subtasks << "features:#{http_stubbing_adapter}:#{sanitized_http_lib}"
