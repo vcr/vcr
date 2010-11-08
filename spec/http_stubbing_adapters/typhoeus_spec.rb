@@ -24,5 +24,5 @@ describe VCR::HttpStubbingAdapters::Typhoeus do
       Typhoeus::VERSION = version
     end
   end
-end
+end unless RUBY_PLATFORM == 'java'
 

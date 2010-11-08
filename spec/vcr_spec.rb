@@ -115,7 +115,7 @@ describe VCR do
       VCR.instance_variable_set(:@http_stubbing_adapter, nil)
     end
 
-    it 'returns a multi object proxy for the configured stubbing libraries when multiple libs are configured' do
+    it 'returns a multi object proxy for the configured stubbing libraries when multiple libs are configured', :unless => RUBY_PLATFORM == 'java' do
       VCR::Config.stub_with :fakeweb, :typhoeus
       VCR.http_stubbing_adapter.proxied_objects.should == [
         VCR::HttpStubbingAdapters::FakeWeb,
@@ -125,7 +125,6 @@ describe VCR do
 
     {
       :fakeweb  => VCR::HttpStubbingAdapters::FakeWeb,
-      :typhoeus => VCR::HttpStubbingAdapters::Typhoeus,
       :webmock  => VCR::HttpStubbingAdapters::WebMock
     }.each do |symbol, klass|
       it "returns #{klass} for :#{symbol}" do
