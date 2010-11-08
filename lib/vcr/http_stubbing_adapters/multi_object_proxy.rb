@@ -25,7 +25,7 @@ module VCR
           return nil unless method_return_val_important?(name)
           return uniq_return_vals.first if uniq_return_vals.size == 1
 
-          raise "The proxied objects returned different values for calls to #{name}: #{uniq_return_vals.inspect}"
+          ::Kernel.raise "The proxied objects returned different values for calls to #{name}: #{uniq_return_vals.inspect}"
         end
 
         def method_return_val_important?(method_name)
