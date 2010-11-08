@@ -27,14 +27,14 @@ Gem::Specification.new do |s|
     'aruba'           => '~> 0.2.1',
 
     'fakeweb'         => '~> 1.3.0',
-    'webmock'         => ['>= 1.4.0', '< 1.6.0'],
+    'webmock'         => '>= 1.5.0',
 
     'httpclient'      => '~> 2.1.5.2',
 
     'timecop'         => '~> 0.3.5',
     'rack'            => '1.1.0'
-  }.each do |lib, *version|
-    s.add_development_dependency lib, *version
+  }.each do |lib, version|
+    s.add_development_dependency lib, version
   end
 
   {

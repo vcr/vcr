@@ -115,4 +115,4 @@ DEPENDENCIES
   timecop (~> 0.3.5)
   typhoeus!
   vcr!
-  webmock (>= 1.4.0, < 1.6.0)
+  webmock (>= 1.5.0)
