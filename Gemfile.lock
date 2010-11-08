@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/myronmarston/typhoeus.git
-  revision: ac92d55f7397ef0ee5c206f9ddbd1dc7639381e2
+  revision: 90fad2aa7e4bce1e730e6e4653c263ad4a1c373e
   branch: vcr_changes
   specs:
     typhoeus (0.1.31)
