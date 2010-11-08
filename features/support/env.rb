@@ -1,4 +1,4 @@
-$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../spec/support')
+$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../spec')
 
 if ENV['HTTP_STUBBING_ADAPTER'].to_s == ''
   ENV['HTTP_STUBBING_ADAPTER'] = 'fakeweb'
@@ -13,15 +13,14 @@ end
 # The HTTP library must be loaded before VCR since WebMock looks for the presence of the HTTB library class constant
 # to decide whether or not to hook into it.
 require ENV['HTTP_LIB']
-require 'http_library_adapters'
+require 'support/http_library_adapters'
 World(HTTP_LIBRARY_ADAPTERS[ENV['HTTP_LIB']])
 
 puts "\n\n---------------- Running features using #{ENV['HTTP_STUBBING_ADAPTER']} and #{ENV['HTTP_LIB']} -----------------\n"
 
 require 'vcr'
-require 'ruby_interpreter'
-require 'vcr_localhost_server'
-require 'fixnum_extension'
+require 'support/vcr_localhost_server'
+require 'support/fixnum_extension'
 
 require 'rubygems'
 require 'bundler'
