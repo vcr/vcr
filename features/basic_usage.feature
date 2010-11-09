@@ -22,7 +22,7 @@ Feature: basic usage
       """
       require 'vcr_cucumber_helpers'
 
-      sinatra_app(:port => 7777) do
+      start_sinatra_app(:port => 7777) do
         get('/') { ARGV[0] }
       end
 

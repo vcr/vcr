@@ -8,7 +8,7 @@ Feature: cassette_library_dir configuration option
       """
       require 'vcr_cucumber_helpers'
 
-      sinatra_app(:port => 7777) do
+      start_sinatra_app(:port => 7777) do
         get('/') { "Hello" }
       end
 

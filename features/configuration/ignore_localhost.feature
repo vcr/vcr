@@ -15,7 +15,7 @@ Feature: ignore_localhost configuration option
       require 'vcr_cucumber_helpers'
 
       response_count = 0
-      sinatra_app(:port => 7777) do
+      start_sinatra_app(:port => 7777) do
         get('/') { "Response #{response_count += 1}" }
       end
       """

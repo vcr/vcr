@@ -14,7 +14,7 @@ Before do
       include HTTP_LIBRARY_ADAPTERS[lib]
     end
 
-    def sinatra_app(options, &block)
+    def start_sinatra_app(options, &block)
       raise ArgumentError.new("You must pass a port") unless options[:port]
 
       require 'sinatra'
