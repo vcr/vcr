@@ -31,6 +31,8 @@ permutations = {
 permutations.delete('typhoeus') if RUBY_INTERPRETER == :jruby
 
 require 'cucumber/rake/task'
+Cucumber::Rake::Task.new
+
 namespace :features do
   permutations.each do |http_stubbing_adapter, http_libraries|
     features_subtasks = []
