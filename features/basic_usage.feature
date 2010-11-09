@@ -28,6 +28,9 @@ Feature: basic usage
 
       include_http_adapter_for("<http_lib>")
 
+      response_1 = make_http_request(:get, "http://localhost:7777/")
+      puts "The response for request 1 was: #{get_body_string(response_1)}"
+
       require 'vcr'
 
       VCR.config do |c|
@@ -36,16 +39,20 @@ Feature: basic usage
       end
 
       VCR.use_cassette('example', :record => :new_episodes) do
-        response = make_http_request(:get, "http://localhost:7777/")
-        puts "The response body was: #{get_body_string(response)}"
+        response_2 = make_http_request(:get, "http://localhost:7777/")
+        puts "The response for request 2 was: #{get_body_string(response_2)}"
       end
       """
     When I run "ruby vcr_example.rb 'Hello World'"
-    Then the output should contain "The response body was: Hello World"
+    Then the output should contain each of the following:
+      | The response for request 1 was: Hello World |
+      | The response for request 2 was: Hello World |
      And the file "vcr_cassettes/example.yml" should contain "body: Hello World"
 
     When I run "ruby vcr_example.rb 'Goodbye World'"
-    Then the output should contain "The response body was: Hello World"
+    Then the output should contain each of the following:
+      | The response for request 1 was: Goodbye World |
+      | The response for request 2 was: Hello World   |
      And the file "vcr_cassettes/example.yml" should contain "body: Hello World"
 
    Examples:

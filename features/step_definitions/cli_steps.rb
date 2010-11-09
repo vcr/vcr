@@ -14,3 +14,9 @@ Then /^it should (pass|fail) with "([^"]*)"$/ do |pass_fail, partial_output|
   assert_exit_status_and_partial_output(pass_fail == 'pass', partial_output)
 end
 
+Then /^the output should contain each of the following:$/ do |table|
+  table.raw.flatten.each do |string|
+    assert_partial_output(string)
+  end
+end
+
