@@ -1,6 +1,5 @@
 require 'rack'
 require 'rack/handler/webrick'
-require 'support/ruby_interpreter'
 
 # The code for this is inspired by Capybara's server:
 #   http://github.com/jnicklas/capybara/blob/0.3.9/lib/capybara/server.rb
@@ -54,9 +53,7 @@ module VCR
     end
 
     def concurrently
-      if RUBY_INTERPRETER == :mri
-        # Patron times out when the server is running in a separate thread in the same process,
-        # so use a separate process.
+      if should_use_subprocess?
         pid = Process.fork do
           yield
           exit # manually exit; otherwise this sub-process will re-run the specs that haven't run yet.
@@ -76,6 +73,13 @@ module VCR
         # so we're just using a thread for now.
         Thread.new { yield }
       end
+    end
+
+    def should_use_subprocess?
+      # Patron times out when the server is running in a separate thread in the same process,
+      # so use a separate process.
+      # In all other cases, we can use a thread (it's faster!)
+      defined?(Patron)
     end
 
     def wait_until(timeout, error_message, &block)

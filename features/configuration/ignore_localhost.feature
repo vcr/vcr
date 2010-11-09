@@ -23,8 +23,9 @@ Feature: ignore_localhost configuration option
   Scenario Outline: localhost requests are not treated differently by default and when the setting is false
     Given a file named "localhost_not_ignored.rb" with:
       """
-      require 'sinatra_app.rb'
+      require 'vcr_cucumber_helpers'
       include_http_adapter_for("<http_lib>")
+      require 'sinatra_app.rb'
 
       require 'vcr'
 
@@ -64,8 +65,9 @@ Feature: ignore_localhost configuration option
   Scenario Outline: localhost requests are allowed and not recorded when ignore_localhost = true
     Given a file named "ignore_localhost_true.rb" with:
       """
-      require 'sinatra_app.rb'
+      require 'vcr_cucumber_helpers'
       include_http_adapter_for("<http_lib>")
+      require 'sinatra_app.rb'
 
       require 'vcr'
 
@@ -92,7 +94,7 @@ Feature: ignore_localhost configuration option
     And the file "cassettes/localhost.yml" should not exist
 
     Examples:
-      | stub_with | http_lib        |
+      | stub_with | http_lib         |
       | :fakeweb   | net/http        |
       | :webmock   | net/http        |
       | :webmock   | httpclient      |

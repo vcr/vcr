@@ -21,12 +21,11 @@ Feature: basic usage
     Given a file named "vcr_example.rb" with:
       """
       require 'vcr_cucumber_helpers'
+      include_http_adapter_for("<http_lib>")
 
       start_sinatra_app(:port => 7777) do
         get('/') { ARGV[0] }
       end
-
-      include_http_adapter_for("<http_lib>")
 
       response_1 = make_http_request(:get, "http://localhost:7777/")
       puts "The response for request 1 was: #{get_body_string(response_1)}"
