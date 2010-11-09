@@ -30,7 +30,7 @@ Feature: ignore_localhost configuration option
 
       VCR.config do |c|
         c.cassette_library_dir = 'cassettes'
-        c.stub_with :<stub_with>
+        c.stub_with <stub_with>
         <additional_config>
       end
 
@@ -46,20 +46,20 @@ Feature: ignore_localhost configuration option
 
     Examples:
       | stub_with | http_lib        | error                              | additional_config          |
-      | fakeweb   | net/http        | Real HTTP connections are disabled |                            |
-      | fakeweb   | net/http        | Real HTTP connections are disabled | c.ignore_localhost = false |
-      | webmock   | net/http        | Real HTTP connections are disabled |                            |
-      | webmock   | net/http        | Real HTTP connections are disabled | c.ignore_localhost = false |
-      | webmock   | httpclient      | Real HTTP connections are disabled |                            |
-      | webmock   | httpclient      | Real HTTP connections are disabled | c.ignore_localhost = false |
-      | webmock   | curb            | Real HTTP connections are disabled |                            |
-      | webmock   | curb            | Real HTTP connections are disabled | c.ignore_localhost = false |
-      | webmock   | patron          | Real HTTP connections are disabled |                            |
-      | webmock   | patron          | Real HTTP connections are disabled | c.ignore_localhost = false |
-      | webmock   | em-http-request | Real HTTP connections are disabled |                            |
-      | webmock   | em-http-request | Real HTTP connections are disabled | c.ignore_localhost = false |
-      | typhoeus  | typhoeus        | Real HTTP requests are not allowed |                            |
-      | typhoeus  | typhoeus        | Real HTTP requests are not allowed | c.ignore_localhost = false |
+      | :fakeweb   | net/http        | Real HTTP connections are disabled |                            |
+      | :fakeweb   | net/http        | Real HTTP connections are disabled | c.ignore_localhost = false |
+      | :webmock   | net/http        | Real HTTP connections are disabled |                            |
+      | :webmock   | net/http        | Real HTTP connections are disabled | c.ignore_localhost = false |
+      | :webmock   | httpclient      | Real HTTP connections are disabled |                            |
+      | :webmock   | httpclient      | Real HTTP connections are disabled | c.ignore_localhost = false |
+      | :webmock   | curb            | Real HTTP connections are disabled |                            |
+      | :webmock   | curb            | Real HTTP connections are disabled | c.ignore_localhost = false |
+      | :webmock   | patron          | Real HTTP connections are disabled |                            |
+      | :webmock   | patron          | Real HTTP connections are disabled | c.ignore_localhost = false |
+      | :webmock   | em-http-request | Real HTTP connections are disabled |                            |
+      | :webmock   | em-http-request | Real HTTP connections are disabled | c.ignore_localhost = false |
+      | :typhoeus  | typhoeus        | Real HTTP requests are not allowed |                            |
+      | :typhoeus  | typhoeus        | Real HTTP requests are not allowed | c.ignore_localhost = false |
 
   Scenario Outline: localhost requests are allowed and not recorded when ignore_localhost = true
     Given a file named "ignore_localhost_true.rb" with:
@@ -71,7 +71,7 @@ Feature: ignore_localhost configuration option
 
       VCR.config do |c|
         c.cassette_library_dir = 'cassettes'
-        c.stub_with :<stub_with>
+        c.stub_with <stub_with>
         c.ignore_localhost = true
       end
 
@@ -93,11 +93,11 @@ Feature: ignore_localhost configuration option
 
     Examples:
       | stub_with | http_lib        |
-      | fakeweb   | net/http        |
-      | webmock   | net/http        |
-      | webmock   | httpclient      |
-      | webmock   | patron          |
-      | webmock   | curb            |
-      | webmock   | em-http-request |
-      | typhoeus  | typhoeus        |
+      | :fakeweb   | net/http        |
+      | :webmock   | net/http        |
+      | :webmock   | httpclient      |
+      | :webmock   | patron          |
+      | :webmock   | curb            |
+      | :webmock   | em-http-request |
+      | :typhoeus  | typhoeus        |
 

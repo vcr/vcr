@@ -34,7 +34,7 @@ Feature: basic usage
       require 'vcr'
 
       VCR.config do |c|
-        c.stub_with :<stub_with>
+        c.stub_with <stub_with>
         c.cassette_library_dir = 'vcr_cassettes'
       end
 
@@ -56,12 +56,12 @@ Feature: basic usage
      And the file "vcr_cassettes/example.yml" should contain "body: Hello World"
 
    Examples:
-      | stub_with | http_lib        |
-      | fakeweb   | net/http        |
-      | webmock   | net/http        |
-      | webmock   | httpclient      |
-      | webmock   | patron          |
-      | webmock   | curb            |
-      | webmock   | em-http-request |
-      | typhoeus  | typhoeus        |
+      | stub_with  | http_lib        |
+      | :fakeweb   | net/http        |
+      | :webmock   | net/http        |
+      | :webmock   | httpclient      |
+      | :webmock   | patron          |
+      | :webmock   | curb            |
+      | :webmock   | em-http-request |
+      | :typhoeus  | typhoeus        |
 
