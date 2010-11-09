@@ -22,8 +22,8 @@ module VCR
 
     attr_reader :port
 
-    def initialize(rack_app)
-      @port = find_available_port
+    def initialize(rack_app, port = nil)
+      @port = port || find_available_port
       @rack_app = rack_app
       concurrently { boot }
       wait_until(10, "Boot failed.") { booted? }

@@ -32,7 +32,8 @@ Gem::Specification.new do |s|
     'httpclient'      => '~> 2.1.5.2',
 
     'timecop'         => '~> 0.3.5',
-    'rack'            => '1.1.0'
+    'rack'            => '1.1.0',
+    'sinatra'         => '~> 1.1.0'
   }.each do |lib, version|
     s.add_development_dependency lib, version
   end
