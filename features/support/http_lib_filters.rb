@@ -8,13 +8,18 @@ end
 if RUBY_VERSION == '1.9.2'
   # For some reason, the local sinatra server locks up and never exits
   # when using patron on 1.9.2, even though it exits fine during the specs.
-  def http_lib_unsupported?(lib)
-    lib == 'patron'
-  end
+  UNSUPPORTED_HTTP_LIBS = %w[ patron ]
+elsif RUBY_PLATFORM == 'java'
+  # These gems have C extensions and can't install on JRuby.
+  UNSUPPORTED_HTTP_LIBS = %w[ typhoeus patron curb em-http-request ]
+end
+
+if defined?(UNSUPPORTED_HTTP_LIBS)
+  UNSUPPORTED_HTTP_LIB_REGEX = Regexp.union(*UNSUPPORTED_HTTP_LIBS)
 
   # Filter out example rows that use libraries that are not supported on the current ruby interpreter
   Around do |scenario, block|
-    unless scenario.respond_to?(:cell_values) && scenario.cell_values.any? { |v| http_lib_unsupported?(v) }
+    unless scenario.respond_to?(:cell_values) && scenario.cell_values.any? { |v| v =~ UNSUPPORTED_HTTP_LIB_REGEX }
       block.call
     end
   end
