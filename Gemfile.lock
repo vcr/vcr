@@ -8,7 +8,10 @@ GEM
   specs:
     addressable (2.2.2)
     archive-tar-minitar (0.5.2)
-    aruba (0.2.1)
+    aruba (0.2.4)
+      background_process
+      cucumber (~> 0.9.3)
+    background_process (1.2)
     bouncy-castle-java (1.5.0145.2)
     builder (2.1.2)
     columnize (0.3.1)
