@@ -46,7 +46,7 @@ Feature: ignore_localhost configuration option
      And the file "cassettes/localhost.yml" should contain "body: Response 1"
 
     Examples:
-      | stub_with | http_lib        | error                              | additional_config          |
+      | stub_with  | http_lib        | error                              | additional_config          |
       | :fakeweb   | net/http        | Real HTTP connections are disabled |                            |
       | :fakeweb   | net/http        | Real HTTP connections are disabled | c.ignore_localhost = false |
       | :webmock   | net/http        | Real HTTP connections are disabled |                            |
@@ -94,7 +94,7 @@ Feature: ignore_localhost configuration option
     And the file "cassettes/localhost.yml" should not exist
 
     Examples:
-      | stub_with | http_lib         |
+      | stub_with  | http_lib        |
       | :fakeweb   | net/http        |
       | :webmock   | net/http        |
       | :webmock   | httpclient      |
