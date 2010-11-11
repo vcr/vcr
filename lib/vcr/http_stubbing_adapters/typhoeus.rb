@@ -6,8 +6,8 @@ module VCR
       include VCR::HttpStubbingAdapters::Common
       extend self
 
-      MINIMUM_VERSION = '0.1.31'
-      MAXIMUM_VERSION = '0.1'
+      MINIMUM_VERSION = '0.2.0'
+      MAXIMUM_VERSION = '0.2'
 
       def http_connections_allowed=(value)
         ::Typhoeus::Hydra.allow_net_connect = value
