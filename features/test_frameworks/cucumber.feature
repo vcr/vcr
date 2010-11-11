@@ -28,7 +28,7 @@ Feature: Usage with cucumber
 
       if ENV['WITH_SERVER'] == 'true'
         start_sinatra_app(:port => 7777) do
-          get('/*') { "Hello #{params[:splat]}" }
+          get('/:path') { "Hello #{params[:path]}" }
         end
       end
 
