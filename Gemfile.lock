@@ -83,7 +83,7 @@ GEM
     thor (0.14.4)
     timecop (0.3.5)
     typhoeus (0.2.0)
-    webmock (1.5.0)
+    webmock (1.6.0)
       addressable (>= 2.2.2)
       crack (>= 0.1.7)
 
@@ -113,4 +113,4 @@ DEPENDENCIES
   timecop (~> 0.3.5)
   typhoeus (~> 0.2.0)
   vcr!
-  webmock (>= 1.5.0)
+  webmock (~> 1.6.0)
