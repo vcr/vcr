@@ -18,7 +18,7 @@ def webmock
   WebMock.stub_request(:get, 'http://example.com').to_return(:body => 'Hello')
   yield
 ensure
-  WebMock.reset_webmock
+  WebMock.reset!
 end
 
 def perform_benchmark(name)

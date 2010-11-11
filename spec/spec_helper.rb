@@ -28,7 +28,7 @@ RSpec.configure do |config|
     VCR::Config.stub_with :fakeweb
 
     WebMock.allow_net_connect!
-    WebMock.reset_webmock
+    WebMock.reset!
 
     FakeWeb.allow_net_connect = true
     FakeWeb.clean_registry
