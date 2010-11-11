@@ -37,11 +37,11 @@ module VCR
       end
 
       def create_stubs_checkpoint(checkpoint_name)
-        checkpoints[checkpoint_name] = ::WebMock::RequestRegistry.instance.request_stubs.dup
+        checkpoints[checkpoint_name] = ::WebMock::StubRegistry.instance.request_stubs.dup
       end
 
       def restore_stubs_checkpoint(checkpoint_name)
-        ::WebMock::RequestRegistry.instance.request_stubs = checkpoints.delete(checkpoint_name)
+        ::WebMock::StubRegistry.instance.request_stubs = checkpoints.delete(checkpoint_name)
       end
 
       private
