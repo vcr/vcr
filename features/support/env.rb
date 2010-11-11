@@ -22,4 +22,9 @@ if RUBY_VERSION > '1.9.1'
   Before do
     set_env('RUBYOPT', '-I.:../../lib')
   end
+elsif RUBY_PLATFORM == 'java'
+  Before do
+    set_env('RUBYOPT', '-I../../lib -rubygems')
+  end
 end
+
