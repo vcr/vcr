@@ -11,11 +11,13 @@ module VCR
       def self.add_vcr_info_to_exception_message(exception_klass)
         exception_klass.class_eval do
           def message
-            super + ".  You can use VCR to automatically record this request and replay it later.  " +
-            "For more details, visit the VCR wiki at: http://github.com/myronmarston/vcr/wiki"
+            super + ".  " + VCR::HttpStubbingAdapters::Common::RECORDING_INSTRUCTIONS
           end
         end
       end
+
+      RECORDING_INSTRUCTIONS = "You can use VCR to automatically record this request and replay it later.  " +
+                               "For more details, visit the VCR wiki at: http://github.com/myronmarston/vcr/wiki"
 
       def check_version!
         version_too_low, version_too_high = compare_version
