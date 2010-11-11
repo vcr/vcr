@@ -1,6 +1,7 @@
 # This file gets symlinked into the tmp/aruba directory before
 # each scenario so that it is available to be required in them.
 $LOAD_PATH.unshift '../../spec' unless $LOAD_PATH.include?('../../spec')
+$LOAD_PATH.unshift '../../lib'  unless $LOAD_PATH.include?('../../lib')
 
 def include_http_adapter_for(lib)
   require 'support/http_library_adapters'
