@@ -1,8 +1,8 @@
 # Changelog
 
-## In git
+## 1.3.0 (November 11, 2010)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.2.0...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.2.0...v.1.3.0)
 
 * Moved documentation from README to [Wiki](http://github.com/myronmarston/vcr/wiki).
 * Refactoring and code cleanup.
