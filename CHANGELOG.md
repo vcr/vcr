@@ -2,13 +2,13 @@
 
 ## 1.3.1 (November 11, 2010)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.3.0...v.1.3.1)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.3.0...v1.3.1)
 
 * Update WebMock adapter to work with (and require) newly released WebMock 1.6.0.
 
 ## 1.3.0 (November 11, 2010)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.2.0...v.1.3.0)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.2.0...v1.3.0)
 
 * Moved documentation from README to [Wiki](http://github.com/myronmarston/vcr/wiki).
 * Refactoring and code cleanup.
