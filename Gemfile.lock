@@ -82,6 +82,7 @@ GEM
       ruby-debug-base19 (>= 0.11.19)
     ruby_core_source (0.1.4)
       archive-tar-minitar (>= 0.5.2)
+    shoulda (2.9.2)
     sinatra (1.1.0)
       rack (~> 1.1)
       tilt (~> 1.1)
@@ -117,6 +118,7 @@ DEPENDENCIES
   ruby-debug
   ruby-debug-base19 (= 0.11.23)
   ruby-debug19
+  shoulda
   sinatra (~> 1.1.0)
   timecop (~> 0.3.5)
   typhoeus (~> 0.2.0)

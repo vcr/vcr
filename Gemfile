@@ -13,6 +13,8 @@ group :development do
   platforms :jruby do
     gem 'jruby-openssl'
   end
+
+  gem 'shoulda'
 end
 
 # Additional gems that are useful, but not required for development.
