@@ -8,9 +8,9 @@ describe VCR::HttpStubbingAdapters::WebMock do
     [:method, :uri, :host, :path, :body, :headers]
 
   it_performs('version checking',
-    :valid    => %w[ 1.4.0 1.4.99 1.5.0 1.5.99 ],
+    :valid    => %w[ 1.6.0 1.6.99 ],
     :too_low  => %w[ 0.9.9 0.9.10 0.1.30 1.0.30 1.2.9 1.3.9 ],
-    :too_high => %w[ 1.6.0 1.10.0 2.0.0 ]
+    :too_high => %w[ 1.7.0 1.10.0 2.0.0 ]
   ) do
     def stub_version(version)
       WebMock.stub(:version).and_return(version)
