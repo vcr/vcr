@@ -9,7 +9,7 @@ module VCR
 
     VALID_RECORD_MODES = [:all, :none, :new_episodes].freeze
 
-    attr_reader :name, :record_mode, :match_requests_on
+    attr_reader :name, :record_mode, :match_requests_on, :erb, :re_record_interval
 
     def initialize(name, options = {})
       options = VCR::Config.default_cassette_options.merge(options)
