@@ -2,20 +2,38 @@ require 'spec_helper'
 
 shared_examples_for "a header normalizer" do
   let(:instance) do
-    with_headers('Some_Header' => 'value1', 'aNother' => ['a', 'b'], 'third' => [], 'FOURTH' => nil)
+    with_headers('Some_Header' => 'value1', 'aNother' => ['a', 'b'], 'third' => [], 'fourth' => nil)
   end
 
   it 'normalizes the hash to lower case keys and arrays of values' do
-    instance.headers.should == {
-      'some_header' => ['value1'],
-      'another'     => ['a', 'b'],
-      'third'       => [],
-      'fourth'      => []
-    }
+    instance.headers['some_header'].should == ['value1']
+    instance.headers['another'].should == ['a', 'b']
   end
 
-  it 'set nil header to an empty hash' do
-    with_headers(nil).headers.should == {}
+  it 'removes empty headers' do
+    instance.headers.should_not have_key('third')
+    instance.headers.should_not have_key('fourth')
+  end
+
+  it 'filters out unimportant default values set by the HTTP library' do
+    instance = with_headers('accept' => ['*/*'], 'connection' => 'close', 'http-user' => ['foo'], 'expect' => ['', 'bar'])
+    instance.headers.should == { 'http-user' => ['foo'], 'expect' => ['bar'] }
+  end
+
+  it 'sets empty hash header to nil' do
+    with_headers({}).headers.should be_nil
+  end
+end
+
+shared_examples_for "a body normalizer" do
+  it 'sets empty string to nil' do
+    instance('').body.should be_nil
+  end
+
+  it "ensures the body is serialized to yaml as a raw string" do
+    body = "My String"
+    body.instance_variable_set(:@foo, 7)
+    instance(body).body.to_yaml.should == "My String".to_yaml
   end
 end
 
@@ -67,7 +85,7 @@ describe VCR::Request do
     it            { should be_instance_of(VCR::Request) }
     its(:method)  { should == :post  }
     its(:body)    { should == 'id=7'  }
-    its(:headers) { should == { "accept" => ["*/*"], "content-type" => ["application/x-www-form-urlencoded"] } }
+    its(:headers) { should == { "content-type" => ["application/x-www-form-urlencoded"] } }
 
     it 'sets the uri using the http_stubbing_adapter.request_uri' do
       VCR.http_stubbing_adapter.should_receive(:request_uri).with(net_http, request).and_return('foo/bar')
@@ -78,6 +96,12 @@ describe VCR::Request do
   it_behaves_like 'a header normalizer' do
     def with_headers(headers)
       described_class.new(:get, 'http://example.com/', nil, headers)
+    end
+  end
+
+  it_behaves_like 'a body normalizer' do
+    def instance(body)
+      described_class.new(:get, 'http://example.com/', body, {})
     end
   end
 end
@@ -91,6 +115,15 @@ describe VCR::ResponseStatus do
     its(:code)    { should == 200 }
     its(:message) { should == 'OK' }
   end
+
+  it 'chomps leading and trailing spaces on the status message' do
+    described_class.new(200, ' OK ').message.should == 'OK'
+  end
+
+  it 'sets status message to nil when it is the empty string' do
+    described_class.new(200, '').message.should be_nil
+    described_class.new(200, '  ').message.should be_nil
+  end
 end
 
 describe VCR::Response do
@@ -103,7 +136,6 @@ describe VCR::Response do
     its(:http_version) { should == '1.1' }
     its(:headers)      { should == {
       "last-modified"  => ['Tue, 15 Nov 2005 13:24:10 GMT'],
-      "connection"     => ['close'],
       "etag"           => ["\"24ec5-1b6-4059a80bfd280\""],
       "content-type"   => ["text/html; charset=UTF-8"],
       "date"           => ['Wed, 31 Mar 2010 02:43:26 GMT'],
@@ -125,11 +157,10 @@ describe VCR::Response do
     end
   end
 
-  it "ensures the body is serialized to yaml as a raw string" do
-    body = "My String"
-    body.instance_variable_set(:@foo, 7)
-    instance = described_class.new(:status, {}, body, :version)
-    instance.body.to_yaml.should == "My String".to_yaml
+  it_behaves_like 'a body normalizer' do
+    def instance(body)
+      described_class.new(:status, {}, body, '1.1')
+    end
   end
 end
 

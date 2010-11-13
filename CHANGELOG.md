@@ -1,5 +1,16 @@
 # Changelog
 
+## In git
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.3.1...master)
+
+* Fix serialized structs so that they are normalized andthey will be the same
+  regardless of which HTTP library made the request.
+  * Status "OK " => "OK"
+  * Body '' => nil
+  * Headers {} => nil
+  * Remove extraneous headers added by the HTTP lib (i.e. Typhoeus user agent)
+
 ## 1.3.1 (November 11, 2010)
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.3.0...v1.3.1)

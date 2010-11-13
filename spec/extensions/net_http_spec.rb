@@ -43,7 +43,7 @@ describe "Net::HTTP Extensions" do
         interaction.request.headers.should_not have_key('content-type')
         interaction.request.headers.should_not have_key('host')
       end
-      Net::HTTP.new('example.com', 80).send_request('POST', '/', '', {})
+      Net::HTTP.new('example.com', 80).send_request('POST', '/', '', { 'x-http-user' => 'me' })
     end
 
     it "records headers for which Net::HTTP usually sets defaults when the user manually sets their values" do
