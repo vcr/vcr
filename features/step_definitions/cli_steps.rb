@@ -15,15 +15,18 @@ module VCRHelpers
     '    http_version'
   ].uniq)
 
-  def normalize_cassette_structs(content)
-    if RUBY_VERSION == '1.9.1'
-      # Ruby 1.9.1 serializes YAML a bit different, so
-      # we deal with that difference and add leading colons here.
-      content = content.gsub(YAML_REGEX_FOR_1_9_1) do |match|
-        match.sub(/^ +/, '\0:')
-      end
-    end
+  def normalize_cassette_yaml(content)
+    return content unless RUBY_VERSION == '1.9.1'
 
+    # Ruby 1.9.1 serializes YAML a bit different, so
+    # we deal with that difference and add leading colons here.
+    content = content.gsub(YAML_REGEX_FOR_1_9_1) do |match|
+      match.sub(/^ +/, '\0:')
+    end
+  end
+
+  def normalize_cassette_structs(content)
+    content = normalize_cassette_yaml(content)
     structs = YAML.load(content)
 
     # Remove non-deterministic headers
@@ -61,5 +64,9 @@ end
 Then /^the file "([^"]*)" should contain YAML like:$/ do |file_name, expected_content|
   actual_content = in_current_dir { File.read(file_name) }
   normalize_cassette_structs(actual_content).should == normalize_cassette_structs(expected_content)
+end
+
+Given /^a previously recorded cassette file "([^"]*)" with:$/ do |file_name, content|
+  create_file(file_name, normalize_cassette_yaml(content))
 end
 
