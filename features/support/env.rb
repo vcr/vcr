@@ -13,6 +13,6 @@ end
 
 if RUBY_VERSION > '1.9.1'
   Before do
-    set_env('RUBYOPT', '-I.')
+    set_env('RUBYOPT', '-I.:../../lib')
   end
 end
