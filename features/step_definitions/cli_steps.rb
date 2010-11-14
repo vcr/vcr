@@ -70,3 +70,9 @@ Given /^a previously recorded cassette file "([^"]*)" with:$/ do |file_name, con
   create_file(file_name, normalize_cassette_yaml(content))
 end
 
+Then /^the file "([^"]*)" should contain each of these:$/ do |file_name, table|
+  table.raw.flatten.each do |string|
+    check_file_content(file_name, string, true)
+  end
+end
+
