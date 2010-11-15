@@ -5,7 +5,7 @@ Cucumber::Ast::OutlineTable::ExampleRow.class_eval do
   end
 end
 
-if RUBY_VERSION == '1.9.2'
+if RUBY_VERSION == '1.9.2' || defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx'
   # For some reason, the local sinatra server locks up and never exits
   # when using patron on 1.9.2, even though it exits fine during the specs.
   UNSUPPORTED_HTTP_LIBS = %w[ patron ]
