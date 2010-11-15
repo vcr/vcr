@@ -73,8 +73,7 @@ Feature: stub_with configuration option
         get('/') { ARGV[0] }
       end
 
-      response_1 = make_http_request(:get, "http://localhost:7777/")
-      puts "The response for request 1 was: #{get_body_string(response_1)}"
+      puts "The response for request 1 was: #{get_response(:get, "http://localhost:7777/")}"
 
       require 'vcr'
 
@@ -84,8 +83,7 @@ Feature: stub_with configuration option
       end
 
       VCR.use_cassette('example', :record => :new_episodes) do
-        response_2 = make_http_request(:get, "http://localhost:7777/")
-        puts "The response for request 2 was: #{get_body_string(response_2)}"
+        puts "The response for request 2 was: #{get_response(:get, "http://localhost:7777/")}"
       end
       """
     When I run "ruby stubbing_http_lib_combo.rb 'Hello World'"

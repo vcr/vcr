@@ -36,10 +36,10 @@ Feature: ignore_localhost configuration option
       end
 
       VCR.use_cassette('localhost', :record => :new_episodes) do
-        make_http_request(:get, "http://localhost:7777/")
+        get_response(:get, "http://localhost:7777/")
       end
 
-      make_http_request(:get, "http://localhost:7777/")
+      get_response(:get, "http://localhost:7777/")
       """
     When I run "ruby localhost_not_ignored.rb"
     Then it should fail with "<error>"
@@ -78,12 +78,10 @@ Feature: ignore_localhost configuration option
       end
 
       VCR.use_cassette('localhost', :record => :new_episodes) do
-        response = make_http_request(:get, "http://localhost:7777/")
-        puts get_body_string(response)
+        puts get_response(:get, "http://localhost:7777/")
       end
 
-      response = make_http_request(:get, "http://localhost:7777/")
-      puts get_body_string(response)
+      puts get_response(:get, "http://localhost:7777/")
       """
     When I run "ruby ignore_localhost_true.rb"
     Then it should pass with:
