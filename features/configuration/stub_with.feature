@@ -110,6 +110,7 @@ Feature: stub_with configuration option
       | :webmock   | em-http-request |
       | :typhoeus  | typhoeus        |
 
+  @exclude-jruby
   Scenario Outline: Use Typhoeus in combination with FakeWeb or WebMock
     Given a file named "stub_with_multiple.rb" with:
       """
