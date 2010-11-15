@@ -52,6 +52,7 @@ GEM
     linecache (0.43)
     linecache19 (0.5.11)
       ruby_core_source (>= 0.1.4)
+    mime-types (1.16)
     open_gem (1.4.2)
       launchy (~> 0.3.5)
     patron (0.4.9)
@@ -59,6 +60,12 @@ GEM
     rake (0.8.7)
     rb-fsevent (0.3.6)
     rcov (0.9.9)
+    relish (0.1.1)
+      archive-tar-minitar (~> 0.5.2)
+      json (~> 1.4.6)
+      rest-client (~> 1.6.1)
+    rest-client (1.6.1)
+      mime-types (>= 1.16)
     rspec (2.1.0)
       rspec-core (~> 2.1.0)
       rspec-expectations (~> 2.1.0)
@@ -114,6 +121,7 @@ DEPENDENCIES
   rake (~> 0.8.7)
   rb-fsevent
   rcov
+  relish
   rspec (~> 2.1.0)
   ruby-debug
   ruby-debug-base19 (= 0.11.23)

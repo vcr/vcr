@@ -20,6 +20,7 @@ end
 # Additional gems that are useful, but not required for development.
 group :extras do
   gem 'guard-rspec'
+  gem 'relish'
 
   platforms :mri do
     gem 'rcov'
