@@ -3,6 +3,15 @@
 $LOAD_PATH.unshift '../../spec' unless $LOAD_PATH.include?('../../spec')
 $LOAD_PATH.unshift '../../lib'  unless $LOAD_PATH.include?('../../lib')
 
+RUNNING_UNDER_ARUBA = File.dirname(__FILE__) == '.' || File.dirname(__FILE__) =~ /aruba/
+
+require 'support/fixnum_extension' if RUNNING_UNDER_ARUBA
+
+if ENV['DAYS_PASSED']
+  require 'timecop'
+  Timecop.travel(Time.now + ENV['DAYS_PASSED'].to_i.days)
+end
+
 def include_http_adapter_for(lib)
   require 'support/http_library_adapters'
   require lib

@@ -76,3 +76,7 @@ Then /^the file "([^"]*)" should contain each of these:$/ do |file_name, table|
   end
 end
 
+Given /^(\d+) days have passed since the cassette was recorded$/ do |day_count|
+  set_env('DAYS_PASSED', day_count)
+end
+
