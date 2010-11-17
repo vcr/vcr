@@ -75,8 +75,8 @@ Feature: Request matching
       end
 
       VCR.use_cassette('example', :record => :none) do
-        puts get_response(:get, 'http://example.com/foo')
-        puts get_response(:get, 'http://example.com/foo')
+        puts response_body_for(:get, 'http://example.com/foo')
+        puts response_body_for(:get, 'http://example.com/foo')
       end
       """
     When I run "ruby rotate_responses.rb"
@@ -144,8 +144,8 @@ Feature: Request matching
       end
 
       VCR.use_cassette('example', :record => :none, :match_requests_on => [:host, :path]) do
-        puts get_response(:post, "http://foo.com/bar?date=#{Date.today.to_s}")
-        puts get_response(:put,  "http://bar.com/foo?date=#{Date.today.to_s}")
+        puts response_body_for(:post, "http://foo.com/bar?date=#{Date.today.to_s}")
+        puts response_body_for(:put,  "http://bar.com/foo?date=#{Date.today.to_s}")
       end
       """
     When I run "ruby host_path_matching.rb"
@@ -217,8 +217,8 @@ Feature: Request matching
       end
 
       VCR.use_cassette('example', :record => :none, :match_requests_on => [:method, :uri, :body]) do
-        puts get_response(:post, "http://example.com/", 'a=2')
-        puts get_response(:post, "http://example.com/", 'a=1')
+        puts response_body_for(:post, "http://example.com/", 'a=2')
+        puts response_body_for(:post, "http://example.com/", 'a=1')
       end
       """
     When I run "ruby body_matching.rb"
@@ -289,8 +289,8 @@ Feature: Request matching
       end
 
       VCR.use_cassette('example', :record => :none, :match_requests_on => [:method, :uri, :headers]) do
-        puts get_response(:get, "http://example.com/dashboard", nil, 'X-User-Id' => '42')
-        puts get_response(:get, "http://example.com/dashboard", nil, 'X-User-Id' => '17')
+        puts response_body_for(:get, "http://example.com/dashboard", nil, 'X-User-Id' => '42')
+        puts response_body_for(:get, "http://example.com/dashboard", nil, 'X-User-Id' => '17')
       end
       """
     When I run "ruby header_matching.rb"
@@ -357,8 +357,8 @@ Feature: Request matching
       end
 
       VCR.use_cassette('example', :record => :none) do
-        puts get_response(:get, "http://foo.com/bar?date=#{Date.today.to_s}")
-        puts get_response(:get, "http://bar.com/foo?date=#{Date.today.to_s}")
+        puts response_body_for(:get, "http://foo.com/bar?date=#{Date.today.to_s}")
+        puts response_body_for(:get, "http://bar.com/foo?date=#{Date.today.to_s}")
       end
       """
     When I run "ruby uri_regex_matching.rb"

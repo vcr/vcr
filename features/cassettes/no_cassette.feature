@@ -19,7 +19,7 @@ Feature: Error for HTTP request made when no cassette is in use
         c.cassette_library_dir = 'cassettes'
       end
 
-      get_response(:get, 'http://example.com/')
+      response_body_for(:get, 'http://example.com/')
       """
     When I run "ruby no_cassette_error.rb"
     Then it should fail with "<error>"

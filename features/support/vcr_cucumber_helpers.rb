@@ -18,7 +18,7 @@ def include_http_adapter_for(lib)
   include HTTP_LIBRARY_ADAPTERS[lib]
 end
 
-def get_response(*args)
+def response_body_for(*args)
   get_body_string(make_http_request(*args))
 end
 
