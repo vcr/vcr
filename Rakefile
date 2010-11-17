@@ -26,8 +26,7 @@ task :default => [:spec, :cucumber]
 
 desc "Push cukes to relishapp using the relish-client-gem"
 task :relish do
-  require 'vcr/version'
-  sh "relish push vcr -v #{VCR.version}"
+  sh "relish push vcr"
 end
 
 task :release => :relish
