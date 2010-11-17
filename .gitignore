@@ -25,3 +25,4 @@ features/fixtures/vcr_cassettes/**/temp/
 *.rbc
 .bundle
 tmp
+rerun.txt
