@@ -11,11 +11,14 @@ if RUBY_VERSION == '1.9.2'
   UNSUPPORTED_HTTP_LIBS = %w[ patron ]
 elsif defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx'
   # Patron is freezing up the cukes (as it does on 1.9.2)
+
   # I'm not sure why em-http-request isn't working on rbx,
   # but considering the fact that VCR works with all the other
   # libs just fine and doesn't do anything for em-http-request,
   # it's probably a bug in it or rbx...so ignore it, for now.
-  UNSUPPORTED_HTTP_LIBS = %w[ patron em-http-request ]
+
+  # I'm getting errors in the curb C extension in rbx.
+  UNSUPPORTED_HTTP_LIBS = %w[ patron em-http-request curb ]
 elsif RUBY_PLATFORM == 'java'
   # These gems have C extensions and can't install on JRuby.
   UNSUPPORTED_HTTP_LIBS = %w[ typhoeus patron curb em-http-request ]
