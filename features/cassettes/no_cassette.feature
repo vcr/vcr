@@ -25,7 +25,7 @@ Feature: Error for HTTP request made when no cassette is in use
     Then it should fail with "<error>"
     And the output should contain each of the following:
       | You can use VCR to automatically record this request and replay it later. |
-      | from no_cassette_error.rb:11                                              |
+      | no_cassette_error.rb:11                                                   |
 
     Examples:
       | stub_with  | http_lib        | error                              |
