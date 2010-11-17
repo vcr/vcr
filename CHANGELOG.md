@@ -1,8 +1,8 @@
 # Changelog
 
-## In git
+## 1.3.2 (November 16, 2010)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.3.1...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.3.1...v1.3.2)
 
 * Fix serialized structs so that they are normalized andthey will be the same
   regardless of which HTTP library made the request.
@@ -10,6 +10,7 @@
   * Body '' => nil
   * Headers {} => nil
   * Remove extraneous headers added by the HTTP lib (i.e. Typhoeus user agent)
+* Rewrite cucumber features in a more documentation-oriented style.
 
 ## 1.3.1 (November 11, 2010)
 
