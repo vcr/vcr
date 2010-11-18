@@ -10,8 +10,8 @@ module VCR
     module Common
       def self.add_vcr_info_to_exception_message(exception_klass)
         exception_klass.class_eval do
-          def message
-            super + ".  " + VCR::HttpStubbingAdapters::Common::RECORDING_INSTRUCTIONS
+          def initialize(message)
+            super(message + '.  ' + VCR::HttpStubbingAdapters::Common::RECORDING_INSTRUCTIONS)
           end
         end
       end
