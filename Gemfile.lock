@@ -60,7 +60,7 @@ GEM
     rake (0.8.7)
     rb-fsevent (0.3.6)
     rcov (0.9.9)
-    relish (0.1.1)
+    relish (0.1.5)
       archive-tar-minitar (~> 0.5.2)
       json (~> 1.4.6)
       rest-client (~> 1.6.1)
@@ -108,7 +108,7 @@ PLATFORMS
 
 DEPENDENCIES
   aruba (~> 0.2.1)
-  bundler (~> 1.0.0)
+  bundler (~> 1.0.7)
   cucumber (~> 0.9.4)
   curb (~> 0.7.8)
   em-http-request (~> 0.2.7)

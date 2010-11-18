@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = '>= 1.3.5'
 
   {
-    'bundler'         => '~> 1.0.0',
+    'bundler'         => '~> 1.0.7',
     'rake'            => '~> 0.8.7',
 
     'rspec'           => '~> 2.1.0',
