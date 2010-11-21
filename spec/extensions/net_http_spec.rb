@@ -3,12 +3,14 @@ require 'spec_helper'
 describe "Net::HTTP Extensions" do
   without_webmock_callbacks
 
-  let(:uri) { URI.parse('http://example.com') }
+  before(:all) { VCR::SinatraApp.port } # ensure the server is started before instantiating any Net::HTTP instances
+
+  let(:uri) { URI.parse("http://localhost:#{VCR::SinatraApp.port}/") }
   before(:each) { VCR.stub(:http_stubbing_adapter).and_return(VCR::HttpStubbingAdapters::FakeWeb) }
 
   it 'checks if the request is stubbed using a VCR::Request' do
     VCR.http_stubbing_adapter.should_receive(:request_stubbed?) do |request, _|
-      request.uri.should == 'http://example.com:80/'
+      request.uri.should == "http://localhost:#{VCR::SinatraApp.port}/"
       request.method.should == :get
       true
     end
@@ -33,7 +35,7 @@ describe "Net::HTTP Extensions" do
     end
 
     def perform_get_with_returning_block
-      Net::HTTP.new('example.com', 80).request(Net::HTTP::Get.new('/', {})) do |response|
+      Net::HTTP.new('localhost', VCR::SinatraApp.port).request(Net::HTTP::Get.new('/', {})) do |response|
         return response
       end
     end
@@ -43,7 +45,7 @@ describe "Net::HTTP Extensions" do
         interaction.request.headers.should_not have_key('content-type')
         interaction.request.headers.should_not have_key('host')
       end
-      Net::HTTP.new('example.com', 80).send_request('POST', '/', '', { 'x-http-user' => 'me' })
+      Net::HTTP.new('localhost', VCR::SinatraApp.port).send_request('POST', '/', '', { 'x-http-user' => 'me' })
     end
 
     it "records headers for which Net::HTTP usually sets defaults when the user manually sets their values" do
@@ -51,7 +53,7 @@ describe "Net::HTTP Extensions" do
         interaction.request.headers['content-type'].should == ['foo/bar']
         interaction.request.headers['host'].should == ['my-example.com']
       end
-      Net::HTTP.new('example.com', 80).send_request('POST', '/', '', { 'Content-Type' => 'foo/bar', 'Host' => 'my-example.com' })
+      Net::HTTP.new('localhost', VCR::SinatraApp.port).send_request('POST', '/', '', { 'Content-Type' => 'foo/bar', 'Host' => 'my-example.com' })
     end
 
     it 'calls VCR.record_http_interaction' do
@@ -61,7 +63,7 @@ describe "Net::HTTP Extensions" do
 
     it 'calls #record_http_interaction only once, even when Net::HTTP internally recursively calls #request' do
       VCR.should_receive(:record_http_interaction).once
-      Net::HTTP.new('example.com', 80).post('/', nil)
+      Net::HTTP.new('localhost', VCR::SinatraApp.port).post('/', nil)
     end
 
     it 'calls #record_http_interaction when Net::HTTP#request is called with a block with a return statement' do

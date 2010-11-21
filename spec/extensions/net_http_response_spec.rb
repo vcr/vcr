@@ -42,7 +42,7 @@ describe VCR::Net::HTTPResponse do
     end
   end
 
-  { :get => /You have reached this web page by typing.*example\.com/, :head => /\A\z/ }.each do |http_verb, expected_body_regex|
+  { :get => /GET to root/, :head => /\A\z/ }.each do |http_verb, expected_body_regex|
     context "for a #{http_verb.to_s.upcase} request" do
       let(:http_verb_method) { :"request_#{http_verb}" }
 
@@ -53,7 +53,7 @@ describe VCR::Net::HTTPResponse do
         end
 
         @response ||= begin
-          http = Net::HTTP.new('example.com', 80)
+          http = Net::HTTP.new('localhost', VCR::SinatraApp.port)
           res = http.send(http_verb_method, '/', &block)
           res.should_not be_a(VCR::Net::HTTPResponse)
           res.should_not be_a(::WebMock::Net::HTTPResponse)

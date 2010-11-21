@@ -92,10 +92,6 @@ module VCR
         sleep(0.05)
       end
     end
-
-    STATIC_SERVERS = Hash.new do |h, k|
-      h[k] = new(lambda { |env| [200, {}, StringIO.new(k)] })
-    end
   end
 end
 

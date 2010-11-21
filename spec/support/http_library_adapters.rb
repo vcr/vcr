@@ -200,29 +200,31 @@ module HttpLibrarySpecs
       end
 
       def self.test_real_http_request(http_allowed)
+        let(:url) { "http://localhost:#{VCR::SinatraApp.port}/foo" }
+
         if http_allowed
 
           it 'allows real http requests' do
-            get_body_string(make_http_request(:get, 'http://example.com/foo')).should =~ /The requested URL \/foo was not found/
+            get_body_string(make_http_request(:get, url)).should == 'FOO!'
           end
 
           it 'records new http requests' do
             VCR.should_receive(:record_http_interaction) do |interaction|
-              interaction.request.uri.should == 'http://example.com:80/foo'
+              interaction.request.uri.should == url
               interaction.request.method.should == :get
-              interaction.response.status.code.should == 404
-              interaction.response.status.message.should == 'Not Found'
-              interaction.response.body.should =~ /The requested URL \/foo was not found/
-              interaction.response.headers['content-type'].should == ["text/html; charset=iso-8859-1"]
+              interaction.response.status.code.should == 200
+              interaction.response.status.message.should == 'OK'
+              interaction.response.body.should == 'FOO!'
+              interaction.response.headers['content-type'].should == ["text/html;charset=utf-8"]
             end
 
-            make_http_request(:get, 'http://example.com/foo')
+            make_http_request(:get, url)
           end
 
         else
           it 'does not allow real HTTP requests or record them' do
             VCR.should_receive(:record_http_interaction).never
-            lambda { make_http_request(:get, 'http://example.com/foo') }.should raise_error(NET_CONNECT_NOT_ALLOWED_ERROR)
+            lambda { make_http_request(:get, url) }.should raise_error(NET_CONNECT_NOT_ALLOWED_ERROR)
           end
         end
       end
@@ -248,8 +250,7 @@ module HttpLibrarySpecs
 
           unless http_allowed
             describe '.ignore_localhost =' do
-              let(:localhost_response) { 'A localhost response!' }
-              let(:localhost_server)   { VCR::LocalhostServer::STATIC_SERVERS[localhost_response] }
+              localhost_response = "Localhost response"
 
               VCR::LOCALHOST_ALIASES.each do |localhost_alias|
                 describe 'when set to true' do
@@ -257,7 +258,7 @@ module HttpLibrarySpecs
                   before(:each) { subject.ignore_localhost = true }
 
                   it "allows requests to #{localhost_alias}" do
-                    get_body_string(make_http_request(:get, "http://#{localhost_alias}:#{localhost_server.port}/")).should == localhost_response
+                    get_body_string(make_http_request(:get, "http://#{localhost_alias}:#{VCR::SinatraApp.port}/localhost_test")).should == localhost_response
                   end
                 end
 
@@ -265,7 +266,7 @@ module HttpLibrarySpecs
                   before(:each) { subject.ignore_localhost = false }
 
                   it "does not allow requests to #{localhost_alias}" do
-                    expect { make_http_request(:get, "http://#{localhost_alias}:#{localhost_server.port}/") }.to raise_error(NET_CONNECT_NOT_ALLOWED_ERROR)
+                    expect { make_http_request(:get, "http://#{localhost_alias}:#{VCR::SinatraApp.port}/localhost_test") }.to raise_error(NET_CONNECT_NOT_ALLOWED_ERROR)
                   end
                 end
               end

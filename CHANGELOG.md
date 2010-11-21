@@ -1,5 +1,13 @@
 # Changelog
 
+## In git
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.3.2...master)
+
+* In specs, hit a local sinatra server rather than example.com.  This makes
+  the specs faster and removes an external dependency.  The specs can pass
+  without being online!
+
 ## 1.3.2 (November 16, 2010)
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.3.1...v1.3.2)
