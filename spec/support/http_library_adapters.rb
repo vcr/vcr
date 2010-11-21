@@ -254,7 +254,6 @@ module HttpLibrarySpecs
 
               VCR::LOCALHOST_ALIASES.each do |localhost_alias|
                 describe 'when set to true' do
-                  extend PendingOnHeroku
                   before(:each) { subject.ignore_localhost = true }
 
                   it "allows requests to #{localhost_alias}" do
