@@ -52,11 +52,11 @@ describe VCR::Cassette do
   describe 'on creation' do
     it 'raises an error with a helpful message when loading an old unsupported cassette' do
       VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}")
-      lambda { VCR::Cassette.new('0_3_1_cassette') }.should raise_error(/The VCR cassette 0_3_1_cassette.yml uses an old format that is now deprecated/)
+      expect { VCR::Cassette.new('0_3_1_cassette') }.to raise_error(/The VCR cassette 0_3_1_cassette.yml uses an old format that is now deprecated/)
     end
 
     it "raises an error if given an invalid record mode" do
-      lambda { VCR::Cassette.new(:test, :record => :not_a_record_mode) }.should raise_error(ArgumentError)
+      expect { VCR::Cassette.new(:test, :record => :not_a_record_mode) }.to raise_error(ArgumentError)
     end
 
     it 'raises an error if given invalid options' do
@@ -266,7 +266,7 @@ describe VCR::Cassette do
       cassette = VCR::Cassette.new(:eject_test)
       cassette.stub!(:new_recorded_interactions).and_return(recorded_interactions)
 
-      lambda { cassette.eject }.should change { File.exist?(cassette.file) }.from(false).to(true)
+      expect { cassette.eject }.to change { File.exist?(cassette.file) }.from(false).to(true)
       saved_recorded_interactions = File.open(cassette.file, "r") { |f| YAML.load(f.read) }
       saved_recorded_interactions.should == recorded_interactions
     end
@@ -276,7 +276,7 @@ describe VCR::Cassette do
       cassette = VCR::Cassette.new('subdirectory/test_cassette')
       cassette.stub!(:new_recorded_interactions).and_return(recorded_interactions)
 
-      lambda { cassette.eject }.should change { File.exist?(cassette.file) }.from(false).to(true)
+      expect { cassette.eject }.to change { File.exist?(cassette.file) }.from(false).to(true)
       saved_recorded_interactions = File.open(cassette.file, "r") { |f| YAML.load(f.read) }
       saved_recorded_interactions.should == recorded_interactions
     end
@@ -300,7 +300,7 @@ describe VCR::Cassette do
         it "does not re-write to disk the previously recorded interactions if there are no new ones" do
           yaml_file = subject.file
           File.should_not_receive(:open).with(subject.file, 'w')
-          lambda { subject.eject }.should_not change { File.mtime(yaml_file) }
+          expect { subject.eject }.to_not change { File.mtime(yaml_file) }
         end
 
         context 'when some new interactions have been recorded' do

@@ -224,7 +224,7 @@ module HttpLibrarySpecs
         else
           it 'does not allow real HTTP requests or record them' do
             VCR.should_receive(:record_http_interaction).never
-            lambda { make_http_request(:get, url) }.should raise_error(NET_CONNECT_NOT_ALLOWED_ERROR)
+            expect { make_http_request(:get, url) }.to raise_error(NET_CONNECT_NOT_ALLOWED_ERROR)
           end
         end
       end

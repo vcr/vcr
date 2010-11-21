@@ -32,7 +32,7 @@ describe VCR do
 
     it 'returns the #current_cassette to the previous one' do
       cassette1, cassette2 = insert_cassette, insert_cassette
-      lambda { VCR.eject_cassette }.should change(VCR, :current_cassette).from(cassette2).to(cassette1)
+      expect { VCR.eject_cassette }.to change(VCR, :current_cassette).from(cassette2).to(cassette1)
     end
   end
 
@@ -56,13 +56,13 @@ describe VCR do
 
     it 'ejects the cassette even if there is an error' do
       VCR.should_receive(:eject_cassette)
-      lambda { VCR.use_cassette(:cassette_test) { raise StandardError } }.should raise_error
+      expect { VCR.use_cassette(:cassette_test) { raise StandardError } }.to raise_error
     end
 
     it 'does not eject a cassette if there was an error inserting it' do
       VCR.should_receive(:insert_cassette).and_raise(StandardError.new('Boom!'))
       VCR.should_not_receive(:eject_cassette)
-      lambda { VCR.use_cassette(:test) { } }.should raise_error(StandardError, 'Boom!')
+      expect { VCR.use_cassette(:test) { } }.to raise_error(StandardError, 'Boom!')
     end
   end
 
