@@ -47,6 +47,14 @@ Given /^the directory "([^"]*)" does not exist$/ do |dir|
   check_directory_presence([dir], false)
 end
 
+Given /^a previously recorded cassette file "([^"]*)" with:$/ do |file_name, content|
+  create_file(file_name, normalize_cassette_yaml(content))
+end
+
+Given /^(\d+) days have passed since the cassette was recorded$/ do |day_count|
+  set_env('DAYS_PASSED', day_count)
+end
+
 Then /^the file "([^"]*)" should exist$/ do |file_name|
   check_file_presence([file_name], true)
 end
@@ -66,17 +74,9 @@ Then /^the file "([^"]*)" should contain YAML like:$/ do |file_name, expected_co
   normalize_cassette_structs(actual_content).should == normalize_cassette_structs(expected_content)
 end
 
-Given /^a previously recorded cassette file "([^"]*)" with:$/ do |file_name, content|
-  create_file(file_name, normalize_cassette_yaml(content))
-end
-
 Then /^the file "([^"]*)" should contain each of these:$/ do |file_name, table|
   table.raw.flatten.each do |string|
     check_file_content(file_name, string, true)
   end
-end
-
-Given /^(\d+) days have passed since the cassette was recorded$/ do |day_count|
-  set_env('DAYS_PASSED', day_count)
 end
 
