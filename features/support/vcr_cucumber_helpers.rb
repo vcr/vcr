@@ -5,7 +5,16 @@ $LOAD_PATH.unshift '../../lib'  unless $LOAD_PATH.include?('../../lib')
 
 RUNNING_UNDER_ARUBA = File.dirname(__FILE__) == '.' || File.dirname(__FILE__) =~ /aruba/
 
-require 'support/fixnum_extension' if RUNNING_UNDER_ARUBA
+if RUNNING_UNDER_ARUBA
+  require 'support/fixnum_extension'
+  require 'vcr/internet_connection'
+
+  # pretend we're always on the internet (so that we don't have an
+  # internet connection dependency for our cukes)
+  VCR::InternetConnection.class_eval do
+    def available?; true; end
+  end
+end
 
 if ENV['DAYS_PASSED']
   require 'timecop'
