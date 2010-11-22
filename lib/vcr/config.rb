@@ -16,9 +16,12 @@ module VCR
         @default_cassette_options
       end
 
-      attr_reader :http_stubbing_libraries
       def stub_with(*http_stubbing_libraries)
         @http_stubbing_libraries = http_stubbing_libraries
+      end
+
+      def http_stubbing_libraries
+        @http_stubbing_libraries ||= []
       end
 
       def ignore_localhost=(value)

@@ -35,6 +35,13 @@ describe VCR::Config do
     end
   end
 
+  describe '.http_stubbing_libraries' do
+    it 'returns an empty array even when the variable is nil' do
+      VCR::Config.send(:remove_instance_variable, :@http_stubbing_libraries)
+      VCR::Config.http_stubbing_libraries.should == []
+    end
+  end
+
   describe '#ignore_localhost' do
     it 'sets VCR.http_stubbing_adapter.ignore_localhost?' do
       [true, false].each do |val|

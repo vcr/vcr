@@ -7,6 +7,8 @@
 * In specs, hit a local sinatra server rather than example.com.  This makes
   the specs faster and removes an external dependency.  The specs can pass
   without being online!
+* Raise an explicit error when the http stubbing library is not configured
+  (rather than letting the user get a confusing error later).
 
 ## 1.3.2 (November 16, 2010)
 
@@ -37,6 +39,8 @@
 * Add support for [Typhoeus](https://github.com/pauldix/typhoeus).  Thanks to
   [David Balatero](https://github.com/dbalatero) for making the necessary changes in Typhoeus
   to support VCR.
+* Remove FakeWeb/WebMock inference logic.  You _must_ configure the http stubbing library
+  explicitly now.
 
 ## 1.2.0 (October 13, 2010)
 
