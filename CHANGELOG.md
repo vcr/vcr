@@ -1,14 +1,16 @@
 # Changelog
 
-## In git
+## 1.3.3 (November 21, 2010)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.3.2...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.3.2...v1.3.3)
 
 * In specs, hit a local sinatra server rather than example.com.  This makes
   the specs faster and removes an external dependency.  The specs can pass
   without being online!
 * Raise an explicit error when the http stubbing library is not configured
   (rather than letting the user get a confusing error later).
+* Test against the latest WebMock release (1.6.1) (no changes required).
+* Fix a few cucumber scenarios so they pass on rubinius and jruby.
 
 ## 1.3.2 (November 16, 2010)
 
