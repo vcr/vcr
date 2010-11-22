@@ -7,7 +7,7 @@ module VCR
   class Cassette
     class MissingERBVariableError < NameError; end
 
-    VALID_RECORD_MODES = [:all, :none, :new_episodes].freeze
+    VALID_RECORD_MODES = [:all, :none, :new_episodes]
 
     attr_reader :name, :record_mode, :match_requests_on, :erb, :re_record_interval
 

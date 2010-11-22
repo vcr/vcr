@@ -7,7 +7,7 @@ module VCR
       include VCR::HttpStubbingAdapters::Common
       extend self
 
-      UNSUPPORTED_REQUEST_MATCH_ATTRIBUTES = [:body, :headers].freeze
+      UNSUPPORTED_REQUEST_MATCH_ATTRIBUTES = [:body, :headers]
       LOCALHOST_REGEX = %r|\Ahttps?://((\w+:)?\w+@)?(#{VCR::LOCALHOST_ALIASES.map { |a| Regexp.escape(a) }.join('|')})(:\d+)?/|i
 
       MINIMUM_VERSION = '1.3.0'
