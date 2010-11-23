@@ -33,11 +33,11 @@ maintenance) and accurate (the response from example.com will contain the same h
   is easy to implement for any future libraries.
 * Supports multiple HTTP libraries:
   * [Patron](http://github.com/toland/patron) (WebMock)
-  * [Curb](http://github.com/taf2/curb) (WebMock)
+  * [Curb](http://github.com/taf2/curb) (WebMock -- only supports Curb::Easy at the moment)
   * [HTTPClient](http://github.com/nahi/httpclient) (WebMock)
   * [em-http-request](http://github.com/igrigorik/em-http-request) (WebMock)
   * [Net::HTTP](http://www.ruby-doc.org/stdlib/libdoc/net/http/rdoc/index.html) (FakeWeb and WebMock)
-  * [Typhoeus](https://github.com/pauldix/typhoeus)
+  * [Typhoeus](https://github.com/pauldix/typhoeus) (Typhoeus::Hydra, but not Typhoeus::Easy or Typhoeus::Multi)
   * And of course any library built on Net::HTTP, such as [Mechanize](http://github.com/tenderlove/mechanize),
     [HTTParty](http://github.com/jnunemaker/httparty) or [Rest Client](http://github.com/archiloque/rest-client).
 * Request matching is configurable based on HTTP method, URI, host, path, body and headers.

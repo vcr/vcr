@@ -9,9 +9,10 @@ Feature: stub_with configuration option
       * Net::HTTP
       * HTTPClient
       * Patron
-      * Curb
+      * Curb (Curb::Easy, but not Curb::Multi)
       * EM HTTP Request
-    * Typhoeus can be used to stub itself.
+    * Typhoeus can be used to stub itself (as long as you use Typhoeus::Hydra,
+      but not Typhoeus::Easy or Typhoeus::Multi).
 
   There are some addiitonal trade offs to consider when deciding which
   stubbing library to use:
