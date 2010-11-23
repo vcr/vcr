@@ -3,23 +3,6 @@ shared_examples_for "an http stubbing adapter" do |supported_http_libraries, sup
   before(:each) { VCR.stub!(:http_stubbing_adapter).and_return(subject) }
   subject { described_class }
 
-  if other.include?(:needs_net_http_extension)
-    describe '#request_uri' do
-      it 'returns the uri for the given http request' do
-        net_http = Net::HTTP.new('example.com', 80)
-        request = Net::HTTP::Get.new('/foo/bar')
-        subject.request_uri(net_http, request).should == 'http://example.com:80/foo/bar'
-      end
-
-      it 'handles basic auth' do
-        net_http = Net::HTTP.new('example.com',80)
-        request = Net::HTTP::Get.new('/auth.txt')
-        request.basic_auth 'user', 'pass'
-        subject.request_uri(net_http, request).should == 'http://user:pass@example.com:80/auth.txt'
-      end
-    end
-  end
-
   describe '.ignore_localhost?' do
     [true, false].each do |val|
       it "returns #{val} when ignore_localhost is set to #{val}" do
@@ -35,6 +18,21 @@ shared_examples_for "an http stubbing adapter" do |supported_http_libraries, sup
   end
 
   if other.include?(:needs_net_http_extension)
+    describe '#request_uri' do
+      it 'returns the uri for the given http request' do
+        net_http = Net::HTTP.new('example.com', 80)
+        request = Net::HTTP::Get.new('/foo/bar')
+        subject.request_uri(net_http, request).should == 'http://example.com:80/foo/bar'
+      end
+
+      it 'handles basic auth' do
+        net_http = Net::HTTP.new('example.com',80)
+        request = Net::HTTP::Get.new('/auth.txt')
+        request.basic_auth 'user', 'pass'
+        subject.request_uri(net_http, request).should == 'http://user:pass@example.com:80/auth.txt'
+      end
+    end
+
     describe '#request_stubbed? using specific match_attributes' do
       let(:interactions) { YAML.load(File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', YAML_SERIALIZATION_VERSION, 'match_requests_on.yml'))) }
 
