@@ -33,6 +33,10 @@ module VCR
         @library_name ||= self.to_s.split('::').last
       end
 
+      def set_http_connections_allowed_to_default
+        self.http_connections_allowed = VCR::Config.allow_http_connections_when_no_cassette?
+      end
+
       private
 
       def compare_version

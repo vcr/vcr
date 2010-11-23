@@ -75,9 +75,9 @@ describe VCR do
       yielded_object.should == VCR::Config
     end
 
-    it "disallows http connections" do
-      VCR.http_stubbing_adapter.should respond_to(:http_connections_allowed=)
-      VCR.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(false)
+    it "sets http_stubbing_adapter.http_connections_allowed to the configured default" do
+      VCR.http_stubbing_adapter.should respond_to(:set_http_connections_allowed_to_default)
+      VCR.http_stubbing_adapter.should_receive(:set_http_connections_allowed_to_default)
       VCR.config { }
     end
 
@@ -253,12 +253,10 @@ describe VCR do
       VCR.should be_turned_on
     end
 
-    it 'disallows http requests' do
-      expect {
-        VCR.turn_on!
-      }.to change {
-        VCR.http_stubbing_adapter.http_connections_allowed?
-      }.from(true).to(false)
+    it 'sets http_connections_allowed to the default' do
+      VCR.http_stubbing_adapter.should respond_to(:set_http_connections_allowed_to_default)
+      VCR.http_stubbing_adapter.should_receive(:set_http_connections_allowed_to_default)
+      VCR.turn_on!
     end
   end
 

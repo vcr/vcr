@@ -52,7 +52,7 @@ module VCR
   def config
     yield VCR::Config
     http_stubbing_adapter.check_version!
-    http_stubbing_adapter.http_connections_allowed = false
+    http_stubbing_adapter.set_http_connections_allowed_to_default
     http_stubbing_adapter.ignore_localhost = VCR::Config.ignore_localhost?
   end
 
@@ -109,7 +109,7 @@ module VCR
   end
 
   def turn_on!
-    VCR.http_stubbing_adapter.http_connections_allowed = false
+    VCR.http_stubbing_adapter.set_http_connections_allowed_to_default
     @turned_off = false
   end
 

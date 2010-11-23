@@ -60,4 +60,25 @@ describe VCR::Config do
       end
     end
   end
+
+  describe '#allow_http_connections_when_no_cassette=' do
+    [true, false].each do |val|
+      it "sets the allow_http_connections_when_no_cassette to #{val} when set to #{val}" do
+        VCR::Config.allow_http_connections_when_no_cassette = val
+        VCR::Config.allow_http_connections_when_no_cassette?.should == val
+      end
+    end
+
+    it 'sets http_connnections_allowed to the default' do
+      VCR.http_stubbing_adapter.should respond_to(:set_http_connections_allowed_to_default)
+      VCR.http_stubbing_adapter.should_receive(:set_http_connections_allowed_to_default)
+      VCR::Config.allow_http_connections_when_no_cassette = true
+    end
+
+    it "works when the adapter hasn't been set yet" do
+      VCR.stub(:http_stubbing_adapter).and_return(nil)
+      VCR::Config.stub(:http_stubbing_libraries).and_return([])
+      VCR::Config.allow_http_connections_when_no_cassette = true
+    end
+  end
 end

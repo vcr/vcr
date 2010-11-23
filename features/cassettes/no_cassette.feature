@@ -7,7 +7,9 @@ Feature: Error for HTTP request made when no cassette is in use
   made so you can use a VCR cassette at that point in your code.
 
   If you want to allow an HTTP request to proceed as normal, you can
-  turn VCR off:
+  set the `allow_http_connections_when_no_cassette` configuration option
+  (see configuration/allow_http_connections_when_no_cassette.feature) or
+  you can temporarily turn VCR off:
 
     * VCR.turn_off! => turn VCR off so HTTP requests are allowed
     * VCR.turn_on! => turn VCR back on
