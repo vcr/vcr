@@ -7,3 +7,9 @@ guard 'rspec', :version => 2 do
   watch('^lib/vcr/(.*)\.rb')                          { |m| "spec/#{m[1]}_spec.rb" }
   watch('^spec/spec_helper.rb')                       { "spec" }
 end
+
+guard 'cucumber' do
+  watch('^features/(.*).feature')
+  watch('^features/support')                       { 'features' }
+  watch('^features/step_definitions')              { 'features' }
+end

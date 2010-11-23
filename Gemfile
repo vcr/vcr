@@ -20,6 +20,8 @@ end
 # Additional gems that are useful, but not required for development.
 group :extras do
   gem 'guard-rspec'
+  gem 'guard-cucumber'
+  gem 'growl'
   gem 'relish'
 
   platforms :mri do
