@@ -213,4 +213,80 @@ describe VCR do
       end
     end
   end
+
+  describe '.turn_off!' do
+    before(:each) { VCR.http_stubbing_adapter.http_connections_allowed = false }
+
+    it 'indicates it is turned off' do
+      VCR.turn_off!
+      VCR.should_not be_turned_on
+    end
+
+    it 'allows http requests' do
+      expect {
+        VCR.turn_off!
+      }.to change {
+        VCR.http_stubbing_adapter.http_connections_allowed?
+      }.from(false).to(true)
+    end
+
+    it 'raises an error if a cassette is in use' do
+      VCR.insert_cassette('foo')
+      expect {
+        VCR.turn_off!
+      }.to raise_error(VCR::CassetteInUseError)
+    end
+
+    it 'causes an error to be raised if you insert a cassette while VCR is turned off' do
+      VCR.turn_off!
+      expect {
+        VCR.insert_cassette('foo')
+      }.to raise_error(VCR::TurnedOffError)
+    end
+  end
+
+  describe '.turn_on!' do
+    before(:each) { VCR.turn_off! }
+
+    it 'indicates it is turned on' do
+      VCR.turn_on!
+      VCR.should be_turned_on
+    end
+
+    it 'disallows http requests' do
+      expect {
+        VCR.turn_on!
+      }.to change {
+        VCR.http_stubbing_adapter.http_connections_allowed?
+      }.from(true).to(false)
+    end
+  end
+
+  describe '.turned_off' do
+    it 'yields with VCR turned off' do
+      VCR.should be_turned_on
+      yielded = false
+
+      VCR.turned_off do
+        yielded = true
+        VCR.should_not be_turned_on
+      end
+
+      yielded.should == true
+      VCR.should be_turned_on
+    end
+  end
+
+  describe '.turned_on?' do
+    it 'is on by default' do
+      # clear internal state
+      VCR.instance_eval do
+        instance_variables.each do |var|
+          remove_instance_variable(var)
+        end
+      end
+
+      VCR.should be_turned_on
+    end
+  end
 end

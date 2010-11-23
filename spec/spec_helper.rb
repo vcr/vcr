@@ -24,6 +24,9 @@ RSpec.configure do |config|
   config.debug = RUBY_INTERPRETER == :mri
 
   config.before(:each) do
+    VCR.turn_on! unless VCR.turned_on?
+    VCR.eject_cassette while VCR.current_cassette
+
     VCR::Config.default_cassette_options = { :record => :new_episodes }
     VCR::Config.stub_with :fakeweb
 

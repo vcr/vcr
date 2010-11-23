@@ -16,11 +16,18 @@ module VCR
 
   LOCALHOST_ALIASES = %w( localhost 127.0.0.1 0.0.0.0 )
 
+  class CassetteInUseError < StandardError; end
+  class TurnedOffError < StandardError; end
+
   def current_cassette
     cassettes.last
   end
 
   def insert_cassette(*args)
+    unless turned_on?
+      raise TurnedOffError.new("VCR is turned off.  You must turn it on before you can insert a cassette.")
+    end
+
     cassette = Cassette.new(*args)
     cassettes.push(cassette)
     cassette
@@ -80,6 +87,34 @@ module VCR
       LOCALHOST_ALIASES.include?(URI.parse(interaction.uri).host)
 
     cassette.record_http_interaction(interaction)
+  end
+
+  def turned_off
+    turn_off!
+
+    begin
+      yield
+    ensure
+      turn_on!
+    end
+  end
+
+  def turn_off!
+    if VCR.current_cassette
+      raise CassetteInUseError.new("A VCR cassette is currently in use.  You must eject it before you can turn VCR off.")
+    end
+
+    VCR.http_stubbing_adapter.http_connections_allowed = true
+    @turned_off = true
+  end
+
+  def turn_on!
+    VCR.http_stubbing_adapter.http_connections_allowed = false
+    @turned_off = false
+  end
+
+  def turned_on?
+    !@turned_off
   end
 
   private
