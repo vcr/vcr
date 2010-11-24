@@ -30,9 +30,9 @@ Feature: ignore_localhost configuration option
       require 'vcr'
 
       VCR.config do |c|
+        <additional_config>
         c.cassette_library_dir = 'cassettes'
         c.stub_with <stub_with>
-        <additional_config>
       end
 
       VCR.use_cassette('localhost', :record => :new_episodes) do
@@ -72,9 +72,9 @@ Feature: ignore_localhost configuration option
       require 'vcr'
 
       VCR.config do |c|
+        c.ignore_localhost = true
         c.cassette_library_dir = 'cassettes'
         c.stub_with <stub_with>
-        c.ignore_localhost = true
       end
 
       VCR.use_cassette('localhost', :record => :new_episodes) do

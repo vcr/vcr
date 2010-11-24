@@ -11,6 +11,8 @@
     to true to allow HTTP requests without a cassette.
   * You can temporarily turn off VCR using `VCR.turned_off { ... }`.
   * You can toggle VCR off and on with `VCR.turn_off!` and `VCR.turn_on!`.
+* Fix bug with `ignore_localhost` config option.  Previously, an error would
+  be raised if it was set before the `stub_with` option.
 
 ## 1.3.3 (November 21, 2010)
 

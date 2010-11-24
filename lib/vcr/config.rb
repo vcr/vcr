@@ -25,12 +25,12 @@ module VCR
       end
 
       def ignore_localhost=(value)
-        VCR.http_stubbing_adapter && VCR.http_stubbing_adapter.ignore_localhost = value
         @ignore_localhost = value
+        VCR.http_stubbing_adapter.ignore_localhost = value if http_stubbing_libraries.any?
       end
 
       def ignore_localhost?
-        VCR.http_stubbing_adapter ? VCR.http_stubbing_adapter.ignore_localhost? : @ignore_localhost
+        @ignore_localhost
       end
 
       def allow_http_connections_when_no_cassette=(value)

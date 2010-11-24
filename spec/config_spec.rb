@@ -1,6 +1,11 @@
 require 'spec_helper'
 
 describe VCR::Config do
+  def stub_no_http_stubbing_adapter
+    VCR.stub(:http_stubbing_adapter).and_raise(ArgumentError)
+    VCR::Config.stub(:http_stubbing_libraries).and_return([])
+  end
+
   describe '#cassette_library_dir=' do
     temp_dir(File.expand_path(File.dirname(__FILE__) + '/fixtures/config_spec'))
 
@@ -52,8 +57,8 @@ describe VCR::Config do
       end
     end
 
-    it 'stores the value even when VCR.http_stubbing_adapter is nil' do
-      VCR.stub!(:http_stubbing_adapter).and_return(nil)
+    it 'stores the value even when VCR.http_stubbing_adapter is not set' do
+      stub_no_http_stubbing_adapter
       [true, false].each do |val|
         VCR::Config.ignore_localhost = val
         VCR::Config.ignore_localhost?.should == val
@@ -76,8 +81,7 @@ describe VCR::Config do
     end
 
     it "works when the adapter hasn't been set yet" do
-      VCR.stub(:http_stubbing_adapter).and_return(nil)
-      VCR::Config.stub(:http_stubbing_libraries).and_return([])
+      stub_no_http_stubbing_adapter
       VCR::Config.allow_http_connections_when_no_cassette = true
     end
   end
