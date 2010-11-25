@@ -21,6 +21,7 @@ module VCR
 
   module Middleware
     autoload :CassetteArguments, 'vcr/middleware/cassette_arguments'
+    autoload :Common,            'vcr/middleware/common'
     autoload :Rack,              'vcr/middleware/rack'
   end
 
