@@ -1,0 +1,2 @@
+--format Fuubar
+--color
