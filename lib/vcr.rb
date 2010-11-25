@@ -45,11 +45,12 @@ module VCR
     cassette
   end
 
-  def use_cassette(*args)
-    insert_cassette(*args)
+  def use_cassette(*args, &block)
+    cassette = insert_cassette(*args)
 
     begin
-      yield
+      # yield the cassette if the block accepts an argument or variable args
+      block.arity == 0 ? block.call : block.call(cassette)
     ensure
       eject_cassette
     end

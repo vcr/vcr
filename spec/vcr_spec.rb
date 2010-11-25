@@ -49,6 +49,19 @@ describe VCR do
       yielded.should be_true
     end
 
+    it 'yields the cassette instance if the block expects an argument' do
+      VCR.use_cassette('name', :record => :new_episodes) do |cassette|
+        cassette.should equal(VCR.current_cassette)
+      end
+    end
+
+    it 'yields the cassette instance if the block expects a variable number of args' do
+      VCR.use_cassette('name', :record => :new_episodes) do |*args|
+        args.size.should == 1
+        args.first.should equal(VCR.current_cassette)
+      end
+    end
+
     it 'ejects the cassette' do
       VCR.should_receive(:eject_cassette)
       VCR.use_cassette(:cassette_test) { }
