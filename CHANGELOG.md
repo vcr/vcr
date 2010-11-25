@@ -4,15 +4,16 @@
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.3.3...master)
 
-* Add support for making HTTP requests without a cassette (i.e. if you don't
+* Added support for making HTTP requests without a cassette (i.e. if you don't
   want to use VCR for all of your test suite).  There are a few ways to
   enable this:
   * In your `VCR.config` block, set `allow_http_connections_when_no_cassette`
     to true to allow HTTP requests without a cassette.
   * You can temporarily turn off VCR using `VCR.turned_off { ... }`.
   * You can toggle VCR off and on with `VCR.turn_off!` and `VCR.turn_on!`.
-* Fix bug with `ignore_localhost` config option.  Previously, an error would
+* Fixed bug with `ignore_localhost` config option.  Previously, an error would
   be raised if it was set before the `stub_with` option.
+* Added VCR::Middleware::Rack (see features/middleware/rack.feature for usage).
 
 ## 1.3.3 (November 21, 2010)
 

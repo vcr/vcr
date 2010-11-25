@@ -19,6 +19,11 @@ module VCR
   class CassetteInUseError < StandardError; end
   class TurnedOffError < StandardError; end
 
+  module Middleware
+    autoload :CassetteArguments, 'vcr/middleware/cassette_arguments'
+    autoload :Rack,              'vcr/middleware/rack'
+  end
+
   def current_cassette
     cassettes.last
   end
