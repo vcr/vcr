@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
     'fakeweb'         => '~> 1.3.0',
     'webmock'         => '~> 1.6.0',
 
+    'faraday'         => '~> 0.5.3',
     'httpclient'      => '~> 2.1.5.2',
 
     'timecop'         => '~> 0.3.5',
