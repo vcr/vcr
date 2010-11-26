@@ -14,6 +14,7 @@
 * Fixed bug with `ignore_localhost` config option.  Previously, an error would
   be raised if it was set before the `stub_with` option.
 * Added VCR::Middleware::Rack (see features/middleware/rack.feature for usage).
+* Added support for Faraday (see features/middleware/faraday.feature for usage).
 
 ## 1.3.3 (November 21, 2010)
 

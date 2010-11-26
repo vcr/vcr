@@ -19,6 +19,7 @@ RSpec.configure do |config|
   config.extend DisableWarnings
   config.extend MonkeyPatches::RSpecMacros
   config.extend WebMockMacros
+  config.extend TyphoeusMacros
 
   config.color_enabled = true
   config.debug = RUBY_INTERPRETER == :mri
@@ -35,6 +36,8 @@ RSpec.configure do |config|
 
     FakeWeb.allow_net_connect = true
     FakeWeb.clean_registry
+
+    VCR::HttpStubbingAdapters::Faraday.reset!
   end
 
   config.filter_run :focus => true

@@ -1,6 +1,7 @@
 module VCR
   module HttpStubbingAdapters
     autoload :FakeWeb,          'vcr/http_stubbing_adapters/fakeweb'
+    autoload :Faraday,          'vcr/http_stubbing_adapters/faraday'
     autoload :MultiObjectProxy, 'vcr/http_stubbing_adapters/multi_object_proxy'
     autoload :Typhoeus,         'vcr/http_stubbing_adapters/typhoeus'
     autoload :WebMock,          'vcr/http_stubbing_adapters/webmock'

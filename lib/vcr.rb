@@ -22,6 +22,7 @@ module VCR
   module Middleware
     autoload :CassetteArguments, 'vcr/middleware/cassette_arguments'
     autoload :Common,            'vcr/middleware/common'
+    autoload :Faraday,           'vcr/middleware/faraday'
     autoload :Rack,              'vcr/middleware/rack'
   end
 
@@ -79,6 +80,7 @@ module VCR
           when :fakeweb;  HttpStubbingAdapters::FakeWeb
           when :webmock;  HttpStubbingAdapters::WebMock
           when :typhoeus; HttpStubbingAdapters::Typhoeus
+          when :faraday;  HttpStubbingAdapters::Faraday
           else raise ArgumentError.new("#{lib.inspect} is not a supported HTTP stubbing library.")
         end
       end

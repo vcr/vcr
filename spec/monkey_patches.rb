@@ -95,6 +95,7 @@ if RUBY_INTERPRETER == :mri
   require 'patron'
   require 'em-http-request'
   require 'curb'
+  require 'typhoeus'
 end
 
 # The FakeWeb adapter must be required after WebMock's so

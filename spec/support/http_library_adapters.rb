@@ -112,6 +112,62 @@ HTTP_LIBRARY_ADAPTERS['typhoeus'] = Module.new do
   end
 end
 
+%w[ net_http typhoeus patron ].each do |_faraday_adapter|
+  HTTP_LIBRARY_ADAPTERS["faraday-#{_faraday_adapter}"] = Module.new do
+    class << self; self; end.class_eval do
+      define_method(:http_library_name) do
+        "Faraday (#{_faraday_adapter})"
+      end
+    end
+
+    define_method(:faraday_adapter) { _faraday_adapter.to_sym }
+
+    def get_body_string(response)
+      response.body
+    end
+
+    def get_header(header_key, response)
+      response.headers[header_key]
+    end
+
+    def make_http_request(method, url, body = nil, headers = {})
+      url_root, url_rest = split_url(url)
+
+      faraday_connection(url_root).send(method) do |req|
+        req.url url_rest
+        headers.each { |k, v| req[k] = v }
+        req.body = body if body
+      end
+    end
+
+    def split_url(url)
+      uri = URI.parse(url)
+      url_root = "#{uri.scheme}://#{uri.host}:#{uri.port}"
+      rest = url.sub(url_root, '')
+
+      [url_root, rest]
+    end
+
+    def faraday_connection(url_root)
+      Faraday::Connection.new(:url => url_root) do |builder|
+        builder.use VCR::Middleware::Faraday do |cassette|
+          cassette.name    'faraday_example'
+
+          if respond_to?(:match_requests_on)
+            cassette.options :match_requests_on => match_requests_on
+          end
+
+          if respond_to?(:record_mode)
+            cassette.options :record => record_mode
+          end
+        end
+
+        builder.adapter faraday_adapter
+      end
+    end
+  end
+end
+
 NET_CONNECT_NOT_ALLOWED_ERROR = /You can use VCR to automatically record this request and replay it later/
 
 module HttpLibrarySpecs
@@ -139,7 +195,9 @@ module HttpLibrarySpecs
           supported_request_match_attributes = @supported_request_match_attributes
 
           describe ":#{attribute}" do
-            let(:perform_stubbing) { subject.stub_requests(interactions, [attribute]) }
+            let(:perform_stubbing) { subject.stub_requests(interactions, match_requests_on) }
+            let(:match_requests_on) { [attribute] }
+            let(:record_mode) { :none }
 
             if supported_request_match_attributes.include?(attribute)
               before(:each) { perform_stubbing }
@@ -199,7 +257,7 @@ module HttpLibrarySpecs
         end
       end
 
-      def self.test_real_http_request(http_allowed)
+      def self.test_real_http_request(http_allowed, *other)
         let(:url) { "http://localhost:#{VCR::SinatraApp.port}/foo" }
 
         if http_allowed
@@ -238,7 +296,7 @@ module HttpLibrarySpecs
 
             it 'records the response status message' do
               recorded_interaction.response.status.message.should == 'OK'
-            end
+            end unless other.include?(:status_message_not_exposed)
 
             it 'records the response body' do
               recorded_interaction.response.body.should == 'FOO!'
@@ -249,6 +307,8 @@ module HttpLibrarySpecs
             end
           end
         else
+          let(:record_mode) { :none }
+
           it 'does not allow real HTTP requests or record them' do
             VCR.should_receive(:record_http_interaction).never
             expect { make_http_request(:get, url) }.to raise_error(NET_CONNECT_NOT_ALLOWED_ERROR)
@@ -273,11 +333,12 @@ module HttpLibrarySpecs
             subject.http_connections_allowed?.should == http_allowed
           end
 
-          test_real_http_request(http_allowed)
+          test_real_http_request(http_allowed, *other)
 
           unless http_allowed
             describe '.ignore_localhost =' do
               localhost_response = "Localhost response"
+              let(:record_mode) { :none }
 
               VCR::LOCALHOST_ALIASES.each do |localhost_alias|
                 describe 'when set to true' do
@@ -320,7 +381,7 @@ module HttpLibrarySpecs
 
             it 'gets the stubbed responses when requests are made to http://example.com/foo, and does not record them' do
               VCR.should_receive(:record_http_interaction).never
-              get_body_string(make_http_request(:get, 'http://example.com/foo')).should == 'example.com get response 1 with path=foo'
+              get_body_string(make_http_request(:get, 'http://example.com/foo')).should =~ /example\.com get response \d with path=foo/
             end
 
             it 'rotates through multiple responses for the same request' do
@@ -330,16 +391,16 @@ module HttpLibrarySpecs
               # subsequent requests keep getting the last one
               get_body_string(make_http_request(:get, 'http://example.com/foo')).should == 'example.com get response 2 with path=foo'
               get_body_string(make_http_request(:get, 'http://example.com/foo')).should == 'example.com get response 2 with path=foo'
-            end
+            end unless other.include?(:does_not_support_rotating_responses)
 
             it "correctly handles stubbing multiple values for the same header" do
-                get_header('Set-Cookie', make_http_request(:get, 'http://example.com/two_set_cookie_headers')).should =~ ['bar=bazz', 'foo=bar']
+              get_header('Set-Cookie', make_http_request(:get, 'http://example.com/two_set_cookie_headers')).should =~ ['bar=bazz', 'foo=bar']
             end
 
             context 'when we restore our previous check point' do
               before(:each) { subject.restore_stubs_checkpoint(:my_checkpoint) }
 
-              test_real_http_request(http_allowed)
+              test_real_http_request(http_allowed, *other)
 
               if other.include?(:needs_net_http_extension)
                 it 'returns false from #request_stubbed?' do
