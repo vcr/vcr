@@ -318,12 +318,6 @@ module HttpLibrarySpecs
               end
             end
 
-            it 'gets the stubbed responses when multiple post requests are made to http://example.com, and does not record them' do
-              VCR.should_receive(:record_http_interaction).never
-              get_body_string(make_http_request(:post, 'http://example.com/', { 'id' => '7' })).should == 'example.com post response with id=7'
-              get_body_string(make_http_request(:post, 'http://example.com/', { 'id' => '3' })).should == 'example.com post response with id=3'
-            end
-
             it 'gets the stubbed responses when requests are made to http://example.com/foo, and does not record them' do
               VCR.should_receive(:record_http_interaction).never
               get_body_string(make_http_request(:get, 'http://example.com/foo')).should == 'example.com get response 1 with path=foo'
