@@ -208,19 +208,46 @@ module HttpLibrarySpecs
             get_body_string(make_http_request(:get, url)).should == 'FOO!'
           end
 
-          it 'records new http requests' do
-            VCR.should_receive(:record_http_interaction) do |interaction|
-              interaction.request.uri.should == url
-              interaction.request.method.should == :get
-              interaction.response.status.code.should == 200
-              interaction.response.status.message.should == 'OK'
-              interaction.response.body.should == 'FOO!'
-              interaction.response.headers['content-type'].should == ["text/html;charset=utf-8"]
+          describe 'recording new http requests' do
+            let(:recorded_interaction) do
+              interaction = nil
+              VCR.should_receive(:record_http_interaction) { |i| interaction = i }
+              make_http_request(:get, url)
+              interaction
             end
 
-            make_http_request(:get, url)
-          end
+            it 'records the request uri' do
+              recorded_interaction.request.uri.should == url
+            end
 
+            it 'records the request method' do
+              recorded_interaction.request.method.should == :get
+            end
+
+            it 'records the request body' do
+              recorded_interaction.request.body.should be_nil
+            end
+
+            it 'records the request headers' do
+              recorded_interaction.request.headers.should be_nil
+            end
+
+            it 'records the response status code' do
+              recorded_interaction.response.status.code.should == 200
+            end
+
+            it 'records the response status message' do
+              recorded_interaction.response.status.message.should == 'OK'
+            end
+
+            it 'records the response body' do
+              recorded_interaction.response.body.should == 'FOO!'
+            end
+
+            it 'records the response headers' do
+              recorded_interaction.response.headers['content-type'].should == ["text/html;charset=utf-8"]
+            end
+          end
         else
           it 'does not allow real HTTP requests or record them' do
             VCR.should_receive(:record_http_interaction).never
