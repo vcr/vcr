@@ -7,30 +7,37 @@ module VCR
 
       class HttpConnectionNotAllowedError < StandardError; end
 
-      # TODO: disable typhoeus/webmock/net_http adapters in here so that we don't record multiple times.
       def call(env)
-        VCR.use_cassette(*cassette_arguments(env)) do |cassette|
-          request = request_for(env)
-          request_matcher = request.matcher(cassette.match_requests_on)
+        VCR::HttpStubbingAdapters::Faraday.exclusively_enabled do
+          VCR.use_cassette(*cassette_arguments(env)) do |cassette|
+            request = request_for(env)
+            request_matcher = request.matcher(cassette.match_requests_on)
 
-          if VCR::HttpStubbingAdapters::Faraday.ignore_localhost? && VCR::LOCALHOST_ALIASES.include?(URI.parse(request.uri).host)
-            @app.call(env)
-          elsif response = VCR::HttpStubbingAdapters::Faraday.stubbed_response_for(request_matcher)
-            env.update(
-              :status           => response.status.code,
-              :response_headers => correctly_cased_headers(response.headers),
-              :body             => response.body
-            )
+            if VCR::HttpStubbingAdapters::Faraday.ignore_localhost? && VCR::LOCALHOST_ALIASES.include?(URI.parse(request.uri).host)
+              @app.call(env)
+            elsif response = VCR::HttpStubbingAdapters::Faraday.stubbed_response_for(request_matcher)
+              env.update(
+                :status           => response.status.code,
+                :response_headers => correctly_cased_headers(response.headers),
+                :body             => response.body
+              )
 
-            env[:response].finish(env)
-          elsif VCR::HttpStubbingAdapters::Faraday.http_connections_allowed?
-            response = @app.call(env)
-            VCR.record_http_interaction(VCR::HTTPInteraction.new(request, response_for(env)))
-            response
-          else
-            raise HttpConnectionNotAllowedError.new(
-              "Real HTTP connections are disabled. Request: #{request.method.inspect} #{request.uri}"
-            )
+              env[:response].finish(env)
+            elsif VCR::HttpStubbingAdapters::Faraday.http_connections_allowed?
+              response = @app.call(env)
+
+              # Checking #enabled? isn't strictly needed, but confirms
+              # the Faraday adapter to the behavior of the other adapters
+              if VCR::HttpStubbingAdapters::Faraday.enabled?
+                VCR.record_http_interaction(VCR::HTTPInteraction.new(request, response_for(env)))
+              end
+
+              response
+            else
+              raise HttpConnectionNotAllowedError.new(
+                "Real HTTP connections are disabled. Request: #{request.method.inspect} #{request.uri}"
+              )
+            end
           end
         end
       end

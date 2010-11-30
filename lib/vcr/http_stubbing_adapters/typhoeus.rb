@@ -74,7 +74,7 @@ module VCR
 end
 
 Typhoeus::Hydra.after_request_before_on_complete do |request|
-  unless request.response.mock?
+  if VCR::HttpStubbingAdapters::Typhoeus.enabled? && !request.response.mock?
     http_interaction = VCR::HTTPInteraction.new(
       VCR::Request.new(
         request.method,

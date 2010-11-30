@@ -80,3 +80,10 @@ Then /^the file "([^"]*)" should contain each of these:$/ do |file_name, table|
   end
 end
 
+Then /^the cassette "([^"]*)" should have the following response bodies:$/ do |file, table|
+  interactions = in_current_dir { YAML.load_file(file) }
+  actual_response_bodies = interactions.map { |i| i.response.body }
+  expected_response_bodies = table.raw.flatten
+  actual_response_bodies.should =~ expected_response_bodies
+end
+

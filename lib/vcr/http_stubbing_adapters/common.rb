@@ -9,16 +9,42 @@ module VCR
     class UnsupportedRequestMatchAttributeError < ArgumentError; end
 
     module Common
-      def self.add_vcr_info_to_exception_message(exception_klass)
-        exception_klass.class_eval do
-          def initialize(message)
-            super(message + '.  ' + VCR::HttpStubbingAdapters::Common::RECORDING_INSTRUCTIONS)
+      class << self
+        attr_accessor :exclusively_enabled_adapter
+
+        def add_vcr_info_to_exception_message(exception_klass)
+          exception_klass.class_eval do
+            def initialize(message)
+              super(message + '.  ' + VCR::HttpStubbingAdapters::Common::RECORDING_INSTRUCTIONS)
+            end
           end
+        end
+
+        def adapters
+          @adapters ||= []
+        end
+
+        def included(adapter)
+          adapters << adapter
         end
       end
 
       RECORDING_INSTRUCTIONS = "You can use VCR to automatically record this request and replay it later.  " +
                                "For more details, visit the VCR wiki at: http://github.com/myronmarston/vcr/wiki"
+
+      def enabled?
+        [nil, self].include? VCR::HttpStubbingAdapters::Common.exclusively_enabled_adapter
+      end
+
+      def exclusively_enabled
+        VCR::HttpStubbingAdapters::Common.exclusively_enabled_adapter = self
+
+        begin
+          yield
+        ensure
+          VCR::HttpStubbingAdapters::Common.exclusively_enabled_adapter = nil
+        end
+      end
 
       def check_version!
         version_too_low, version_too_high = compare_version

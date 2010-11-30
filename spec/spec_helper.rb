@@ -19,7 +19,6 @@ RSpec.configure do |config|
   config.extend DisableWarnings
   config.extend MonkeyPatches::RSpecMacros
   config.extend WebMockMacros
-  config.extend TyphoeusMacros
 
   config.color_enabled = true
   config.debug = RUBY_INTERPRETER == :mri
@@ -46,3 +45,7 @@ RSpec.configure do |config|
   config.alias_it_should_behave_like_to :it_performs, 'it performs'
 end
 
+http_stubbing_dir = File.join(File.dirname(__FILE__), '..', 'lib', 'vcr', 'http_stubbing_adapters')
+Dir[File.join(http_stubbing_dir, '*.rb')].each do |file|
+  require "vcr/http_stubbing_adapters/#{File.basename(file)}"
+end

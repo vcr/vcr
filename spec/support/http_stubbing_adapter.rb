@@ -32,6 +32,32 @@ shared_examples_for "an http stubbing adapter" do |supported_http_libraries, sup
     end
   end
 
+  describe '.exclusively_enabled' do
+    def adapter_enabled?(adapter)
+      enabled = nil
+      subject.exclusively_enabled { enabled = adapter.enabled? }
+      enabled
+    end
+
+    VCR::HttpStubbingAdapters::Common.adapters.each do |adapter|
+      if adapter == described_class
+        it "yields with #{adapter} enabled" do
+          adapter_enabled?(adapter).should == true
+        end
+      else
+        it "yields without #{adapter} enabled" do
+          adapter_enabled?(adapter).should == false
+        end
+      end
+    end
+
+    it 're-enables all adapters afterwards' do
+      VCR::HttpStubbingAdapters::Common.adapters.all? { |a| a.should be_enabled }
+      subject.exclusively_enabled { }
+      VCR::HttpStubbingAdapters::Common.adapters.all? { |a| a.should be_enabled }
+    end
+  end
+
   if other.include?(:needs_net_http_extension)
     describe '#request_uri' do
       it 'returns the uri for the given http request' do

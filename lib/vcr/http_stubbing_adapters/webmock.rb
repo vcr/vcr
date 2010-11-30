@@ -73,25 +73,27 @@ module VCR
 end
 
 WebMock.after_request(:real_requests_only => true) do |request, response|
-  http_interaction = VCR::HTTPInteraction.new(
-    VCR::Request.new(
-      request.method,
-      request.uri.to_s,
-      request.body,
-      request.headers
-    ),
-    VCR::Response.new(
-      VCR::ResponseStatus.new(
-        response.status.first,
-        response.status.last
+  if VCR::HttpStubbingAdapters::WebMock.enabled?
+    http_interaction = VCR::HTTPInteraction.new(
+      VCR::Request.new(
+        request.method,
+        request.uri.to_s,
+        request.body,
+        request.headers
       ),
-      response.headers,
-      response.body,
-      '1.1'
+      VCR::Response.new(
+        VCR::ResponseStatus.new(
+          response.status.first,
+          response.status.last
+        ),
+        response.headers,
+        response.body,
+        '1.1'
+      )
     )
-  )
 
-  VCR.record_http_interaction(http_interaction)
+    VCR.record_http_interaction(http_interaction)
+  end
 end
 
 WebMock::NetConnectNotAllowedError.class_eval do

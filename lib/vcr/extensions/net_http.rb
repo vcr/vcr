@@ -4,6 +4,10 @@ require 'vcr/extensions/net_http_response'
 module Net
   class HTTP
     def request_with_vcr(request, body = nil, &block)
+      unless VCR::HttpStubbingAdapters::FakeWeb.enabled?
+        return request_without_vcr(request, body, &block)
+      end
+
       vcr_request = VCR::Request.from_net_http_request(self, request)
       response = request_without_vcr(request, body)
 

@@ -1,8 +1,8 @@
 Feature: stub_with configuration option
 
   The `stub_with` configuration option determines which HTTP stubbing library
-  VCR will use.  There are currently 3 supported stubbing libraries which
-  support 6 different HTTP libraries:
+  VCR will use.  There are currently 4 supported stubbing libraries which
+  support many different HTTP libraries:
 
     * FakeWeb can be used to stub Net::HTTP.
     * WebMock can be used to stub:
@@ -13,6 +13,9 @@ Feature: stub_with configuration option
       * EM HTTP Request
     * Typhoeus can be used to stub itself (as long as you use Typhoeus::Hydra,
       but not Typhoeus::Easy or Typhoeus::Multi).
+    * Faraday can be used (in combination with the provided Faraday middleware)
+      to stub requests made through Faraday (regardless of which Faraday HTTP
+      adapter is used).
 
   There are some addiitonal trade offs to consider when deciding which
   stubbing library to use:
@@ -27,13 +30,14 @@ Feature: stub_with configuration option
       supported HTTP libraries.  Typhoeus provides all the necessary
       stubbing and recording integration points, and no monkey patching
       is required at all.
-    * Typhoeus can be used together with either FakeWeb or WebMock.
-    * FakeWeb and WebMock cannot both be used.
+    * FakeWeb and WebMock cannot both be used at the same time.
+    * Typhoeus and Faraday can be used together, and with either
+      FakeWeb or WebMock.
 
   Regardless of which library you use, VCR takes care of all of the configuration
   for you.  You should not need to interact directly with FakeWeb, WebMock or the
-  stubbing facilities of Typhoeus.  If/when you decide to change stubbing libraries
-  (i.e. if you initially use FakeWeb because it's faster but later need the
+  stubbing facilities of Typhoeus or Faraday.  If/when you decide to change stubbing
+  libraries (i.e. if you initially use FakeWeb because it's faster but later need the
   additional features of WebMock) you can change the `stub_with` configuration
   option and it'll work with no other changes required.
 
@@ -110,7 +114,7 @@ Feature: stub_with configuration option
       | :typhoeus  | typhoeus        |
 
   @exclude-jruby
-  Scenario Outline: Use Typhoeus in combination with FakeWeb or WebMock
+  Scenario Outline: Use Typhoeus and Faraday in combination with FakeWeb or WebMock
     Given a file named "stub_with_multiple.rb" with:
       """
       require 'vcr_cucumber_helpers'
@@ -128,13 +132,24 @@ Feature: stub_with configuration option
         Typhoeus::Request.get("http://localhost:7777/typhoeus").body
       end
 
+      def faraday_response
+        Faraday::Connection.new(:url => 'http://localhost:7777') do |builder|
+          builder.use VCR::Middleware::Faraday do |cassette|
+            cassette.name    'example'
+            cassette.options :record => :new_episodes
+          end
+
+          builder.adapter :<faraday_adapter>
+        end.get('/faraday').body
+      end
+
       puts "Net::HTTP 1: #{net_http_response}"
       puts "Typhoeus 1: #{typhoeus_response}"
 
       require 'vcr'
 
       VCR.config do |c|
-        c.stub_with <stub_with>, :typhoeus
+        c.stub_with <stub_with>, :typhoeus, :faraday
         c.cassette_library_dir = 'vcr_cassettes'
       end
 
@@ -142,6 +157,8 @@ Feature: stub_with configuration option
         puts "Net::HTTP 2: #{net_http_response}"
         puts "Typhoeus 2: #{typhoeus_response}"
       end
+
+      puts "Faraday: #{faraday_response}"
       """
     When I run "ruby stub_with_multiple.rb 'Hello'"
     Then the output should contain each of the following:
@@ -149,8 +166,11 @@ Feature: stub_with configuration option
       | Typhoeus 1: Hello typhoeus  |
       | Net::HTTP 2: Hello net_http |
       | Typhoeus 2: Hello typhoeus  |
-    And the file "vcr_cassettes/example.yml" should contain "body: Hello net_http"
-    And the file "vcr_cassettes/example.yml" should contain "body: Hello typhoeus"
+      | Faraday: Hello faraday      |
+    And the cassette "vcr_cassettes/example.yml" should have the following response bodies:
+      | Hello net_http |
+      | Hello typhoeus |
+      | Hello faraday  |
 
     When I run "ruby stub_with_multiple.rb 'Goodbye'"
     Then the output should contain each of the following:
@@ -158,8 +178,11 @@ Feature: stub_with configuration option
       | Typhoeus 1: Goodbye typhoeus  |
       | Net::HTTP 2: Hello net_http   |
       | Typhoeus 2: Hello typhoeus    |
+      | Faraday: Hello faraday        |
 
-  Examples:
-    | stub_with |
-    | :fakeweb  |
-    | :webmock  |
+    Examples:
+      | stub_with | faraday_adapter |
+      | :fakeweb  | net_http        |
+      | :webmock  | net_http        |
+      | :fakeweb  | typhoeus        |
+      | :webmock  | typhoeus        |

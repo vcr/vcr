@@ -2,8 +2,6 @@ require 'spec_helper'
 
 describe VCR::HttpStubbingAdapters::Faraday do
   without_monkey_patches :all
-  without_webmock_callbacks
-  without_typhoeus_callbacks
 
   it_behaves_like 'an http stubbing adapter',
     %w[ faraday-typhoeus faraday-net_http faraday-patron ],

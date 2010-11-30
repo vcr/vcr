@@ -274,6 +274,12 @@ module HttpLibrarySpecs
               interaction
             end
 
+            it 'does not record the request if the adapter is disabled' do
+              subject.stub(:enabled?).and_return(false)
+              VCR.should_not_receive(:record_http_interaction)
+              make_http_request(:get, url)
+            end
+
             it 'records the request uri' do
               recorded_interaction.request.uri.should == url
             end
