@@ -145,6 +145,10 @@ describe VCR::RequestMatcher do
     return matcher, matcher(attribute)
   end
 
+  def matcher_with_headers(headers)
+    VCR::RequestMatcher.new(VCR::Request.new(:get, 'http://foo.com/', nil, headers), [:method, :uri, :headers])
+  end
+
   describe '#hash' do
     it 'returns the same code for two objects when #match_attributes, #method, #uri, #body and #headers are the same, even when the request object is different' do
       m1, m2 = matchers_varying_on(:request)
@@ -161,6 +165,38 @@ describe VCR::RequestMatcher do
     [:match_attributes, :method, :uri, :body, :headers].each do |different_attr|
       it "returns different codes for two objects when ##{different_attr} is different, even when the request object is the same" do
         m1, m2 = matchers_varying_on(different_attr)
+        m1.hash.should_not == m2.hash
+      end
+    end
+
+    context 'for headers' do
+      it 'returns the same code for the same headers' do
+        m1 = matcher_with_headers('x-http-header' => ['val1'])
+        m2 = matcher_with_headers('x-http-header' => ['val1'])
+        m1.hash.should == m2.hash
+      end
+
+      it 'returns the same code when the header keys are ordered differently' do
+        m1 = matcher_with_headers('x-http-header1' => ['val1'], 'x-http-header2' => ['val2'])
+        m2 = matcher_with_headers('x-http-header2' => ['val2'], 'x-http-header1' => ['val1'])
+        m1.hash.should == m2.hash
+      end
+
+      it 'returns the same code when the header value arrays are ordered differently' do
+        m1 = matcher_with_headers('x-http-header' => ['val1', 'val2'])
+        m2 = matcher_with_headers('x-http-header' => ['val2', 'val1'])
+        m1.hash.should == m2.hash
+      end
+
+      it 'returns a different code when the header values are different' do
+        m1 = matcher_with_headers('x-http-header' => ['val1'])
+        m2 = matcher_with_headers('x-http-header' => ['val2'])
+        m1.hash.should_not == m2.hash
+      end
+
+      it 'returns a different code when the header keys are different' do
+        m1 = matcher_with_headers('x-http-header1' => ['val1'])
+        m2 = matcher_with_headers('x-http-header2' => ['val1'])
         m1.hash.should_not == m2.hash
       end
     end

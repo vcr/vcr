@@ -69,7 +69,22 @@ module VCR
       # on Ruby 1.8.6, identical sets have different hash values,
       # but identical arrays have the same hash values,
       # so we convert match_attributes to an array here.
-      [match_attributes.to_a, method, uri, headers, body].hash
+      [match_attributes.to_a, method, uri, sorted_header_array, body].hash
     end
+
+    private
+
+      def sorted_header_array
+        header_hash = headers
+        return header_hash unless header_hash.is_a?(Hash)
+
+        array = []
+        header_hash.each do |k, v|
+          v = v.sort if v.respond_to?(:sort)
+          array << [k, v]
+        end
+
+        array.sort! { |a1, a2| a1.first <=> a2.first }
+      end
   end
 end
