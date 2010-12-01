@@ -155,7 +155,7 @@
     :uri: http://example.com:80/
     :body: 
     :headers: 
-      :x-http-header1: 
+      x-http-header1: 
       - val1
   :response: !ruby/struct:VCR::Response 
     :status: !ruby/struct:VCR::ResponseStatus 
@@ -172,7 +172,7 @@
     :uri: http://example.com:80/
     :body: 
     :headers: 
-      :x-http-header1: 
+      x-http-header1: 
       - val2
   :response: !ruby/struct:VCR::Response 
     :status: !ruby/struct:VCR::ResponseStatus 
