@@ -26,7 +26,7 @@ module VCR
             elsif VCR::HttpStubbingAdapters::Faraday.http_connections_allowed?
               response = @app.call(env)
 
-              # Checking #enabled? isn't strictly needed, but confirms
+              # Checking #enabled? isn't strictly needed, but conforms
               # the Faraday adapter to the behavior of the other adapters
               if VCR::HttpStubbingAdapters::Faraday.enabled?
                 VCR.record_http_interaction(VCR::HTTPInteraction.new(request, response_for(env)))
