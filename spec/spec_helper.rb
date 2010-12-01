@@ -47,5 +47,6 @@ end
 
 http_stubbing_dir = File.join(File.dirname(__FILE__), '..', 'lib', 'vcr', 'http_stubbing_adapters')
 Dir[File.join(http_stubbing_dir, '*.rb')].each do |file|
+  next if RUBY_INTERPRETER != :mri && file =~ /(typhoeus)/
   require "vcr/http_stubbing_adapters/#{File.basename(file)}"
 end
