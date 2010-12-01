@@ -29,8 +29,8 @@ maintenance) and accurate (the response from example.com will contain the same h
 ## Features
 
 * Automatically records and replays your HTTP interactions with minimal setup/configuration code.
-* Supports multiple HTTP stubbing libraries.  Currently FakeWeb and WebMock are supported, and the adapter interface
-  is easy to implement for any future libraries.
+* Supports multiple HTTP stubbing libraries.  Currently FakeWeb, WebMock, Typhoeus and Faraday
+  are supported.
 * Supports multiple HTTP libraries:
   * [Patron](http://github.com/toland/patron) (WebMock)
   * [Curb](http://github.com/taf2/curb) (WebMock -- only supports Curb::Easy at the moment)
@@ -50,6 +50,7 @@ maintenance) and accurate (the response from example.com will contain the same h
 * Known to work well with many popular ruby libraries including RSpec 1 & 2, Cucumber, Test::Unit,
   Capybara, Mechanize, Rest-Client and HTTParty.
 * Extensively tested on 7 different ruby interpretters.
+* Includes Rack and Faraday middleware.
 
 ## Usage
 
