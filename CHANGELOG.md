@@ -1,8 +1,8 @@
 # Changelog
 
-## In git
+## 1.4.0 (December 3, 2010)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.3.3...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.3.3...v1.4.0)
 
 * Added support for making HTTP requests without a cassette (i.e. if you don't
   want to use VCR for all of your test suite).  There are a few ways to
