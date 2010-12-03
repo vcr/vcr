@@ -12,7 +12,12 @@ Feature: EM HTTP Request
       require 'vcr_cucumber_helpers'
 
       start_sinatra_app(:port => 7777) do
-        get('/:path') { ARGV[0] + ' ' + params[:path] }
+        %w[ foo bar bazz ].each_with_index do |path, index|
+          get "/#{path}" do
+            sleep index * 0.1 # ensure the async callbacks are invoked in order
+            ARGV[0] + ' ' + path
+          end
+        end
       end
 
       require 'vcr'
