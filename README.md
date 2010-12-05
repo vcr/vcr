@@ -87,6 +87,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Bartosz Blimke](http://github.com/bblimke)
 * [Ben Hutton](http://github.com/benhutton)
 * [Eric Allam](http://github.com/rubymaverick)
+* [Karl Baum](https://github.com/kbaum)
 
 ## Copyright
 
