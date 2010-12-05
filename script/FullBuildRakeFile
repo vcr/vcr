@@ -7,6 +7,12 @@ task :build => :ensure_bundler_installed do
   sh "rake"
 end
 
+desc "Install necessary gems with bundler, runs specs, run cukes"
+task :spec => :ensure_bundler_installed do
+  sh "bundle install"
+  sh "rake spec"
+end
+
 task :ensure_bundler_installed do
   installed = begin
     require 'rubygems'
