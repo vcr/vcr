@@ -21,7 +21,7 @@ describe VCR::Cassette do
 
     it 'returns nil if the cassette_library_dir is not set' do
       VCR::Config.cassette_library_dir = nil
-      cassette = VCR::Cassette.new('the_file')
+      cassette                         = VCR::Cassette.new('the_file')
       cassette.file.should be_nil
     end
   end
@@ -65,6 +65,11 @@ describe VCR::Cassette do
       }.to raise_error(ArgumentError)
     end
 
+    it 'does not raise an error in the case of an empty file' do
+      VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
+      VCR::Cassette.new('empty', :record => :none).recorded_interactions.should==([])
+    end
+
     it 'creates a stubs checkpoint on the http_stubbing_adapter' do
       VCR.http_stubbing_adapter.should_receive(:create_stubs_checkpoint).with('example').once
       VCR::Cassette.new('example')
@@ -89,17 +94,17 @@ describe VCR::Cassette do
       end
 
       it "compiles a template as ERB if the default :erb option is true, and no option is passed to the cassette" do
-        VCR::Config.default_cassette_options = { :erb => true }
+        VCR::Config.default_cassette_options = {:erb => true}
         cassette_body('erb_with_no_vars').should == 'sum: 3'
       end
 
       it "does not compile a template as ERB if the default :erb option is true, and :erb => false is passed to the cassette" do
-        VCR::Config.default_cassette_options = { :erb => true }
+        VCR::Config.default_cassette_options = {:erb => true}
         cassette_body('erb_with_no_vars', :erb => false).should == 'sum: <%= 1 + 2 %>'
       end
 
       it "compiles a template as ERB if the :erb option is passed a hash" do
-        cassette_body('erb_with_vars', :erb => { :var1 => 'a', :var3 => 'c', :var2 => 'b' }).should == 'var1: a; var2: b; var3: c'
+        cassette_body('erb_with_vars', :erb => {:var1 => 'a', :var3 => 'c', :var2 => 'b'}).should == 'var1: a; var2: b; var3: c'
       end
 
       it "does not compile a template as ERB if the :erb option is not used" do
@@ -108,29 +113,29 @@ describe VCR::Cassette do
 
       it "raises a helpful error if the ERB template references variables that are not passed in the :erb hash" do
         expect {
-          cassette_body('erb_with_vars', :erb => { :var1 => 'a', :var2 => 'b' })
+          cassette_body('erb_with_vars', :erb => {:var1 => 'a', :var2 => 'b'})
         }.to raise_error(VCR::Cassette::MissingERBVariableError,
-          %{The ERB in the erb_with_vars.yml cassette file references undefined variable var3.  } +
-          %{Pass it to the cassette using :erb => #{ { :var1 => 'a', :var2 => 'b' }.merge(:var3 => 'some value').inspect }.}
-        )
+                         %{The ERB in the erb_with_vars.yml cassette file references undefined variable var3.  } +
+                             %{Pass it to the cassette using :erb => #{ {:var1 => 'a', :var2 => 'b'}.merge(:var3 => 'some value').inspect }.}
+             )
       end
 
       it "raises a helpful error if the ERB template references variables and :erb => true is passed" do
         expect {
           cassette_body('erb_with_vars', :erb => true)
         }.to raise_error(VCR::Cassette::MissingERBVariableError,
-          %{The ERB in the erb_with_vars.yml cassette file references undefined variable var1.  } +
-          %{Pass it to the cassette using :erb => {:var1=>"some value"}.}
-        )
+                         %{The ERB in the erb_with_vars.yml cassette file references undefined variable var1.  } +
+                             %{Pass it to the cassette using :erb => {:var1=>"some value"}.}
+             )
       end
     end
 
     VCR::Cassette::VALID_RECORD_MODES.each do |record_mode|
       http_connections_allowed = (record_mode != :none)
-      stub_requests = (record_mode != :all)
+      stub_requests            = (record_mode != :all)
 
       context "when VCR::Config.default_cassette_options[:record] is :#{record_mode}" do
-        before(:each) { VCR::Config.default_cassette_options = { :record => record_mode } }
+        before(:each) { VCR::Config.default_cassette_options = {:record => record_mode} }
 
         it "defaults the record mode to #{record_mode} when VCR::Config.default_cassette_options[:record] is #{record_mode}" do
           cassette = VCR::Cassette.new(:test)
@@ -195,14 +200,14 @@ describe VCR::Cassette do
           it "#{ ignore_localhost ? 'does not load' : 'loads' } localhost interactions from the cassette file when http_stubbing_adapter.ignore_localhost is set to #{ignore_localhost}" do
             VCR.http_stubbing_adapter.stub!(:ignore_localhost?).and_return(ignore_localhost)
             VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
-            cassette = VCR::Cassette.new('with_localhost_requests', :record => record_mode)
+            cassette                         = VCR::Cassette.new('with_localhost_requests', :record => record_mode)
             cassette.recorded_interactions.map { |i| URI.parse(i.uri).host }.should =~ expected_uri_hosts
           end
         end
 
         it "loads the recorded interactions from the library yml file" do
           VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
-          cassette = VCR::Cassette.new('example', :record => record_mode)
+          cassette                         = VCR::Cassette.new('example', :record => record_mode)
 
           cassette.should have(3).recorded_interactions
 
@@ -258,12 +263,12 @@ describe VCR::Cassette do
 
     it "writes the recorded interactions to disk as yaml" do
       recorded_interactions = [
-        VCR::HTTPInteraction.new(:req_sig_1, :response_1),
-        VCR::HTTPInteraction.new(:req_sig_2, :response_2),
-        VCR::HTTPInteraction.new(:req_sig_3, :response_3)
+          VCR::HTTPInteraction.new(:req_sig_1, :response_1),
+          VCR::HTTPInteraction.new(:req_sig_2, :response_2),
+          VCR::HTTPInteraction.new(:req_sig_3, :response_3)
       ]
 
-      cassette = VCR::Cassette.new(:eject_test)
+      cassette              = VCR::Cassette.new(:eject_test)
       cassette.stub!(:new_recorded_interactions).and_return(recorded_interactions)
 
       expect { cassette.eject }.to change { File.exist?(cassette.file) }.from(false).to(true)
@@ -273,7 +278,7 @@ describe VCR::Cassette do
 
     it "writes the recorded interactions to a subdirectory if the cassette name includes a directory" do
       recorded_interactions = [VCR::HTTPInteraction.new(:the_request, :the_response)]
-      cassette = VCR::Cassette.new('subdirectory/test_cassette')
+      cassette              = VCR::Cassette.new('subdirectory/test_cassette')
       cassette.stub!(:new_recorded_interactions).and_return(recorded_interactions)
 
       expect { cassette.eject }.to change { File.exist?(cassette.file) }.from(false).to(true)
@@ -333,17 +338,17 @@ describe VCR::Cassette do
               subject.eject
 
               saved_recorded_interactions.should == [
-                old_interaction_2,
-                new_interaction_1,
-                new_interaction_2,
-                new_interaction_3
+                  old_interaction_2,
+                  new_interaction_1,
+                  new_interaction_2,
+                  new_interaction_3
               ]
             end
 
             it "matches old requests to new ones using the cassette's match attributes" do
               [
-                old_interaction_1, old_interaction_2, old_interaction_3,
-                new_interaction_1, new_interaction_2, new_interaction_3
+                  old_interaction_1, old_interaction_2, old_interaction_3,
+                  new_interaction_1, new_interaction_2, new_interaction_3
               ].each do |i|
                 i.request.should_receive(:matcher).with(subject.match_requests_on).and_return(:the_matcher)
               end
@@ -355,12 +360,12 @@ describe VCR::Cassette do
               subject.eject
 
               saved_recorded_interactions.should == [
-                old_interaction_1,
-                old_interaction_2,
-                old_interaction_3,
-                new_interaction_1,
-                new_interaction_2,
-                new_interaction_3
+                  old_interaction_1,
+                  old_interaction_2,
+                  old_interaction_3,
+                  new_interaction_1,
+                  new_interaction_2,
+                  new_interaction_3
               ]
             end
           end

@@ -5,14 +5,15 @@ require 'set'
 
 module VCR
   class Cassette
-    class MissingERBVariableError < NameError; end
+    class MissingERBVariableError < NameError;
+    end
 
     VALID_RECORD_MODES = [:all, :none, :new_episodes]
 
     attr_reader :name, :record_mode, :match_requests_on, :erb, :re_record_interval
 
     def initialize(name, options = {})
-      options = VCR::Config.default_cassette_options.merge(options)
+      options         = VCR::Config.default_cassette_options.merge(options)
       invalid_options = options.keys - [:record, :erb, :allow_real_http, :match_requests_on, :re_record_interval]
 
       if invalid_options.size > 0
@@ -24,7 +25,7 @@ module VCR
       @erb                = options[:erb]
       @match_requests_on  = options[:match_requests_on]
       @re_record_interval = options[:re_record_interval]
-      @record_mode        = :all if should_re_record?
+      @record_mode = :all if should_re_record?
 
       deprecate_old_cassette_options(options)
       raise_error_unless_valid_record_mode(record_mode)
@@ -70,9 +71,9 @@ module VCR
 
     def should_re_record?
       @re_record_interval &&
-      File.exist?(file) &&
-      File.stat(file).mtime + @re_record_interval < Time.now &&
-      InternetConnection.available?
+          File.exist?(file) &&
+          File.stat(file).mtime + @re_record_interval < Time.now &&
+          InternetConnection.available?
     end
 
     def should_allow_http_connections?
@@ -88,7 +89,7 @@ module VCR
     end
 
     def set_http_connections_allowed
-      @orig_http_connections_allowed = VCR.http_stubbing_adapter.http_connections_allowed?
+      @orig_http_connections_allowed                     = VCR.http_stubbing_adapter.http_connections_allowed?
       VCR.http_stubbing_adapter.http_connections_allowed = should_allow_http_connections?
     end
 
@@ -98,8 +99,7 @@ module VCR
 
     def load_recorded_interactions
       VCR.http_stubbing_adapter.create_stubs_checkpoint(name)
-
-      if file && File.exist?(file)
+      if file && File.size?(file)
         begin
           interactions = YAML.load(raw_yaml_content)
 
@@ -143,9 +143,9 @@ module VCR
         example_hash = (@erb.is_a?(Hash) ? @erb : {}).merge(e.name => 'some value')
 
         raise MissingERBVariableError.new(
-          "The ERB in the #{sanitized_name}.yml cassette file references undefined variable #{e.name}.  " +
-          "Pass it to the cassette using :erb => #{ example_hash.inspect }."
-        )
+                  "The ERB in the #{sanitized_name}.yml cassette file references undefined variable #{e.name}.  " +
+                      "Pass it to the cassette using :erb => #{ example_hash.inspect }."
+              )
       end
     end
 
@@ -153,13 +153,13 @@ module VCR
       old_interactions = recorded_interactions
 
       if should_remove_matching_existing_interactions?
-        match_attributes = match_requests_on
+        match_attributes     = match_requests_on
 
         new_request_matchers = Set.new new_recorded_interactions.map do |i|
           i.request.matcher(match_attributes)
         end
 
-        old_interactions = old_interactions.reject do |i|
+        old_interactions     = old_interactions.reject do |i|
           new_request_matchers.include?(i.request.matcher(match_attributes))
         end
       end
