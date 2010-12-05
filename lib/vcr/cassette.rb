@@ -98,8 +98,7 @@ module VCR
 
     def load_recorded_interactions
       VCR.http_stubbing_adapter.create_stubs_checkpoint(name)
-
-      if file && File.exist?(file)
+      if file && File.size?(file)
         begin
           interactions = YAML.load(raw_yaml_content)
 

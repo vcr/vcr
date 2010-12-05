@@ -65,6 +65,11 @@ describe VCR::Cassette do
       }.to raise_error(ArgumentError)
     end
 
+    it 'does not raise an error in the case of an empty file' do
+      VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
+      VCR::Cassette.new('empty', :record => :none).recorded_interactions.should == []
+    end
+
     it 'creates a stubs checkpoint on the http_stubbing_adapter' do
       VCR.http_stubbing_adapter.should_receive(:create_stubs_checkpoint).with('example').once
       VCR::Cassette.new('example')
