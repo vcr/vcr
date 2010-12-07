@@ -46,7 +46,7 @@ Feature: :new_episodes record mode
       """
       require 'setup'
 
-      VCR.use_cassette('example', :record => :none) do
+      VCR.use_cassette('example', :record => :new_episodes) do
         response = Net::HTTP.get_response('example.com', '/foo')
         puts "Response: #{response.body}"
       end
