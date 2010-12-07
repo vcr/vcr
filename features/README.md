@@ -12,7 +12,7 @@ provided by `vcr_cucumber_helpers.rb`:
   the replaying of a recorded HTTP response.
 * `include_http_adapter_for`: includes a module that implements a common
   HTTP interface for the given HTTP library.  The `response_body_for`
-  method will make an HTTP request using the given this library.  This
+  method will make an HTTP request using the given library.  This
   allows scenarios to be run against each different supported HTTP
   library.
 
