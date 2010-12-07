@@ -1,10 +1,10 @@
 Feature: :none record mode
 
-  The :none record mode allows previously recorded responses
+  The `:none` record mode allows previously recorded responses
   to be replayed, but raises an error for any new requests.
 
   This is useful when you code makes potentially dangerous
-  HTTP requests.  The :none record mode guarantees that no
+  HTTP requests.  The `:none` record mode guarantees that no
   new HTTP requests will be made.
 
   Background:

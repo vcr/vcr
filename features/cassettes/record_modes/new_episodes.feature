@@ -1,6 +1,6 @@
 Feature: :new_episodes record mode
 
-  The :new_episodes record mode replays previously recorded
+  The `:new_episodes` record mode replays previously recorded
   requests and records new ones.
 
   Background:

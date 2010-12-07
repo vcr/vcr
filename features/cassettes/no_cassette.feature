@@ -11,9 +11,9 @@ Feature: Error for HTTP request made when no cassette is in use
   (see configuration/allow_http_connections_when_no_cassette.feature) or
   you can temporarily turn VCR off:
 
-    * VCR.turn_off! => turn VCR off so HTTP requests are allowed
-    * VCR.turn_on! => turn VCR back on
-    * VCR.turned_off { ... } => turn VCR off for the duration of the
+    - `VCR.turn_off!` => turn VCR off so HTTP requests are allowed
+    - `VCR.turn_on!` => turn VCR back on
+    - `VCR.turned_off { ... }` => turn VCR off for the duration of the
       provided block.
 
   Scenario Outline: Error for request when no cassette is in use

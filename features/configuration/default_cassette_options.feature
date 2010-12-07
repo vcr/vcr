@@ -4,7 +4,7 @@ Feature: default_cassette_options configuration option
   that provides defaults for each cassette you use.  Any cassette
   can override the defaults as well as set additional options.
 
-  The `:match_requests_on` option defaults to [:method, :uri] when
+  The `:match_requests_on` option defaults to `[:method, :uri]` when
   it has not been set.
 
   Background:

@@ -4,34 +4,34 @@ Feature: stub_with configuration option
   VCR will use.  There are currently 4 supported stubbing libraries which
   support many different HTTP libraries:
 
-    * FakeWeb can be used to stub Net::HTTP.
-    * WebMock can be used to stub:
-      * Net::HTTP
-      * HTTPClient
-      * Patron
-      * Curb (Curb::Easy, but not Curb::Multi)
-      * EM HTTP Request
-    * Typhoeus can be used to stub itself (as long as you use Typhoeus::Hydra,
+    - FakeWeb can be used to stub Net::HTTP.
+    - WebMock can be used to stub:
+      - Net::HTTP
+      - HTTPClient
+      - Patron
+      - Curb (Curb::Easy, but not Curb::Multi)
+      - EM HTTP Request
+    - Typhoeus can be used to stub itself (as long as you use Typhoeus::Hydra,
       but not Typhoeus::Easy or Typhoeus::Multi).
-    * Faraday can be used (in combination with the provided Faraday middleware)
+    - Faraday can be used (in combination with the provided Faraday middleware)
       to stub requests made through Faraday (regardless of which Faraday HTTP
       adapter is used).
 
   There are some addiitonal trade offs to consider when deciding which
   stubbing library to use:
 
-    * FakeWeb does not allow you to stub a request based on the headers or body.
+    - FakeWeb does not allow you to stub a request based on the headers or body.
       Therefore, the `:match_requests_on` option does not support `:body` or
       `:headers` when you use FakeWeb.  Typhoeus and WebMock both support
       matching on `:body` and `:headers`.
-    * FakeWeb is currently about 4 times faster than WebMock for stubbing
+    - FakeWeb is currently about 4 times faster than WebMock for stubbing
       Net::HTTP (see benchmarks/http_stubbing_libraries.rb for details).
-    * FakeWeb and WebMock both use extensive monkey patching to stub their
+    - FakeWeb and WebMock both use extensive monkey patching to stub their
       supported HTTP libraries.  Typhoeus provides all the necessary
       stubbing and recording integration points, and no monkey patching
       is required at all.
-    * FakeWeb and WebMock cannot both be used at the same time.
-    * Typhoeus and Faraday can be used together, and with either
+    - FakeWeb and WebMock cannot both be used at the same time.
+    - Typhoeus and Faraday can be used together, and with either
       FakeWeb or WebMock.
 
   Regardless of which library you use, VCR takes care of all of the configuration

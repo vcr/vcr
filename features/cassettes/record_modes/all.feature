@@ -1,6 +1,6 @@
 Feature: :all record mode
 
-  The :all record mode records all requests and does not
+  The `:all` record mode records all requests and does not
   replay any previously recorded responds.
 
   This can be temporarily used to force VCR to re-record

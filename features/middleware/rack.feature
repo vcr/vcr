@@ -1,17 +1,17 @@
 Feature: rack middleware
 
   VCR provides a rack middleware that uses a cassette for the duration of
-  a request.  Simply provide VCR::Middleware::Rack with a block that sets
+  a request.  Simply provide `VCR::Middleware::Rack` with a block that sets
   the cassette name and options.  You can set these based on the rack env
   if your block accepts two arguments.
 
   There useful in a couple different ways:
 
-  * In a rails app, you could use this to log all HTTP API calls made by
+  - In a rails app, you could use this to log all HTTP API calls made by
     the rails app (using the :all record mode).  Of course, this will only
     record HTTP API calls made in the request-response cycle--API calls that
     are offloaded to a background job will not be logged.
-  * This can be used as middleware in a simple rack HTTP proxy, to record the
+  - This can be used as middleware in a simple rack HTTP proxy, to record the
     and replay the proxied requests.
 
   Background:

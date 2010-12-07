@@ -5,8 +5,8 @@ Feature: Cassette format
   human-readable/editable format.  A cassette contains an array
   of HTTP interactions, each of which has the following:
 
-    * Request method, uri, body, headers
-    * Response status (code & message), headers, body, http version
+    - Request method, uri, body, headers
+    - Response status (code & message), headers, body, http version
 
   Scenario Outline: Request/Response data is saved to disk as YAML
     Given a file named "cassette_format.rb" with:

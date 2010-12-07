@@ -8,16 +8,16 @@ Feature: Request matching
   You can customize how VCR matches requests using the `:match_requests_on` option.
   Specify an array of attributes to match on.  Supported attributes are:
 
-    * :method - The HTTP method (i.e. GET, POST, PUT or DELETE) of the request.
-    * :uri - The full URI of the request.
-    * :host - The host of the URI. You can use this (alone, or in combination
-      with :path) as an alternative to :uri to cause VCR to match using a regex
+    - `:method` - The HTTP method (i.e. GET, POST, PUT or DELETE) of the request.
+    - `:uri` - The full URI of the request.
+    - `:host - The host of the URI. You can use this (alone, or in combination
+      with `:path`) as an alternative to :uri to cause VCR to match using a regex
       that matches the host.
-    * :path - The path of the URI. You can use this (alone, or in combination
-      with :host) as an alternative to :uri to cause VCR to match using a regex
+    - `:path` - The path of the URI. You can use this (alone, or in combination
+      with `:host`) as an alternative to :uri to cause VCR to match using a regex
       that matches the path.
-    * :body - The body of the request. (Unsupported when you use FakeWeb.)
-    * :headers - The request headers. (Unsupported when you use FakeWeb.)
+    - `:body` - The body of the request. (Unsupported when you use FakeWeb.)
+    - `:headers` - The request headers. (Unsupported when you use FakeWeb.)
 
   Alternately, you can manually edit a cassette and change a URI to the YAML
   of a regular expression.

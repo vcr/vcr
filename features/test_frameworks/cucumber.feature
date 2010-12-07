@@ -2,24 +2,24 @@ Feature: Usage with cucumber
 
   VCR can be used with cucumber in two basic ways:
 
-    * Use `VCR.use_cassette` in a step definition.
-    * Use a `VCR.cucumber_tags` block to tell VCR to use a
+    - Use `VCR.use_cassette` in a step definition.
+    - Use a `VCR.cucumber_tags` block to tell VCR to use a
       cassette for a tagged scenario.
 
   In a cucumber support file (e.g. features/support/vcr.rb), put code like this:
 
-    VCR.cucumber_tags do |t|
-      t.tag  '@tag1'
-      t.tags '@tag2', '@tag3'
+      VCR.cucumber_tags do |t|
+        t.tag  '@tag1'
+        t.tags '@tag2', '@tag3'
 
-      t.tag  '@tag3', :cassette => :options
-      t.tags '@tag4, '@tag5', :cassette => :options
-    end
+        t.tag  '@tag3', :cassette => :options
+        t.tags '@tag4, '@tag5', :cassette => :options
+      end
 
   VCR will use a cassette named "cucumber_tags/<tag_name>" for scenarios
-  with each of these tags.  The configured default_cassette_options will
+  with each of these tags.  The configured `default_cassette_options` will
   be used, or you can override specific options by passing a hash as the
-  last argument to #tag or #tags.
+  last argument to `#tag` or `#tags`.
 
   Scenario: Record HTTP interactions in a scenario by tagging it
     Given a file named "features/support/vcr.rb" with:

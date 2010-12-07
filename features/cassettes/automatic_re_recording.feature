@@ -2,7 +2,7 @@ Feature: Automatic Re-recording
 
   Over time, your cassettes may get out-of-date. APIs change and sites you
   scrape get updated. VCR provides a facility to automatically re-record your
-  cassettes. Enable re-recording using the :re_record_interval option.
+  cassettes. Enable re-recording using the `:re_record_interval` option.
 
   The value provided should be an interval (expressed in seconds) that
   determines how often VCR will re-record the cassette.  When a cassette

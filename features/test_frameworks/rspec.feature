@@ -7,20 +7,20 @@ Feature: Usage with RSpec
   In any example group, add a `use_vcr_cassette` declaration to use a cassette
   for that example group.  You can use this in a few different ways:
 
-    * use_vcr_cassette
-      * Infers a cassette name from the example group description (and parent
+    - `use_vcr_cassette`
+      - Infers a cassette name from the example group description (and parent
         example group descriptions).
-      * Uses the default_cassette_options you have configured.
-    * use_vcr_cassette "Cassette Name"
-      * Uses the given cassette name.
-      * Uses the default_cassette_options you have configured.
-    * use_vcr_cassette :cassette => :options
-      * Infers a cassette name from the example group description (and parent
+      - Uses the `default_cassette_options` you have configured.
+    - `use_vcr_cassette "Cassette Name"`
+      - Uses the given cassette name.
+      - Uses the `default_cassette_options` you have configured.
+    - `use_vcr_cassette :cassette => :options`
+      - Infers a cassette name from the example group description (and parent
         example group descriptions).
-      * Uses the provided cassette options (merged with the defaults).
-    * use_vcr_cassette "Cassette Name", :cassette => :options
-      * Uses the given cassette name.
-      * Uses the provided cassette options (merged with the defaults).
+      - Uses the provided cassette options (merged with the defaults).
+    - `use_vcr_cassette "Cassette Name", :cassette => :options`
+      - Uses the given cassette name.
+      - Uses the provided cassette options (merged with the defaults).
 
   Background:
     Given the following files do not exist:
