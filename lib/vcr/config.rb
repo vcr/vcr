@@ -41,6 +41,21 @@ module VCR
       def allow_http_connections_when_no_cassette?
         !!@allow_http_connections_when_no_cassette
       end
+      
+      attr_reader :before_record_hook
+      def before_record(&block)
+        @before_record_hook = block
+      end
+      
+      attr_reader :before_playback_hook
+      def before_playback(&block)
+        @before_playback_hook = block
+      end      
+      
+      def clear_hooks
+        @before_record_hook = nil
+        @before_playback_hook = nil
+      end
     end
   end
 end
