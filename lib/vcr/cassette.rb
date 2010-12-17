@@ -101,7 +101,7 @@ module VCR
       if file && File.size?(file)
         begin
           interactions = YAML.load(raw_yaml_content)
-
+          before_playback(interactions)
           if VCR.http_stubbing_adapter.ignore_localhost?
             interactions.reject! do |i|
               i.uri.is_a?(String) && VCR::LOCALHOST_ALIASES.include?(URI.parse(i.uri).host)
@@ -170,8 +170,19 @@ module VCR
       if VCR::Config.cassette_library_dir && new_recorded_interactions.size > 0
         directory = File.dirname(file)
         FileUtils.mkdir_p directory unless File.exist?(directory)
+        before_record(merged_interactions)
         File.open(file, 'w') { |f| f.write merged_interactions.to_yaml }
       end
+    end
+
+    def before_record(interactions)
+      hook = VCR::Config.before_record_hook
+      interactions.each{ |interaction| hook[interaction] } if hook
+    end
+
+    def before_playback(interactions)
+      hook = VCR::Config.before_playback_hook
+      interactions.each{ |interaction| hook[interaction] } if hook
     end
   end
 end
