@@ -125,7 +125,7 @@ module VCR
     end
 
     def raw_yaml_content
-      content = File.read(file)
+      content = after_read(File.read(file))
       return content unless @erb
 
       template = ERB.new(content)
@@ -170,8 +170,19 @@ module VCR
       if VCR::Config.cassette_library_dir && new_recorded_interactions.size > 0
         directory = File.dirname(file)
         FileUtils.mkdir_p directory unless File.exist?(directory)
-        File.open(file, 'w') { |f| f.write merged_interactions.to_yaml }
+        File.open(file, 'w') { |f| f.write before_write(merged_interactions.to_yaml) }
       end
+    end
+    
+    def before_write(recordings)
+      hook = VCR::Config.before_write_hook      
+      hook ? hook[recordings] : recordings
+    end
+    
+    def after_read(recordings)
+      hook = VCR::Config.after_read_hook      
+      content = hook ? hook[recordings] : recordings
+      content
     end
   end
 end

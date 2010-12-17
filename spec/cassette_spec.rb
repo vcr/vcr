@@ -225,6 +225,35 @@ describe VCR::Cassette do
           i3.request.uri.should == 'http://example.com:80/'
           i3.response.body.should =~ /Another example\.com response/
         end
+        
+        context "with after_read hook defined" do
+          before do
+            VCR.config do |c|
+              c.after_read do |recording| 
+                recording.gsub("typing", "singing").
+                          gsub("this server", "this mountain").
+                          gsub("Another", "Yet another")
+              end
+            end
+          end
+          
+          after do
+            VCR::Config.clear_hooks
+          end
+          
+          it "loads the recorded interactions from the library yml file" do
+            VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
+            cassette = VCR::Cassette.new('example', :record => record_mode)
+
+            cassette.should have(3).recorded_interactions
+
+            i1, i2, i3 = *cassette.recorded_interactions
+
+            i1.response.body.should =~ /You have reached this web page by singing.+example\.com/
+            i2.response.body.should =~ /foo was not found on this mountain/
+            i3.response.body.should =~ /Yet another example\.com response/
+          end          
+        end
 
         if stub_requests
           it "stubs the recorded requests with the http stubbing adapter" do
@@ -275,7 +304,33 @@ describe VCR::Cassette do
       saved_recorded_interactions = File.open(cassette.file, "r") { |f| YAML.load(f.read) }
       saved_recorded_interactions.should == recorded_interactions
     end
+    
+    context "with before_write hook defined" do
+      before do
+        VCR.config do |c|
+          c.before_write{ |recording| recording.gsub("response_1", "different_response") }
+        end
+      end
+      
+      after do
+        VCR::Config.clear_hooks
+      end
+      
+      it "should update recording before writing recorded interactions to disk as yaml" do
+        recorded_interactions = [
+          VCR::HTTPInteraction.new(:req_sig_1, :response_1)
+        ]
 
+        cassette = VCR::Cassette.new(:before_hook_test)
+        cassette.stub!(:new_recorded_interactions).and_return(recorded_interactions)
+        
+        cassette.eject
+        saved_content = File.open(cassette.file, "r") { |f| f.read }
+        saved_content.should_not include('response_1')
+        saved_content.should include('different_response')
+      end
+    end
+    
     it "writes the recorded interactions to a subdirectory if the cassette name includes a directory" do
       recorded_interactions = [VCR::HTTPInteraction.new(:the_request, :the_response)]
       cassette = VCR::Cassette.new('subdirectory/test_cassette')
