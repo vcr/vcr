@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe VCR do
-  def insert_cassette
-    VCR.insert_cassette(:cassette_test)
+  def insert_cassette(name = :cassette_test)
+    VCR.insert_cassette(name)
   end
 
   describe '.insert_cassette' do
@@ -15,6 +15,13 @@ describe VCR do
       new_cassette = insert_cassette
       new_cassette.should_not == orig_cassette
       VCR.current_cassette.should == new_cassette
+    end
+
+    it 'raises an error if the stack of inserted cassettes already contains a cassette with the same name' do
+      insert_cassette(:foo)
+      expect {
+        insert_cassette(:foo)
+      }.to raise_error(/There is already a cassette with the same name/)
     end
   end
 
@@ -31,7 +38,7 @@ describe VCR do
     end
 
     it 'returns the #current_cassette to the previous one' do
-      cassette1, cassette2 = insert_cassette, insert_cassette
+      cassette1, cassette2 = insert_cassette(:foo1), insert_cassette(:foo2)
       expect { VCR.eject_cassette }.to change(VCR, :current_cassette).from(cassette2).to(cassette1)
     end
   end

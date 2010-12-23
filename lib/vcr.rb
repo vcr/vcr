@@ -30,12 +30,16 @@ module VCR
     cassettes.last
   end
 
-  def insert_cassette(*args)
+  def insert_cassette(name, options = {})
     unless turned_on?
       raise TurnedOffError.new("VCR is turned off.  You must turn it on before you can insert a cassette.")
     end
 
-    cassette = Cassette.new(*args)
+    if cassettes.map { |c| c.name }.include?(name)
+      raise ArgumentError.new("There is already a cassette with the same name (#{name}).  You cannot nest multiple cassettes with the same name.")
+    end
+
+    cassette = Cassette.new(name, options)
     cassettes.push(cassette)
     cassette
   end
