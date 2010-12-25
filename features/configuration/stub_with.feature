@@ -22,14 +22,13 @@ Feature: stub_with configuration option
 
     - FakeWeb does not allow you to stub a request based on the headers or body.
       Therefore, the `:match_requests_on` option does not support `:body` or
-      `:headers` when you use FakeWeb.  Typhoeus and WebMock both support
-      matching on `:body` and `:headers`.
+      `:headers` when you use FakeWeb.  Typhoeus, WebMock and Faraday both
+      support matching on `:body` and `:headers`.
     - FakeWeb is currently about 4 times faster than WebMock for stubbing
       Net::HTTP (see benchmarks/http_stubbing_libraries.rb for details).
     - FakeWeb and WebMock both use extensive monkey patching to stub their
-      supported HTTP libraries.  Typhoeus provides all the necessary
-      stubbing and recording integration points, and no monkey patching
-      is required at all.
+      supported HTTP libraries.  No monkey patching is used for Typhoeus or
+      Faraday.
     - FakeWeb and WebMock cannot both be used at the same time.
     - Typhoeus and Faraday can be used together, and with either
       FakeWeb or WebMock.
