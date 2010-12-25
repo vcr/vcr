@@ -11,7 +11,7 @@ Feature: rack middleware
     the rails app (using the :all record mode).  Of course, this will only
     record HTTP API calls made in the request-response cycle--API calls that
     are offloaded to a background job will not be logged.
-  - This can be used as middleware in a simple rack HTTP proxy, to record the
+  - This can be used as middleware in a simple rack HTTP proxy, to record
     and replay the proxied requests.
 
   Background:
