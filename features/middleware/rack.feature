@@ -5,7 +5,7 @@ Feature: rack middleware
   the cassette name and options.  You can set these based on the rack env
   if your block accepts two arguments.
 
-  There useful in a couple different ways:
+  This is useful in a couple different ways:
 
   - In a rails app, you could use this to log all HTTP API calls made by
     the rails app (using the :all record mode).  Of course, this will only
