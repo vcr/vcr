@@ -145,7 +145,7 @@ DEPENDENCIES
   ruby-debug
   ruby-debug-base19 (= 0.11.23)
   ruby-debug19
-  shoulda
+  shoulda (~> 2.9.2)
   sinatra (~> 1.1.0)
   timecop (~> 0.3.5)
   typhoeus (~> 0.2.0)

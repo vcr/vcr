@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
     'rspec'           => '~> 2.1.0',
     'cucumber'        => '~> 0.9.4',
     'aruba'           => '~> 0.2.1',
+    'shoulda'         => '~> 2.9.2',
 
     'fakeweb'         => '~> 1.3.0',
     'webmock'         => '~> 1.6.0',
