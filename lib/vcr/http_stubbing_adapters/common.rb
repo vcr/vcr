@@ -47,12 +47,11 @@ module VCR
       end
 
       def check_version!
-        version_too_low, version_too_high = compare_version
-
-        if version_too_low
-          raise "You are using #{library_name} #{version}.  VCR requires version #{version_requirement}."
-        elsif version_too_high
-          warn "You are using #{library_name} #{version}.  VCR is known to work with #{library_name} #{version_requirement}.  It may not work with this version."
+        case compare_version
+          when :too_low
+            raise "You are using #{library_name} #{version}.  VCR requires version #{version_requirement}."
+          when :too_high
+            warn "You are using #{library_name} #{version}.  VCR is known to work with #{library_name} #{version_requirement}.  It may not work with this version."
         end
       end
 
@@ -71,13 +70,13 @@ module VCR
         min_major, min_minor, min_patch = parse_version(self::MINIMUM_VERSION)
         max_major, max_minor            = parse_version(self::MAXIMUM_VERSION)
 
-        return true, false if major < min_major
-        return false, true if major > max_major
-
-        return true, false if minor < min_minor
-        return false, true if minor > max_minor
-
-        return patch < min_patch, false
+        case
+          when major < min_major; :too_low
+          when major > max_major; :too_high
+          when minor < min_minor; :too_low
+          when minor > max_minor; :too_high
+          when patch < min_patch; :too_low
+        end
       end
 
       def version_requirement
