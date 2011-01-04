@@ -1,4 +1,4 @@
-Feature: ignore_localhost configuration option
+Feature: ignore_localhost
 
   The `ignore_localhost` configuration option can be used to prevent VCR
   from having any affect on localhost requests.  If set to true, it will

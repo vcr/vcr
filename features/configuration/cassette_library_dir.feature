@@ -1,4 +1,4 @@
-Feature: cassette_library_dir configuration option
+Feature: cassette_library_dir
 
   The `cassette_library_dir` configuration option sets a directory
   where VCR saves each cassette.

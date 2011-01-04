@@ -7,7 +7,7 @@ Feature: Automatic Re-recording
   The value provided should be an interval (expressed in seconds) that
   determines how often VCR will re-record the cassette.  When a cassette
   is used, VCR checks the file modification time; if more time than the
-  interval has passed, VCR will use the :all record mode to cause it be
+  interval has passed, VCR will use the `:all` record mode to cause it be
   re-recorded.
 
   Background:

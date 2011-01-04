@@ -1,4 +1,4 @@
-Feature: allow_http_connections_when_no_cassette configuration option
+Feature: allow_http_connections_when_no_cassette
 
   Usually, HTTP requests made when no cassette is inserted will result
   in an error (see cassettes/no_cassette.feature).  You can set the

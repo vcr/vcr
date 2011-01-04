@@ -1,4 +1,4 @@
-Feature: Usage with shoulda
+Feature: Usage with Shoulda
 
   When using a test framework that provides setup and teardown hooks
   (such as shoulda), you can use `VCR.insert_cassette` and

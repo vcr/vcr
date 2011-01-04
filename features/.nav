@@ -1,0 +1,27 @@
+- cassettes:
+  - format.feature
+  - no_cassette.feature
+  - request_matching.feature
+  - dynamic_erb.feature
+  - automatic_re_recording.feature
+- record_modes:
+  - new_episodes.feature
+  - none.feature
+  - all.feature
+- configuration:
+  - cassette_library_dir.feature
+  - stub_with.feature
+  - default_cassette_options.feature
+  - ignore_localhost.feature
+  - allow_http_connections_when_no_cassette.feature
+- test_frameworks:
+  - test_unit.feature
+  - shoulda.feature
+  - rspec.feature
+  - cucumber.feature
+- middleware:
+  - rack.feature
+  - faraday.feature
+- http_libraries:
+  - net_http.feature
+  - em_http_request.feature

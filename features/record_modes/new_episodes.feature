@@ -1,15 +1,17 @@
-Feature: :none record mode
+Feature: :new_episodes
 
-  The `:none` record mode allows previously recorded responses
-  to be replayed, but raises an error for any new requests.
-
-  This is useful when your code makes potentially dangerous
-  HTTP requests.  The `:none` record mode guarantees that no
-  new HTTP requests will be made.
+  The `:new_episodes` record mode replays previously recorded
+  requests and records new ones.
 
   Background:
-    Given a file named "vcr_config.rb" with:
+    Given a file named "setup.rb" with:
       """
+      require 'vcr_cucumber_helpers'
+
+      start_sinatra_app(:port => 7777) do
+        get('/') { 'Hello' }
+      end
+
       require 'vcr'
 
       VCR.config do |c|
@@ -34,32 +36,36 @@ Feature: :none record mode
             content-type: 
             - text/html;charset=utf-8
             content-length: 
-            - "5"
-          body: Hello
+            - "20"
+          body: example.com response
           http_version: "1.1"
       """
 
   Scenario: Previously recorded responses are replayed
     Given a file named "replay_recorded_response.rb" with:
       """
-      require 'vcr_config'
+      require 'setup'
 
-      VCR.use_cassette('example', :record => :none) do
+      VCR.use_cassette('example', :record => :new_episodes) do
         response = Net::HTTP.get_response('example.com', '/foo')
         puts "Response: #{response.body}"
       end
       """
     When I run "ruby replay_recorded_response.rb"
-    Then it should pass with "Response: Hello"
+    Then it should pass with "Response: example.com response"
 
-  Scenario: New requests are prevented
-    Given a file named "prevent_new_request.rb" with:
+  Scenario: New requests get recorded
+    Given a file named "record_new_requests.rb" with:
       """
-      require 'vcr_config'
+      require 'setup'
 
-      VCR.use_cassette('example', :record => :none) do
-        Net::HTTP.get_response('example.com', '/bar')
+      VCR.use_cassette('example', :record => :new_episodes) do
+        response = Net::HTTP.get_response('localhost', '/', 7777)
+        puts "Response: #{response.body}"
       end
       """
-    When I run "ruby prevent_new_request.rb"
-    Then it should fail with "Real HTTP connections are disabled. Unregistered request: GET http://example.com/bar"
+    When I run "ruby record_new_requests.rb"
+    Then it should pass with "Response: Hello"
+    And the file "cassettes/example.yml" should contain each of these:
+      | body: example.com response |
+      | body: Hello                |

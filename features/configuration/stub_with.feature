@@ -1,4 +1,4 @@
-Feature: stub_with configuration option
+Feature: stub_with
 
   The `stub_with` configuration option determines which HTTP stubbing library
   VCR will use.  There are currently 4 supported stubbing libraries which

@@ -1,4 +1,4 @@
-Feature: default_cassette_options configuration option
+Feature: default_cassette_options
 
   The `default_cassette_options` configuration option takes a hash
   that provides defaults for each cassette you use.  Any cassette

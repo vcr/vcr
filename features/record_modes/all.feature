@@ -1,4 +1,4 @@
-Feature: :all record mode
+Feature: :all
 
   The `:all` record mode records all requests and does not
   replay any previously recorded responds.
