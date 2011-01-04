@@ -73,7 +73,7 @@ GEM
     rake (0.8.7)
     rb-fsevent (0.3.6)
     rcov (0.9.9)
-    relish (0.1.5)
+    relish (0.2.0)
       archive-tar-minitar (~> 0.5.2)
       json (~> 1.4.6)
       rest-client (~> 1.6.1)
