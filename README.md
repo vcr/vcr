@@ -4,6 +4,7 @@ Record your test suite's HTTP interactions and replay them during future test ru
 
 ## Synopsis
 
+    require 'rubygems'
     require 'test/unit'
     require 'vcr'
 
