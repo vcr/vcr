@@ -79,15 +79,15 @@ GEM
       rest-client (~> 1.6.1)
     rest-client (1.6.1)
       mime-types (>= 1.16)
-    rspec (2.1.0)
-      rspec-core (~> 2.1.0)
-      rspec-expectations (~> 2.1.0)
-      rspec-mocks (~> 2.1.0)
-    rspec-core (2.1.0)
-    rspec-expectations (2.1.0)
+    rspec (2.4.0)
+      rspec-core (~> 2.4.0)
+      rspec-expectations (~> 2.4.0)
+      rspec-mocks (~> 2.4.0)
+    rspec-core (2.4.0)
+    rspec-expectations (2.4.0)
       diff-lcs (~> 1.1.2)
     rspec-instafail (0.1.4)
-    rspec-mocks (2.1.0)
+    rspec-mocks (2.4.0)
     ruby-debug (0.10.3)
       columnize (>= 0.1)
       ruby-debug-base (~> 0.10.3.0)
@@ -141,7 +141,7 @@ DEPENDENCIES
   rb-fsevent
   rcov
   relish
-  rspec (~> 2.1.0)
+  rspec (~> 2.4.0)
   ruby-debug
   ruby-debug-base19 (= 0.11.23)
   ruby-debug19
