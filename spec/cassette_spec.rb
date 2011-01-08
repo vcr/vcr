@@ -231,37 +231,20 @@ describe VCR::Cassette do
           i3.response.body.should =~ /Another example\.com response/
         end
 
-        context "with before_playback hook defined" do
-          before do
-            VCR.config do |c|
-              c.before_playback do |interaction|
-                substitutions =  {
-                    "typing" => "singing",
-                    "this server" => "this mountain",
-                    "Another" => "Yet another"
-                }
-                substitutions.each do |before, after|
-                  interaction.response.body.gsub!(before, after)
-                end
-              end
-            end
-          end
-
-          it "loads the recorded interactions from the library yml file" do
-            VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
-            cassette = VCR::Cassette.new('example', :record => record_mode)
-
-            cassette.should have(3).recorded_interactions
-
-            i1, i2, i3 = *cassette.recorded_interactions
-
-            i1.response.body.should =~ /You have reached this web page by singing.+example\.com/
-            i2.response.body.should =~ /foo was not found on this mountain/
-            i3.response.body.should =~ /Yet another example\.com response/
-          end
-        end
-
         if stub_requests
+          it 'invokes the appropriately tagged before_playback hooks' do
+            args = nil
+            VCR::Config.should_receive(:invoke_hook) { |*a| args = a }
+            cassette = VCR::Cassette.new('example', :record => record_mode, :tag => :foo)
+
+            args.should == [
+              :before_playback,
+              :foo,
+              cassette.recorded_interactions,
+              cassette
+            ]
+          end
+
           it "stubs the recorded requests with the http stubbing adapter" do
             VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
             VCR.http_stubbing_adapter.should_receive(:stub_requests).with([an_instance_of(VCR::HTTPInteraction)]*3, anything)
@@ -311,28 +294,19 @@ describe VCR::Cassette do
       saved_recorded_interactions.should == recorded_interactions
     end
 
-    context "with before_record hook defined" do
-      before do
-        VCR.config do |c|
-          c.before_record do |interaction|
-            interaction.response.gsub!("response_1", "different_response")
-          end
-        end
+    it 'invokes the appropriately tagged before_record hooks' do
+      interactions = [VCR::HTTPInteraction.new(:req_sig_1, :response_1)]
+      cassette = VCR::Cassette.new('example', :tag => :foo)
+      cassette.stub!(:new_recorded_interactions).and_return(interactions)
+
+      VCR::Config.should_receive(:invoke_hook) do |hook_type, tag, _interactions, _cassette|
+        hook_type.should == :before_record
+        tag.should == :foo
+        _interactions.should == interactions
+        _cassette.should == cassette
       end
 
-      it "should update interactions before they're recorded" do
-        recorded_interactions = [
-          VCR::HTTPInteraction.new('req_sig_1', 'response_1')
-        ]
-
-        cassette = VCR::Cassette.new(:before_hook_test)
-        cassette.stub!(:new_recorded_interactions).and_return(recorded_interactions)
-
-        cassette.eject
-        saved_content = File.open(cassette.file, "r") { |f| f.read }
-        saved_content.should_not include('response_1')
-        saved_content.should include('different_response')
-      end
+      cassette.eject
     end
 
     it "writes the recorded interactions to a subdirectory if the cassette name includes a directory" do

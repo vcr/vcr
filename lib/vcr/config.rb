@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'vcr/hooks'
 
 module VCR
   module Config
@@ -42,20 +43,10 @@ module VCR
         !!@allow_http_connections_when_no_cassette
       end
 
-      attr_reader :before_record_hook
-      def before_record(&block)
-        @before_record_hook = block
-      end
-
-      attr_reader :before_playback_hook
-      def before_playback(&block)
-        @before_playback_hook = block
-      end
-
-      def clear_hooks
-        @before_record_hook = nil
-        @before_playback_hook = nil
-      end
+      include VCR::Hooks
     end
+
+    define_hook :before_record
+    define_hook :before_playback
   end
 end

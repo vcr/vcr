@@ -9,11 +9,11 @@ module VCR
 
     VALID_RECORD_MODES = [:all, :none, :new_episodes]
 
-    attr_reader :name, :record_mode, :match_requests_on, :erb, :re_record_interval
+    attr_reader :name, :record_mode, :match_requests_on, :erb, :re_record_interval, :tag
 
     def initialize(name, options = {})
       options = VCR::Config.default_cassette_options.merge(options)
-      invalid_options = options.keys - [:record, :erb, :allow_real_http, :match_requests_on, :re_record_interval]
+      invalid_options = options.keys - [:record, :erb, :allow_real_http, :match_requests_on, :re_record_interval, :tag]
 
       if invalid_options.size > 0
         raise ArgumentError.new("You passed the following invalid options to VCR::Cassette.new: #{invalid_options.inspect}.")
@@ -24,6 +24,7 @@ module VCR
       @erb                = options[:erb]
       @match_requests_on  = options[:match_requests_on]
       @re_record_interval = options[:re_record_interval]
+      @tag                = options[:tag]
       @record_mode        = :all if should_re_record?
 
       deprecate_old_cassette_options(options)
@@ -101,7 +102,8 @@ module VCR
       if file && File.size?(file)
         begin
           interactions = YAML.load(raw_yaml_content)
-          before_playback(interactions)
+          invoke_hook(:before_playback, interactions)
+
           if VCR.http_stubbing_adapter.ignore_localhost?
             interactions.reject! do |i|
               i.uri.is_a?(String) && VCR::LOCALHOST_ALIASES.include?(URI.parse(i.uri).host)
@@ -170,19 +172,14 @@ module VCR
       if VCR::Config.cassette_library_dir && new_recorded_interactions.size > 0
         directory = File.dirname(file)
         FileUtils.mkdir_p directory unless File.exist?(directory)
-        before_record(merged_interactions)
-        File.open(file, 'w') { |f| f.write merged_interactions.to_yaml }
+        interactions = merged_interactions
+        invoke_hook(:before_record, interactions)
+        File.open(file, 'w') { |f| f.write interactions.to_yaml }
       end
     end
 
-    def before_record(interactions)
-      hook = VCR::Config.before_record_hook
-      interactions.each{ |interaction| hook[interaction] } if hook
-    end
-
-    def before_playback(interactions)
-      hook = VCR::Config.before_playback_hook
-      interactions.each{ |interaction| hook[interaction] } if hook
+    def invoke_hook(type, interactions)
+      VCR::Config.invoke_hook(type, tag, interactions, self)
     end
   end
 end
