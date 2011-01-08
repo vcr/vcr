@@ -52,9 +52,9 @@ shared_examples_for "an http stubbing adapter" do |supported_http_libraries, sup
     end
 
     it 're-enables all adapters afterwards' do
-      VCR::HttpStubbingAdapters::Common.adapters.all? { |a| a.should be_enabled }
+      VCR::HttpStubbingAdapters::Common.adapters.each { |a| a.should be_enabled }
       subject.exclusively_enabled { }
-      VCR::HttpStubbingAdapters::Common.adapters.all? { |a| a.should be_enabled }
+      VCR::HttpStubbingAdapters::Common.adapters.each { |a| a.should be_enabled }
     end
   end
 
