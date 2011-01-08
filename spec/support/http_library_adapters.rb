@@ -331,6 +331,14 @@ module HttpLibrarySpecs
         subject.http_connections_allowed?.should == false
       end
 
+      describe '.restore_stubs_checkpoint' do
+        it 'raises an appropriate error when there is no matching checkpoint' do
+          expect {
+            subject.restore_stubs_checkpoint(:some_crazy_checkpoint_that_doesnt_exist)
+          }.to raise_error(ArgumentError, /no checkpoint .* could be found/i)
+        end
+      end
+
       [true, false].each do |http_allowed|
         context "when #http_connections_allowed is set to #{http_allowed}" do
           before(:each) { subject.http_connections_allowed = http_allowed }

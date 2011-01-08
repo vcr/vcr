@@ -41,7 +41,7 @@ module VCR
       end
 
       def restore_stubs_checkpoint(cassette)
-        ::WebMock::StubRegistry.instance.request_stubs = checkpoints.delete(cassette)
+        ::WebMock::StubRegistry.instance.request_stubs = checkpoints.delete(cassette) || super
       end
 
       private

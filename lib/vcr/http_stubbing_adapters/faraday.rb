@@ -31,7 +31,7 @@ module VCR
       end
 
       def restore_stubs_checkpoint(cassette)
-        @stub_queues = checkpoints.delete(cassette)
+        @stub_queues = checkpoints.delete(cassette) || super
       end
 
       def stubbed_response_for(request_matcher)
