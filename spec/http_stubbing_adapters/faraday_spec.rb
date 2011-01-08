@@ -61,8 +61,10 @@ describe VCR::HttpStubbingAdapters::Faraday do
     end
 
     describe '.restore_stubs_checkpoints' do
+      let(:cassette_1) { VCR::Cassette.new('1') }
+
       before(:each) do
-        subject.create_stubs_checkpoint(:checkpoint_1)
+        subject.create_stubs_checkpoint(cassette_1)
       end
 
       it 'restores the queues to the checkpoint state when a queue has additional responses' do
@@ -70,13 +72,13 @@ describe VCR::HttpStubbingAdapters::Faraday do
           VCR::HTTPInteraction.new(request_1, :response_3),
         ], match_attributes)
 
-        subject.restore_stubs_checkpoint(:checkpoint_1)
+        subject.restore_stubs_checkpoint(cassette_1)
         test_stubbed_responses
       end
 
       it 'restores the queues to the checkpoint state when a queue has been used' do
         stubbed_response_for(request_1)
-        subject.restore_stubs_checkpoint(:checkpoint_1)
+        subject.restore_stubs_checkpoint(cassette_1)
         test_stubbed_responses
       end
     end

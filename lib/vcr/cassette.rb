@@ -35,7 +35,7 @@ module VCR
 
     def eject
       write_recorded_interactions_to_disk
-      VCR.http_stubbing_adapter.restore_stubs_checkpoint(name)
+      VCR.http_stubbing_adapter.restore_stubs_checkpoint(self)
       restore_http_connections_allowed
       restore_ignore_localhost_for_deprecation
     end
@@ -97,7 +97,7 @@ module VCR
     end
 
     def load_recorded_interactions
-      VCR.http_stubbing_adapter.create_stubs_checkpoint(name)
+      VCR.http_stubbing_adapter.create_stubs_checkpoint(self)
       if file && File.size?(file)
         begin
           interactions = YAML.load(raw_yaml_content)

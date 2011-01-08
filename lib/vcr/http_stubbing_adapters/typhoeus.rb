@@ -43,12 +43,12 @@ module VCR
         end
       end
 
-      def create_stubs_checkpoint(checkpoint_name)
-        checkpoints[checkpoint_name] = ::Typhoeus::Hydra.stubs.dup
+      def create_stubs_checkpoint(cassette)
+        checkpoints[cassette] = ::Typhoeus::Hydra.stubs.dup
       end
 
-      def restore_stubs_checkpoint(checkpoint_name)
-        ::Typhoeus::Hydra.stubs = checkpoints.delete(checkpoint_name)
+      def restore_stubs_checkpoint(cassette)
+        ::Typhoeus::Hydra.stubs = checkpoints.delete(cassette)
       end
 
       private

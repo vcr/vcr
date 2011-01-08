@@ -71,8 +71,13 @@ describe VCR::Cassette do
     end
 
     it 'creates a stubs checkpoint on the http_stubbing_adapter' do
-      VCR.http_stubbing_adapter.should_receive(:create_stubs_checkpoint).with('example').once
-      VCR::Cassette.new('example')
+      cassette = nil
+
+      VCR.http_stubbing_adapter.should_receive(:create_stubs_checkpoint) do |c|
+        cassette = c
+      end
+
+      VCR::Cassette.new('example').should equal(cassette)
     end
 
     describe 'ERB support' do
@@ -298,7 +303,7 @@ describe VCR::Cassette do
         end
 
         it "restore the stubs checkpoint on the http stubbing adapter" do
-          VCR.http_stubbing_adapter.should_receive(:restore_stubs_checkpoint).with('example')
+          VCR.http_stubbing_adapter.should_receive(:restore_stubs_checkpoint).with(subject)
           subject.eject
         end
 

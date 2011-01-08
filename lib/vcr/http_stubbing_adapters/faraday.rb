@@ -26,12 +26,12 @@ module VCR
         end
       end
 
-      def create_stubs_checkpoint(checkpoint_name)
-        checkpoints[checkpoint_name] = stub_queue_dup
+      def create_stubs_checkpoint(cassette)
+        checkpoints[cassette] = stub_queue_dup
       end
 
-      def restore_stubs_checkpoint(checkpoint_name)
-        @stub_queues = checkpoints.delete(checkpoint_name)
+      def restore_stubs_checkpoint(cassette)
+        @stub_queues = checkpoints.delete(cassette)
       end
 
       def stubbed_response_for(request_matcher)
