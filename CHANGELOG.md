@@ -6,6 +6,14 @@
 
 * Fix VCR::Cassette so it does not raise an error when a cassette file is
   empty.  Bug reported and fixed by [Karl Baum](https://github.com/kbaum).
+* Lots of code cleanup.
+* Fix the stubbing adapters so that they use the cassette instance
+  rather than the cassette name to create and restore checkpoints.
+* Raise an appropriate error when a nested cassette is inserted with the
+  same name as a cassette that is already in the stack (VCR's design
+  doesn't allow this and you would get weird errors later on).
+* Raise an appropriate error when restoring a stubs checkpoint if the
+  checkpoint cannot be found.
 
 ## 1.4.0 (December 3, 2010)
 
