@@ -21,7 +21,7 @@ RSpec.configure do |config|
   config.extend WebMockMacros
 
   config.color_enabled = true
-  config.debug = RUBY_INTERPRETER == :mri
+  config.debug = RUBY_INTERPRETER == :mri && RUBY_VERSION != '1.9.2'
 
   config.before(:each) do
     VCR.turn_on! unless VCR.turned_on?
