@@ -247,10 +247,6 @@ describe VCR::Cassette do
             end
           end
 
-          after do
-            VCR::Config.clear_hooks
-          end
-
           it "loads the recorded interactions from the library yml file" do
             VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
             cassette = VCR::Cassette.new('example', :record => record_mode)
@@ -322,10 +318,6 @@ describe VCR::Cassette do
             interaction.response.gsub!("response_1", "different_response")
           end
         end
-      end
-
-      after do
-        VCR::Config.clear_hooks
       end
 
       it "should update interactions before they're recorded" do

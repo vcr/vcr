@@ -29,6 +29,7 @@ RSpec.configure do |config|
 
     VCR::Config.default_cassette_options = { :record => :new_episodes }
     VCR::Config.stub_with :fakeweb
+    VCR::Config.clear_hooks
 
     WebMock.allow_net_connect!
     WebMock.reset!
