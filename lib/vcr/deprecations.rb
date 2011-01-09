@@ -1,5 +1,5 @@
 module VCR
-  class Config
+  module Config
     class << self
       def http_stubbing_library
         warn "WARNING: `VCR::Config.http_stubbing_library` is deprecated.  Use `VCR::Config.http_stubbing_libraries` instead."

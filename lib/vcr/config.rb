@@ -1,7 +1,7 @@
 require 'fileutils'
 
 module VCR
-  class Config
+  module Config
     class << self
       attr_reader :cassette_library_dir
       def cassette_library_dir=(cassette_library_dir)
