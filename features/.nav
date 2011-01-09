@@ -13,6 +13,7 @@
   - stub_with.feature
   - default_cassette_options.feature
   - ignore_localhost.feature
+  - hooks.feature
   - allow_http_connections_when_no_cassette.feature
 - test_frameworks:
   - test_unit.feature
