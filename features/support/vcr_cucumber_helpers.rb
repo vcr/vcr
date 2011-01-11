@@ -7,7 +7,7 @@ RUNNING_UNDER_ARUBA = File.dirname(__FILE__) == '.' || File.dirname(__FILE__) =~
 
 if RUNNING_UNDER_ARUBA
   require 'support/fixnum_extension'
-  require 'vcr/internet_connection'
+  require 'vcr/util/internet_connection'
 
   # pretend we're always on the internet (so that we don't have an
   # internet connection dependency for our cukes)

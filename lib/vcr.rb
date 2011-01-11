@@ -9,9 +9,9 @@ require 'vcr/http_stubbing_adapters/common'
 module VCR
   extend self
 
-  autoload :BasicObject,        'vcr/basic_object'
+  autoload :BasicObject,        'vcr/util/basic_object'
   autoload :CucumberTags,       'vcr/cucumber_tags'
-  autoload :InternetConnection, 'vcr/internet_connection'
+  autoload :InternetConnection, 'vcr/util/internet_connection'
   autoload :RSpec,              'vcr/rspec'
 
   LOCALHOST_ALIASES = %w( localhost 127.0.0.1 0.0.0.0 )
