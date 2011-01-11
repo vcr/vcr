@@ -80,58 +80,41 @@ describe VCR::Cassette do
       VCR::Cassette.new('example').should equal(cassette)
     end
 
-    describe 'ERB support' do
+    describe "reading the file from disk" do
       before(:each) do
-        @orig_default_options = VCR::Config.default_cassette_options
+        VCR::Config.cassette_library_dir = "cassette_lib"
+        File.stub(:size? => true)
       end
 
-      after(:each) do
-        VCR::Config.default_cassette_options = @orig_default_options
+      it 'reads the appropriate file from disk using a VCR::Cassette::Reader' do
+        VCR::Cassette::Reader.should_receive(:new).with(
+          'cassette_lib/foo.yml', anything
+        ).and_return(mock('reader', :read => [].to_yaml))
+
+        VCR::Cassette.new('foo', :record => :new_episodes)
       end
 
-      def cassette_body(name, options = {})
-        VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
-        VCR::Cassette.new(name, options.merge(:record => :new_episodes)).recorded_interactions.first.response.body
-      end
+      [true, false, nil, { }].each do |erb|
+        it "passes #{erb.inspect} to the VCR::Cassette::Reader when given as the :erb option" do
+          # test that it overrides the default
+          VCR::Config.default_cassette_options = { :erb => true }
 
-      it "compiles a template as ERB if the :erb option is passed as true" do
-        cassette_body('erb_with_no_vars', :erb => true).should == 'sum: 3'
-      end
+          VCR::Cassette::Reader.should_receive(:new).with(
+            anything, erb
+          ).and_return(mock('reader', :read => [].to_yaml))
 
-      it "compiles a template as ERB if the default :erb option is true, and no option is passed to the cassette" do
-        VCR::Config.default_cassette_options = { :erb => true }
-        cassette_body('erb_with_no_vars').should == 'sum: 3'
-      end
+          VCR::Cassette.new('foo', :record => :new_episodes, :erb => erb)
+        end
 
-      it "does not compile a template as ERB if the default :erb option is true, and :erb => false is passed to the cassette" do
-        VCR::Config.default_cassette_options = { :erb => true }
-        cassette_body('erb_with_no_vars', :erb => false).should == 'sum: <%= 1 + 2 %>'
-      end
+        it "passes #{erb.inspect} to the VCR::Cassette::Reader when it is the default :erb option and none is given" do
+          VCR::Config.default_cassette_options = { :erb => erb }
 
-      it "compiles a template as ERB if the :erb option is passed a hash" do
-        cassette_body('erb_with_vars', :erb => { :var1 => 'a', :var3 => 'c', :var2 => 'b' }).should == 'var1: a; var2: b; var3: c'
-      end
+          VCR::Cassette::Reader.should_receive(:new).with(
+            anything, erb
+          ).and_return(mock('reader', :read => [].to_yaml))
 
-      it "does not compile a template as ERB if the :erb option is not used" do
-        cassette_body('erb_with_no_vars').should == 'sum: <%= 1 + 2 %>'
-      end
-
-      it "raises a helpful error if the ERB template references variables that are not passed in the :erb hash" do
-        expect {
-          cassette_body('erb_with_vars', :erb => { :var1 => 'a', :var2 => 'b' })
-        }.to raise_error(VCR::Cassette::MissingERBVariableError,
-          %{The ERB in the erb_with_vars.yml cassette file references undefined variable var3.  } +
-          %{Pass it to the cassette using :erb => #{ { :var1 => 'a', :var2 => 'b' }.merge(:var3 => 'some value').inspect }.}
-        )
-      end
-
-      it "raises a helpful error if the ERB template references variables and :erb => true is passed" do
-        expect {
-          cassette_body('erb_with_vars', :erb => true)
-        }.to raise_error(VCR::Cassette::MissingERBVariableError,
-          %{The ERB in the erb_with_vars.yml cassette file references undefined variable var1.  } +
-          %{Pass it to the cassette using :erb => {:var1=>"some value"}.}
-        )
+          VCR::Cassette.new('foo', :record => :new_episodes)
+        end
       end
     end
 

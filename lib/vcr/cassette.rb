@@ -3,10 +3,10 @@ require 'yaml'
 require 'erb'
 require 'set'
 
+require 'vcr/cassette/reader'
+
 module VCR
   class Cassette
-    class MissingERBVariableError < NameError; end
-
     VALID_RECORD_MODES = [:all, :none, :new_episodes]
 
     attr_reader :name, :record_mode, :match_requests_on, :erb, :re_record_interval, :tag
@@ -122,32 +122,8 @@ module VCR
       end
     end
 
-    @@struct_cache = Hash.new do |hash, attributes|
-      hash[attributes] = Struct.new(*attributes)
-    end
-
     def raw_yaml_content
-      content = File.read(file)
-      return content unless @erb
-
-      template = ERB.new(content)
-
-      begin
-        return template.result unless @erb.is_a?(Hash)
-
-        # create an object with methods for each desired local variable...
-        local_variables = @@struct_cache[@erb.keys].new(*@erb.values)
-
-        # instance_eval seems to be the only way to get the binding for ruby 1.9: http://redmine.ruby-lang.org/issues/show/2161
-        template.result(local_variables.instance_eval { binding })
-      rescue NameError => e
-        example_hash = (@erb.is_a?(Hash) ? @erb : {}).merge(e.name => 'some value')
-
-        raise MissingERBVariableError.new(
-          "The ERB in the #{sanitized_name}.yml cassette file references undefined variable #{e.name}.  " +
-          "Pass it to the cassette using :erb => #{ example_hash.inspect }."
-        )
-      end
+      VCR::Cassette::Reader.new(file, erb).read
     end
 
     def merged_interactions
