@@ -28,7 +28,7 @@ module VCR
       @record_mode        = :all if should_re_record?
 
       deprecate_old_cassette_options(options)
-      raise_error_unless_valid_record_mode(record_mode)
+      raise_error_unless_valid_record_mode
 
       set_http_connections_allowed
       load_recorded_interactions
@@ -63,7 +63,7 @@ module VCR
       name.to_s.gsub(/[^\w\-\/]+/, '_')
     end
 
-    def raise_error_unless_valid_record_mode(record_mode)
+    def raise_error_unless_valid_record_mode
       unless VALID_RECORD_MODES.include?(record_mode)
         raise ArgumentError.new("#{record_mode} is not a valid cassette record mode.  Valid options are: #{VALID_RECORD_MODES.inspect}")
       end
