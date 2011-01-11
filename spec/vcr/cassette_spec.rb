@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe VCR::Cassette do
   describe '#file' do
-    temp_dir File.expand_path(File.dirname(__FILE__) + '/fixtures/file'), :assign_to_cassette_library_dir => true
+    temp_dir "#{VCR::SPEC_ROOT}/fixtures/file", :assign_to_cassette_library_dir => true
 
     it 'combines the cassette_library_dir with the cassette name' do
       cassette = VCR::Cassette.new('the_file')
@@ -51,7 +51,7 @@ describe VCR::Cassette do
 
   describe 'on creation' do
     it 'raises an error with a helpful message when loading an old unsupported cassette' do
-      VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}")
+      VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}"
       expect { VCR::Cassette.new('0_3_1_cassette') }.to raise_error(/The VCR cassette 0_3_1_cassette.yml uses an old format that is now deprecated/)
     end
 
@@ -66,7 +66,7 @@ describe VCR::Cassette do
     end
 
     it 'does not raise an error in the case of an empty file' do
-      VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
+      VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
       VCR::Cassette.new('empty', :record => :none).recorded_interactions.should == []
     end
 
@@ -90,7 +90,7 @@ describe VCR::Cassette do
       end
 
       def cassette_body(name, options = {})
-        VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
+        VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
         VCR::Cassette.new(name, options.merge(:record => :new_episodes)).recorded_interactions.first.response.body
       end
 
@@ -204,14 +204,14 @@ describe VCR::Cassette do
 
           it "#{ ignore_localhost ? 'does not load' : 'loads' } localhost interactions from the cassette file when http_stubbing_adapter.ignore_localhost is set to #{ignore_localhost}" do
             VCR.http_stubbing_adapter.stub!(:ignore_localhost?).and_return(ignore_localhost)
-            VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
+            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
             cassette = VCR::Cassette.new('with_localhost_requests', :record => record_mode)
             cassette.recorded_interactions.map { |i| URI.parse(i.uri).host }.should =~ expected_uri_hosts
           end
         end
 
         it "loads the recorded interactions from the library yml file" do
-          VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
+          VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
           cassette = VCR::Cassette.new('example', :record => record_mode)
 
           cassette.should have(3).recorded_interactions
@@ -246,19 +246,19 @@ describe VCR::Cassette do
           end
 
           it "stubs the recorded requests with the http stubbing adapter" do
-            VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
+            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
             VCR.http_stubbing_adapter.should_receive(:stub_requests).with([an_instance_of(VCR::HTTPInteraction)]*3, anything)
             cassette = VCR::Cassette.new('example', :record => record_mode)
           end
 
           it "passes the :match_request_on option to #stub_requests" do
-            VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
+            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
             VCR.http_stubbing_adapter.should_receive(:stub_requests).with(anything, [:body, :headers])
             cassette = VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:body, :headers])
           end
         else
           it "does not stub the recorded requests with the http stubbing adapter" do
-            VCR::Config.cassette_library_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
+            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
             VCR.http_stubbing_adapter.should_not_receive(:stub_requests)
             cassette = VCR::Cassette.new('example', :record => record_mode)
           end
@@ -268,7 +268,7 @@ describe VCR::Cassette do
   end
 
   describe '#eject' do
-    temp_dir File.expand_path(File.dirname(__FILE__) + '/fixtures/cassette_spec_eject'), :assign_to_cassette_library_dir => true
+    temp_dir "#{VCR::SPEC_ROOT}/fixtures/cassette_spec_eject", :assign_to_cassette_library_dir => true
 
     [true, false].each do |orig_http_connections_allowed|
       it "resets #{orig_http_connections_allowed} on the http stubbing adapter if it was originally #{orig_http_connections_allowed}" do
@@ -321,12 +321,12 @@ describe VCR::Cassette do
 
     [:all, :none, :new_episodes].each do |record_mode|
       context "for a :record => :#{record_mode} cassette with previously recorded interactions" do
-        temp_dir File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec/temp"), :assign_to_cassette_library_dir => true
+        temp_dir "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec/temp", :assign_to_cassette_library_dir => true
 
         subject { VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:uri]) }
 
         before(:each) do
-          base_dir = File.expand_path(File.dirname(__FILE__) + "/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec")
+          base_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
           FileUtils.cp(base_dir + "/example.yml", base_dir + "/temp/example.yml")
         end
 

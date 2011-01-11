@@ -14,6 +14,10 @@ Dir[File.expand_path(File.join(File.dirname(__FILE__),'support','**','*.rb'))].e
 require 'vcr'
 require 'monkey_patches'
 
+module VCR
+  SPEC_ROOT = File.dirname(__FILE__)
+end
+
 RSpec.configure do |config|
   config.extend TempCassetteLibraryDir
   config.extend DisableWarnings
