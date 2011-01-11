@@ -7,9 +7,7 @@ require 'rspec'
 # Ruby 1.9.1 has a different yaml serialization format.
 YAML_SERIALIZATION_VERSION = RUBY_VERSION == '1.9.1' ? '1.9.1' : 'not_1.9.1'
 
-# Requires supporting files with custom matchers and macros, etc,
-# in ./support/ and its subdirectories.
-Dir[File.expand_path(File.join(File.dirname(__FILE__),'support','**','*.rb'))].each {|f| require File.join("support", File.basename(f))}
+Dir['./spec/support/**/*.rb'].each { |f| require f }
 
 require 'vcr'
 require 'monkey_patches'
