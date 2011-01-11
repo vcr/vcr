@@ -35,7 +35,7 @@ module VCR
       raise TurnedOffError.new("VCR is turned off.  You must turn it on before you can insert a cassette.")
     end
 
-    if cassettes.map { |c| c.name }.include?(name)
+    if cassettes.any? { |c| c.name == name }
       raise ArgumentError.new("There is already a cassette with the same name (#{name}).  You cannot nest multiple cassettes with the same name.")
     end
 
