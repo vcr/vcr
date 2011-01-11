@@ -23,7 +23,7 @@ module VCR
       def define_hook(hook)
         # We must use string eval so that the dynamically
         # defined method can accept a block.
-        instance_eval <<-RUBY, __FILE__, __LINE__
+        instance_eval <<-RUBY, __FILE__, __LINE__ + 1
           def #{hook}(tag = nil, &block)
             hooks[#{hook.inspect}][tag] << block
           end
