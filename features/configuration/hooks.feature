@@ -8,9 +8,14 @@ Feature: Hooks
 
   To use these, call `config.before_record` or `config.before_playback` in
   your `VCR.config` block.  Provide a block that accepts 0, 1 or 2 arguments.
+
   The first argument, if the block accepts it, will be an HTTP interaction.
   Changes you make to the interaction will be reflected in the recording or
-  playback.  The second argument, if the block accepts it, will be the
+  playback.  You can also call `#ignore!` on the interaction to cause VCR to
+  ignore it.  It will not be recorded or played back (depending on which
+  kind of hook you use).
+
+  The second argument, if the block accepts it, will be the
   `VCR::Cassette` instance.  This may be useful for hooks that you want to
   behave differently for different cassettes.
 
@@ -82,6 +87,32 @@ Feature: Hooks
     Then the file "cassettes/recording_example.yml" should contain "body: Hello World"
      And the file "cassettes/recording_example.yml" should not contain "secret"
 
+  Scenario: Prevent recording by ignoring interaction in before_record hook
+    Given a file named "before_record_ignore.rb" with:
+      """
+      require 'vcr_cucumber_helpers'
+
+      start_sinatra_app(:port => 7777) do
+        get('/') { "Hello World" }
+      end
+
+      require 'vcr'
+
+      VCR.config do |c|
+        c.stub_with :fakeweb
+        c.cassette_library_dir = 'cassettes'
+        c.before_record { |i| i.ignore! }
+      end
+
+      VCR.use_cassette('recording_example', :record => :new_episodes) do
+        response = Net::HTTP.get_response('localhost', '/', 7777)
+        puts "Response: #{response.body}"
+      end
+      """
+    When I run "ruby before_record_ignore.rb"
+    Then it should pass with "Response: Hello World"
+    And the file "cassettes/recording_example.yml" should not exist
+
   Scenario: Change playback with before_playback hook
     Given a file named "before_playback_example.rb" with:
       """
@@ -103,6 +134,52 @@ Feature: Hooks
       """
     When I run "ruby before_playback_example.rb"
     Then it should pass with "Response: response from before_playback"
+
+  Scenario: Prevent playback by ignoring interaction in before_playback hook
+    Given a previously recorded cassette file "cassettes/localhost.yml" with:
+      """
+      ---
+      - !ruby/struct:VCR::HTTPInteraction
+        request: !ruby/struct:VCR::Request
+          method: :get
+          uri: http://localhost:7777/
+          body:
+          headers:
+        response: !ruby/struct:VCR::Response
+          status: !ruby/struct:VCR::ResponseStatus
+            code: 200
+            message: OK
+          headers:
+            content-type:
+            - text/html;charset=utf-8
+            content-length:
+            - "20"
+          body: recorded response
+          http_version: "1.1"
+      """
+    And a file named "before_playback_ignore.rb" with:
+      """
+      require 'vcr_cucumber_helpers'
+
+      start_sinatra_app(:port => 7777) do
+        get('/') { "sinatra response" }
+      end
+
+      require 'vcr'
+
+      VCR.config do |c|
+        c.stub_with                :fakeweb
+        c.cassette_library_dir     = 'cassettes'
+        c.before_playback { |i| i.ignore! }
+      end
+
+      VCR.use_cassette('localhost', :record => :new_episodes) do
+        response = Net::HTTP.get_response('localhost', '/', 7777)
+        puts "Response: #{response.body}"
+      end
+      """
+    When I run "ruby before_playback_ignore.rb"
+    Then it should pass with "Response: sinatra response"
 
   Scenario: Multiple hooks are run in order
     Given a file named "multiple_hooks.rb" with:

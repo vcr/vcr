@@ -173,4 +173,15 @@ describe VCR::HTTPInteraction do
       instance.send(attr).should == :the_value
     end
   end
+
+  describe '#ignored?' do
+    it 'returns false by default' do
+      should_not be_ignored
+    end
+
+    it 'returns true when #ignore! has been called' do
+      subject.ignore!
+      should be_ignored
+    end
+  end
 end

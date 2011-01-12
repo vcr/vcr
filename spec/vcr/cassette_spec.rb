@@ -227,6 +227,16 @@ describe VCR::Cassette do
             cassette.should have(3).recorded_interactions
           end
 
+          it 'does not playback any interactions that are ignored in a before_playback hook' do
+            VCR.config do |c|
+              c.before_playback { |i| i.ignore! if i.request.uri =~ /foo/ }
+            end
+
+            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
+            cassette = VCR::Cassette.new('example', :record => record_mode)
+            cassette.should have(2).recorded_interactions
+          end
+
           it "stubs the recorded requests with the http stubbing adapter" do
             VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
             VCR.http_stubbing_adapter.should_receive(:stub_requests).with([an_instance_of(VCR::HTTPInteraction)]*3, anything)
@@ -295,6 +305,31 @@ describe VCR::Cassette do
       end
 
       cassette.eject
+    end
+
+    it 'does not record interactions that have been ignored' do
+      interaction_1 = VCR::HTTPInteraction.new(:request_1, :response_1)
+      interaction_2 = VCR::HTTPInteraction.new(:request_2, :response_2)
+
+      interaction_1.ignore!
+
+      cassette = VCR::Cassette.new('test_cassette')
+      cassette.stub!(:new_recorded_interactions).and_return([interaction_1, interaction_2])
+      cassette.eject
+
+      saved_recorded_interactions = YAML.load_file(cassette.file)
+      saved_recorded_interactions.should == [interaction_2]
+    end
+
+    it 'does not write the cassette to disk if all interactions have been ignored' do
+      interaction_1 = VCR::HTTPInteraction.new(:request_1, :response_1)
+      interaction_1.ignore!
+
+      cassette = VCR::Cassette.new('test_cassette')
+      cassette.stub!(:new_recorded_interactions).and_return([interaction_1])
+      cassette.eject
+
+      File.should_not exist(cassette.file)
     end
 
     it "writes the recorded interactions to a subdirectory if the cassette name includes a directory" do

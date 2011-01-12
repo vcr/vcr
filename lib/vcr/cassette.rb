@@ -145,18 +145,22 @@ module VCR
     end
 
     def write_recorded_interactions_to_disk
-      if VCR::Config.cassette_library_dir && new_recorded_interactions.size > 0
-        directory = File.dirname(file)
-        FileUtils.mkdir_p directory unless File.exist?(directory)
-        interactions = merged_interactions
-        invoke_hook(:before_record, interactions)
-        File.open(file, 'w') { |f| f.write interactions.to_yaml }
-      end
+      return unless VCR::Config.cassette_library_dir
+      return if new_recorded_interactions.empty?
+
+      interactions = merged_interactions
+      invoke_hook(:before_record, interactions)
+      return if interactions.empty?
+
+      directory = File.dirname(file)
+      FileUtils.mkdir_p directory unless File.exist?(directory)
+      File.open(file, 'w') { |f| f.write interactions.to_yaml }
     end
 
     def invoke_hook(type, interactions)
-      interactions.each do |i|
+      interactions.delete_if do |i|
         VCR::Config.invoke_hook(type, tag, i, self)
+        i.ignored?
       end
     end
   end
