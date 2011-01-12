@@ -14,6 +14,10 @@
   doesn't allow this and you would get weird errors later on).
 * Raise an appropriate error when restoring a stubs checkpoint if the
   checkpoint cannot be found.
+* Add `before_record` and `before_playback` hooks.  Idea and initial
+  implementation by [Oliver Searle-Barnes](https://github.com/opsb);
+  futher suggestions, testing and feedback by
+  [Nathaniel Bibler](https://github.com/nbibler).
 
 ## 1.4.0 (December 3, 2010)
 

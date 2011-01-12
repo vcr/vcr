@@ -89,6 +89,8 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Ben Hutton](http://github.com/benhutton)
 * [Eric Allam](http://github.com/rubymaverick)
 * [Karl Baum](https://github.com/kbaum)
+* [Nathaniel Bibler](https://github.com/nbibler)
+* [Oliver Searle-Barnes](https://github.com/opsb)
 
 ## Copyright
 
