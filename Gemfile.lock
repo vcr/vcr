@@ -114,7 +114,7 @@ GEM
     tilt (1.1)
     timecop (0.3.5)
     typhoeus (0.2.0)
-    webmock (1.6.1)
+    webmock (1.6.2)
       addressable (>= 2.2.2)
       crack (>= 0.1.7)
 
