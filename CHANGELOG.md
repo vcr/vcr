@@ -2,7 +2,11 @@
 
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.4.0...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.5.0...master)
+
+## 1.5.0 (January 12, 2011)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.4.0...v1.5.0)
 
 * Fix VCR::Cassette so it does not raise an error when a cassette file is
   empty.  Bug reported and fixed by [Karl Baum](https://github.com/kbaum).
