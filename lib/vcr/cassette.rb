@@ -155,7 +155,9 @@ module VCR
     end
 
     def invoke_hook(type, interactions)
-      VCR::Config.invoke_hook(type, tag, interactions, self)
+      interactions.each do |i|
+        VCR::Config.invoke_hook(type, tag, i, self)
+      end
     end
   end
 end

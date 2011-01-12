@@ -8,11 +8,11 @@ Feature: Hooks
 
   To use these, call `config.before_record` or `config.before_playback` in
   your `VCR.config` block.  Provide a block that accepts 0, 1 or 2 arguments.
-  The first argument, if the block accepts it, will be an array of HTTP
-  interactions.  You can modify any of them and/or remove them from the array
-  to prevent them from being recorded or played back.  The second argument,
-  if the block accepts it, will be the `VCR::Cassette` instance.  This may be
-  useful for hooks that you want to behave differently for different cassettes.
+  The first argument, if the block accepts it, will be an HTTP interaction.
+  Changes you make to the interaction will be reflected in the recording or
+  playback.  The second argument, if the block accepts it, will be the
+  `VCR::Cassette` instance.  This may be useful for hooks that you want to
+  behave differently for different cassettes.
 
   You can also use tagging to apply hooks to particular cassettes.  Consider
   this code:
@@ -68,10 +68,8 @@ Feature: Hooks
         c.stub_with :fakeweb
         c.cassette_library_dir = 'cassettes'
 
-        c.before_record do |interactions|
-          interactions.each do |i|
-            i.response.body.sub!(/^Hello .*$/, 'Hello World')
-          end
+        c.before_record do |i|
+          i.response.body.sub!(/^Hello .*$/, 'Hello World')
         end
 
       end
@@ -93,10 +91,8 @@ Feature: Hooks
         c.stub_with                :fakeweb
         c.cassette_library_dir     = 'cassettes'
 
-        c.before_playback do |interactions|
-          interactions.each do |i|
-            i.response.body = 'response from before_playback'
-          end
+        c.before_playback do |i|
+          i.response.body = 'response from before_playback'
         end
       end
 
@@ -164,8 +160,8 @@ Feature: Hooks
         c.stub_with :fakeweb
         c.cassette_library_dir = 'cassettes'
 
-        c.before_record(:tag_1)   { puts "In before_record hook for tag_1" }
-        c.before_playback(:tag_2) { puts "In before_playback hook for tag_2" }
+        c.before_record(:tag_1)   { |i| puts "In before_record hook for tag_1 (#{i.response.body})" }
+        c.before_playback(:tag_2) { |i| puts "In before_playback hook for tag_2 (#{i.response.body})" }
       end
 
       [:tag_1, :tag_2, nil].each do |tag|
@@ -187,10 +183,12 @@ Feature: Hooks
       Using tag: :tag_1
       Response 1: Hello World
       Response 2: example.com response
-      In before_record hook for tag_1
+      In before_record hook for tag_1 (example.com response)
+      In before_record hook for tag_1 (Hello World)
 
       Using tag: :tag_2
-      In before_playback hook for tag_2
+      In before_playback hook for tag_2 (example.com response)
+      In before_playback hook for tag_2 (Hello World)
       Response 1: Hello World
       Response 2: example.com response
 

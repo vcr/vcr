@@ -216,16 +216,15 @@ describe VCR::Cassette do
 
         if stub_requests
           it 'invokes the appropriately tagged before_playback hooks' do
-            args = nil
-            VCR::Config.should_receive(:invoke_hook) { |*a| args = a }
-            cassette = VCR::Cassette.new('example', :record => record_mode, :tag => :foo)
-
-            args.should == [
+            VCR::Config.should_receive(:invoke_hook).with(
               :before_playback,
               :foo,
-              cassette.recorded_interactions,
-              cassette
-            ]
+              an_instance_of(VCR::HTTPInteraction),
+              an_instance_of(VCR::Cassette)
+            ).exactly(3).times
+
+            cassette = VCR::Cassette.new('example', :record => record_mode, :tag => :foo)
+            cassette.should have(3).recorded_interactions
           end
 
           it "stubs the recorded requests with the http stubbing adapter" do
@@ -278,15 +277,21 @@ describe VCR::Cassette do
     end
 
     it 'invokes the appropriately tagged before_record hooks' do
-      interactions = [VCR::HTTPInteraction.new(:req_sig_1, :response_1)]
+      interactions = [
+        VCR::HTTPInteraction.new(:req_sig_1, :response_1),
+        VCR::HTTPInteraction.new(:req_sig_2, :response_2)
+      ]
+
       cassette = VCR::Cassette.new('example', :tag => :foo)
       cassette.stub!(:new_recorded_interactions).and_return(interactions)
 
-      VCR::Config.should_receive(:invoke_hook) do |hook_type, tag, _interactions, _cassette|
-        hook_type.should == :before_record
-        tag.should == :foo
-        _interactions.should == interactions
-        _cassette.should == cassette
+      interactions.each do |i|
+        VCR::Config.should_receive(:invoke_hook).with(
+          :before_record,
+          :foo,
+          i,
+          cassette
+        ).ordered
       end
 
       cassette.eject
