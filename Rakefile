@@ -5,7 +5,10 @@ Bundler::GemHelper.install_tasks
 require 'rake'
 require "rspec/core/rake_task"
 
-RSpec::Core::RakeTask.new(:spec)
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.verbose = false
+  t.rspec_opts = %w[--format progress] if ENV['FULL_BUILD']
+end
 
 desc "Run all examples using rcov"
 RSpec::Core::RakeTask.new :rcov => :cleanup_rcov_files do |t|
