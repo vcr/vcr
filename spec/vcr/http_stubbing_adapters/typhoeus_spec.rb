@@ -11,8 +11,8 @@ describe VCR::HttpStubbingAdapters::Typhoeus do
   it_behaves_like 'an http stubbing adapter', ['typhoeus'], [:method, :uri, :host, :path, :body, :headers]
 
   it_performs('version checking',
-    :valid    => %w[ 0.2.0 0.2.99 ],
-    :too_low  => %w[ 0.1.0 0.1.31 ],
+    :valid    => %w[ 0.2.1 0.2.99 ],
+    :too_low  => %w[ 0.1.0 0.1.31 0.2.0 ],
     :too_high => %w[ 0.3.0 1.0.0 ]
   ) do
     disable_warnings

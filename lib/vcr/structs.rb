@@ -31,7 +31,7 @@ module VCR
       'connection' => %w[ close Keep-Alive ],
       'accept'     => %w[ */* ],
       'expect'     => [''],
-      'user-agent' => ["Typhoeus - http://github.com/pauldix/typhoeus/tree/master", 'Ruby']
+      'user-agent' => ["Typhoeus - http://github.com/dbalatero/typhoeus/tree/master", 'Ruby']
     }
 
     def initialize(*args)

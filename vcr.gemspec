@@ -43,7 +43,7 @@ Gem::Specification.new do |s|
     'patron'          => '~> 0.4.6',
     'em-http-request' => '~> 0.2.7',
     'curb'            => '~> 0.7.8',
-    'typhoeus'        => '~> 0.2.0'
+    'typhoeus'        => '~> 0.2.1'
   }.each do |lib, version|
     s.add_development_dependency lib, version
   end unless RUBY_PLATFORM == 'java'

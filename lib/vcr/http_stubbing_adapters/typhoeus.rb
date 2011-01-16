@@ -6,7 +6,7 @@ module VCR
       include VCR::HttpStubbingAdapters::Common
       extend self
 
-      MINIMUM_VERSION = '0.2.0'
+      MINIMUM_VERSION = '0.2.1'
       MAXIMUM_VERSION = '0.2'
 
       def http_connections_allowed=(value)

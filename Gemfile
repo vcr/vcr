@@ -7,7 +7,7 @@ group :development do
     gem 'patron',           '~> 0.4.6'
     gem 'em-http-request',  '~> 0.2.7'
     gem 'curb',             '~> 0.7.8'
-    gem 'typhoeus',         '~> 0.2.0'
+    gem 'typhoeus',         '~> 0.2.1'
   end
 
   platforms :jruby do
