@@ -47,5 +47,11 @@ module VCR
     def allow_http_connections_when_no_cassette?
       !!@allow_http_connections_when_no_cassette
     end
+
+    def uri_should_be_ignored?(uri)
+      return false unless ignore_localhost?
+      uri = URI.parse(uri) unless uri.respond_to?(:host)
+      VCR::LOCALHOST_ALIASES.include?(uri.host)
+    end
   end
 end

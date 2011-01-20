@@ -13,7 +13,7 @@ module VCR
             request = request_for(env)
             request_matcher = request.matcher(cassette.match_requests_on)
 
-            if VCR::HttpStubbingAdapters::Faraday.ignore_localhost? && VCR::LOCALHOST_ALIASES.include?(URI.parse(request.uri).host)
+            if VCR::Config.uri_should_be_ignored?(request.uri)
               @app.call(env)
             elsif response = VCR::HttpStubbingAdapters::Faraday.stubbed_response_for(request_matcher)
               env.update(

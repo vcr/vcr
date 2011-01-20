@@ -43,15 +43,15 @@ describe 'Deprecations' do
     end
 
     [true, false].each do |orig_ignore_localhost|
-      context "when the http_stubbing_adapter's ignore_localhost is set to #{orig_ignore_localhost}" do
-        before(:each) { VCR.http_stubbing_adapter.ignore_localhost = orig_ignore_localhost }
+      context "when ignore_localhost is set to #{orig_ignore_localhost}" do
+        before(:each) { VCR::Config.ignore_localhost = orig_ignore_localhost }
 
         context 'when the :allow_real_http option is set to :localhost' do
           subject { VCR::Cassette.new('cassette name', :allow_real_http => :localhost) }
 
           it "sets the http_stubbing_adapter's ignore_localhost attribute to true" do
             subject
-            VCR.http_stubbing_adapter.ignore_localhost?.should == true
+            VCR::Config.ignore_localhost?.should == true
           end
 
           it "prints a warning: VCR's :allow_real_http cassette option is deprecated.  Instead, use the ignore_localhost configuration option." do
@@ -61,7 +61,7 @@ describe 'Deprecations' do
 
           it "reverts ignore_localhost when the cassette is ejected" do
             subject.eject
-            VCR.http_stubbing_adapter.ignore_localhost?.should == orig_ignore_localhost
+            VCR::Config.ignore_localhost?.should == orig_ignore_localhost
           end
 
           {

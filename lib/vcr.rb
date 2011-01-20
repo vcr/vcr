@@ -87,8 +87,7 @@ module VCR
 
   def record_http_interaction(interaction)
     return unless cassette = current_cassette
-    return if http_stubbing_adapter.ignore_localhost? &&
-      LOCALHOST_ALIASES.include?(URI.parse(interaction.uri).host)
+    return if VCR::Config.uri_should_be_ignored?(interaction.uri)
 
     cassette.record_http_interaction(interaction)
   end

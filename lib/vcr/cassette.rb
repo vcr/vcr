@@ -104,10 +104,8 @@ module VCR
           interactions = YAML.load(raw_yaml_content)
           invoke_hook(:before_playback, interactions)
 
-          if VCR.http_stubbing_adapter.ignore_localhost?
-            interactions.reject! do |i|
-              i.uri.is_a?(String) && VCR::LOCALHOST_ALIASES.include?(URI.parse(i.uri).host)
-            end
+          interactions.reject! do |i|
+            i.request.uri.is_a?(String) && VCR::Config.uri_should_be_ignored?(i.request.uri)
           end
 
           recorded_interactions.replace(interactions)

@@ -350,13 +350,13 @@ module HttpLibrarySpecs
           test_real_http_request(http_allowed, *other)
 
           unless http_allowed
-            describe '.ignore_localhost=' do
+            describe 'VCR::Config.ignore_localhost =' do
               localhost_response = "Localhost response"
               let(:record_mode) { :none }
 
               VCR::LOCALHOST_ALIASES.each do |localhost_alias|
                 describe 'when set to true' do
-                  before(:each) { subject.ignore_localhost = true }
+                  before(:each) { VCR::Config.ignore_localhost = true }
 
                   it "allows requests to #{localhost_alias}" do
                     get_body_string(make_http_request(:get, "http://#{localhost_alias}:#{VCR::SinatraApp.port}/localhost_test")).should == localhost_response
@@ -364,7 +364,7 @@ module HttpLibrarySpecs
                 end
 
                 describe 'when set to false' do
-                  before(:each) { subject.ignore_localhost = false }
+                  before(:each) { VCR::Config.ignore_localhost = false }
 
                   it "does not allow requests to #{localhost_alias}" do
                     expect { make_http_request(:get, "http://#{localhost_alias}:#{VCR::SinatraApp.port}/localhost_test") }.to raise_error(NET_CONNECT_NOT_ALLOWED_ERROR)

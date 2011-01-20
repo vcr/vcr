@@ -174,63 +174,34 @@ describe VCR do
   end
 
   describe '.record_http_interaction' do
-    before(:each) { VCR.stub!(:current_cassette).and_return(current_cassette) }
+    before(:each) { VCR.stub(:current_cassette => current_cassette) }
+    let(:uri) { 'http://some-host.com/' }
+    let(:interaction) { stub(:uri => uri) }
 
-    def self.with_ignore_localhost_set_to(value, &block)
-      context "when http_stubbing_adapter.ignore_localhost is #{value}" do
-        before(:each) { VCR.http_stubbing_adapter.stub!(:ignore_localhost?).and_return(value) }
+    context 'when there is not a current cassette' do
+      let(:current_cassette) { nil }
 
-        instance_eval(&block)
-      end
-    end
-
-    def self.it_records_requests_to(host)
-      it "records requests to #{host}" do
-        interaction = stub(:uri => "http://#{host}/")
-        current_cassette.should_receive(:record_http_interaction).with(interaction).once
-        VCR.record_http_interaction(interaction)
-      end
-    end
-
-    def self.it_does_not_record_requests_to(host)
-      it "does not record requests to #{host}" do
-        interaction = stub(:uri => "http://#{host}/")
-        current_cassette.should_receive(:record_http_interaction).never unless current_cassette.nil?
+      it 'does not record a request' do
+        # we can't set a message expectation on nil, but there is no place to record it to...
+        # this mostly tests that there is no error.
+        VCR::Config.stub(:uri_should_be_ignored? => false)
         VCR.record_http_interaction(interaction)
       end
     end
 
     context 'when there is a current cassette' do
-      let(:current_cassette) { mock('current casette') }
+      let(:current_cassette) { mock('current cassette') }
 
-      with_ignore_localhost_set_to(true) do
-        it_records_requests_to "example.com"
-
-        VCR::LOCALHOST_ALIASES.each do |host|
-          it_does_not_record_requests_to host
-        end
+      it 'records the request when the uri should not be ignored' do
+        VCR::Config.stub(:uri_should_be_ignored?).with(uri).and_return(false)
+        current_cassette.should_receive(:record_http_interaction).with(interaction)
+        VCR.record_http_interaction(interaction)
       end
 
-      with_ignore_localhost_set_to(false) do
-        (VCR::LOCALHOST_ALIASES + ['example.com']).each do |host|
-          it_records_requests_to host
-        end
-      end
-    end
-
-    context 'when there is not a current cassette' do
-      let(:current_cassette) { nil }
-
-      with_ignore_localhost_set_to(true) do
-        (VCR::LOCALHOST_ALIASES + ['example.com']).each do |host|
-          it_does_not_record_requests_to host
-        end
-      end
-
-      with_ignore_localhost_set_to(false) do
-        (VCR::LOCALHOST_ALIASES + ['example.com']).each do |host|
-          it_does_not_record_requests_to host
-        end
+      it 'does not record the request when the uri should be ignored' do
+        VCR::Config.stub(:uri_should_be_ignored?).with(uri).and_return(true)
+        current_cassette.should_not_receive(:record_http_interaction)
+        VCR.record_http_interaction(interaction)
       end
     end
   end

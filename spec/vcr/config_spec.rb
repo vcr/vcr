@@ -85,4 +85,33 @@ describe VCR::Config do
       VCR::Config.allow_http_connections_when_no_cassette = true
     end
   end
+
+  describe '.uri_should_be_ignored?' do
+    context 'when ignore_localhost is false' do
+      before(:each) { described_class.ignore_localhost = false }
+
+      (VCR::LOCALHOST_ALIASES + %w[example.com]).each do |host|
+        it "returns false for a #{host} uri" do
+          described_class.uri_should_be_ignored?("http://#{host}/").should be_false
+          described_class.uri_should_be_ignored?(URI.parse("http://#{host}/")).should be_false
+        end
+      end
+    end
+
+    context 'when ignore_localhost is true' do
+      before(:each) { described_class.ignore_localhost = true }
+
+      it "returns false for an example.com uri" do
+        described_class.uri_should_be_ignored?("http://example.com/").should be_false
+        described_class.uri_should_be_ignored?(URI.parse("http://example.com/")).should be_false
+      end
+
+      VCR::LOCALHOST_ALIASES.each do |host|
+        it "returns true for a #{host} uri" do
+          described_class.uri_should_be_ignored?("http://#{host}/").should be_true
+          described_class.uri_should_be_ignored?(URI.parse("http://#{host}/")).should be_true
+        end
+      end
+    end
+  end
 end
