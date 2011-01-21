@@ -2,7 +2,15 @@
 
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.5.0...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.5.1...master)
+
+## 1.5.1 (January 12, 2011)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.5.0...v1.5.1)
+
+* Fix response and request serialization so that the headers are raw
+  strings.  This fixes intermittent YAML seg faults for paperclip
+  uploads to S3.  But reported by [Rob Slifka](https://github.com/rslifka).
 
 ## 1.5.0 (January 12, 2011)
 

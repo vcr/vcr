@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    vcr (1.5.0)
+    vcr (1.5.1)
 
 GEM
   remote: http://rubygems.org/
