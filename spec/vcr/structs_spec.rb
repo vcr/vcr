@@ -23,6 +23,20 @@ shared_examples_for "a header normalizer" do
   it 'sets empty hash header to nil' do
     with_headers({}).headers.should be_nil
   end
+
+  it 'ensures header keys are serialized to yaml as raw strings' do
+    key = 'my-key'
+    key.instance_variable_set(:@foo, 7)
+    instance = with_headers(key => ['value1'])
+    instance.headers.to_yaml.should == { 'my-key' => ['value1'] }.to_yaml
+  end
+
+  it 'ensures header values are serialized to yaml as raw strings' do
+    value = 'my-value'
+    value.instance_variable_set(:@foo, 7)
+    instance = with_headers('my-key' => [value])
+    instance.headers.to_yaml.should == { 'my-key' => ['my-value'] }.to_yaml
+  end
 end
 
 shared_examples_for "a body normalizer" do

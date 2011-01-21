@@ -61,7 +61,14 @@ module VCR
         important_vals = important_header_values(k, val_array)
         next unless important_vals.size > 0
 
-        new_headers[k] = important_vals
+        # Ensure the values are raw strings.
+        # Apparently for Paperclip uploads to S3, headers
+        # get serialized with some extra stuff which leads
+        # to a seg fault. See this issue for more info:
+        # https://github.com/myronmarston/vcr/issues#issue/39
+        string_vals = important_vals.map { |v| String.new(v) }
+
+        new_headers[k] = string_vals
       end if headers
 
       self.headers = new_headers.empty? ? nil : new_headers
