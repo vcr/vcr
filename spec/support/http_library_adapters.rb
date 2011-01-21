@@ -341,7 +341,10 @@ module HttpLibrarySpecs
 
       [true, false].each do |http_allowed|
         context "when http_connections_allowed is set to #{http_allowed}" do
-          before(:each) { subject.http_connections_allowed = http_allowed }
+          before(:each) do
+            VCR::Config.ignore_localhost = false
+            subject.http_connections_allowed = http_allowed
+          end
 
           it "returns #{http_allowed} for #http_connections_allowed?" do
             subject.http_connections_allowed?.should == http_allowed

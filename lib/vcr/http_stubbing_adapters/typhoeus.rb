@@ -21,10 +21,6 @@ module VCR
         ::Typhoeus::Hydra.ignore_localhost = value
       end
 
-      def ignore_localhost?
-        !!::Typhoeus::Hydra.ignore_localhost?
-      end
-
       def stub_requests(http_interactions, match_attributes)
         grouped_responses(http_interactions, match_attributes).each do |request_matcher, responses|
           ::Typhoeus::Hydra.stub(

@@ -21,10 +21,6 @@ module VCR
         ::WebMock::Config.instance.allow_localhost = value
       end
 
-      def ignore_localhost?
-        !!::WebMock::Config.instance.allow_localhost
-      end
-
       def stub_requests(http_interactions, match_attributes)
         grouped_responses(http_interactions, match_attributes).each do |request_matcher, responses|
           stub = ::WebMock.stub_request(request_matcher.method || :any, request_matcher.uri)

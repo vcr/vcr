@@ -3,20 +3,6 @@ shared_examples_for "an http stubbing adapter" do |supported_http_libraries, sup
   before(:each) { VCR.stub!(:http_stubbing_adapter).and_return(subject) }
   subject { described_class }
 
-  describe '.ignore_localhost?' do
-    [true, false].each do |val|
-      it "returns #{val} when ignore_localhost is set to #{val}" do
-        subject.ignore_localhost = val
-        subject.ignore_localhost?.should == val
-      end
-    end
-
-    it "returns false when ignore_localhost is set to nil" do
-      subject.ignore_localhost = nil
-      subject.ignore_localhost?.should == false
-    end
-  end
-
   describe '.set_http_connections_allowed_to_default' do
     [true, false].each do |default|
       context "when VCR::Config.allow_http_connections_when_no_cassette is #{default}" do

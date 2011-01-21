@@ -27,10 +27,6 @@ module VCR
         update_fakeweb_allow_net_connect
       end
 
-      def ignore_localhost?
-        !!@ignore_localhost
-      end
-
       def stub_requests(http_interactions, match_attributes)
         validate_match_attributes(match_attributes)
 

@@ -15,10 +15,6 @@ module VCR
         !!@http_connections_allowed
       end
 
-      def ignore_localhost?
-        !!@ignore_localhost
-      end
-
       def stub_requests(http_interactions, match_attributes)
         grouped_responses(http_interactions, match_attributes).each do |request_matcher, responses|
           queue = stub_queues[request_matcher]
