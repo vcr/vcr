@@ -79,16 +79,7 @@ module VCR
         raise ArgumentError.new("You have configured VCR to use both :fakeweb and :webmock.  You cannot use both.")
       end
 
-      adapters = VCR::Config.http_stubbing_libraries.map do |lib|
-        case lib
-          when :fakeweb;  HttpStubbingAdapters::FakeWeb
-          when :webmock;  HttpStubbingAdapters::WebMock
-          when :typhoeus; HttpStubbingAdapters::Typhoeus
-          when :faraday;  HttpStubbingAdapters::Faraday
-          else raise ArgumentError.new("#{lib.inspect} is not a supported HTTP stubbing library.")
-        end
-      end
-
+      adapters = VCR::Config.http_stubbing_libraries.map { |l| adapter_for(l) }
       raise ArgumentError.new("The http stubbing library is not configured.") if adapters.empty?
       HttpStubbingAdapters::MultiObjectProxy.for(*adapters)
     end
@@ -131,6 +122,16 @@ module VCR
   end
 
   private
+
+  def adapter_for(lib)
+    case lib
+      when :fakeweb;  HttpStubbingAdapters::FakeWeb
+      when :webmock;  HttpStubbingAdapters::WebMock
+      when :typhoeus; HttpStubbingAdapters::Typhoeus
+      when :faraday;  HttpStubbingAdapters::Faraday
+      else raise ArgumentError.new("#{lib.inspect} is not a supported HTTP stubbing library.")
+    end
+  end
 
   def cassettes
     @cassettes ||= []
