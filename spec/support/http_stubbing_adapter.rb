@@ -59,7 +59,7 @@ shared_examples_for "an http stubbing adapter" do |supported_http_libraries, sup
   end
 
   if other.include?(:needs_net_http_extension)
-    describe '#request_uri' do
+    describe '.request_uri' do
       it 'returns the uri for the given http request' do
         net_http = Net::HTTP.new('example.com', 80)
         request = Net::HTTP::Get.new('/foo/bar')
@@ -74,7 +74,7 @@ shared_examples_for "an http stubbing adapter" do |supported_http_libraries, sup
       end
     end
 
-    describe '#request_stubbed? using specific match_attributes' do
+    describe '.request_stubbed? using specific match_attributes' do
       let(:interactions) { YAML.load(File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', YAML_SERIALIZATION_VERSION, 'match_requests_on.yml'))) }
 
       @supported_request_match_attributes = supported_request_match_attributes

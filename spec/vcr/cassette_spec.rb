@@ -49,7 +49,7 @@ describe VCR::Cassette do
     end
   end
 
-  describe 'on creation' do
+  describe '.new' do
     it 'raises an error with a helpful message when loading an old unsupported cassette' do
       VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}"
       expect { VCR::Cassette.new('0_3_1_cassette') }.to raise_error(/The VCR cassette 0_3_1_cassette.yml uses an old format that is now deprecated/)

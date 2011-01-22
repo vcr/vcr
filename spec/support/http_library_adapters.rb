@@ -340,7 +340,7 @@ module HttpLibrarySpecs
       end
 
       [true, false].each do |http_allowed|
-        context "when #http_connections_allowed is set to #{http_allowed}" do
+        context "when http_connections_allowed is set to #{http_allowed}" do
           before(:each) { subject.http_connections_allowed = http_allowed }
 
           it "returns #{http_allowed} for #http_connections_allowed?" do
@@ -350,7 +350,7 @@ module HttpLibrarySpecs
           test_real_http_request(http_allowed, *other)
 
           unless http_allowed
-            describe '.ignore_localhost =' do
+            describe '.ignore_localhost=' do
               localhost_response = "Localhost response"
               let(:record_mode) { :none }
 

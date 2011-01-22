@@ -6,7 +6,7 @@ describe VCR::Config do
     VCR::Config.stub(:http_stubbing_libraries).and_return([])
   end
 
-  describe '#cassette_library_dir=' do
+  describe '.cassette_library_dir=' do
     temp_dir(File.expand_path(File.dirname(__FILE__) + '/fixtures/config_spec'))
 
     it 'creates the directory if it does not exist' do
@@ -18,7 +18,7 @@ describe VCR::Config do
     end
   end
 
-  describe '#default_cassette_options' do
+  describe '.default_cassette_options' do
     it 'has a hash with some defaults even if it is set to nil' do
       VCR::Config.default_cassette_options = nil
       VCR::Config.default_cassette_options.should == { :match_requests_on => VCR::RequestMatcher::DEFAULT_MATCH_ATTRIBUTES }
@@ -47,7 +47,7 @@ describe VCR::Config do
     end
   end
 
-  describe '#ignore_localhost' do
+  describe '.ignore_localhost' do
     it 'sets VCR.http_stubbing_adapter.ignore_localhost?' do
       [true, false].each do |val|
         VCR.http_stubbing_adapter.ignore_localhost = !val
@@ -66,7 +66,7 @@ describe VCR::Config do
     end
   end
 
-  describe '#allow_http_connections_when_no_cassette=' do
+  describe '.allow_http_connections_when_no_cassette=' do
     [true, false].each do |val|
       it "sets the allow_http_connections_when_no_cassette to #{val} when set to #{val}" do
         VCR::Config.allow_http_connections_when_no_cassette = val

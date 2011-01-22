@@ -20,7 +20,7 @@ module VCR
         inst_methods.should_not include(:send, :object_id, :__id__)
       end
 
-      describe '#proxies_objects' do
+      describe '#proxied_objects' do
         it 'returns the proxied objects' do
           subject.proxied_objects.should == [mock1, mock2]
         end
