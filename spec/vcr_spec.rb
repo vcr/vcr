@@ -107,15 +107,16 @@ describe VCR do
       VCR.config { }
     end
 
-    [true, false].each do |val|
-      it "sets http_stubbing_adapter.ignore_localhost to #{val} when so configured" do
-        VCR.config do |c|
-          c.ignore_localhost = val
+    it "sets http_stubbing_adapter.ignored_hosts to the configured hosts when the block completes" do
+      VCR::Config.reset!(nil)
+      VCR::HttpStubbingAdapters::FakeWeb.send(:ignored_hosts).should be_empty
 
-          # this is mocked at this point since it should be set when the block completes.
-          VCR.http_stubbing_adapter.should_receive(:ignore_localhost=).with(val)
-        end
+      VCR.config do |c|
+        c.stub_with :fakeweb
+        c.ignore_hosts 'example.com', 'example.org'
       end
+
+      VCR::HttpStubbingAdapters::FakeWeb.send(:ignored_hosts).should == %w[example.com example.org]
     end
   end
 

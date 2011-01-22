@@ -17,8 +17,8 @@ module VCR
         !!::Typhoeus::Hydra.allow_net_connect?
       end
 
-      def ignore_localhost=(value)
-        ::Typhoeus::Hydra.ignore_localhost = value
+      def ignored_hosts=(hosts)
+        ::Typhoeus::Hydra.ignore_hosts = hosts
       end
 
       def stub_requests(http_interactions, match_attributes)

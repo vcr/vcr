@@ -341,10 +341,7 @@ module HttpLibrarySpecs
 
       [true, false].each do |http_allowed|
         context "when http_connections_allowed is set to #{http_allowed}" do
-          before(:each) do
-            VCR::Config.ignore_localhost = false
-            subject.http_connections_allowed = http_allowed
-          end
+          before(:each) { subject.http_connections_allowed = http_allowed }
 
           it "returns #{http_allowed} for #http_connections_allowed?" do
             subject.http_connections_allowed?.should == http_allowed
@@ -353,25 +350,24 @@ module HttpLibrarySpecs
           test_real_http_request(http_allowed, *other)
 
           unless http_allowed
-            describe 'VCR::Config.ignore_localhost =' do
-              localhost_response = "Localhost response"
+            localhost_response = "Localhost response"
+
+            describe '.ignore_hosts' do
               let(:record_mode) { :none }
 
-              VCR::LOCALHOST_ALIASES.each do |localhost_alias|
-                describe 'when set to true' do
-                  before(:each) { VCR::Config.ignore_localhost = true }
+              context 'when set to ["127.0.0.1", "localhost"]' do
+                before(:each) do
+                  subject.ignored_hosts = ["127.0.0.1", "localhost"]
+                end
 
+                %w[ 127.0.0.1 localhost ].each do |localhost_alias|
                   it "allows requests to #{localhost_alias}" do
                     get_body_string(make_http_request(:get, "http://#{localhost_alias}:#{VCR::SinatraApp.port}/localhost_test")).should == localhost_response
                   end
                 end
 
-                describe 'when set to false' do
-                  before(:each) { VCR::Config.ignore_localhost = false }
-
-                  it "does not allow requests to #{localhost_alias}" do
-                    expect { make_http_request(:get, "http://#{localhost_alias}:#{VCR::SinatraApp.port}/localhost_test") }.to raise_error(NET_CONNECT_NOT_ALLOWED_ERROR)
-                  end
+                it 'does not allow requests to 0.0.0.0' do
+                  expect { make_http_request(:get, "http://0.0.0.0:#{VCR::SinatraApp.port}/localhost_test") }.to raise_error(NET_CONNECT_NOT_ALLOWED_ERROR)
                 end
               end
             end

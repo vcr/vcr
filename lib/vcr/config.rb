@@ -30,13 +30,27 @@ module VCR
       @http_stubbing_libraries ||= []
     end
 
-    def ignore_localhost=(value)
-      @ignore_localhost = value
-      VCR.http_stubbing_adapter.ignore_localhost = value if http_stubbing_libraries.any?
+    def ignore_hosts(*hosts)
+      ignored_hosts.push(*hosts).uniq!
+      VCR.http_stubbing_adapter.ignored_hosts = ignored_hosts if http_stubbing_libraries.any?
+    end
+    alias ignore_host ignore_hosts
+
+    def ignored_hosts
+      @ignored_hosts ||= []
     end
 
+    def ignore_localhost=(value)
+      if value
+        ignore_hosts *VCR::LOCALHOST_ALIASES
+      else
+        ignored_hosts.reject! { |h| VCR::LOCALHOST_ALIASES.include?(h) }
+      end
+    end
+
+    # TODO: deprecate this
     def ignore_localhost?
-      @ignore_localhost
+      (VCR::LOCALHOST_ALIASES - ignored_hosts).empty?
     end
 
     def allow_http_connections_when_no_cassette=(value)
@@ -49,9 +63,8 @@ module VCR
     end
 
     def uri_should_be_ignored?(uri)
-      return false unless ignore_localhost?
       uri = URI.parse(uri) unless uri.respond_to?(:host)
-      VCR::LOCALHOST_ALIASES.include?(uri.host)
+      ignored_hosts.include?(uri.host)
     end
   end
 end

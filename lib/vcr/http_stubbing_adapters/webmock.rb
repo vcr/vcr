@@ -10,15 +10,17 @@ module VCR
       MAXIMUM_VERSION = '1.6'
 
       def http_connections_allowed=(value)
-        ::WebMock::Config.instance.allow_net_connect = value
+        @http_connections_allowed = value
+        update_webmock_allow_net_connect
       end
 
       def http_connections_allowed?
         !!::WebMock::Config.instance.allow_net_connect
       end
 
-      def ignore_localhost=(value)
-        ::WebMock::Config.instance.allow_localhost = value
+      def ignored_hosts=(hosts)
+        @ignored_hosts = hosts
+        update_webmock_allow_net_connect
       end
 
       def stub_requests(http_interactions, match_attributes)
@@ -44,6 +46,18 @@ module VCR
 
       def version
         ::WebMock.version
+      end
+
+      def ignored_hosts
+        @ignored_hosts ||= []
+      end
+
+      def update_webmock_allow_net_connect
+        if @http_connections_allowed
+          ::WebMock.allow_net_connect!
+        else
+          ::WebMock.disable_net_connect!(:allow => ignored_hosts)
+        end
       end
 
       def request_signature_hash(request_matcher)

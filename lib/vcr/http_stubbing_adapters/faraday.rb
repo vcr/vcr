@@ -9,10 +9,19 @@ module VCR
       MINIMUM_VERSION = '0.5.3'
       MAXIMUM_VERSION = '0.5'
 
-      attr_writer :http_connections_allowed, :ignore_localhost
+      attr_writer :http_connections_allowed
 
       def http_connections_allowed?
         !!@http_connections_allowed
+      end
+
+      def ignored_hosts=(hosts)
+        @ignored_hosts = hosts
+      end
+
+      def uri_should_be_ignored?(uri)
+        uri = URI.parse(uri) unless uri.respond_to?(:host)
+        ignored_hosts.include?(uri.host)
       end
 
       def stub_requests(http_interactions, match_attributes)
@@ -46,6 +55,10 @@ module VCR
 
         def version
           ::Faraday::VERSION
+        end
+
+        def ignored_hosts
+          @ignored_hosts ||= []
         end
 
         def checkpoints

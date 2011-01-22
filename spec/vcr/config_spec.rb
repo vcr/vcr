@@ -47,20 +47,48 @@ describe VCR::Config do
     end
   end
 
-  describe '.ignore_localhost=' do
-    [true, false].each do |val|
-      it "sets VCR.http_stubbing_adapter to #{val} when set to #{val}" do
-        VCR.http_stubbing_adapter.should_receive(:ignore_localhost=).with(val)
-        VCR::Config.ignore_localhost = val
-      end
+  describe '.ignore_hosts' do
+    let(:stubbing_adapter) { VCR::HttpStubbingAdapters::FakeWeb }
+    before(:each) do
+      stubbing_adapter.send(:ignored_hosts).should be_empty
+      VCR.stub(:http_stubbing_adapter => stubbing_adapter)
+      VCR::Config.ignored_hosts.should be_empty
     end
 
-    it 'stores the value even when VCR.http_stubbing_adapter is not set' do
-      stub_no_http_stubbing_adapter
-      [true, false].each do |val|
-        VCR::Config.ignore_localhost = val
-        VCR::Config.ignore_localhost?.should == val
-      end
+    it 'adds the given hosts to the ignored_hosts list' do
+      VCR::Config.ignore_hosts 'example.com', 'example.net'
+      VCR::Config.ignored_hosts.should == %w[ example.com example.net ]
+      VCR::Config.ignore_host 'example.org'
+      VCR::Config.ignored_hosts.should == %w[ example.com example.net example.org ]
+    end
+
+    it 'removes duplicate hosts' do
+      VCR::Config.ignore_host 'example.com'
+      VCR::Config.ignore_host 'example.com'
+      VCR::Config.ignored_hosts.should == ['example.com']
+    end
+
+    it "updates the http_stubbing_adapter's ignored_hosts list" do
+      VCR::Config.ignore_hosts 'example.com', 'example.org'
+      stubbing_adapter.send(:ignored_hosts).should == %w[ example.com example.org ]
+    end
+  end
+
+  describe '.ignore_localhost=' do
+    before(:each) do
+      VCR::Config.ignored_hosts.should be_empty
+    end
+
+    it 'adds the localhost aliases to the ignored_hosts list when set to true' do
+      VCR::Config.ignore_host 'example.com'
+      VCR::Config.ignore_localhost = true
+      VCR::Config.ignored_hosts.should == ['example.com', *VCR::LOCALHOST_ALIASES]
+    end
+
+    it 'removes the localhost aliases from the ignored_hosts list when set to false' do
+      VCR::Config.ignore_host 'example.com', *VCR::LOCALHOST_ALIASES
+      VCR::Config.ignore_localhost = false
+      VCR::Config.ignored_hosts.should == ['example.com']
     end
   end
 
@@ -85,31 +113,22 @@ describe VCR::Config do
   end
 
   describe '.uri_should_be_ignored?' do
-    context 'when ignore_localhost is false' do
-      before(:each) { described_class.ignore_localhost = false }
+    before(:each) { described_class.ignore_hosts 'example.com' }
 
-      (VCR::LOCALHOST_ALIASES + %w[example.com]).each do |host|
-        it "returns false for a #{host} uri" do
-          described_class.uri_should_be_ignored?("http://#{host}/").should be_false
-          described_class.uri_should_be_ignored?(URI.parse("http://#{host}/")).should be_false
-        end
-      end
+    it 'returns true for a string URI with a host in the ignore_hosts list' do
+      described_class.uri_should_be_ignored?("http://example.com/").should be_true
     end
 
-    context 'when ignore_localhost is true' do
-      before(:each) { described_class.ignore_localhost = true }
+    it 'returns true for a URI instance with a host in the ignore_hosts list' do
+      described_class.uri_should_be_ignored?(URI("http://example.com/")).should be_true
+    end
 
-      it "returns false for an example.com uri" do
-        described_class.uri_should_be_ignored?("http://example.com/").should be_false
-        described_class.uri_should_be_ignored?(URI.parse("http://example.com/")).should be_false
-      end
+    it 'returns false for a string URI with a host in the ignore_hosts list' do
+      described_class.uri_should_be_ignored?("http://example.net/").should be_false
+    end
 
-      VCR::LOCALHOST_ALIASES.each do |host|
-        it "returns true for a #{host} uri" do
-          described_class.uri_should_be_ignored?("http://#{host}/").should be_true
-          described_class.uri_should_be_ignored?(URI.parse("http://#{host}/")).should be_true
-        end
-      end
+    it 'returns false for a URI instance with a host in the ignore_hosts list' do
+      described_class.uri_should_be_ignored?(URI("http://example.net/")).should be_false
     end
   end
 end

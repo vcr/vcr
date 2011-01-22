@@ -65,7 +65,7 @@ module VCR
     yield VCR::Config
     http_stubbing_adapter.check_version!
     http_stubbing_adapter.set_http_connections_allowed_to_default
-    http_stubbing_adapter.ignore_localhost = VCR::Config.ignore_localhost?
+    http_stubbing_adapter.ignored_hosts = VCR::Config.ignored_hosts
   end
 
   def cucumber_tags(&block)

@@ -7,8 +7,8 @@ module VCR
       include VCR::HttpStubbingAdapters::Common
       extend self
 
+      # TODO: deprecate regex constant
       UNSUPPORTED_REQUEST_MATCH_ATTRIBUTES = [:body, :headers]
-      LOCALHOST_REGEX = %r|\Ahttps?://((\w+:)?\w+@)?(#{VCR::LOCALHOST_ALIASES.map { |a| Regexp.escape(a) }.join('|')})(:\d+)?/|i
 
       MINIMUM_VERSION = '1.3.0'
       MAXIMUM_VERSION = '1.3'
@@ -22,8 +22,8 @@ module VCR
         !!::FakeWeb.allow_net_connect?("http://some.url/besides/localhost")
       end
 
-      def ignore_localhost=(value)
-        @ignore_localhost = value
+      def ignored_hosts=(hosts)
+        @ignored_hosts = hosts
         update_fakeweb_allow_net_connect
       end
 
@@ -58,6 +58,15 @@ module VCR
 
       private
 
+      def ignored_hosts
+        @ignored_hosts ||= []
+      end
+
+      def url_regex_for(hosts)
+        host_regex = hosts.map { |h| Regexp.escape(h) }.join('|')
+        %r|\Ahttps?://((\w+:)?\w+@)?(#{host_regex})(:\d+)?/|i
+      end
+
       def version
         ::FakeWeb::VERSION
       end
@@ -65,8 +74,8 @@ module VCR
       def update_fakeweb_allow_net_connect
         ::FakeWeb.allow_net_connect = if @http_connections_allowed
           true
-        elsif @ignore_localhost
-          LOCALHOST_REGEX
+        elsif ignored_hosts.any?
+          url_regex_for(ignored_hosts)
         else
           false
         end
