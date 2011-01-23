@@ -48,11 +48,6 @@ module VCR
       end
     end
 
-    # TODO: deprecate this
-    def ignore_localhost?
-      (VCR::LOCALHOST_ALIASES - ignored_hosts).empty?
-    end
-
     def allow_http_connections_when_no_cassette=(value)
       @allow_http_connections_when_no_cassette = value
       VCR.http_stubbing_adapter.set_http_connections_allowed_to_default if http_stubbing_libraries.any?
@@ -68,3 +63,4 @@ module VCR
     end
   end
 end
+

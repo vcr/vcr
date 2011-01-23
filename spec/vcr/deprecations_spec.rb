@@ -1,7 +1,57 @@
 require 'spec_helper'
 
+shared_examples_for '.ignore_localhost? deprecation' do
+  it 'returns false when no hosts are ignored' do
+    VCR::Config.ignored_hosts.should be_empty
+    described_class.ignore_localhost?.should be_false
+  end
+
+  it 'returns false when only non-local hosts are ignored' do
+    VCR::Config.ignore_hosts 'example.com'
+    described_class.ignore_localhost?.should be_false
+  end
+
+  it 'returns false when only some localhost aliases are ignored' do
+    aliases = VCR::LOCALHOST_ALIASES.dup
+    aliases.pop
+    VCR::Config.ignore_hosts *aliases
+    described_class.ignore_localhost?.should be_false
+  end
+
+  it 'returns true when all localhost aliases are ignored, even if some other hosts are ignored, too' do
+    VCR::Config.ignore_hosts 'example.com', *VCR::LOCALHOST_ALIASES
+    described_class.ignore_localhost?.should be_true
+  end
+
+  it 'prints a warning: WARNING: `VCR::Config.ignore_localhost?` is deprecated.  Check the list of ignored hosts using `VCR::Config.ignored_hosts` instead.' do
+    VCR::Config.should_receive(:warn).with(/Check the list of ignored hosts using `VCR::Config.ignored_hosts` instead/)
+    described_class.ignore_localhost?
+  end
+end
+
 describe 'Deprecations' do
   disable_warnings
+
+  VCR::HttpStubbingAdapters::Common.adapters.each do |adapter|
+    describe adapter do
+      it_behaves_like '.ignore_localhost? deprecation'
+    end
+  end
+
+  describe VCR::HttpStubbingAdapters::FakeWeb do
+    describe 'LOCALHOST_REGEX constant' do
+      subject { described_class::LOCALHOST_REGEX }
+
+      it 'refers to the expected regex' do
+        should == %r|\Ahttps?://((\w+:)?\w+@)?(#{VCR::LOCALHOST_ALIASES.map { |a| Regexp.escape(a) }.join('|')})(:\d+)?/|i
+      end
+
+      it 'prints a warning: WARNING: `VCR::HttpStubbingAdapters::FakeWeb::LOCALHOST_REGEX` is deprecated.' do
+        described_class.should_receive(:warn).with("WARNING: `VCR::HttpStubbingAdapters::FakeWeb::LOCALHOST_REGEX` is deprecated.")
+        subject
+      end
+    end
+  end
 
   describe VCR::Config do
     describe '.http_stubbing_library' do
@@ -28,6 +78,8 @@ describe 'Deprecations' do
         described_class.http_stubbing_library = :webmock
       end
     end
+
+    it_behaves_like '.ignore_localhost? deprecation'
   end
 
   describe VCR::Cassette do
