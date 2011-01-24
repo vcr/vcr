@@ -61,11 +61,6 @@ module VCR
         @ignored_hosts ||= []
       end
 
-      def url_regex_for(hosts)
-        host_regex = hosts.map { |h| Regexp.escape(h) }.join('|')
-        %r|\Ahttps?://((\w+:)?\w+@)?(#{host_regex})(:\d+)?/|i
-      end
-
       def version
         ::FakeWeb::VERSION
       end
@@ -74,7 +69,7 @@ module VCR
         ::FakeWeb.allow_net_connect = if @http_connections_allowed
           true
         elsif ignored_hosts.any?
-          url_regex_for(ignored_hosts)
+          VCR::Regexes.url_regex_for_hosts(ignored_hosts)
         else
           false
         end

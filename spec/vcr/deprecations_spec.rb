@@ -43,7 +43,7 @@ describe 'Deprecations' do
       subject { described_class::LOCALHOST_REGEX }
 
       it 'refers to the expected regex' do
-        should == %r|\Ahttps?://((\w+:)?\w+@)?(#{VCR::LOCALHOST_ALIASES.map { |a| Regexp.escape(a) }.join('|')})(:\d+)?/|i
+        should == %r|\Ahttps?://((\w+:)?\w+@)?(#{VCR::LOCALHOST_ALIASES.sort.map { |a| Regexp.escape(a) }.join('|')})(:\d+)?/|i
       end
 
       it 'prints a warning: WARNING: `VCR::HttpStubbingAdapters::FakeWeb::LOCALHOST_REGEX` is deprecated.' do

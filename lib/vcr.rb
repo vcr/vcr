@@ -3,6 +3,7 @@ require 'vcr/config'
 require 'vcr/deprecations'
 require 'vcr/request_matcher'
 require 'vcr/structs'
+require 'vcr/util/regexes'
 require 'vcr/version'
 require 'vcr/http_stubbing_adapters/common'
 

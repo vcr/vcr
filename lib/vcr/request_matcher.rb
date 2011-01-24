@@ -30,11 +30,11 @@ module VCR
       case Set.new(uri_matchers)
         when Set.new then /.*/
         when Set.new([:uri]) then request.uri
-        when Set.new([:host]) then %r{\Ahttps?://((\w+:)?\w+@)?#{Regexp.escape(URI(request.uri).host)}(:\d+)?/}i
-        when Set.new([:path]) then %r{\Ahttps?://[^/]+#{Regexp.escape(URI(request.uri).path)}/?(\?.*)?\z}i
+        when Set.new([:host]) then VCR::Regexes.url_regex_for_hosts([URI(request.uri).host])
+        when Set.new([:path]) then VCR::Regexes.url_regex_for_path(URI(request.uri).path)
         when Set.new([:host, :path])
           uri = URI(request.uri)
-          %r{\Ahttps?://((\w+:)?\w+@)?#{Regexp.escape(uri.host)}(:\d+)?#{Regexp.escape(uri.path)}/?(\?.*)?\z}i
+          VCR::Regexes.url_regex_for_host_and_path(uri.host, uri.path)
         else raise ArgumentError.new("match_attributes cannot include #{uri_matchers.join(' and ')}")
       end
     end
