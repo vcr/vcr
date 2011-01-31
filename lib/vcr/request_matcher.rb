@@ -20,19 +20,19 @@ module VCR
       # for two sets of the same elements unless they are ordered
       # the same, so we sort the attributes here.
       attributes = attributes.sort { |a, b| a.to_s <=> b.to_s }
-      @match_attributes = Set.new(attributes)
+      @match_attributes = set(attributes)
     end
 
     def uri
       return request.uri unless request.uri.is_a?(String)
       uri_matchers = match_attributes.to_a & [:uri, :host, :path]
 
-      case Set.new(uri_matchers)
-        when Set.new then /.*/
-        when Set.new([:uri]) then request.uri
-        when Set.new([:host]) then VCR::Regexes.url_regex_for_hosts([URI(request.uri).host])
-        when Set.new([:path]) then VCR::Regexes.url_regex_for_path(URI(request.uri).path)
-        when Set.new([:host, :path])
+      case set(uri_matchers)
+        when set then /.*/
+        when set(:uri) then request.uri
+        when set(:host) then VCR::Regexes.url_regex_for_hosts([URI(request.uri).host])
+        when set(:path) then VCR::Regexes.url_regex_for_path(URI(request.uri).path)
+        when set(:host, :path)
           uri = URI(request.uri)
           VCR::Regexes.url_regex_for_host_and_path(uri.host, uri.path)
         else raise ArgumentError.new("match_attributes cannot include #{uri_matchers.join(' and ')}")
@@ -73,6 +73,10 @@ module VCR
     end
 
     private
+
+      def set(*elements)
+        Set.new(elements.flatten)
+      end
 
       def sorted_header_array
         header_hash = headers
