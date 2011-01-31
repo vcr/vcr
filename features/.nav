@@ -12,6 +12,7 @@
   - cassette_library_dir.feature
   - stub_with.feature
   - default_cassette_options.feature
+  - ignore_hosts.feature
   - ignore_localhost.feature
   - hooks.feature
   - allow_http_connections_when_no_cassette.feature
