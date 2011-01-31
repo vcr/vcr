@@ -135,3 +135,37 @@ Feature: Net::HTTP
       | stub_with |
       | :fakeweb  |
       | :webmock  |
+
+    Scenario Outline: Make an HTTPS request
+      Given a file named "vcr_https.rb" with:
+        """
+        require 'vcr'
+
+        VCR.config do |c|
+          c.stub_with <stub_with>
+          c.cassette_library_dir = 'cassettes'
+        end
+
+        uri = URI("https://gist.github.com/raw/fb555cb593f3349d53af/6921dd638337d3f6a51b0e02e7f30e3c414f70d6/vcr_gist")
+
+        VCR.use_cassette('https', :record => :new_episodes) do
+          http = Net::HTTP.new(uri.host, uri.port)
+          http.use_ssl = true
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+          response = http.request_get(uri.path)
+
+          puts response.body
+        end
+        """
+      When I run "ruby vcr_https.rb"
+      Then the output should contain "VCR gist"
+      And the file "cassettes/https.yml" should contain "body: VCR gist"
+
+      When I modify the file "cassettes/https.yml" to replace "body: VCR gist" with "body: HTTPS replaying works"
+      And I run "ruby vcr_https.rb"
+      Then the output should contain "HTTPS replaying works"
+
+      Examples:
+        | stub_with |
+        | :fakeweb  |
+        | :webmock  |

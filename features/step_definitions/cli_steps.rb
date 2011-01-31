@@ -36,6 +36,17 @@ module VCRHelpers
 
     structs
   end
+
+  def modify_file(file_name, orig_text, new_text)
+    in_current_dir do
+      file = File.read(file_name)
+      regex = /#{Regexp.escape(orig_text)}/
+      file.should =~ regex
+
+      file = file.gsub(regex, new_text)
+      File.open(file_name, 'w') { |f| f.write(file) }
+    end
+  end
 end
 World(VCRHelpers)
 
@@ -53,6 +64,10 @@ end
 
 Given /^(\d+) days have passed since the cassette was recorded$/ do |day_count|
   set_env('DAYS_PASSED', day_count)
+end
+
+When /^I modify the file "([^"]*)" to replace "([^"]*)" with "([^"]*)"$/ do |file_name, orig_text, new_text|
+  modify_file(file_name, orig_text, new_text)
 end
 
 Then /^the file "([^"]*)" should exist$/ do |file_name|
