@@ -2,10 +2,18 @@ require 'vcr/cassette'
 require 'vcr/config'
 require 'vcr/deprecations'
 require 'vcr/request_matcher'
-require 'vcr/structs'
 require 'vcr/util/regexes'
 require 'vcr/version'
 require 'vcr/http_stubbing_adapters/common'
+
+require 'vcr/structs/normalizers/body'
+require 'vcr/structs/normalizers/header'
+require 'vcr/structs/normalizers/status_message'
+require 'vcr/structs/normalizers/uri'
+require 'vcr/structs/http_interaction'
+require 'vcr/structs/request'
+require 'vcr/structs/response'
+require 'vcr/structs/response_status'
 
 module VCR
   extend self
