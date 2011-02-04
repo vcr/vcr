@@ -2,7 +2,17 @@
 
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.5.1...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.6.0...master)
+
+## 1.6.0 (February 3, 2011)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.5.1...v1.6.0)
+
+* Add new `ignore_hosts` configuration option that allows you to ignore
+  any host (not just localhost aliases, as the `ignore_localhost` option
+  works).  Feature suggested by [Claudio Poli](https://github.com/masterkain).
+* Upgraded to the latest Typhoeus (0.2.1).
+* General code clean up and refactoring.
 
 ## 1.5.1 (January 12, 2011)
 
