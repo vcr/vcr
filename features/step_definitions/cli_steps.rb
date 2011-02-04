@@ -1,4 +1,4 @@
-require 'vcr/structs'
+require 'vcr'
 
 module VCRHelpers
   YAML_REGEX_FOR_1_9_1 = Regexp.union(*[
