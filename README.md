@@ -62,6 +62,25 @@ documentation.
 The [VCR talk given at Philly.rb](http://philly-rb-vcr-talk.heroku.com/) also
 contains good usage info.
 
+## Known Issues
+
+* VCR uses YAML to serialize the HTTP interactions to disk in a
+  human-readable, human-editable format.  Unfortunately there are bugs
+  in Syck, Ruby's default YAML engine, that cause it to modify strings
+  when serializing them.  It appears the the bug is limited to entire
+  lines of whitespace.  A string such as `"1\n \n2"` will get changed
+  to `"1\n\n2"` (see [this gist](https://gist.github.com/815754) for
+  example code).  In practice, this usually isn't so bad, but it can
+  occassionally cause problems, especially when the recorded
+  response includes a `content_length` header and you are using an
+  HTTP client that relies on this.  Mechanize will raise an `EOFError`
+  when the `content_length` header does not match the response body
+  length.  The solution is to use Psych, the new YAML engine included
+  in Ruby 1.9.  VCR attempts to use Psych if possible, but you may have
+  to [re-compile ruby 1.9](http://rhnh.net/2011/01/31/psych-yaml-in-ruby-1-9-2-with-rvm-and-snow-leopard-osx)
+  to use it.  See [this issue](https://github.com/myronmarston/vcr/issues#issue/43)
+  for more info.
+
 ## Development
 
 * Source hosted on [GitHub](http://github.com/myronmarston/vcr).
