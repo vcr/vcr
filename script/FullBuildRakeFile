@@ -37,6 +37,13 @@ task :print_ruby_description do
 end
 
 task :bundle_install => :ensure_bundler_installed do
+  # Unfortunately, there is no version of ruby-debug that installs cleanly on 1.9.1 and 1.9.2.
+  # Our Gemfile specifies different versions using conditionals, but we still need to bundle update
+  # to get bundler to use the different versions.
+  if RUBY_VERSION =~ /^1\.9/
+    sh "bundle update ruby-debug-base19"
+  end
+
   sh "bundle install"
 end
 

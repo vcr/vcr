@@ -34,7 +34,7 @@ group :extras do
 
   platforms :mri_19 do
     gem 'ruby-debug19'
-    gem 'ruby-debug-base19', '0.11.23'
+    gem 'ruby-debug-base19', RUBY_VERSION == '1.9.1' ? '0.11.23' : '~> 0.11.24'
   end
 end
 
