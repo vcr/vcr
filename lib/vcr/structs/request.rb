@@ -3,6 +3,7 @@ module VCR
     include Normalizers::Header
     include Normalizers::URI
     include Normalizers::Body
+    include Module.new { alias __method__ method }
 
     def self.from_net_http_request(net_http, request)
       new(
@@ -11,6 +12,11 @@ module VCR
         request.body,
         request.to_hash
       )
+    end
+
+    def method(*args)
+      return super if args.empty?
+      __method__(*args)
     end
 
     def matcher(match_attributes)

@@ -13,6 +13,24 @@ describe VCR::Request do
     end
   end
 
+  describe '#method' do
+    subject { VCR::Request.new(:get) }
+
+    context 'when given no arguments' do
+      it 'returns the HTTP method' do
+        subject.method.should == :get
+      end
+    end
+
+    context 'when given an argument' do
+      it 'returns the method object for the named method' do
+        m = subject.method(:class)
+        m.should be_a(Method)
+        m.call.should == described_class
+      end
+    end
+  end
+
   describe '.from_net_http_request' do
     let(:net_http) { YAML.load(File.read("#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/example_net_http.yml")) }
     let(:request)  { YAML.load(File.read("#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/example_net_http_request.yml")) }
