@@ -1,5 +1,4 @@
 require 'fileutils'
-require 'yaml'
 require 'erb'
 require 'set'
 
@@ -101,18 +100,19 @@ module VCR
       VCR.http_stubbing_adapter.create_stubs_checkpoint(self)
       if file && File.size?(file)
         begin
-          interactions = YAML.load(raw_yaml_content)
-          invoke_hook(:before_playback, interactions)
-
-          interactions.reject! do |i|
-            i.request.uri.is_a?(String) && VCR::Config.uri_should_be_ignored?(i.request.uri)
-          end
-
-          recorded_interactions.replace(interactions)
-        rescue TypeError
+          interactions = VCR::YAML.load(raw_yaml_content)
+        rescue TypeError, ArgumentError # Syck raises TypeError, Psych raises ArgumentError
           raise unless raw_yaml_content =~ /VCR::RecordedResponse/
           raise "The VCR cassette #{sanitized_name}.yml uses an old format that is now deprecated.  VCR provides a rake task to migrate your old cassettes to the new format.  See http://github.com/myronmarston/vcr/blob/master/CHANGELOG.md for more info."
         end
+
+        invoke_hook(:before_playback, interactions)
+
+        interactions.reject! do |i|
+          i.request.uri.is_a?(String) && VCR::Config.uri_should_be_ignored?(i.request.uri)
+        end
+
+        recorded_interactions.replace(interactions)
       end
 
       if should_stub_requests?
@@ -152,7 +152,7 @@ module VCR
 
       directory = File.dirname(file)
       FileUtils.mkdir_p directory unless File.exist?(directory)
-      File.open(file, 'w') { |f| f.write interactions.to_yaml }
+      File.open(file, 'w') { |f| f.write VCR::YAML.dump(interactions) }
     end
 
     def invoke_hook(type, interactions)

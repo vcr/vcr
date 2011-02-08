@@ -28,14 +28,14 @@ shared_examples_for "header normalization" do
     key = 'my-key'
     key.instance_variable_set(:@foo, 7)
     instance = with_headers(key => ['value1'])
-    instance.headers.to_yaml.should == { 'my-key' => ['value1'] }.to_yaml
+    VCR::YAML.dump(instance.headers).should == VCR::YAML.dump('my-key' => ['value1'])
   end
 
   it 'ensures header values are serialized to yaml as raw strings' do
     value = 'my-value'
     value.instance_variable_set(:@foo, 7)
     instance = with_headers('my-key' => [value])
-    instance.headers.to_yaml.should == { 'my-key' => ['my-value'] }.to_yaml
+    VCR::YAML.dump(instance.headers).should == VCR::YAML.dump('my-key' => ['my-value'])
   end
 end
 
@@ -47,7 +47,7 @@ shared_examples_for "body normalization" do
   it "ensures the body is serialized to yaml as a raw string" do
     body = "My String"
     body.instance_variable_set(:@foo, 7)
-    instance(body).body.to_yaml.should == "My String".to_yaml
+    VCR::YAML.dump(instance(body).body).should == VCR::YAML.dump("My String")
   end
 end
 

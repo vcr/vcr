@@ -61,7 +61,7 @@ shared_examples_for "an http stubbing adapter" do |supported_http_libraries, sup
     end
 
     describe '.request_stubbed? using specific match_attributes' do
-      let(:interactions) { YAML.load(File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', YAML_SERIALIZATION_VERSION, 'match_requests_on.yml'))) }
+      let(:interactions) { VCR::YAML.load(File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', YAML_SERIALIZATION_VERSION, 'match_requests_on.yml'))) }
 
       @supported_request_match_attributes = supported_request_match_attributes
       def self.matching_on(attribute, valid1, valid2, invalid, &block)
