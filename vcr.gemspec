@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
 
     'rspec'           => '~> 2.4.0',
     'cucumber'        => '~> 0.9.4',
-    'aruba'           => '~> 0.2.1',
+    'aruba'           => '0.2.4',
     'shoulda'         => '~> 2.9.2',
 
     'fakeweb'         => '~> 1.3.0',
