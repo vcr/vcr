@@ -80,7 +80,7 @@ module VCR
       end
 
       def response_hash(response)
-        response.headers.merge(
+        (response.headers || {}).merge(
           :body   => response.body,
           :status => [response.status.code.to_s, response.status.message]
         )
