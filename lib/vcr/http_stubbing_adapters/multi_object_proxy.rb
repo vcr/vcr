@@ -1,6 +1,6 @@
 module VCR
   module HttpStubbingAdapters
-    class MultiObjectProxy < defined?(::BasicObject) ? ::BasicObject : VCR::BasicObject
+    class MultiObjectProxy < VCR::BasicObject
 
       def self.for(*objects)
         return objects.first if objects.size == 1
