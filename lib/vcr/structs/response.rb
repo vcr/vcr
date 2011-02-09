@@ -11,6 +11,10 @@ module VCR
         response.http_version
       )
     end
+
+    def update_content_length_header
+      headers['content-length'] &&= [body.length.to_s]
+    end
   end
 end
 

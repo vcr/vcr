@@ -12,7 +12,15 @@ module VCR
 
     def initialize(name, options = {})
       options = VCR::Config.default_cassette_options.merge(options)
-      invalid_options = options.keys - [:record, :erb, :allow_real_http, :match_requests_on, :re_record_interval, :tag]
+      invalid_options = options.keys - [
+        :record,
+        :erb,
+        :allow_real_http,
+        :match_requests_on,
+        :re_record_interval,
+        :tag,
+        :update_content_length_header
+      ]
 
       if invalid_options.size > 0
         raise ArgumentError.new("You passed the following invalid options to VCR::Cassette.new: #{invalid_options.inspect}.")
@@ -25,6 +33,7 @@ module VCR
       @re_record_interval = options[:re_record_interval]
       @tag                = options[:tag]
       @record_mode        = :all if should_re_record?
+      @update_content_length_header = options[:update_content_length_header]
 
       deprecate_old_cassette_options(options)
       raise_error_unless_valid_record_mode
@@ -54,6 +63,10 @@ module VCR
 
     def file
       File.join(VCR::Config.cassette_library_dir, "#{sanitized_name}.yml") if VCR::Config.cassette_library_dir
+    end
+
+    def update_content_length_header?
+      @update_content_length_header
     end
 
     private
@@ -110,6 +123,10 @@ module VCR
 
         interactions.reject! do |i|
           i.request.uri.is_a?(String) && VCR::Config.uri_should_be_ignored?(i.request.uri)
+        end
+
+        if update_content_length_header?
+          interactions.each { |i| i.response.update_content_length_header }
         end
 
         recorded_interactions.replace(interactions)

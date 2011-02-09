@@ -75,11 +75,12 @@ contains good usage info.
   response includes a `content_length` header and you are using an
   HTTP client that relies on this.  Mechanize will raise an `EOFError`
   when the `content_length` header does not match the response body
-  length.  The solution is to use Psych, the new YAML engine included
+  length.  One solution is to use Psych, the new YAML engine included
   in Ruby 1.9.  VCR attempts to use Psych if possible, but you may have
   to [re-compile ruby 1.9](http://rhnh.net/2011/01/31/psych-yaml-in-ruby-1-9-2-with-rvm-and-snow-leopard-osx)
   to use it.  See [this issue](https://github.com/myronmarston/vcr/issues#issue/43)
-  for more info.
+  for more info.  You can also use the `:update_content_length_header`
+  cassette option to ensure the header has the correct value.
 
 ## Development
 

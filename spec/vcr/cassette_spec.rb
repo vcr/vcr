@@ -133,6 +133,28 @@ describe VCR::Cassette do
 
       context "when :#{record_mode} is passed as the record option" do
         unless record_mode == :all
+          let(:interaction_1) { VCR::HTTPInteraction.new(VCR::Request.new(:get, 'http://example.com/'), VCR::Response.new(VCR::ResponseStatus.new)) }
+          let(:interaction_2) { VCR::HTTPInteraction.new(VCR::Request.new(:get, 'http://example.com/'), VCR::Response.new(VCR::ResponseStatus.new)) }
+          let(:interactions)  { [interaction_1, interaction_2] }
+
+          it 'updates the content_length headers when given :update_content_length_header => true' do
+            VCR::YAML.stub(:load => interactions)
+            interaction_1.response.should_receive(:update_content_length_header)
+            interaction_2.response.should_receive(:update_content_length_header)
+
+            VCR::Cassette.new('example', :record => record_mode, :update_content_length_header => true)
+          end
+
+          [nil, false].each do |val|
+            it "does not update the content_lenth headers when given :update_content_length_header => #{val.inspect}" do
+              VCR::YAML.stub(:load => interactions)
+              interaction_1.response.should_not_receive(:update_content_length_header)
+              interaction_2.response.should_not_receive(:update_content_length_header)
+
+              VCR::Cassette.new('example', :record => record_mode, :update_content_length_header => val)
+            end
+          end
+
           context "and re_record_interval is 7.days" do
             let(:file_name) { File.join(VCR::Config.cassette_library_dir, "cassette_name.yml") }
             subject { VCR::Cassette.new(File.basename(file_name).gsub('.yml', ''), :record => record_mode, :re_record_interval => 7.days) }

@@ -4,6 +4,7 @@
   - request_matching.feature
   - dynamic_erb.feature
   - automatic_re_recording.feature
+  - update_content_length_header.feature
 - record_modes:
   - new_episodes.feature
   - none.feature
