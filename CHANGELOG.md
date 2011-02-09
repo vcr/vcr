@@ -4,6 +4,13 @@
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.6.0...master)
 
+* Use Psych for YAML serialization/deserialization when it is available.
+  Syck, Ruby's old YAML engine, will remove whitespace from some
+  strings.  Bug reported by [Robert Poor](https://github.com/rdpoor).
+* Add new `:update_content_length_header` cassette option.  The option
+  will ensure the `content-length` header value matches the actual
+  response body length.
+
 ## 1.6.0 (February 3, 2011)
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.5.1...v1.6.0)
@@ -20,7 +27,7 @@
 
 * Fix response and request serialization so that the headers are raw
   strings.  This fixes intermittent YAML seg faults for paperclip
-  uploads to S3.  But reported by [Rob Slifka](https://github.com/rslifka).
+  uploads to S3.  Bug reported by [Rob Slifka](https://github.com/rslifka).
 
 ## 1.5.0 (January 12, 2011)
 
