@@ -1,7 +1,9 @@
 Feature: :none
 
-  The `:none` record mode allows previously recorded responses
-  to be replayed, but raises an error for any new requests.
+  The `:none` record mode will:
+
+    - Replay previously recorded interactions.
+    - Cause an error to be raised for any new requests.
 
   This is useful when your code makes potentially dangerous
   HTTP requests.  The `:none` record mode guarantees that no

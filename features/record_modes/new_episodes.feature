@@ -1,7 +1,13 @@
 Feature: :new_episodes
 
-  The `:new_episodes` record mode replays previously recorded
-  requests and records new ones.
+  The `:new_episodes` record mode will:
+
+    - Record new interactions.
+    - Replay previously recorded interactions.
+
+  It is similar to the `:once` record mode, but will _always_ record new
+  interactions, even if you have an existing recorded one that is similar
+  (but not identical, based on the `:match_request_on` option).
 
   Background:
     Given a file named "setup.rb" with:

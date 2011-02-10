@@ -1,7 +1,9 @@
 Feature: :all
 
-  The `:all` record mode records all requests and does not
-  replay any previously recorded responds.
+  The `:all` record mode will:
+
+    - Record new interactions.
+    - Never replay previously recorded interactions.
 
   This can be temporarily used to force VCR to re-record
   a cassette (i.e. to ensure the responses are not out of date)
