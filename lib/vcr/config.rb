@@ -4,6 +4,7 @@ require 'vcr/util/hooks'
 module VCR
   module Config
     include VCR::Hooks
+    include VCR::VariableArgsBlockCaller
     extend self
 
     define_hook :before_record
@@ -56,6 +57,16 @@ module VCR
 
     def allow_http_connections_when_no_cassette?
       !!@allow_http_connections_when_no_cassette
+    end
+
+    def filter_sensitive_data(placeholder, tag = nil, &block)
+      before_record(tag) do |interaction|
+        interaction.filter!(call_block(block, interaction), placeholder)
+      end
+
+      before_playback(tag) do |interaction|
+        interaction.filter!(placeholder, call_block(block, interaction))
+      end
     end
 
     def uri_should_be_ignored?(uri)

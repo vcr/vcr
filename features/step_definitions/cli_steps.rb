@@ -95,6 +95,19 @@ Then /^the file "([^"]*)" should contain each of these:$/ do |file_name, table|
   end
 end
 
+Then /^the file "([^"]*)" should contain:$/ do |file_name, expected_content|
+  check_file_content(file_name, expected_content, true)
+end
+
+Then /^the file "([^"]*)" should contain a YAML fragment like:$/ do |file_name, fragment|
+  if defined?(::Psych)
+    # psych serializes things slightly differently...
+    fragment = fragment.split("\n").map { |s| s.rstrip }.join("\n")
+  end
+
+  check_file_content(file_name, fragment, true)
+end
+
 Then /^the cassette "([^"]*)" should have the following response bodies:$/ do |file, table|
   interactions = in_current_dir { YAML.load_file(file) }
   actual_response_bodies = interactions.map { |i| i.response.body }

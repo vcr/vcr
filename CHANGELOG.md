@@ -15,6 +15,8 @@
   new requests to raise an error.  Feature suggested by
   [Jamie Cobbett](https://github.com/jamiecobbett).
 * Made `:once` the default record mode.
+* Add new `filter_sensitive_data` configuration option.  Feature
+  suggested by [Nathaniel Bibler](https://github.com/nbibler).
 
 ## 1.6.0 (February 3, 2011)
 
