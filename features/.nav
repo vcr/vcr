@@ -6,6 +6,7 @@
   - automatic_re_recording.feature
   - update_content_length_header.feature
 - record_modes:
+  - once.feature
   - new_episodes.feature
   - none.feature
   - all.feature

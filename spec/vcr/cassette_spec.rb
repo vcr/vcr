@@ -132,6 +132,31 @@ describe VCR::Cassette do
       end
 
       context "when :#{record_mode} is passed as the record option" do
+        if record_mode == :none
+          it 'does not allow http connections when there is an existing cassette file with recorded interactions' do
+            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
+            VCR.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(false)
+            c = VCR::Cassette.new('example', :record => :once)
+            File.should exist(c.file)
+            File.size?(c.file).should be_true
+          end
+
+          it 'allows http connections when there is an empty existing cassette file' do
+            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
+            VCR.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(true)
+            c = VCR::Cassette.new('empty', :record => :once)
+            File.should exist(c.file)
+            File.size?(c.file).should be_false
+          end
+
+          it 'allows http connections when there is not an existing cassette file' do
+            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
+            VCR.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(true)
+            c = VCR::Cassette.new('non_existant_file', :record => :once)
+            File.should_not exist(c.file)
+          end
+        end
+
         unless record_mode == :all
           let(:interaction_1) { VCR::HTTPInteraction.new(VCR::Request.new(:get, 'http://example.com/'), VCR::Response.new(VCR::ResponseStatus.new)) }
           let(:interaction_2) { VCR::HTTPInteraction.new(VCR::Request.new(:get, 'http://example.com/'), VCR::Response.new(VCR::ResponseStatus.new)) }

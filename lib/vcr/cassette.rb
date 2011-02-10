@@ -6,7 +6,7 @@ require 'vcr/cassette/reader'
 
 module VCR
   class Cassette
-    VALID_RECORD_MODES = [:all, :none, :new_episodes]
+    VALID_RECORD_MODES = [:all, :none, :new_episodes, :once]
 
     attr_reader :name, :record_mode, :match_requests_on, :erb, :re_record_interval, :tag
 
@@ -77,7 +77,7 @@ module VCR
 
     def raise_error_unless_valid_record_mode
       unless VALID_RECORD_MODES.include?(record_mode)
-        raise ArgumentError.new("#{record_mode} is not a valid cassette record mode.  Valid options are: #{VALID_RECORD_MODES.inspect}")
+        raise ArgumentError.new("#{record_mode} is not a valid cassette record mode.  Valid modes are: #{VALID_RECORD_MODES.inspect}")
       end
     end
 
@@ -89,7 +89,11 @@ module VCR
     end
 
     def should_allow_http_connections?
-      record_mode != :none
+      case record_mode
+        when :none; false
+        when :once; !File.size?(file)
+        else true
+      end
     end
 
     def should_stub_requests?
