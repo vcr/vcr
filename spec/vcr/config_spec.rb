@@ -21,15 +21,20 @@ describe VCR::Config do
   describe '.default_cassette_options' do
     it 'has a hash with some defaults even if it is set to nil' do
       VCR::Config.default_cassette_options = nil
-      VCR::Config.default_cassette_options.should == { :match_requests_on => VCR::RequestMatcher::DEFAULT_MATCH_ATTRIBUTES }
+      VCR::Config.default_cassette_options.should == {
+        :match_requests_on => VCR::RequestMatcher::DEFAULT_MATCH_ATTRIBUTES,
+        :record            => :once
+      }
     end
 
     it "returns #{VCR::RequestMatcher::DEFAULT_MATCH_ATTRIBUTES.inspect} for :match_requests_on when other defaults have been set" do
       VCR::Config.default_cassette_options = { :record => :none }
-      VCR::Config.default_cassette_options.should == {
-        :record            => :none,
-        :match_requests_on => VCR::RequestMatcher::DEFAULT_MATCH_ATTRIBUTES
-      }
+      VCR::Config.default_cassette_options.should include(:match_requests_on => VCR::RequestMatcher::DEFAULT_MATCH_ATTRIBUTES)
+    end
+
+    it "returns :once for :record when other defaults have been set" do
+      VCR::Config.default_cassette_options = { :erb => :true }
+      VCR::Config.default_cassette_options.should include(:record => :once)
     end
   end
 

@@ -10,6 +10,8 @@ Feature: :once
   unexpected requests from being made (i.e. because the request URI changed
   or whatever).
 
+  `:once` is the default record mode, used when you do not set one.
+
   Background:
     Given a file named "setup.rb" with:
       """

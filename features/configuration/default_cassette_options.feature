@@ -21,7 +21,7 @@ Feature: default_cassette_options
       end
       """
 
-  Scenario: cassettes get default values from configured default_cassette_options
+  Scenario: cassettes get default values from configured `default_cassette_options`
     Given a file named "default_cassette_options.rb" with:
       """
       require 'vcr_setup.rb'
@@ -38,7 +38,7 @@ Feature: default_cassette_options
       ERB: true
       """
 
-  Scenario: :match_requests_on defaults to [:method, :uri] when it has not been set
+  Scenario: `:match_requests_on` defaults to `[:method, :uri]` when it has not been set
     Given a file named "default_cassette_options.rb" with:
       """
       require 'vcr_setup.rb'
@@ -49,6 +49,24 @@ Feature: default_cassette_options
       """
     When I run "ruby default_cassette_options.rb"
     Then the output should contain "Match Requests On: [:method, :uri]"
+
+  Scenario: `:record` defaults to `:once` when it has not been set
+    Given a file named "default_record_mode.rb" with:
+      """
+      require 'vcr'
+
+      VCR.config do |c|
+        # not important for this example, but must be set to something
+        c.stub_with :webmock
+        c.cassette_library_dir = 'cassettes'
+      end
+
+      VCR.use_cassette('example') do
+        puts "Record mode: #{VCR.current_cassette.record_mode.inspect}"
+      end
+      """
+    When I run "ruby default_record_mode.rb"
+    Then the output should contain "Record mode: :once"
 
   Scenario: cassettes can set their own options
     Given a file named "default_cassette_options.rb" with:
