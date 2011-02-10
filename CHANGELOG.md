@@ -10,6 +10,11 @@
 * Add new `:update_content_length_header` cassette option.  The option
   will ensure the `content-length` header value matches the actual
   response body length.
+* Add new `:once` record mode.  It operates like `:new_episodes` except
+  when the cassette file already exists, in which case it causes
+  new requests to raise an error.  Feature suggested by
+  [Jamie Cobbett](https://github.com/jamiecobbett).
+* Made `:once` the default record mode.
 
 ## 1.6.0 (February 3, 2011)
 
