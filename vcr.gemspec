@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/myronmarston/vcr"
   s.authors = ["Myron Marston"]
   s.summary = "Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests."
-  s.description = "VCR provides helpers to record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests.  It works with any ruby testing framework, and provides built-in support for cucumber."
+  s.description = "VCR provides a simple API to record and replay your test suite's HTTP interactions.  It works with a variety of HTTP client libraries, HTTP stubbing libraries and testing frameworks."
   s.email = "myron.marston@gmail.com"
   s.require_path = "lib"
   s.files        = `git ls-files`.split("\n")
