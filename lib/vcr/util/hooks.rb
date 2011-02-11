@@ -1,8 +1,10 @@
 module VCR
   module Hooks
+    include VariableArgsBlockCaller
+
     def invoke_hook(hook, tag, *args)
       hooks_for(hook, tag).each do |callback|
-        callback.call(*args_for_callback(args, callback))
+        call_block(callback, *args)
       end
     end
 
@@ -35,11 +37,6 @@ module VCR
         hooks = for_hook[tag] # matching tagged hooks
         hooks += for_hook[nil] unless tag.nil? # untagged hooks
         hooks
-      end
-
-      def args_for_callback(args, callback)
-        return args if callback.arity < 0
-        args.first([args.size, callback.arity].min)
       end
   end
 end

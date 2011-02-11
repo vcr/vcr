@@ -1,3 +1,7 @@
+require 'vcr/util/regexes'
+require 'vcr/util/variable_args_block_caller'
+require 'vcr/util/yaml'
+
 require 'vcr/cassette'
 require 'vcr/config'
 require 'vcr/request_matcher'
@@ -18,10 +22,8 @@ require 'vcr/structs/request'
 require 'vcr/structs/response'
 require 'vcr/structs/response_status'
 
-require 'vcr/util/regexes'
-require 'vcr/util/yaml'
-
 module VCR
+  include VariableArgsBlockCaller
   extend self
 
   autoload :BasicObject,        'vcr/util/basic_object'
@@ -69,8 +71,7 @@ module VCR
     cassette = insert_cassette(*args)
 
     begin
-      # yield the cassette if the block accepts an argument or variable args
-      block.arity == 0 ? block.call : block.call(cassette)
+      call_block(block, cassette)
     ensure
       eject_cassette
     end

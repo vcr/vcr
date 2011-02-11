@@ -1,6 +1,8 @@
 module VCR
   module Middleware
     module Common
+      include VCR::VariableArgsBlockCaller
+
       def initialize(app, &block)
         raise ArgumentError.new("You must provide a block to set the cassette options") unless block
         @app, @cassette_arguments_block = app, block
@@ -10,11 +12,7 @@ module VCR
 
         def cassette_arguments(env)
           arguments = CassetteArguments.new
-
-          block_args = [arguments]
-          block_args << env unless @cassette_arguments_block.arity == 1
-
-          @cassette_arguments_block.call(*block_args)
+          call_block(@cassette_arguments_block, arguments, env)
           [arguments.name, arguments.options]
         end
     end
