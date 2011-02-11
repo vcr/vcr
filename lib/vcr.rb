@@ -22,9 +22,9 @@ module VCR
   extend self
 
   autoload :BasicObject,        'vcr/util/basic_object'
-  autoload :CucumberTags,       'vcr/cucumber_tags'
+  autoload :CucumberTags,       'vcr/test_frameworks/cucumber'
   autoload :InternetConnection, 'vcr/util/internet_connection'
-  autoload :RSpec,              'vcr/rspec'
+  autoload :RSpec,              'vcr/test_frameworks/rspec'
 
   LOCALHOST_ALIASES = %w( localhost 127.0.0.1 0.0.0.0 )
 
