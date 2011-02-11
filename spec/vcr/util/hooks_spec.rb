@@ -73,19 +73,19 @@ describe VCR::Hooks do
       end
 
       it 'passes along the provided arguments to the callback' do
-        subject.before_foo { |a, b| invocations << [a, b] }
+        subject.before_foo &lambda { |a, b| invocations << [a, b] }
         subject.invoke_hook(:before_foo, nil, :arg1, :arg2)
         invocations.flatten.should == [:arg1, :arg2]
       end
 
       it 'only passes along 1 argument when the block accepts only 1 arguments' do
-        subject.before_foo { |a| invocations << a }
+        subject.before_foo &lambda { |a| invocations << a }
         subject.invoke_hook(:before_foo, nil, :arg1, :arg2)
         invocations.flatten.should == [:arg1]
       end
 
       it 'passes along all arguments when the block accepts a variable number of args' do
-        subject.before_foo { |*a| invocations << a }
+        subject.before_foo &lambda { |*a| invocations << a }
         subject.invoke_hook(:before_foo, nil, :arg1, :arg2)
         invocations.flatten.should == [:arg1, :arg2]
       end

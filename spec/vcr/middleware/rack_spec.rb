@@ -34,19 +34,19 @@ describe VCR::Middleware::Rack do
 
     it 'sets the cassette options based on the provided block' do
       rack_app = lambda { |env| VCR.current_cassette.erb.should == { :foo => :bar } }
-      instance = described_class.new(rack_app) do |c|
+      instance = described_class.new(rack_app, &lambda do |c|
         c.name    'c'
         c.options :erb => { :foo => :bar }
-      end
+      end)
 
       instance.call({})
     end
 
     it 'yields the rack env to the provided block when the block accepts 2 arguments' do
-      instance = described_class.new(lambda { |env| }) do |c, env|
+      instance = described_class.new(lambda { |env| }, &lambda do |c, env|
         env.should == env_hash
         c.name    'c'
-      end
+      end)
 
       instance.call(env_hash)
     end
