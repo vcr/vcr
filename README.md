@@ -68,6 +68,14 @@ documentation.
 The [VCR talk given at Philly.rb](http://philly-rb-vcr-talk.heroku.com/) also
 contains good usage info.
 
+## Release Policy
+
+VCR follows the principles of [semantic versioning](http://semver.org/).
+The [cucumber features](http://relishapp.com/myronmarston/vcr) define
+VCR's public API.  Patch level releases contain only bug fixes.  Minor
+releases contain backward-compatible new features.  Major new releases
+contain backwards-incompatible changes to the public API.
+
 ## Known Issues
 
 * VCR uses YAML to serialize the HTTP interactions to disk in a
