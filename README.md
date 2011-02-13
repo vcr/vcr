@@ -30,15 +30,20 @@ maintenance) and accurate (the response from example.com will contain the same h
 ## Features
 
 * Automatically records and replays your HTTP interactions with minimal setup/configuration code.
-* Supports multiple HTTP stubbing libraries.  Currently FakeWeb, WebMock, Typhoeus and Faraday
-  are supported.
+* Supports and works with the HTTP stubbing facilities of multiple libraries.  Currently, the
+  following are supported:
+  * FakeWeb
+  * WebMock
+  * Typhoeus
+  * Faraday
 * Supports multiple HTTP libraries:
-  * [Patron](http://github.com/toland/patron) (WebMock)
-  * [Curb](http://github.com/taf2/curb) (WebMock -- only supports Curb::Easy at the moment)
-  * [HTTPClient](http://github.com/nahi/httpclient) (WebMock)
-  * [em-http-request](http://github.com/igrigorik/em-http-request) (WebMock)
-  * [Net::HTTP](http://www.ruby-doc.org/stdlib/libdoc/net/http/rdoc/index.html) (FakeWeb and WebMock)
+  * [Patron](http://github.com/toland/patron) (when using WebMock)
+  * [Curb](http://github.com/taf2/curb) (when using WebMock -- only supports Curb::Easy at the moment)
+  * [HTTPClient](http://github.com/nahi/httpclient) (when using WebMock)
+  * [em-http-request](http://github.com/igrigorik/em-http-request) (when using WebMock)
+  * [Net::HTTP](http://www.ruby-doc.org/stdlib/libdoc/net/http/rdoc/index.html) (when using FakeWeb and WebMock)
   * [Typhoeus](https://github.com/pauldix/typhoeus) (Typhoeus::Hydra, but not Typhoeus::Easy or Typhoeus::Multi)
+  * [Faraday](https://github.com/technoweenie/faraday)
   * And of course any library built on Net::HTTP, such as [Mechanize](http://github.com/tenderlove/mechanize),
     [HTTParty](http://github.com/jnunemaker/httparty) or [Rest Client](http://github.com/archiloque/rest-client).
 * Request matching is configurable based on HTTP method, URI, host, path, body and headers.
@@ -48,6 +53,7 @@ maintenance) and accurate (the response from example.com will contain the same h
 * Automatically re-records cassettes on a configurable regular interval to keep them fresh and current.
 * Disables all HTTP requests that you don't explicitly allow.
 * Simple cucumber integration is provided using tags.
+* Includes convenient RSpec macro.
 * Known to work well with many popular ruby libraries including RSpec 1 & 2, Cucumber, Test::Unit,
   Capybara, Mechanize, Rest-Client and HTTParty.
 * Extensively tested on 7 different ruby interpretters.
