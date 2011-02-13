@@ -43,7 +43,7 @@ Feature: Filter sensitive data
         c.filter_sensitive_data('<LOCATION>') { 'World' }
       end
 
-      VCR.use_cassette('filtering') do
+      VCR.use_cassette('filtering', :record => :new_episodes) do
         response = Net::HTTP.get_response('localhost', '/', 7777)
         puts "Response: #{response.body}"
       end
@@ -77,12 +77,12 @@ Feature: Filter sensitive data
         c.filter_sensitive_data('<LOCATION>', :my_tag) { 'World' }
       end
 
-      VCR.use_cassette('tagged', :tag => :my_tag) do
+      VCR.use_cassette('tagged', :tag => :my_tag, :record => :new_episodes) do
         response = Net::HTTP.get_response('localhost', '/', 7777)
         puts "Tagged Response: #{response.body}"
       end
 
-      VCR.use_cassette('untagged') do
+      VCR.use_cassette('untagged', :record => :new_episodes) do
         response = Net::HTTP.get_response('localhost', '/', 7777)
         puts "Untagged Response: #{response.body}"
       end
@@ -126,14 +126,14 @@ Feature: Filter sensitive data
       }
 
       VCR.config do |c|
-        c.stub_with :fakeweb
+        c.stub_with :webmock
         c.cassette_library_dir = 'cassettes'
         c.filter_sensitive_data('<PASSWORD>') do |interaction|
           USER_PASSWORDS[interaction.request.headers['x-http-username'].first]
         end
       end
 
-      VCR.use_cassette('example') do
+      VCR.use_cassette('example', :record => :new_episodes, :match_requests_on => [:method, :uri, :headers]) do
         puts "Response: " + response_body_for(
           :get, 'http://localhost:7777/', nil,
           'X-HTTP-USERNAME' => 'john.doe',
