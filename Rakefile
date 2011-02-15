@@ -25,6 +25,22 @@ Cucumber::Rake::Task.new
 
 task :default => [:spec, :cucumber]
 
+namespace :ci do
+  desc "Sets things up for a ci build on travis-ci.org"
+  task :setup do
+    sh "git submodule init"
+    sh "git submodule update"
+  end
+
+  RSpec::Core::RakeTask.new(:spec) do |t|
+    t.verbose = true
+    t.rspec_opts = %w[--format progress --backtrace]
+  end
+
+  desc "Run a ci build"
+  task :build => [:setup, :spec, :cucumber]
+end
+
 desc "Push cukes to relishapp using the relish-client-gem"
 task :relish do
   require 'vcr/version'

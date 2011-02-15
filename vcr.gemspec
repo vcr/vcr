@@ -40,7 +40,7 @@ Gem::Specification.new do |s|
   end
 
   {
-    'patron'          => '~> 0.4.6',
+    'patron'          => '0.4.9',
     'em-http-request' => '~> 0.2.7',
     'curb'            => '~> 0.7.8',
     'typhoeus'        => '~> 0.2.1'
