@@ -37,7 +37,6 @@ end
 
 RSpec.configure do |config|
   config.extend MonkeyPatches::RSpecMacros
-  config.extend WebMockMacros
 
   config.color_enabled = true
   config.debug = RUBY_INTERPRETER == :mri
@@ -78,6 +77,17 @@ RSpec.configure do |config|
 
   config.after(:all, :disable_warnings => true) do
     $stderr = @orig_std_err
+  end
+
+  config.before(:all, :without_webmock_callbacks => true) do
+    @original_webmock_callbacks = ::WebMock::CallbackRegistry.callbacks
+    ::WebMock::CallbackRegistry.reset
+  end
+
+  config.after(:all, :without_webmock_callbacks => true) do
+    @original_webmock_callbacks.each do |cb|
+      ::WebMock::CallbackRegistry.add_callback(cb[:options], cb[:block])
+    end
   end
 
   config.filter_run :focus => true

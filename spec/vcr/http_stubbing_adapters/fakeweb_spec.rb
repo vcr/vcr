@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe VCR::HttpStubbingAdapters::FakeWeb do
-  without_webmock_callbacks
-
+describe VCR::HttpStubbingAdapters::FakeWeb, :without_webmock_callbacks => true do
   it_behaves_like 'an http stubbing adapter', ['net/http'], [:method, :uri, :host, :path], :needs_net_http_extension
 
   it_performs('version checking',
