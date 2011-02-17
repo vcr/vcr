@@ -2,8 +2,6 @@ require 'spec_helper'
 
 describe VCR::Cassette do
   describe '#file' do
-    temp_dir "#{VCR::SPEC_ROOT}/fixtures/file", :assign_to_cassette_library_dir => true
-
     it 'combines the cassette_library_dir with the cassette name' do
       cassette = VCR::Cassette.new('the_file')
       cassette.file.should == File.join(VCR::Config.cassette_library_dir, 'the_file.yml')
@@ -161,6 +159,7 @@ describe VCR::Cassette do
           let(:interaction_1) { VCR::HTTPInteraction.new(VCR::Request.new(:get, 'http://example.com/'), VCR::Response.new(VCR::ResponseStatus.new)) }
           let(:interaction_2) { VCR::HTTPInteraction.new(VCR::Request.new(:get, 'http://example.com/'), VCR::Response.new(VCR::ResponseStatus.new)) }
           let(:interactions)  { [interaction_1, interaction_2] }
+          before(:each) { VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec" }
 
           it 'updates the content_length headers when given :update_content_length_header => true' do
             VCR::YAML.stub(:load => interactions)
@@ -305,8 +304,6 @@ describe VCR::Cassette do
   end
 
   describe '#eject' do
-    temp_dir "#{VCR::SPEC_ROOT}/fixtures/cassette_spec_eject", :assign_to_cassette_library_dir => true
-
     [true, false].each do |orig_http_connections_allowed|
       it "resets #{orig_http_connections_allowed} on the http stubbing adapter if it was originally #{orig_http_connections_allowed}" do
         VCR.http_stubbing_adapter.should_receive(:http_connections_allowed?).and_return(orig_http_connections_allowed)
@@ -389,13 +386,11 @@ describe VCR::Cassette do
 
     [:all, :none, :new_episodes].each do |record_mode|
       context "for a :record => :#{record_mode} cassette with previously recorded interactions" do
-        temp_dir "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec/temp", :assign_to_cassette_library_dir => true
-
         subject { VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:uri]) }
 
         before(:each) do
           base_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
-          FileUtils.cp(base_dir + "/example.yml", base_dir + "/temp/example.yml")
+          FileUtils.cp(base_dir + "/example.yml", VCR::Config.cassette_library_dir + "/example.yml")
         end
 
         it "restore the stubs checkpoint on the http stubbing adapter" do

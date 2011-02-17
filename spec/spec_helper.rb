@@ -36,7 +36,6 @@ module VCR
 end
 
 RSpec.configure do |config|
-  config.extend TempCassetteLibraryDir
   config.extend DisableWarnings
   config.extend MonkeyPatches::RSpecMacros
   config.extend WebMockMacros
@@ -57,6 +56,14 @@ RSpec.configure do |config|
     FakeWeb.clean_registry
 
     VCR::HttpStubbingAdapters::Faraday.reset!
+  end
+
+  # Ensure each example uses a different cassette library to keep them isolated.
+  config.around(:each) do |example|
+    Dir.mktmpdir do |dir|
+      VCR::Config.cassette_library_dir = dir
+      example.run
+    end
   end
 
   config.after(:each) do

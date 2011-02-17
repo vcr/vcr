@@ -7,10 +7,11 @@ describe VCR::Config do
   end
 
   describe '.cassette_library_dir=' do
-    temp_dir(File.expand_path(File.dirname(__FILE__) + '/fixtures/config_spec'))
-
     it 'creates the directory if it does not exist' do
-      expect { VCR::Config.cassette_library_dir = @temp_dir }.to change { File.exist?(@temp_dir) }.from(false).to(true)
+      Dir.mktmpdir do |dir|
+        dir += '/cassettes'
+        expect { VCR::Config.cassette_library_dir = dir }.to change { File.exist?(dir) }.from(false).to(true)
+      end
     end
 
     it 'does not raise an error if given nil' do
