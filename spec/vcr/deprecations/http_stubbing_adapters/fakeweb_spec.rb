@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe VCR::HttpStubbingAdapters::FakeWeb, 'deprecations' do
-  disable_warnings
-
+describe VCR::HttpStubbingAdapters::FakeWeb, 'deprecations', :disable_warnings => true do
   describe 'LOCALHOST_REGEX constant' do
     subject { described_class::LOCALHOST_REGEX }
 

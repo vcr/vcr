@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe VCR::Config, 'deprecations' do
-  disable_warnings
-
+describe VCR::Config, 'deprecations', :disable_warnings => true do
   describe '.http_stubbing_library' do
     before(:each) { described_class.stub_with :webmock, :typhoeus }
 

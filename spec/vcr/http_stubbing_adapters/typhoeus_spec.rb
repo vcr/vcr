@@ -15,7 +15,6 @@ describe VCR::HttpStubbingAdapters::Typhoeus do
     :too_low  => %w[ 0.1.0 0.1.31 0.2.0 ],
     :too_high => %w[ 0.3.0 1.0.0 ]
   ) do
-    disable_warnings
     before(:each) { @orig_version = Typhoeus::VERSION }
     after(:each)  { Typhoeus::VERSION = @orig_version }
 

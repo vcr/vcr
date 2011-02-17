@@ -13,7 +13,6 @@ describe VCR::HttpStubbingAdapters::Faraday do
     :too_low  => %w[ 0.5.2 0.4.99 ],
     :too_high => %w[ 0.6.0 1.0.0 ]
   ) do
-    disable_warnings
     before(:each) { @orig_version = Faraday::VERSION }
     after(:each)  { Faraday::VERSION = @orig_version }
 

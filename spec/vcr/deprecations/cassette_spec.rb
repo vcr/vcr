@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe VCR::Cassette, 'deprecations' do
-  disable_warnings
+describe VCR::Cassette, 'deprecations', :disable_warnings => true do
 
   subject { VCR::Cassette.new('cassette name') }
 

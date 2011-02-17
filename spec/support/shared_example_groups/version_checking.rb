@@ -1,7 +1,7 @@
 shared_examples_for "version checking" do |options|
   library = described_class.library_name
 
-  describe '.check_version!' do
+  describe '.check_version!', :disable_warnings => true do
     options[:valid].each do |version|
       it "does nothing when #{library}'s version is #{version}" do
         stub_version(version)

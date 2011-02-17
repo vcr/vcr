@@ -36,7 +36,6 @@ module VCR
 end
 
 RSpec.configure do |config|
-  config.extend DisableWarnings
   config.extend MonkeyPatches::RSpecMacros
   config.extend WebMockMacros
 
@@ -70,6 +69,15 @@ RSpec.configure do |config|
     VCR::HttpStubbingAdapters::Common.adapters.each do |a|
       a.ignored_hosts = []
     end
+  end
+
+  config.before(:all, :disable_warnings => true) do
+    @orig_std_err = $stderr
+    $stderr = StringIO.new
+  end
+
+  config.after(:all, :disable_warnings => true) do
+    $stderr = @orig_std_err
   end
 
   config.filter_run :focus => true

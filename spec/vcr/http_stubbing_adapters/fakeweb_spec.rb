@@ -10,7 +10,6 @@ describe VCR::HttpStubbingAdapters::FakeWeb do
     :too_low  => %w[ 1.2.8 1.1.30 0.30.30 ],
     :too_high => %w[ 1.4.0 1.10.0 2.0.0 ]
   ) do
-    disable_warnings
     before(:each) { @orig_version = FakeWeb::VERSION }
     after(:each)  { FakeWeb::VERSION = @orig_version }
 
