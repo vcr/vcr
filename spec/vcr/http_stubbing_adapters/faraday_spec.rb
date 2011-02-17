@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe VCR::HttpStubbingAdapters::Faraday do
-  without_monkey_patches :all
-
+describe VCR::HttpStubbingAdapters::Faraday, :without_monkey_patches => :all do
   it_behaves_like 'an http stubbing adapter',
     %w[ faraday-typhoeus faraday-net_http faraday-patron ],
     [:method, :uri, :host, :path, :body, :headers],

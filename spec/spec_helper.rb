@@ -36,8 +36,6 @@ module VCR
 end
 
 RSpec.configure do |config|
-  config.extend MonkeyPatches::RSpecMacros
-
   config.color_enabled = true
   config.debug = RUBY_INTERPRETER == :mri
 
@@ -88,6 +86,11 @@ RSpec.configure do |config|
     @original_webmock_callbacks.each do |cb|
       ::WebMock::CallbackRegistry.add_callback(cb[:options], cb[:block])
     end
+  end
+
+  [:all, :vcr].each do |scope|
+    config.before(:each, :without_monkey_patches => scope) { MonkeyPatches.disable!(scope) }
+    config.after(:each, :without_monkey_patches => scope)  { MonkeyPatches.enable!(scope)  }
   end
 
   config.filter_run :focus => true

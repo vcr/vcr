@@ -1,13 +1,6 @@
 module MonkeyPatches
   extend self
 
-  module RSpecMacros
-    def without_monkey_patches(scope)
-      before(:each) { MonkeyPatches.disable!(scope) }
-      after(:each)  { MonkeyPatches.enable!(scope)  }
-    end
-  end
-
   NET_HTTP_SINGLETON = class << Net::HTTP; self; end
 
   MONKEY_PATCHES = [
