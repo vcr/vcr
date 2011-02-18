@@ -1,5 +1,4 @@
 shared_examples_for "an http stubbing adapter" do |supported_http_libraries, supported_request_match_attributes, *other|
-  extend HttpLibrarySpecs
   before(:each) { VCR.stub!(:http_stubbing_adapter).and_return(subject) }
   subject { described_class }
 
@@ -141,7 +140,7 @@ shared_examples_for "an http stubbing adapter" do |supported_http_libraries, sup
   end
 
   supported_http_libraries.each do |library|
-    test_http_library library, supported_request_match_attributes, *other
+    it_behaves_like 'an http library', library, supported_request_match_attributes, *other
   end
 end
 
