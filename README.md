@@ -1,4 +1,4 @@
-# VCR
+# VCR [![Build Status](http://travis-ci.org/myronmarston/vcr.png)](http://travis-ci.org/myronmarston/vcr)
 
 Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests.
 
