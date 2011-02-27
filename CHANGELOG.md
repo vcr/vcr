@@ -17,6 +17,7 @@
 * Made `:once` the default record mode.
 * Add new `filter_sensitive_data` configuration option.  Feature
   suggested by [Nathaniel Bibler](https://github.com/nbibler).
+* Add support for CI builds using [travis-ci](http://travis-ci.org/myronmarston/vcr).
 
 ## 1.6.0 (February 3, 2011)
 
