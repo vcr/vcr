@@ -1,6 +1,10 @@
 require 'rubygems'
-require 'bundler'
-Bundler.setup
+
+using_git = File.exist?(File.expand_path('../../.git/', __FILE__))
+if using_git
+  require 'bundler'
+  Bundler.setup
+end
 
 require 'rspec'
 

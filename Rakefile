@@ -1,13 +1,18 @@
-require 'bundler'
-require 'bundler/setup'
-Bundler::GemHelper.install_tasks
+using_git = File.exist?(File.expand_path('../.git/', __FILE__))
+
+if using_git
+  require 'bundler'
+  require 'bundler/setup'
+  Bundler::GemHelper.install_tasks
+end
 
 require 'rake'
 require "rspec/core/rake_task"
 
 RSpec::Core::RakeTask.new(:spec) do |t|
   t.verbose = false
-  t.rspec_opts = %w[--format progress] if ENV['FULL_BUILD']
+  t.skip_bundler = true unless using_git
+  t.rspec_opts = %w[--format progress] if (ENV['FULL_BUILD'] || !using_git)
 end
 
 desc "Run all examples using rcov"
