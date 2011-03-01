@@ -21,6 +21,9 @@
 * Add support for running tests through `gem test vcr`.  Visit
   [test.rubygems.org](http://test.rubygems.org/gems/vcr) to see
   the results.
+* Fix cucumber support to use separate `Before` & `After` hooks rather than
+  a single `Around` hook because of a bug in cucumber that prevents
+  background steps from running within the `Around` hook.
 
 ## 1.6.0 (February 3, 2011)
 

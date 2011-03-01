@@ -21,8 +21,16 @@ module VCR
         tag_name = "@#{tag_name}" unless tag_name =~ /^@/
         cassette_name = "cucumber_tags/#{tag_name.gsub(/\A@/, '')}"
 
-        @main_object.Around(tag_name) do |scenario, block|
-          VCR.use_cassette(cassette_name, options, &block)
+        # It would be nice to use an Around hook here, but
+        # cucumber has a bug: background steps do not run
+        # within an around hook.
+        # https://gist.github.com/652968
+        @main_object.Before(tag_name) do
+          VCR.insert_cassette(cassette_name, options)
+        end
+
+        @main_object.After(tag_name) do
+          VCR.eject_cassette
         end
 
         self.class.add_tag(tag_name)

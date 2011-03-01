@@ -2,20 +2,24 @@ require 'spec_helper'
 
 describe VCR::CucumberTags do
   subject { described_class.new(self) }
-  let(:blocks_for_tags) { {} }
+  let(:before_blocks_for_tags) { {} }
+  let(:after_blocks_for_tags) { {} }
 
-  # define our own Around so we can test this in isolation from cucumber's implementation.
-  def Around(tag, &block)
-    blocks_for_tags[tag.sub('@', '')] = block
+  # define our own Before/After so we can test this in isolation from cucumber's implementation.
+  def Before(tag, &block)
+    before_blocks_for_tags[tag.sub('@', '')] = block
+  end
+
+  def After(tag, &block)
+    after_blocks_for_tags[tag.sub('@', '')] = block
   end
 
   def test_tag(cassette_attribute, tag, expected_value)
     VCR.current_cassette.should be_nil
 
-    cassette_during_scenario = nil
-    scenario = lambda { cassette_during_scenario = VCR.current_cassette }
-    blocks_for_tags[tag].call(:scenario_name, scenario)
-    cassette_during_scenario.send(cassette_attribute).should == expected_value
+    before_blocks_for_tags[tag].call
+    VCR.current_cassette.send(cassette_attribute).should == expected_value
+    after_blocks_for_tags[tag].call
 
     VCR.current_cassette.should be_nil
   end
