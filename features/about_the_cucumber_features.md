@@ -1,4 +1,4 @@
-## VCR
+## About the Cucumber Features
 
 The cucumber features provided here demonstrate all of the major features of
 VCR.  These features are executable documentation for VCR.
