@@ -30,7 +30,7 @@ module VCR
       end
 
       RECORDING_INSTRUCTIONS = "You can use VCR to automatically record this request and replay it later.  " +
-                               "For more details, visit the VCR wiki at: http://github.com/myronmarston/vcr/wiki"
+                               "For more details, visit the VCR documentation at: http://relishapp.com/myronmarston/vcr/v/#{VCR.version.gsub('.', '-')}"
 
       def enabled?
         [nil, self].include? VCR::HttpStubbingAdapters::Common.exclusively_enabled_adapter

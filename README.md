@@ -61,9 +61,7 @@ maintenance) and accurate (the response from example.com will contain the same h
 
 ## Usage
 
-Browse the [cucumber features](http://relishapp.com/myronmarston/vcr) or visit
-the [wiki](http://github.com/myronmarston/vcr/wiki) for usage info and
-documentation.
+Browse the [documentation](http://relishapp.com/myronmarston/vcr) for usage info.
 
 The [VCR talk given at Philly.rb](http://philly-rb-vcr-talk.heroku.com/) also
 contains good usage info.
