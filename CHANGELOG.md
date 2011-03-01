@@ -17,6 +17,8 @@
 * Made `:once` the default record mode.
 * Add new `filter_sensitive_data` configuration option.  Feature
   suggested by [Nathaniel Bibler](https://github.com/nbibler).
+* Commit to [Semantic Versioning](http://semver.org/).  The cucumber
+  features document the public API for the purposes of semver.
 * Add support for CI builds using [travis-ci](http://travis-ci.org/myronmarston/vcr).
 * Add support for running tests through `gem test vcr`.  Visit
   [test.rubygems.org](http://test.rubygems.org/gems/vcr) to see
