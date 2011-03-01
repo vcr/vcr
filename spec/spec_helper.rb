@@ -41,7 +41,7 @@ end
 
 RSpec.configure do |config|
   config.color_enabled = true
-  config.debug = RUBY_INTERPRETER == :mri
+  config.debug = (using_git && RUBY_INTERPRETER == :mri)
 
   config.before(:each) do
     VCR.turn_on! unless VCR.turned_on?
