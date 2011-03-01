@@ -27,3 +27,7 @@ features/fixtures/vcr_cassettes/**/temp/
 tmp
 rerun.txt
 Gemfile.lock
+
+features/README.md
+features/CHANGELOG.md
+features/LICENSE

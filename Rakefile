@@ -46,8 +46,26 @@ namespace :ci do
   task :build => [:setup, :spec, :cucumber]
 end
 
+def ensure_relish_doc_symlinked(filename)
+  from = File.expand_path("../features/#{filename}", __FILE__)
+  to = File.expand_path("../#{filename}", __FILE__)
+
+  if File.symlink?(from)
+    return if File.readlink(from) == to
+
+    # delete the old symlink
+    File.unlink(from)
+  end
+
+  FileUtils.ln_s to, from
+end
+
 desc "Push cukes to relishapp using the relish-client-gem"
 task :relish do
+  %w[ README.md CHANGELOG.md LICENSE ].each do |file|
+    ensure_relish_doc_symlinked(file)
+  end
+
   require 'vcr/version'
   sh "relish versions:add myronmarston/vcr:#{VCR.version}"
   sh "relish push vcr:#{VCR.version}"

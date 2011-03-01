@@ -1,4 +1,6 @@
+CHANGELOG.md (Changelog)
 about_the_cucumber_features.md (About the Cucumber Features)
+LICENSE (License)
 - cassettes:
   - format.feature
   - no_cassette.feature
