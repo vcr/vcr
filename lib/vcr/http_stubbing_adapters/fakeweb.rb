@@ -1,4 +1,5 @@
 require 'fakeweb'
+require 'vcr/deprecations/http_stubbing_adapters/fakeweb'
 require 'vcr/extensions/net_http'
 
 module VCR
@@ -91,12 +92,6 @@ module VCR
         if invalid_attributes.size > 0
           raise UnsupportedRequestMatchAttributeError.new("FakeWeb does not support matching requests on #{invalid_attributes.join(' or ')}")
         end
-      end
-
-      def self.const_missing(const)
-        return super unless const == :LOCALHOST_REGEX
-        warn "WARNING: `VCR::HttpStubbingAdapters::FakeWeb::LOCALHOST_REGEX` is deprecated."
-        VCR::Regexes.url_regex_for_hosts(VCR::LOCALHOST_ALIASES)
       end
     end
   end
