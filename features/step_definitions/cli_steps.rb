@@ -105,6 +105,11 @@ Then /^the file "([^"]*)" should contain a YAML fragment like:$/ do |file_name, 
     fragment = fragment.split("\n").map { |s| s.rstrip }.join("\n")
   end
 
+  # JRuby serializes things a bit differently
+  if RUBY_PLATFORM == 'java'
+    fragment = fragment.gsub(/^(\s+\-)/,'  \1')
+  end
+
   check_file_content(file_name, fragment, true)
 end
 
