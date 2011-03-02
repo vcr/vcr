@@ -47,7 +47,9 @@ namespace :ci do
 end
 
 def ensure_relish_doc_symlinked(filename)
-  from = File.expand_path("../features/#{filename}", __FILE__)
+  from_filename = filename.dup
+  from_filename << '.md' unless filename =~ /\.md$/
+  from = File.expand_path("../features/#{from_filename}", __FILE__)
   to = File.expand_path("../#{filename}", __FILE__)
 
   if File.symlink?(from)

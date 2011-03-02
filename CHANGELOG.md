@@ -1,5 +1,3 @@
-# Changelog
-
 ## In git
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.7.0...master)

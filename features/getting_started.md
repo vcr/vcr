@@ -1,5 +1,3 @@
-## Getting Started
-
 ### Install it
 
     [sudo] gem install vcr
