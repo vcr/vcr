@@ -74,6 +74,18 @@ VCR's public API.  Patch level releases contain only bug fixes.  Minor
 releases contain backward-compatible new features.  Major new releases
 contain backwards-incompatible changes to the public API.
 
+## Ruby Interpreter Compatibility
+
+VCR has been tested on the following ruby interpreters:
+
+* MRI 1.8.6
+* MRI 1.8.7
+* MRI 1.9.1
+* MRI 1.9.2
+* REE 1.8.7
+* JRuby 1.5.6
+* Rubinius 1.2.1
+
 ## Known Issues
 
 * VCR uses YAML to serialize the HTTP interactions to disk in a
