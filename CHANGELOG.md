@@ -2,7 +2,11 @@
 
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.6.0...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.7.0...master)
+
+## 1.7.0 (March 1, 2011)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.6.0...v1.7.0)
 
 * Use Psych for YAML serialization/deserialization when it is available.
   Syck, Ruby's old YAML engine, will remove whitespace from some
