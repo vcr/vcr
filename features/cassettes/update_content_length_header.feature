@@ -40,7 +40,7 @@ Feature: Update content_length header
           body: Hello <modified>
           http_version: "1.1"
       """
-    Given a file named "common_stuff.rb" with:
+    And a file named "common_stuff.rb" with:
       """
       require 'vcr'
 
