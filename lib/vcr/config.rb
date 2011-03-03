@@ -27,6 +27,11 @@ module VCR
     def stub_with(*http_stubbing_libraries)
       @http_stubbing_libraries = http_stubbing_libraries
     end
+    
+    attr_reader :log_all_to
+    def log_all_to=(cassette_name)
+      @log_all_to = cassette_name
+    end
 
     def http_stubbing_libraries
       @http_stubbing_libraries ||= []

@@ -93,5 +93,21 @@ Typhoeus::Hydra.after_request_before_on_complete do |request|
   end
 end
 
+module Typhoeus
+  class Request
+    class << self
+      def run_with_cassette(url, params)
+        use_cassette = VCR::Config.log_all_to && !VCR::Config.log_all_to.empty?
+        VCR.insert_cassette(VCR::Config.log_all_to) if use_cassette
+        return_value = run_without_cassette(url, params)
+        VCR.eject_cassette if use_cassette
+        return_value
+      end
+      alias_method :run_without_cassette, :run
+      alias_method :run, :run_with_cassette
+    end
+  end 
+end
+
 VCR::HttpStubbingAdapters::Common.add_vcr_info_to_exception_message(Typhoeus::Hydra::NetConnectNotAllowedError)
 

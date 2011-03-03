@@ -45,6 +45,13 @@ describe VCR::Config do
       VCR::Config.http_stubbing_libraries.should == [:fakeweb, :typhoeus]
     end
   end
+  
+  describe '.log_all_to=' do
+    it 'stores the given name in log_all_to' do
+      VCR::Config.log_all_to = "application"
+      VCR::Config.log_all_to.should == "application"
+    end
+  end
 
   describe '.http_stubbing_libraries' do
     it 'returns an empty array even when the variable is nil' do
