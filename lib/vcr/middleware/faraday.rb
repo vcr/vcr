@@ -18,7 +18,7 @@ module VCR
             elsif response = VCR::HttpStubbingAdapters::Faraday.stubbed_response_for(request_matcher)
               env.update(
                 :status           => response.status.code,
-                :response_headers => correctly_cased_headers(response.headers),
+                :response_headers => correctly_cased_headers(response.headers || {}),
                 :body             => response.body
               )
 

@@ -12,7 +12,27 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
     # so this gives us another alias we can use for the original method.
     alias make_request make_http_request
 
-    describe '#stub_requests using specific match_attributes' do
+    describe '.stub_requests' do
+      let(:status)        { VCR::ResponseStatus.new(200, 'OK') }
+      let(:interaction)   { VCR::HTTPInteraction.new(request, response) }
+      let(:response_body) { "The response body" }
+
+      def perform_stubbing
+        subject.stub_requests([interaction], [:method, :uri])
+      end
+
+      context "when the request and response has no headers" do
+        let(:request)  { VCR::Request.new(:get, 'http://example.com:80/') }
+        let(:response) { VCR::Response.new(status, nil, response_body, '1.1') }
+
+        it 'returns the response when a matching request is made' do
+          perform_stubbing
+          get_body_string(make_http_request(:get, 'http://example.com/')).should == response_body
+        end
+      end
+    end
+
+    describe '.stub_requests using specific match_attributes' do
       before(:each) { subject.http_connections_allowed = false }
       let(:interactions) { VCR::YAML.load_file(File.join(VCR::SPEC_ROOT, 'fixtures', YAML_SERIALIZATION_VERSION, 'match_requests_on.yml')) }
 

@@ -43,19 +43,6 @@ shared_examples_for "an http stubbing adapter" do |supported_http_libraries, sup
     end
   end
 
-  describe '.stub_requests' do
-    let(:request)     { VCR::Request.new(:get, 'http://example.com/') }
-    let(:status)      { VCR::ResponseStatus.new(200, 'OK') }
-    let(:response)    { VCR::Response.new(status) }
-    let(:interaction) { VCR::HTTPInteraction.new(request, response) }
-
-    it 'works when the request and response has no headers' do
-      expect {
-        subject.stub_requests([interaction], [:method, :uri])
-      }.not_to raise_error
-    end
-  end
-
   if other.include?(:needs_net_http_extension)
     describe '.request_uri' do
       it 'returns the uri for the given http request' do
