@@ -2,6 +2,9 @@
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.7.0...master)
 
+* Fix Faraday adapter so that it properly normalizes query parameters
+  in the same way that Faraday itself does.
+
 ## 1.7.0 (March 1, 2011)
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.6.0...v1.7.0)

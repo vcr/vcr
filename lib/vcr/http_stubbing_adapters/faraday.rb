@@ -51,6 +51,10 @@ module VCR
         end
       end
 
+      def normalize_uri(uri)
+        super.gsub('+', '%20')
+      end
+
       private
 
         def version

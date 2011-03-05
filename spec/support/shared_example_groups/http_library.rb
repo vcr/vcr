@@ -1,3 +1,5 @@
+require 'cgi'
+
 NET_CONNECT_NOT_ALLOWED_ERROR = /You can use VCR to automatically record this request and replay it later/
 
 shared_examples_for "an http library" do |library, supported_request_match_attributes, *other|
@@ -12,24 +14,50 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
     # so this gives us another alias we can use for the original method.
     alias make_request make_http_request
 
-    describe '.stub_requests' do
+    describe 'making an HTTP request' do
       let(:status)        { VCR::ResponseStatus.new(200, 'OK') }
       let(:interaction)   { VCR::HTTPInteraction.new(request, response) }
       let(:response_body) { "The response body" }
+      let(:match_requests_on) { [:method, :uri] }
+      let(:record_mode) { :none }
 
-      def perform_stubbing
-        subject.stub_requests([interaction], [:method, :uri])
+      before(:each) do
+        subject.stub_requests([interaction], match_requests_on)
       end
 
-      context "when the request and response has no headers" do
+      context "when the the stubbed request and response has no headers" do
         let(:request)  { VCR::Request.new(:get, 'http://example.com:80/') }
         let(:response) { VCR::Response.new(status, nil, response_body, '1.1') }
 
-        it 'returns the response when a matching request is made' do
-          perform_stubbing
+        it 'returns the response for a matching request' do
           get_body_string(make_http_request(:get, 'http://example.com/')).should == response_body
         end
       end
+
+      def self.test_url(description, url)
+        context "when a URL #{description} has been stubbed" do
+          let(:request)     { VCR::Request.new(:get, url) }
+          let(:response)    { VCR::Response.new(status, nil, response_body, '1.1') }
+
+          def should_be_pending?
+            return false unless described_class == VCR::HttpStubbingAdapters::WebMock
+            return false unless request.uri.include?(CGI.escape('&'))
+            self.class.included_modules.first.http_library_name == 'EM HTTP Request'
+          end
+
+          it 'returns the expected response for the same request' do
+            pending "WebMock/EM-HTTP bug", :if => should_be_pending? do
+              get_body_string(make_http_request(:get, url)).should == response_body
+            end
+          end
+        end
+      end
+
+      test_url "that has query params",      "http://example.com/search?q=param"
+      test_url "with spaces encoded as +",   "http://example.com/search?q=a+b"
+      test_url "with spaces encoded as %20", "http://example.com/search?q=a%20b"
+      test_url "with an encoded ampersand",  "http://example.com:80/search?q=#{CGI.escape("Q&A")}"
+      test_url "with a complex escaped query param", "http://example.com:80/search?q=#{CGI.escape("A&(! 234k !@ kasdj232\#$ kjw35")}"
     end
 
     describe '.stub_requests using specific match_attributes' do
