@@ -27,7 +27,7 @@ module VCR
         # urls have always included it).  We force it to be included
         # here by redefining default_port so that URI#to_s will include it.
         def u.default_port; nil; end
-        self.uri = VCR.http_stubbing_adapter.normalize_uri(u.to_s)
+        self.uri = u.to_s
       end
     end
   end

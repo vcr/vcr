@@ -26,7 +26,8 @@ module VCR
 
       def stub_requests(http_interactions, match_attributes)
         grouped_responses(http_interactions, match_attributes).each do |request_matcher, responses|
-          queue = stub_queues[request_matcher]
+          matcher = request_matcher_with_normalized_uri(request_matcher)
+          queue = stub_queues[matcher]
           responses.each { |res| queue << res }
         end
       end
@@ -49,10 +50,6 @@ module VCR
         instance_variables.each do |ivar|
           remove_instance_variable(ivar)
         end
-      end
-
-      def normalize_uri(uri)
-        super.gsub('+', '%20')
       end
 
       private
@@ -85,6 +82,15 @@ module VCR
 
         def hash_of_arrays
           Hash.new { |h, k| h[k] = [] }
+        end
+
+        def request_matcher_with_normalized_uri(matcher)
+          return matcher unless matcher.uri.is_a?(String) && matcher.uri.include?('+')
+
+          request = matcher.request.dup
+          request.uri = request.uri.gsub('+', '%20')
+
+          RequestMatcher.new(request, matcher.match_attributes)
         end
     end
   end

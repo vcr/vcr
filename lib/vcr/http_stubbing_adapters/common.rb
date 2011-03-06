@@ -67,11 +67,6 @@ module VCR
         raise ArgumentError.new("No checkpoint for #{cassette.inspect} could be found")
       end
 
-      def normalize_uri(uri)
-        # the adapters can implement this if they want
-        uri
-      end
-
       private
 
       def compare_version
