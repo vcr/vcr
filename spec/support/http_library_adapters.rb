@@ -11,7 +11,7 @@ HTTP_LIBRARY_ADAPTERS['net/http'] = Module.new do
 
   def make_http_request(method, url, body = nil, headers = {})
     uri = URI.parse(url)
-    Net::HTTP.new(uri.host, uri.port).send_request(method.to_s.upcase, uri.path, body, headers)
+    Net::HTTP.new(uri.host, uri.port).send_request(method.to_s.upcase, uri.request_uri, body, headers)
   end
 end
 
