@@ -1,6 +1,10 @@
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.7.1...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.7.2...master)
+
+## 1.7.2 (March 26, 2011)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.7.1...v1.7.2)
 
 * Fixed Typhoeus adapter so headers are returned in the same form during
   playback as they would be without VCR.  Bug reported by
