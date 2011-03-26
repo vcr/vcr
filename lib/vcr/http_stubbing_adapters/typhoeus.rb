@@ -32,7 +32,7 @@ module VCR
               ::Typhoeus::Response.new(
                 :code         => response.status.code,
                 :body         => response.body,
-                :headers_hash => response.headers
+                :headers_hash => normalized_response_headers(response)
               )
             end
           )
@@ -62,6 +62,16 @@ module VCR
 
         hash[:body]    = request_matcher.body    if request_matcher.match_requests_on?(:body)
         hash[:headers] = request_matcher.headers if request_matcher.match_requests_on?(:headers)
+
+        hash
+      end
+
+      def normalized_response_headers(response)
+        hash = {}
+
+        response.headers.each do |key, values|
+          hash[key] = values.size == 1 ? values.first : values
+        end if response.headers
 
         hash
       end

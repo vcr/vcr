@@ -14,6 +14,41 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
     # so this gives us another alias we can use for the original method.
     alias make_request make_http_request
 
+    1.upto(2) do |header_count|
+      describe "making an HTTP request that responds with #{header_count} Set-Cookie header(s)" do
+        define_method :get_set_cookie_header do
+          VCR.use_cassette('header_test', :record => :once) do
+            get_header 'Set-Cookie', make_http_request(:get, "http://localhost:#{VCR::SinatraApp.port}/set-cookie-headers/#{header_count}")
+          end
+        end
+
+        define_method :should_be_pending do
+          if header_count == 2
+            [
+              'Faraday (patron)',
+              'HTTP Client',
+              'EM HTTP Request',
+              'Curb'
+            ].include?(adapter_module.http_library_name)
+          end
+        end
+
+        it 'returns the same header value when recording and replaying' do
+          pending "There appears to be a bug in the the HTTP stubbing library", :if => should_be_pending do
+            (recorded_val = get_set_cookie_header).should_not be_nil
+            replayed_val = get_set_cookie_header
+
+            # we don't care about order differences if the values are arrays
+            if recorded_val.is_a?(Array) && replayed_val.is_a?(Array)
+              replayed_val.should =~ recorded_val
+            else
+              replayed_val.should == recorded_val
+            end
+          end
+        end
+      end
+    end
+
     describe 'making an HTTP request' do
       let(:status)        { VCR::ResponseStatus.new(200, 'OK') }
       let(:interaction)   { VCR::HTTPInteraction.new(request, response) }

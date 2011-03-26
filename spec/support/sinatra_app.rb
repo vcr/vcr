@@ -14,6 +14,16 @@ module VCR
       "FOO!"
     end
 
+    get '/set-cookie-headers/1' do
+      headers 'Set-Cookie' => 'foo'
+      'header set'
+    end
+
+    get '/set-cookie-headers/2' do
+      headers 'Set-Cookie' => %w[ foo bar ]
+      'header set'
+    end
+
     def self.port
       server.port
     end

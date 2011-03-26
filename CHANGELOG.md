@@ -2,6 +2,12 @@
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.7.1...master)
 
+* Fixed Typhoeus adapter so headers are returned in the same form during
+  playback as they would be without VCR.  Bug reported by
+  [Avdi Grimm](https://github.com/avdi).
+* Fixed Faraday adapter so it treats response headers in the same way
+  Faraday itself does (i.e. with lowercase keys).
+
 ## 1.7.1 (March 19, 2011)
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.7.0...v1.7.1)

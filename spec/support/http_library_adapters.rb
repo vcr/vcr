@@ -127,7 +127,8 @@ end
     end
 
     def get_header(header_key, response)
-      response.headers[header_key]
+      header = response.headers[header_key.downcase]
+      header.split(', ')
     end
 
     def make_http_request(method, url, body = nil, headers = {})

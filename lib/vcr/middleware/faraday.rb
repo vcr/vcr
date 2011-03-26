@@ -18,7 +18,7 @@ module VCR
             elsif response = VCR::HttpStubbingAdapters::Faraday.stubbed_response_for(request_matcher)
               env.update(
                 :status           => response.status.code,
-                :response_headers => correctly_cased_headers(response.headers || {}),
+                :response_headers => normalized_headers(response.headers),
                 :body             => response.body
               )
 
@@ -64,15 +64,14 @@ module VCR
           )
         end
 
-        def correctly_cased_headers(headers)
-          correctly_cased_hash = {}
+        def normalized_headers(headers)
+          hash = {}
 
-          headers.each do |key, value|
-            key = key.to_s.split('-').map { |segment| segment.capitalize }.join("-")
-            correctly_cased_hash[key] = value
-          end
+          headers.each do |key, values|
+            hash[key] = values.join(', ')
+          end if headers
 
-          correctly_cased_hash
+          hash
         end
     end
   end
