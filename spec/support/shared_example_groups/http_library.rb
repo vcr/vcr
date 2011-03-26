@@ -74,16 +74,8 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
           let(:request)     { VCR::Request.new(:get, url) }
           let(:response)    { VCR::Response.new(status, nil, response_body, '1.1') }
 
-          def should_be_pending?
-            return false unless described_class == VCR::HttpStubbingAdapters::WebMock
-            return false unless request.uri.include?(CGI.escape('&'))
-            self.class.included_modules.first.http_library_name == 'EM HTTP Request'
-          end
-
           it 'returns the expected response for the same request' do
-            pending "WebMock/EM-HTTP bug", :if => should_be_pending? do
-              get_body_string(make_http_request(:get, url)).should == response_body
-            end
+            get_body_string(make_http_request(:get, url)).should == response_body
           end
         end
       end

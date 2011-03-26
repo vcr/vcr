@@ -41,7 +41,7 @@ Gem::Specification.new do |s|
 
   {
     'patron'          => '0.4.9',
-    'em-http-request' => '~> 0.2.7',
+    'em-http-request' => '~> 0.3.0',
     'curb'            => '0.7.8',
     'typhoeus'        => '~> 0.2.1'
   }.each do |lib, version|
