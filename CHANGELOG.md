@@ -1,6 +1,10 @@
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.7.2...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.8.0...master)
+
+## 1.8.0 (March 31, 2011)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.7.2...v1.8.0)
 
 * Updated Faraday middleware to work with newly released Faraday 0.6.0.
 
