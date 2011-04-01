@@ -40,7 +40,7 @@ describe VCR::RequestMatcher do
 
     for_matcher :path do
       it("matches a basic URL for the same path") { should =~ 'http://domain.tld/path/to/something?p=v&q=r' }
-      it("matches an https URL") { should =~ 'http://domain.tld/path/to/something?p=v&q=r' }
+      it("matches an https URL") { should =~ 'https://domain.tld/path/to/something?p=v&q=r' }
       it("ignores the case of the URL") { should =~ 'HTTP://DOMAIN.TLD/PATH/TO/SOMETHING?P=V&Q=R' }
       it("matches with a trailing slash") { should =~ 'http://domain.tld/path/to/something/' }
       it("matches without a trailing slash") { should =~ 'http://domain.tld/path/to/something' }
