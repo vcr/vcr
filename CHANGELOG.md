@@ -2,6 +2,8 @@
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.7.2...master)
 
+* Updated Faraday middleware to work with newly released Faraday 0.6.0.
+
 ## 1.7.2 (March 26, 2011)
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.7.1...v1.7.2)

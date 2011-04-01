@@ -25,7 +25,6 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
         define_method :should_be_pending do
           if header_count == 2
             [
-              'Faraday (patron)',
               'HTTP Client',
               'EM HTTP Request',
               'Curb'

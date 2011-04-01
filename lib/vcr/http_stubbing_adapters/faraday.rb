@@ -6,8 +6,8 @@ module VCR
       include Common
       extend self
 
-      MINIMUM_VERSION = '0.5.3'
-      MAXIMUM_VERSION = '0.5'
+      MINIMUM_VERSION = '0.6.0'
+      MAXIMUM_VERSION = '0.6'
 
       attr_writer :http_connections_allowed
 

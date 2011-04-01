@@ -16,13 +16,13 @@ module VCR
             if VCR::HttpStubbingAdapters::Faraday.uri_should_be_ignored?(request.uri)
               @app.call(env)
             elsif response = VCR::HttpStubbingAdapters::Faraday.stubbed_response_for(request_matcher)
-              env.update(
-                :status           => response.status.code,
-                :response_headers => normalized_headers(response.headers),
-                :body             => response.body
-              )
+              headers = env[:response_headers] ||= ::Faraday::Utils::Headers.new
+              headers.update response.headers if response.headers
+              env.update :status => response.status.code, :body => response.body
 
-              env[:response].finish(env)
+              faraday_response = ::Faraday::Response.new
+              faraday_response.finish(env) unless env[:parallel_manager]
+              env[:response] = faraday_response
             elsif VCR::HttpStubbingAdapters::Faraday.http_connections_allowed?
               response = @app.call(env)
 
@@ -62,16 +62,6 @@ module VCR
             response.body,
             '1.1'
           )
-        end
-
-        def normalized_headers(headers)
-          hash = {}
-
-          headers.each do |key, values|
-            hash[key] = values.join(', ')
-          end if headers
-
-          hash
         end
     end
   end
