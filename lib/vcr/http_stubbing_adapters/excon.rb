@@ -30,6 +30,7 @@ module VCR
       private
 
         def version
+          ::Excon::VERSION
         end
 
         def checkpoints
