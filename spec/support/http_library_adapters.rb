@@ -119,6 +119,22 @@ HTTP_LIBRARY_ADAPTERS['typhoeus'] = Module.new do
   end
 end
 
+HTTP_LIBRARY_ADAPTERS['excon'] = Module.new do
+  def self.http_library_name; "Excon"; end
+
+  def get_body_string(response)
+    response.body
+  end
+
+  def get_header(header_key, response)
+    response.headers[header_key]
+  end
+
+  def make_http_request(method, url, body = nil, headers = {})
+    Excon.send(method, url, :body => body, :headers => headers)
+  end
+end
+
 %w[ net_http typhoeus patron ].each do |_faraday_adapter|
   HTTP_LIBRARY_ADAPTERS["faraday-#{_faraday_adapter}"] = Module.new do
     class << self; self; end.class_eval do
