@@ -1,6 +1,11 @@
 require 'spec_helper'
 
-describe VCR::HttpStubbingAdapters::Excon do
+describe VCR::HttpStubbingAdapters::Excon, :without_monkey_patches => :vcr do
+  it_behaves_like 'an http stubbing adapter',
+    ['excon'],
+    [:method, :uri, :host, :path, :body, :headers],
+    :status_message_not_exposed
+
   it_performs('version checking',
     :valid    => %w[ 0.6.0 0.6.99 ],
     :too_low  => %w[ 0.5.0 ],

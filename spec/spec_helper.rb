@@ -58,6 +58,7 @@ RSpec.configure do |config|
     FakeWeb.clean_registry
 
     VCR::HttpStubbingAdapters::Faraday.reset!
+    VCR::HttpStubbingAdapters::Excon.reset!
   end
 
   config.after(:each) do

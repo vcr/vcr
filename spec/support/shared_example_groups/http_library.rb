@@ -318,7 +318,9 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
           end unless other.include?(:does_not_support_rotating_responses)
 
           it "correctly handles stubbing multiple values for the same header" do
-            get_header('Set-Cookie', make_http_request(:get, 'http://example.com/two_set_cookie_headers')).should =~ ['bar=bazz', 'foo=bar']
+            header = get_header('Set-Cookie', make_http_request(:get, 'http://example.com/two_set_cookie_headers'))
+            header = header.split(', ') if header.respond_to?(:split)
+            header.should =~ ['bar=bazz', 'foo=bar']
           end
 
           context 'when we restore our previous check point' do
