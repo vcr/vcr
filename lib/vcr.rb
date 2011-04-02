@@ -140,10 +140,11 @@ module VCR
 
   def adapter_for(lib)
     case lib
+      when :excon;    HttpStubbingAdapters::Excon
       when :fakeweb;  HttpStubbingAdapters::FakeWeb
-      when :webmock;  HttpStubbingAdapters::WebMock
-      when :typhoeus; HttpStubbingAdapters::Typhoeus
       when :faraday;  HttpStubbingAdapters::Faraday
+      when :typhoeus; HttpStubbingAdapters::Typhoeus
+      when :webmock;  HttpStubbingAdapters::WebMock
       else raise ArgumentError.new("#{lib.inspect} is not a supported HTTP stubbing library.")
     end
   end

@@ -147,7 +147,8 @@ describe VCR do
     {
       :fakeweb  => VCR::HttpStubbingAdapters::FakeWeb,
       :webmock  => VCR::HttpStubbingAdapters::WebMock,
-      :faraday  => VCR::HttpStubbingAdapters::Faraday
+      :faraday  => VCR::HttpStubbingAdapters::Faraday,
+      :excon    => VCR::HttpStubbingAdapters::Excon
     }.each do |symbol, klass|
       it "returns #{klass} for :#{symbol}" do
         VCR::Config.stub_with symbol
