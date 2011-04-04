@@ -89,3 +89,4 @@ Feature: Cassette format
       | :webmock   | curb            |
       | :webmock   | em-http-request |
       | :typhoeus  | typhoeus        |
+      | :excon     | excon           |

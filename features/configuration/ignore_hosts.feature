@@ -58,4 +58,5 @@ Feature: ignore_hosts
       | :webmock   | curb            |
       | :webmock   | em-http-request |
       | :typhoeus  | typhoeus        |
+      | :excon     | excon           |
 

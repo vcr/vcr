@@ -46,6 +46,7 @@ Feature: Error for HTTP request made when no cassette is in use
       | :webmock   | patron          | Real HTTP connections are disabled |
       | :webmock   | em-http-request | Real HTTP connections are disabled |
       | :typhoeus  | typhoeus        | Real HTTP requests are not allowed |
+      | :excon     | excon           | Real HTTP connections are disabled |
 
   Scenario: Temporarily turn VCR off to allow HTTP requests to procede as normal
     Given a file named "turn_off_vcr.rb" with:

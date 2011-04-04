@@ -95,6 +95,7 @@ Feature: Request matching
       | :webmock   | curb            |
       | :webmock   | em-http-request |
       | :typhoeus  | typhoeus        |
+      | :excon     | excon           |
 
   Scenario Outline: match on host and path (to ignore query params)
     Given a previously recorded cassette file "cassettes/example.yml" with:
@@ -164,6 +165,7 @@ Feature: Request matching
       | :webmock   | curb            |
       | :webmock   | em-http-request |
       | :typhoeus  | typhoeus        |
+      | :excon     | excon           |
 
   Scenario Outline: match on request body
     Given a previously recorded cassette file "cassettes/example.yml" with:
@@ -236,6 +238,7 @@ Feature: Request matching
       | :webmock   | curb            |
       | :webmock   | em-http-request |
       | :typhoeus  | typhoeus        |
+      | :excon     | excon           |
 
   Scenario Outline: match on request headers
     Given a previously recorded cassette file "cassettes/example.yml" with:
@@ -308,6 +311,7 @@ Feature: Request matching
       | :webmock   | curb            |
       | :webmock   | em-http-request |
       | :typhoeus  | typhoeus        |
+      | :excon     | excon           |
 
   Scenario Outline: Use a regex for the request URI
     Given a previously recorded cassette file "cassettes/example.yml" with:
@@ -377,3 +381,4 @@ Feature: Request matching
       | :webmock   | curb            |
       | :webmock   | em-http-request |
       | :typhoeus  | typhoeus        |
+      | :excon     | excon           |

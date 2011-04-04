@@ -61,6 +61,8 @@ Feature: ignore_localhost
       | :webmock   | em-http-request | Real HTTP connections are disabled | c.ignore_localhost = false |
       | :typhoeus  | typhoeus        | Real HTTP requests are not allowed |                            |
       | :typhoeus  | typhoeus        | Real HTTP requests are not allowed | c.ignore_localhost = false |
+      | :excon     | excon           | Real HTTP connections are disabled |                            |
+      | :excon     | excon           | Real HTTP connections are disabled | c.ignore_localhost = false |
 
   Scenario Outline: localhost requests are allowed and not recorded when ignore_localhost = true
     Given a file named "ignore_localhost_true.rb" with:
@@ -100,4 +102,5 @@ Feature: ignore_localhost
       | :webmock   | curb            |
       | :webmock   | em-http-request |
       | :typhoeus  | typhoeus        |
+      | :excon     | excon           |
 
