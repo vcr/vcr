@@ -15,9 +15,9 @@ Record your test suite's HTTP interactions and replay them during future test ru
 
     class VCRTest < Test::Unit::TestCase
       def test_example_dot_com
-        VCR.use_cassette('synopsis', :record => :new_episodes) do
-          response = Net::HTTP.get_response(URI.parse('http://example.com/'))
-          assert_match /You have reached this web page by typing.*example\.com/, response.body
+        VCR.use_cassette('synopsis') do
+          response = Net::HTTP.get_response(URI('http://www.iana.org/domains/example/'))
+          assert_match /Example Domains/, response.body
         end
       end
     end
