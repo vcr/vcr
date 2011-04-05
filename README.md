@@ -36,6 +36,7 @@ maintenance) and accurate (the response from example.com will contain the same h
   * [WebMock](https://github.com/bblimke/webmock)
   * [Typhoeus](https://github.com/dbalatero/typhoeus)
   * [Faraday](https://github.com/technoweenie/faraday)
+  * [Excon](https://github.com/geemus/excon)
 * Supports multiple HTTP libraries:
   * [Patron](http://github.com/toland/patron) (when using WebMock)
   * [Curb](http://github.com/taf2/curb) (when using WebMock -- only supports Curb::Easy at the moment)
@@ -43,6 +44,7 @@ maintenance) and accurate (the response from example.com will contain the same h
   * [em-http-request](http://github.com/igrigorik/em-http-request) (when using WebMock)
   * [Net::HTTP](http://www.ruby-doc.org/stdlib/libdoc/net/http/rdoc/index.html) (when using FakeWeb and WebMock)
   * [Typhoeus](https://github.com/dbalatero/typhoeus) (Typhoeus::Hydra, but not Typhoeus::Easy or Typhoeus::Multi)
+  * [Excon](https://github.com/geemus/excon)
   * [Faraday](https://github.com/technoweenie/faraday)
   * And of course any library built on Net::HTTP, such as [Mechanize](http://github.com/tenderlove/mechanize),
     [HTTParty](http://github.com/jnunemaker/httparty) or [Rest Client](http://github.com/archiloque/rest-client).
@@ -124,6 +126,8 @@ If you find VCR useful, please recommend me on [working with rails](http://worki
 * [Chris Young](http://github.com/chrisyoung) for [NetRecorder](http://github.com/chrisyoung/netrecorder),
   the inspiration for VCR.
 * [David Balatero](https://github.com/dbalatero) for help with [Typhoeus](https://github.com/pauldix/typhoeus)
+  support.
+* [Wesley Beary](https://github.com/geemus) for help with [Excon](https://github.com/geemus/excon)
   support.
 
 Thanks also to the following people who have contributed patches or helpful suggestions:
