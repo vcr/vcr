@@ -80,13 +80,12 @@ describe VCR::Cassette do
 
     describe "reading the file from disk" do
       before(:each) do
-        VCR::Config.cassette_library_dir = "cassette_lib"
         File.stub(:size? => true)
       end
 
       it 'reads the appropriate file from disk using a VCR::Cassette::Reader' do
         VCR::Cassette::Reader.should_receive(:new).with(
-          'cassette_lib/foo.yml', anything
+          "#{VCR::Config.cassette_library_dir}/foo.yml", anything
         ).and_return(mock('reader', :read => VCR::YAML.dump([])))
 
         VCR::Cassette.new('foo', :record => :new_episodes)
