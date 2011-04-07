@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
 
     'faraday'         => '~> 0.6.0',
     'httpclient'      => '~> 2.1.5.2',
+    'excon'           => '~> 0.6.1',
 
     'timecop'         => '~> 0.3.5',
     'rack'            => '1.1.0',

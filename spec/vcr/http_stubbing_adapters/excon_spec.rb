@@ -7,8 +7,8 @@ describe VCR::HttpStubbingAdapters::Excon, :without_monkey_patches => :vcr do
     :status_message_not_exposed
 
   it_performs('version checking',
-    :valid    => %w[ 0.6.0 0.6.99 ],
-    :too_low  => %w[ 0.5.0 ],
+    :valid    => %w[ 0.6.1 0.6.99 ],
+    :too_low  => %w[ 0.5.99 0.6.0 ],
     :too_high => %w[ 0.7.0 1.0.0 ]
   ) do
     before(:each) { @orig_version = Excon::VERSION }

@@ -8,7 +8,7 @@ module VCR
 
       class HttpConnectionNotAllowedError < StandardError; end
 
-      MINIMUM_VERSION = '0.6.0'
+      MINIMUM_VERSION = '0.6.1'
       MAXIMUM_VERSION = '0.6'
 
       attr_writer :http_connections_allowed
@@ -140,11 +140,7 @@ module VCR
 
             yield response if block_given?
 
-            {
-              :body    => response.body,
-              :status  => response.status,
-              :headers => response.headers
-            }
+            response.attributes
           end
 
           def record_interaction
