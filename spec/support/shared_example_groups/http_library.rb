@@ -79,6 +79,9 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
         end
       end
 
+      test_url "using https and no explicit port", "https://example.com/foo"
+      test_url "using https and port 443", "https://example.com:443/foo"
+      test_url "using https and some other port", "https://example.com:5190/foo"
       test_url "that has query params",      "http://example.com/search?q=param"
       test_url "with spaces encoded as +",   "http://example.com/search?q=a+b"
       test_url "with spaces encoded as %20", "http://example.com/search?q=a%20b"
