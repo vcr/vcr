@@ -33,6 +33,7 @@ task :default => [:spec, :cucumber]
 namespace :ci do
   desc "Sets things up for a ci build on travis-ci.org"
   task :setup do
+    ENV['TRAVIS'] = 'true'
     sh "git submodule init"
     sh "git submodule update"
   end

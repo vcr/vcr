@@ -22,6 +22,8 @@ elsif defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx'
 elsif RUBY_PLATFORM == 'java'
   # These gems have C extensions and can't install on JRuby.
   UNSUPPORTED_HTTP_LIBS = %w[ typhoeus patron curb em-http-request ]
+elsif RUBY_VERSION == '1.8.6' && ENV['TRAVIS']
+  UNSUPPORTED_HTTP_LIBS = %w[ em-http-request ]
 end
 
 if defined?(UNSUPPORTED_HTTP_LIBS)

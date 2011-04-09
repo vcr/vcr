@@ -1,4 +1,4 @@
-@exclude-jruby @exclude-rbx
+@exclude-jruby @exclude-rbx @exclude-travis-186
 Feature: EM HTTP Request
 
   EM HTTP Request allows multiple simultaneous asynchronous requests.

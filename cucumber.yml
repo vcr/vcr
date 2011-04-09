@@ -7,6 +7,10 @@ interp_opts = if defined?(RUBY_ENGINE)
 else
   ''
 end
+
+if ENV['TRAVIS'] && RUBY_VERSION == '1.8.6'
+  interp_opts << ' --tags ~@exclude-travis-186'
+end
 %>
 default: <%= std_opts %><%= interp_opts %> features
 wip: --tags @wip:30 --wip features<%= interp_opts %>
