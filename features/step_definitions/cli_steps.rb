@@ -100,17 +100,16 @@ Then /^the file "([^"]*)" should contain:$/ do |file_name, expected_content|
 end
 
 Then /^the file "([^"]*)" should contain a YAML fragment like:$/ do |file_name, fragment|
-  if defined?(::Psych)
-    # psych serializes things slightly differently...
-    fragment = fragment.split("\n").map { |s| s.rstrip }.join("\n")
-  end
+  in_current_dir do
+    file_content = File.read(file_name)
 
-  # JRuby serializes things a bit differently
-  if RUBY_PLATFORM == 'java'
-    fragment = fragment.gsub(/^(\s+\-)/,'  \1')
-  end
+    # Normalize by removing leading and trailing whitespace...
+    file_content = file_content.split("\n").map do |line|
+      line.strip
+    end.join("\n")
 
-  check_file_content(file_name, fragment, true)
+    file_content.should include(fragment)
+  end
 end
 
 Then /^the cassette "([^"]*)" should have the following response bodies:$/ do |file, table|

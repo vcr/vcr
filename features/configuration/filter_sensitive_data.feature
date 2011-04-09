@@ -146,8 +146,8 @@ Feature: Filter sensitive data
     And the file "cassettes/example.yml" should contain "body: john.doe/<PASSWORD>"
     And the file "cassettes/example.yml" should contain a YAML fragment like:
       """
-            x-http-password: 
-            - <PASSWORD>
+      x-http-password:
+      - <PASSWORD>
       """
 
     When I run "ruby dynamic_filtering.rb"
