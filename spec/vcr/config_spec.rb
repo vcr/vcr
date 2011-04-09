@@ -7,11 +7,11 @@ describe VCR::Config do
   end
 
   describe '.cassette_library_dir=' do
+    let(:tmp_dir) { VCR::SPEC_ROOT + '../tmp/cassette_library_dir/new_dir' }
+    after(:each) { FileUtils.rm_rf tmp_dir }
+
     it 'creates the directory if it does not exist' do
-      Dir.mktmpdir do |dir|
-        dir += '/cassettes'
-        expect { VCR::Config.cassette_library_dir = dir }.to change { File.exist?(dir) }.from(false).to(true)
-      end
+      expect { VCR::Config.cassette_library_dir = tmp_dir }.to change { File.exist?(tmp_dir) }.from(false).to(true)
     end
 
     it 'does not raise an error if given nil' do
