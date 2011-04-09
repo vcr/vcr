@@ -43,7 +43,9 @@ RSpec.configure do |config|
   config.color_enabled = true
   config.debug = (using_git && RUBY_INTERPRETER == :mri)
 
+  tmp_dir = File.expand_path('../../tmp/cassette_library_dir', __FILE__)
   config.before(:each) do
+    VCR::Config.cassette_library_dir = tmp_dir
     VCR.turn_on! unless VCR.turned_on?
     VCR.eject_cassette while VCR.current_cassette
 
@@ -58,15 +60,8 @@ RSpec.configure do |config|
     VCR::HttpStubbingAdapters::Faraday.reset!
   end
 
-  # Ensure each example uses a different cassette library to keep them isolated.
-  config.around(:each) do |example|
-    Dir.mktmpdir do |dir|
-      VCR::Config.cassette_library_dir = dir
-      example.run
-    end
-  end
-
   config.after(:each) do
+    FileUtils.rm_rf tmp_dir
     VCR::HttpStubbingAdapters::Common.adapters.each do |a|
       a.ignored_hosts = []
     end
