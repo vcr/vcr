@@ -1,6 +1,12 @@
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.8.0...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.9.0...master)
+
+## 1.9.0 (April 14, 2011)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.8.0...v1.9.0)
+
+* Add support for [Excon](https://github.com/geemus/excon).
 
 ## 1.8.0 (March 31, 2011)
 
