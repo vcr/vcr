@@ -8,7 +8,7 @@ module VCR
 
       class HttpConnectionNotAllowedError < StandardError; end
 
-      MINIMUM_VERSION = '0.6.1'
+      MINIMUM_VERSION = '0.6.2'
       MAXIMUM_VERSION = '0.6'
 
       attr_writer :http_connections_allowed
