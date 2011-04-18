@@ -48,7 +48,7 @@ module VCR
   end
 
   def insert_cassette(name, options = {})
-    if !turned_on? && disable_cassette_errors?
+    if !turned_on? && !disable_cassette_errors?
       raise TurnedOffError.new("VCR is turned off.  You must turn it on before you can insert a cassette.")
     end
 
@@ -125,7 +125,7 @@ module VCR
 
     VCR.http_stubbing_adapter.http_connections_allowed = true
     @turned_off = true
-    @cassette_errors = !!options[:disable_cassette_errors]
+    @disable_cassette_errors = !!options[:disable_cassette_errors]
   end
 
   def turn_on!
@@ -138,7 +138,7 @@ module VCR
   end
 
   def disable_cassette_errors?
-    !!@cassette_errors
+    !!@disable_cassette_errors
   end
 
   private
