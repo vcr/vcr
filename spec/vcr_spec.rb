@@ -237,6 +237,13 @@ describe VCR do
         VCR.insert_cassette('foo')
       }.to raise_error(VCR::TurnedOffError)
     end
+
+    it 'does not cause an error to be raised if a cassette is inserted while VCR is turned off with :cassette_errors disabled' do
+      VCR.turn_off!(:cassette_errors => false)
+      expect {
+        VCR.insert_cassette('foo')
+      }.to_not raise_error(VCR::TurnedOffError)
+    end
   end
 
   describe '.turn_on!' do
