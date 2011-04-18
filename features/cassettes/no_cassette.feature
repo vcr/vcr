@@ -12,7 +12,7 @@ Feature: Error for HTTP request made when no cassette is in use
   you can temporarily turn VCR off:
 
     - `VCR.turn_off!` => turn VCR off so HTTP requests are allowed
-    - `VCR.turn_off!(:cassette_errors => false)` => turn
+    - `VCR.turn_off!(:disable_cassette_errors => true)` => turn
       VCR off and ignore cassette errors
     - `VCR.turn_on!` => turn VCR back on
     - `VCR.turned_off { ... }` => turn VCR off for the duration of the
