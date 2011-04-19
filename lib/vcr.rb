@@ -68,6 +68,7 @@ module VCR
   end
 
   def use_cassette(*args, &block)
+    return if !turned_on? && disable_cassette_errors?
     cassette = insert_cassette(*args)
 
     begin
