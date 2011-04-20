@@ -37,6 +37,18 @@ shared_examples_for "header normalization" do
     instance = with_headers('my-key' => [value])
     VCR::YAML.dump(instance.headers).should == VCR::YAML.dump('my-key' => ['my-value'])
   end
+
+  it 'handles nested arrays', :focus => true do
+    accept_encoding = [["gzip", "1.0"], ["deflate", "1.0"], ["sdch", "1.0"]]
+    instance = with_headers('accept-encoding' => accept_encoding)
+    instance.headers['accept-encoding'].should == accept_encoding
+  end
+
+  it 'handles nested arrays with floats', :focus => true do
+    accept_encoding = [["gzip", 1.0], ["deflate", 1.0], ["sdch", 1.0]]
+    instance = with_headers('accept-encoding' => accept_encoding)
+    instance.headers['accept-encoding'].should == accept_encoding
+  end
 end
 
 shared_examples_for "body normalization" do
