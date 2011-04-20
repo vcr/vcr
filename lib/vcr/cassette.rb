@@ -56,7 +56,9 @@ module VCR
     end
 
     def record_http_interaction(interaction)
-      return false if !@record_errors && interaction.response.status.code.to_s =~ /^[4|5]\d{2}$/
+      if !@record_errors
+        return false if interaction.response.status.code.to_s =~ (@record_errors.is_a?(Regexp) ? @record_errors : /^[4|5]\d{2}$/)
+      end
       new_recorded_interactions << interaction
     end
 
