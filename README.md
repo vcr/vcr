@@ -39,7 +39,7 @@ maintenance) and accurate (the response from example.com will contain the same h
   * [Excon](https://github.com/geemus/excon)
 * Supports multiple HTTP libraries:
   * [Patron](http://github.com/toland/patron) (when using WebMock)
-  * [Curb](http://github.com/taf2/curb) (when using WebMock -- only supports Curb::Easy at the moment)
+  * [Curb](http://github.com/taf2/curb) (when using WebMock -- only supports Curl::Easy at the moment)
   * [HTTPClient](http://github.com/nahi/httpclient) (when using WebMock)
   * [em-http-request](http://github.com/igrigorik/em-http-request) (when using WebMock)
   * [Net::HTTP](http://www.ruby-doc.org/stdlib/libdoc/net/http/rdoc/index.html) (when using FakeWeb and WebMock)

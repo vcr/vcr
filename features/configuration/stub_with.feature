@@ -9,7 +9,7 @@ Feature: stub_with
       - Net::HTTP
       - HTTPClient
       - Patron
-      - Curb (Curb::Easy, but not Curb::Multi)
+      - Curb (Curl::Easy, but not Curl::Multi)
       - EM HTTP Request
     - Typhoeus can be used to stub itself (as long as you use Typhoeus::Hydra,
       but not Typhoeus::Easy or Typhoeus::Multi).
