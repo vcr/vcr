@@ -4,6 +4,7 @@
 - LICENSE.md (License)
 - cassettes:
   - format.feature
+  - naming.feature
   - no_cassette.feature
   - request_matching.feature
   - dynamic_erb.feature

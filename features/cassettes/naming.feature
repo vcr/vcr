@@ -1,0 +1,29 @@
+Feature: Naming
+
+  When inserting or using a cassette, the first argument is the cassette name.
+  You can use any string for the name.  VCR will sanitize the string before
+  using it as a file name, so that it is a file-system friendly file name.
+
+  Scenario: Name sanitizing
+    Given a file named "name_sanitizing.rb" with:
+      """
+      require 'vcr_cucumber_helpers'
+
+      start_sinatra_app(:port => 7777) do
+        get('/') { "Hello" }
+      end
+
+      require 'vcr'
+
+      VCR.config do |c|
+        c.cassette_library_dir = 'cassettes'
+        c.stub_with :fakeweb
+      end
+
+      VCR.use_cassette('Fee, Fi Fo Fum', :record => :new_episodes) do
+        Net::HTTP.get_response('localhost', '/', 7777)
+      end
+      """
+     And the directory "cassettes" does not exist
+    When I run "ruby name_sanitizing.rb"
+    Then the file "cassettes/fee_fi_fo_fum.yml" should contain "body: Hello"
