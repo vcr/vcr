@@ -34,6 +34,7 @@ describe VCR::HTTPInteraction do
         response_status,
         headers.dup,
         body.dup,
+        body.dup.encoding.to_s,
         '1.1'
       )
     end

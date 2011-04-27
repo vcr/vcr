@@ -95,6 +95,7 @@ Typhoeus::Hydra.after_request_before_on_complete do |request|
         ),
         request.response.headers_hash,
         request.response.body,
+        request.response.body.encoding.to_s,
         request.response.http_version
       )
     )

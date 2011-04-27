@@ -13,6 +13,7 @@
       etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: post method response
+    body_encoding: ASCII-8BIT
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -28,6 +29,7 @@
       etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: get method response
+    body_encoding: ASCII-8BIT
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -43,6 +45,7 @@
       etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: example1.com host response
+    body_encoding: ASCII-8BIT
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -58,6 +61,7 @@
       etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: example2.com host response
+    body_encoding: ASCII-8BIT
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -73,6 +77,7 @@
       etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: path1 response
+    body_encoding: ASCII-8BIT
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -88,6 +93,7 @@
       etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: path2 response
+    body_encoding: ASCII-8BIT
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -103,6 +109,7 @@
       etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: uri1 response
+    body_encoding: ASCII-8BIT
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -118,6 +125,7 @@
       etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: uri2 response
+    body_encoding: ASCII-8BIT
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -133,6 +141,7 @@
       etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: val1 body response
+    body_encoding: ASCII-8BIT
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -148,6 +157,7 @@
       etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: val2 body response
+    body_encoding: ASCII-8BIT
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -165,6 +175,7 @@
       etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: val1 header response
+    body_encoding: ASCII-8BIT
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 

@@ -60,6 +60,7 @@ module VCR
             VCR::ResponseStatus.new(response.status, nil),
             response.headers,
             response.body,
+            response.body.encoding.to_s,
             '1.1'
           )
         end

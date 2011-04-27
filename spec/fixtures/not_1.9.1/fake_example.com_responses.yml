@@ -29,6 +29,7 @@
       accept-ranges: 
       - bytes
     body: example.com get response 1 with path=foo
+    body_encoding: ASCII-8BIT
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -60,6 +61,7 @@
       accept-ranges: 
       - bytes
     body: example.com get response 2 with path=foo
+    body_encoding: ASCII-8BIT
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -89,6 +91,7 @@
       accept-ranges: 
       - bytes
     body: example.com post response with id=3
+    body_encoding: ASCII-8BIT
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -105,4 +108,5 @@
       - bar=bazz
       - foo=bar
     body: this respons has two set-cookie headers
+    body_encoding: ASCII-8BIT
     http_version: "1.1"

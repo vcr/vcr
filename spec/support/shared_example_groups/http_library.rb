@@ -69,7 +69,7 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
 
       context "when the the stubbed request and response has no headers" do
         let(:request)  { VCR::Request.new(:get, 'http://example.com:80/') }
-        let(:response) { VCR::Response.new(status, nil, response_body, '1.1') }
+        let(:response) { VCR::Response.new(status, nil, response_body, response_body.encoding.to_s, '1.1') }
 
         it 'returns the response for a matching request' do
           get_body_string(make_http_request(:get, 'http://example.com/')).should == response_body
@@ -79,7 +79,7 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
       def self.test_url(description, url)
         context "when a URL #{description} has been stubbed" do
           let(:request)     { VCR::Request.new(:get, url) }
-          let(:response)    { VCR::Response.new(status, nil, response_body, '1.1') }
+          let(:response)    { VCR::Response.new(status, nil, response_body, response_body.encoding.to_s, '1.1') }
 
           it 'returns the expected response for the same request' do
             get_body_string(make_http_request(:get, url)).should == response_body
