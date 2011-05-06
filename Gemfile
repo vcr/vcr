@@ -20,7 +20,7 @@ group :extras do
   gem 'guard-rspec'
   gem 'guard-cucumber'
   gem 'growl'
-  gem 'relish', '0.2.2'
+  gem 'relish'
   gem 'fuubar'
 
   platforms :mri do
