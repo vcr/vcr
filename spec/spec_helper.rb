@@ -41,7 +41,7 @@ end
 
 RSpec.configure do |config|
   config.color_enabled = true
-  config.debug = (using_git && RUBY_INTERPRETER == :mri)
+  config.debug = (using_git && RUBY_INTERPRETER == :mri && RUBY_VERSION != '1.9.1')
 
   tmp_dir = File.expand_path('../../tmp/cassette_library_dir', __FILE__)
   config.before(:each) do
