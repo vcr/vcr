@@ -4,23 +4,25 @@ Record your test suite's HTTP interactions and replay them during future test ru
 
 ## Synopsis
 
-    require 'rubygems'
-    require 'test/unit'
-    require 'vcr'
+``` ruby
+require 'rubygems'
+require 'test/unit'
+require 'vcr'
 
-    VCR.config do |c|
-      c.cassette_library_dir = 'fixtures/vcr_cassettes'
-      c.stub_with :webmock # or :fakeweb
-    end
+VCR.config do |c|
+  c.cassette_library_dir = 'fixtures/vcr_cassettes'
+  c.stub_with :webmock # or :fakeweb
+end
 
-    class VCRTest < Test::Unit::TestCase
-      def test_example_dot_com
-        VCR.use_cassette('synopsis') do
-          response = Net::HTTP.get_response(URI('http://www.iana.org/domains/example/'))
-          assert_match /Example Domains/, response.body
-        end
-      end
+class VCRTest < Test::Unit::TestCase
+  def test_example_dot_com
+    VCR.use_cassette('synopsis') do
+      response = Net::HTTP.get_response(URI('http://www.iana.org/domains/example/'))
+      assert_match /Example Domains/, response.body
     end
+  end
+end
+```
 
 Run this test once, and VCR will record the http request to `fixtures/vcr_cassettes/synopsis.yml`.  Run it again, and VCR
 will replay the response from iana.org when the http request is made.  This test is now fast (no real HTTP requests are
