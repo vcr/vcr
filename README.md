@@ -27,7 +27,7 @@ end
 Run this test once, and VCR will record the http request to `fixtures/vcr_cassettes/synopsis.yml`.  Run it again, and VCR
 will replay the response from iana.org when the http request is made.  This test is now fast (no real HTTP requests are
 made anymore), deterministic (the test will continue to pass, even if you are offline, or iana.org goes down for
-maintenance) and accurate (the response from example.com will contain the same headers and body you get from a real request).
+maintenance) and accurate (the response will contain the same headers and body you get from a real request).
 
 ## Features
 
