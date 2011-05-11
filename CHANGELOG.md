@@ -2,6 +2,13 @@
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.9.0...master)
 
+* Fix header normalization so that it properly handles nested arrays and
+  non-string values.
+* Add cucumber scenario documenting how VCR sanitizes cassette names
+  to "normal" file names (i.e. only alphanumerics, no spaces).
+* Add `:ignore_cassettes` option to `VCR.turn_off!`.  This causes
+  cassette insertions to be ignored rather than to trigger an error.
+
 ## 1.9.0 (April 14, 2011)
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.8.0...v1.9.0)
