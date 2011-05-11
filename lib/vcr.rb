@@ -48,7 +48,7 @@ module VCR
   end
 
   def insert_cassette(name, options = {})
-    unless turned_on?
+    if !turned_on? && !disable_cassette_errors?
       raise TurnedOffError.new("VCR is turned off.  You must turn it on before you can insert a cassette.")
     end
 
@@ -68,12 +68,16 @@ module VCR
   end
 
   def use_cassette(*args, &block)
-    cassette = insert_cassette(*args)
+    if !turned_on? && disable_cassette_errors?
+      yield
+    else
+      cassette = insert_cassette(*args)
 
-    begin
-      call_block(block, cassette)
-    ensure
-      eject_cassette
+      begin
+        call_block(block, cassette)
+      ensure
+        eject_cassette
+      end
     end
   end
 
@@ -108,8 +112,8 @@ module VCR
     cassette.record_http_interaction(interaction)
   end
 
-  def turned_off
-    turn_off!
+  def turned_off(options={})
+    turn_off!(options)
 
     begin
       yield
@@ -118,13 +122,14 @@ module VCR
     end
   end
 
-  def turn_off!
+  def turn_off!(options={})
     if VCR.current_cassette
       raise CassetteInUseError.new("A VCR cassette is currently in use.  You must eject it before you can turn VCR off.")
     end
 
     VCR.http_stubbing_adapter.http_connections_allowed = true
     @turned_off = true
+    @disable_cassette_errors = !!options[:disable_cassette_errors]
   end
 
   def turn_on!
@@ -134,6 +139,10 @@ module VCR
 
   def turned_on?
     !@turned_off
+  end
+
+  def disable_cassette_errors?
+    !!@disable_cassette_errors
   end
 
   private
