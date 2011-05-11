@@ -125,9 +125,14 @@ module VCR
       raise CassetteInUseError.new("A VCR cassette is currently in use.  You must eject it before you can turn VCR off.")
     end
 
+    @ignore_cassettes = options[:ignore_cassettes]
+    invalid_options = options.keys - [:ignore_cassettes]
+    if invalid_options.any?
+      raise ArgumentError.new("You passed some invalid options: #{invalid_options.inspect}")
+    end
+
     VCR.http_stubbing_adapter.http_connections_allowed = true
     @turned_off = true
-    @ignore_cassettes = options[:ignore_cassettes]
   end
 
   def turn_on!

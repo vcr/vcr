@@ -238,6 +238,12 @@ describe VCR do
       }.to raise_error(VCR::TurnedOffError)
     end
 
+    it 'raises an ArgumentError when given an invalid option' do
+      expect {
+        VCR.turn_off!(:invalid_option => true)
+      }.to raise_error(ArgumentError)
+    end
+
     context 'when `:ignore_cassettes => true` is passed' do
       before(:each) { VCR.turn_off!(:ignore_cassettes => true) }
 
