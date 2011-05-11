@@ -11,9 +11,10 @@ Feature: Error for HTTP request made when no cassette is in use
   (see configuration/allow_http_connections_when_no_cassette.feature) or
   you can temporarily turn VCR off:
 
-    - `VCR.turn_off!` => turn VCR off so HTTP requests are allowed
-    - `VCR.turn_off!(:disable_cassette_errors => true)` => turn
-      VCR off and ignore cassette errors
+    - `VCR.turn_off!` => turn VCR off so HTTP requests are allowed.
+      Cassette insertions will trigger an error.
+    - `VCR.turn_off!(:ignore_cassettes => true)` => turn
+      VCR off and ignore cassette insertions (so that no error is raised).
     - `VCR.turn_on!` => turn VCR back on
     - `VCR.turned_off { ... }` => turn VCR off for the duration of the
       provided block.
@@ -105,4 +106,46 @@ Feature: Error for HTTP request made when no cassette is in use
       After calling VCR.turn_on!
       Error: Real HTTP connections are disabled.
       """
+
+  Scenario: Turning VCR off prevents cassettes from being inserted
+    Given a file named "turn_off_vcr_and_insert_cassette.rb" with:
+      """
+      require 'vcr'
+
+      VCR.config do |c|
+        c.stub_with :fakeweb
+      end
+
+      VCR.turn_off!
+      VCR.insert_cassette('example')
+      """
+    When I run "ruby turn_off_vcr_and_insert_cassette.rb"
+    Then it should fail with "VCR is turned off.  You must turn it on before you can insert a cassette."
+
+  Scenario: Turning VCR off with `:ignore_cassettes => true` ignores cassettes
+    Given a file named "turn_off_vcr_and_insert_cassette.rb" with:
+      """
+      require 'vcr_cucumber_helpers'
+
+      start_sinatra_app(:port => 7777) do
+        get('/') { 'Hello' }
+      end
+
+      require 'vcr'
+
+      VCR.config do |c|
+        c.cassette_library_dir = 'cassettes'
+        c.stub_with :fakeweb
+      end
+
+      VCR.turn_off!(:ignore_cassettes => true)
+
+      VCR.use_cassette('example') do
+        response = Net::HTTP.get_response('localhost', '/', 7777).body
+        puts "Response: #{response}"
+      end
+      """
+    When I run "ruby turn_off_vcr_and_insert_cassette.rb"
+    Then it should pass with "Response: Hello"
+     And the file "cassettes/example.yml" should not exist
 
