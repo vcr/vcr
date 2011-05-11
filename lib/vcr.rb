@@ -48,17 +48,19 @@ module VCR
   end
 
   def insert_cassette(name, options = {})
-    if !turned_on? && !disable_cassette_errors?
-      raise TurnedOffError.new("VCR is turned off.  You must turn it on before you can insert a cassette.")
-    end
+    if turned_on?
+      if cassettes.any? { |c| c.name == name }
+        raise ArgumentError.new("There is already a cassette with the same name (#{name}).  You cannot nest multiple cassettes with the same name.")
+      end
 
-    if cassettes.any? { |c| c.name == name }
-      raise ArgumentError.new("There is already a cassette with the same name (#{name}).  You cannot nest multiple cassettes with the same name.")
+      cassette = Cassette.new(name, options)
+      cassettes.push(cassette)
+      cassette
+    elsif !ignore_cassettes?
+      message = "VCR is turned off.  You must turn it on before you can insert a cassette.  " +
+                "Or you can use the `:ignore_cassette => true` option to completely ignore cassette insertions."
+      raise TurnedOffError.new(message)
     end
-
-    cassette = Cassette.new(name, options)
-    cassettes.push(cassette)
-    cassette
   end
 
   def eject_cassette
@@ -68,16 +70,12 @@ module VCR
   end
 
   def use_cassette(*args, &block)
-    if !turned_on? && disable_cassette_errors?
-      yield
-    else
-      cassette = insert_cassette(*args)
+    cassette = insert_cassette(*args)
 
-      begin
-        call_block(block, cassette)
-      ensure
-        eject_cassette
-      end
+    begin
+      call_block(block, cassette)
+    ensure
+      eject_cassette
     end
   end
 
@@ -112,7 +110,7 @@ module VCR
     cassette.record_http_interaction(interaction)
   end
 
-  def turned_off(options={})
+  def turned_off(options = {})
     turn_off!(options)
 
     begin
@@ -122,14 +120,14 @@ module VCR
     end
   end
 
-  def turn_off!(options={})
+  def turn_off!(options = {})
     if VCR.current_cassette
       raise CassetteInUseError.new("A VCR cassette is currently in use.  You must eject it before you can turn VCR off.")
     end
 
     VCR.http_stubbing_adapter.http_connections_allowed = true
     @turned_off = true
-    @disable_cassette_errors = !!options[:disable_cassette_errors]
+    @ignore_cassettes = options[:ignore_cassettes]
   end
 
   def turn_on!
@@ -141,8 +139,8 @@ module VCR
     !@turned_off
   end
 
-  def disable_cassette_errors?
-    !!@disable_cassette_errors
+  def ignore_cassettes?
+    @ignore_cassettes
   end
 
   private

@@ -238,11 +238,24 @@ describe VCR do
       }.to raise_error(VCR::TurnedOffError)
     end
 
-    it 'does not cause an error to be raised if a cassette is inserted while VCR is turned off with :disable_cassette_errors disabled' do
-      VCR.turn_off!(:disable_cassette_errors => true)
-      expect {
+    context 'when `:ignore_cassettes => true` is passed' do
+      before(:each) { VCR.turn_off!(:ignore_cassettes => true) }
+
+      it 'ignores cassette insertions' do
         VCR.insert_cassette('foo')
-      }.to_not raise_error(VCR::TurnedOffError)
+        VCR.current_cassette.should be_nil
+      end
+
+      it 'still runs a block passed to use_cassette' do
+        yielded = false
+
+        VCR.use_cassette('foo') do
+          yielded = true
+          VCR.current_cassette.should be_nil
+        end
+
+        yielded.should be_true
+      end
     end
   end
 
@@ -273,6 +286,11 @@ describe VCR do
 
       yielded.should == true
       VCR.should be_turned_on
+    end
+
+    it 'passes options through to .turn_off!' do
+      VCR.should_receive(:turn_off!).with(:ignore_cassettes => true)
+      VCR.turned_off(:ignore_cassettes => true) { }
     end
   end
 
