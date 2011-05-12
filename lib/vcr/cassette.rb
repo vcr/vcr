@@ -19,7 +19,8 @@ module VCR
         :match_requests_on,
         :re_record_interval,
         :tag,
-        :update_content_length_header
+        :update_content_length_header,
+        :record_errors
       ]
 
       if invalid_options.size > 0
@@ -34,6 +35,7 @@ module VCR
       @tag                = options[:tag]
       @record_mode        = :all if should_re_record?
       @update_content_length_header = options[:update_content_length_header]
+      @record_errors      = options[:record_errors]
 
       deprecate_old_cassette_options(options)
       raise_error_unless_valid_record_mode
@@ -54,6 +56,9 @@ module VCR
     end
 
     def record_http_interaction(interaction)
+      if !@record_errors
+        return new_recorded_interactions if interaction.response.status.code.to_s =~ (@record_errors.is_a?(Regexp) ? @record_errors : /^[4|5]\d{2}$/)
+      end
       new_recorded_interactions << interaction
     end
 

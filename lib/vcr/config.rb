@@ -21,6 +21,7 @@ module VCR
       @default_cassette_options ||= {}
       @default_cassette_options[:match_requests_on] ||= RequestMatcher::DEFAULT_MATCH_ATTRIBUTES
       @default_cassette_options[:record] ||= :once
+      @default_cassette_options[:record_errors] ||= false
       @default_cassette_options
     end
 
