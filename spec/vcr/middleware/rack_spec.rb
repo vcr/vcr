@@ -51,4 +51,24 @@ describe VCR::Middleware::Rack do
       instance.call(env_hash)
     end
   end
+
+  let(:threaded_app) do
+    lambda do |env|
+      sleep 0.15
+      VCR.send(:cassettes).should have(1).cassette
+      [200, {}, ['OK']]
+    end
+  end
+
+  it 'is thread safe' do
+    stack = described_class.new(threaded_app) do |cassette|
+      cassette.name 'c'
+    end
+
+    thread = Thread.new { stack.call({}) }
+    stack.call({})
+    thread.join
+
+    VCR.current_cassette.should be_nil
+  end
 end
