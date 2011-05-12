@@ -3,8 +3,13 @@ module VCR
     class Rack
       include Common
 
+      def initialize(*args)
+        @mutex = Mutex.new
+        super
+      end
+
       def call(env)
-        Thread.exclusive do
+        @mutex.synchronize do
           VCR.use_cassette(*cassette_arguments(env)) do
             @app.call(env)
           end
