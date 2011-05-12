@@ -8,6 +8,7 @@
   to "normal" file names (i.e. only alphanumerics, no spaces).
 * Add `:ignore_cassettes` option to `VCR.turn_off!`.  This causes
   cassette insertions to be ignored rather than to trigger an error.
+  Patch provided by [Justin Smestad](https://github.com/jsmestad).
 
 ## 1.9.0 (April 14, 2011)
 
