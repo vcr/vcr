@@ -22,16 +22,20 @@ Feature: Usage with Cucumber
   last argument to `#tag` or `#tags`.
 
   Scenario: Record HTTP interactions in a scenario by tagging it
-    Given a file named "features/support/vcr.rb" with:
+    Given a file named "lib/server.rb" with:
       """
-      require 'vcr_cucumber_helpers.rb'
+      require 'vcr_cucumber_helpers'
 
       if ENV['WITH_SERVER'] == 'true'
         start_sinatra_app(:port => 7777) do
           get('/:path') { "Hello #{params[:path]}" }
         end
       end
+      """
 
+    Given a file named "features/support/vcr.rb" with:
+      """
+      require "lib/server"
       require 'vcr'
 
       VCR.config do |c|
