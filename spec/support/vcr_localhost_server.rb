@@ -40,7 +40,7 @@ module VCR
 
     def boot
       # Use WEBrick since it's part of the ruby standard library and is available on all ruby interpreters.
-      Rack::Handler::WEBrick.run(Identify.new(@rack_app), :Port => port, :AccessLog => [], :Logger => WEBrick::BasicLog.new(StringIO.new))
+      Rack::Handler::WEBrick.run(Identify.new(@rack_app), :Port => port)
     end
 
     def booted?
