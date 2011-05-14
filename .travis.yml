@@ -1,3 +1,5 @@
 script: "bundle exec cucumber --profile wip"
 rvm:
   - 1.9.2
+env:
+  - CI=true
