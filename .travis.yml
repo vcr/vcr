@@ -1,4 +1,4 @@
-script: "bundle exec cucumber --profile wip"
+script: "rake ci:build"
 rvm:
   - 1.9.2
 env:

@@ -1,4 +1,4 @@
-@wip @announce
+@ci @announce
 Feature: Usage with Test::Unit
 
   To use VCR with Test::Unit, wrap the body of any test method in
