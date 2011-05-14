@@ -29,7 +29,13 @@ module VCR
     end
 
     def self.server
-      @server ||= VCR::LocalhostServer.new(new)
+      raise "Sinatra app failed to boot." if @_boot_failed
+      @server ||= begin
+        VCR::LocalhostServer.new(new)
+      rescue
+        @_boot_failed = true
+        raise
+      end
     end
   end
 end
