@@ -40,7 +40,8 @@ HTTP_LIBRARY_ADAPTERS['httpclient'] = Module.new do
   def self.http_library_name; 'HTTP Client'; end
 
   def get_body_string(response)
-    string = response.body.content
+    body = response.body
+    string = body.is_a?(String) ? body : body.content
     string.respond_to?(:read) ? string.read : string
   end
 

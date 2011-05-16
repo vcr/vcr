@@ -1,5 +1,11 @@
-script: "rake ci:build"
+script: "bundle exec rake ci:build"
 rvm:
+  - 1.8.6
+  - 1.8.7
+  - 1.9.1
   - 1.9.2
+  - ree
+  - jruby
+  - rbx
 env:
   - CI=true
