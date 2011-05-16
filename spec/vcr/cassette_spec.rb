@@ -449,7 +449,7 @@ describe VCR::Cassette do
             end
 
             it "matches old requests to new ones using the cassette's match attributes" do
-              pending("Need to fix this to work with Psych", :if => defined?(::Psych)) do
+              pending("Need to fix this to work with Psych", :if => defined?(::Psych) && !ENV['CI']) do
                 [
                   old_interaction_1, old_interaction_2, old_interaction_3,
                   new_interaction_1, new_interaction_2, new_interaction_3
