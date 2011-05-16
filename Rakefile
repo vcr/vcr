@@ -26,9 +26,7 @@ task :cleanup_rcov_files do
 end
 
 require 'cucumber/rake/task'
-Cucumber::Rake::Task.new do |t|
-  t.cucumber_opts = '--tag @ci' if ENV['CI']
-end
+Cucumber::Rake::Task.new
 
 task :default => [:spec, :cucumber]
 
