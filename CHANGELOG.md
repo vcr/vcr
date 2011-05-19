@@ -1,6 +1,10 @@
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.9.0...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.10.0...master)
+
+## 1.10.0 (May 18, 2011)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.9.0...v1.10.0)
 
 * Fix header normalization so that it properly handles nested arrays and
   non-string values.
