@@ -2,7 +2,7 @@ Feature: Filter sensitive data
 
   The `filter_sensitive_data` configuration option can be used to prevent
   sensitive data from being written to your cassette files.  This may be
-  important if you commit your cassettes files to source controla and do
+  important if you commit your cassettes files to source control and do
   not want your sensitive data exposed.  Pass the following arguments to
   `filter_sensitive_data`:
 
