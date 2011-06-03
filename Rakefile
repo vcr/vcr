@@ -70,11 +70,15 @@ task :relish do
   end
 
   require 'vcr/version'
-  sh "relish versions:add myronmarston/vcr:#{VCR.version}"
+  sh "relish versions:add myronmarston/vcr:#{VCR.version}" if ENV['NEW_RELISH_RELEASE']
   sh "relish push vcr:#{VCR.version}"
 end
 
-task :release => :relish
+task :prep_relish_release do
+  ENV['NEW_RELISH_RELEASE'] = 'true'
+end
+
+task :release => [:prep_relish_release, :relish]
 
 # For gem-test: http://gem-testers.org/
 task :test => :spec
