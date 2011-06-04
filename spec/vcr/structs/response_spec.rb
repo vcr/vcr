@@ -33,7 +33,7 @@ describe VCR::Response do
 
   it_performs 'body normalization' do
     def instance(body)
-      described_class.new(:status, {}, body, '1.1')
+      described_class.new(:status, {}, body, body.encoding.to_s, '1.1')
     end
   end
 

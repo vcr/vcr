@@ -98,6 +98,7 @@ WebMock.after_request(:real_requests_only => true) do |request, response|
         ),
         response.headers,
         response.body,
+        response.body.encoding.to_s,
         '1.1'
       )
     )

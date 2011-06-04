@@ -29,6 +29,7 @@
       accept-ranges: 
       - bytes
     body: Localhost response
+    body_encoding: ASCII-8BIT
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -52,6 +53,7 @@
       content-length: 
       - "277"
     body: 127.0.0.1 response
+    body_encoding: ASCII-8BIT
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -75,6 +77,7 @@
       content-length: 
       - "277"
     body: 127.0.0.1 response
+    body_encoding: ASCII-8BIT
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -106,4 +109,5 @@
       accept-ranges: 
       - bytes
     body: example.com response
+    body_encoding: ASCII-8BIT
     http_version: "1.1"

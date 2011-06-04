@@ -43,6 +43,7 @@
       </BODY>
       </HTML>
 
+    body_encoding: ASCII-8BIT
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -76,6 +77,7 @@
       <address>Apache/2.2.3 (CentOS) Server at example.com Port 80</address>
       </body></html>
 
+    body_encoding: ASCII-8BIT
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -107,4 +109,5 @@
       accept-ranges: 
       - bytes
     body: Another example.com response
+    body_encoding: ASCII-8BIT
     http_version: "1.1"
