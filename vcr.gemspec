@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
     'webmock'         => '~> 1.6.4',
     'addressable'     => '~> 2.2.6',
 
-    'faraday'         => '~> 0.6.0',
+    'faraday'         => '~> 0.7.2',
     'httpclient'      => '~> 2.1.5.2',
     'excon'           => '~> 0.6.2',
 
