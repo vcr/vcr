@@ -58,7 +58,7 @@ module VCR
       cassette
     elsif !ignore_cassettes?
       message = "VCR is turned off.  You must turn it on before you can insert a cassette.  " +
-                "Or you can use the `:ignore_cassette => true` option to completely ignore cassette insertions."
+                "Or you can use the `:ignore_cassettes => true` option to completely ignore cassette insertions."
       raise TurnedOffError.new(message)
     end
   end
