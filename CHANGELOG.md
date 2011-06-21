@@ -2,6 +2,8 @@
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.10.0...master)
 
+* Fix typo in error message [Bradley](https://github.com/bradleyisotope).
+
 ## 1.10.0 (May 18, 2011)
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.9.0...v1.10.0)
