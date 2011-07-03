@@ -153,10 +153,27 @@ module VCR
           end
 
           def uri
-            @uri ||= begin
-              uri = "#{params[:scheme]}://#{params[:host]}:#{params[:port]}#{params[:path]}"
-              uri << "?#{params[:query]}" if params[:query]
-              uri
+            @uri ||= "#{params[:scheme]}://#{params[:host]}:#{params[:port]}#{params[:path]}#{query}"
+          end
+
+          def query
+            @query ||= case params[:query]
+              when String
+                "?#{params[:query]}"
+              when Hash
+                qry = '?'
+                for key, values in params[:query]
+                  if values.nil?
+                    qry << key.to_s << '&'
+                  else
+                    for value in [*values]
+                      qry << key.to_s << '=' << CGI.escape(value.to_s) << '&'
+                    end
+                  end
+                end
+                qry.chop! # remove trailing '&'
+              else
+                ''
             end
           end
 

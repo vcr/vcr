@@ -19,5 +19,21 @@ describe VCR::HttpStubbingAdapters::Excon, :without_monkey_patches => :vcr do
       Excon::VERSION = version
     end
   end
+
+  context "when the query is specified as a hash option" do
+    let(:excon) { ::Excon.new("http://localhost:#{VCR::SinatraApp.port}/search") }
+
+    it 'properly records and plays back the response' do
+      described_class.http_connections_allowed = true
+      recorded, played_back = [1, 2].map do
+        VCR.use_cassette('excon_query', :record => :once) do
+          excon.request(:method => :get, :query => { :q => 'Tolkien' }).body
+        end
+      end
+
+      recorded.should == played_back
+      recorded.should == 'query: Tolkien'
+    end
+  end
 end
 

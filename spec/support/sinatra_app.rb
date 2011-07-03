@@ -6,6 +6,10 @@ module VCR
       "GET to root"
     end
 
+    get '/search' do
+      "query: #{params[:q]}"
+    end
+
     get '/localhost_test' do
       "Localhost response"
     end
