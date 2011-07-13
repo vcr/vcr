@@ -119,15 +119,15 @@ module VCR
           end
 
           def stubbed_response
-            unless defined?(@stubbed_response)
-              @stubbed_response = VCR::HttpStubbingAdapters::Excon.stubbed_response_for(vcr_request)
-
-              if @stubbed_response && @stubbed_response.headers
-                @stubbed_response.headers = normalized_headers(@stubbed_response.headers)
+            @stubbed_response ||= begin
+              if stubbed_response = VCR::HttpStubbingAdapters::Excon.stubbed_response_for(vcr_request)
+                {
+                  :body     => stubbed_response.body,
+                  :headers  => normalized_headers(stubbed_response.headers || {}),
+                  :status   => stubbed_response.status.code
+                }
               end
             end
-
-            @stubbed_response
           end
 
           def http_connections_allowed?
