@@ -134,9 +134,25 @@ module VCR
             VCR::HttpStubbingAdapters::Excon.http_connections_allowed?
           end
 
+          def response_from_excon_error(error)
+            if error.respond_to?(:response)
+              error.response
+            elsif error.respond_to?(:socket_error)
+              response_from_excon_error(error.socket_error)
+            else
+              warn "WARNING: VCR could not extract a response from Excon error (#{error.inspect})"
+            end
+          end
+
           def perform_real_request
             connection = ::Excon.new(uri)
-            response = connection.request(params.merge(:mock => false))
+
+            response = begin
+              connection.request(params.merge(:mock => false))
+            rescue ::Excon::Errors::Error => e
+              yield response_from_excon_error(e) if block_given?
+              raise e
+            end
 
             yield response if block_given?
 

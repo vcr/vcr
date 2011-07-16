@@ -55,5 +55,19 @@ describe VCR::HttpStubbingAdapters::Excon, :without_monkey_patches => :vcr do
       recorded.should == "FOO!"
     end
   end
+
+  context 'when Excon raises an error due to an unexpected response status' do
+    it 'still records properly' do
+      described_class.http_connections_allowed = true
+
+      VCR.should_receive(:record_http_interaction) do |interaction|
+        interaction.response.status.code.should == 404
+      end
+
+      expect {
+        Excon.get("http://localhost:#{VCR::SinatraApp.port}/not_found", :expects => 200)
+      }.to raise_error(Excon::Errors::Error)
+    end
+  end
 end
 

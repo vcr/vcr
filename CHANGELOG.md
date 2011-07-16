@@ -6,6 +6,8 @@
 * Fix excon adapter to properly handle queries specified as a hash.
 * Fix excon adapter to stub a response with a hash as excon expects
   [Wesley Beary](https://github.com/geemus).
+* Fix excon adapter so that it records a response even when excon raises
+  an error due to an unexpected response.
 
 ## 1.10.0 (May 18, 2011)
 
