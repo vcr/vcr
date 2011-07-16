@@ -35,5 +35,25 @@ describe VCR::HttpStubbingAdapters::Excon, :without_monkey_patches => :vcr do
       recorded.should == 'query: Tolkien'
     end
   end
+
+  context "when Excon's streaming API is used" do
+    it 'properly records and plays back the response' do
+      described_class.http_connections_allowed = true
+      recorded, played_back = [1, 2].map do
+        chunks = []
+
+        VCR.use_cassette('excon_streaming', :record => :once) do
+          Excon.get("http://localhost:#{VCR::SinatraApp.port}/foo") do |chunk, remaining_bytes, total_bytes|
+            chunks << chunk
+          end
+        end
+
+        chunks.join
+      end
+
+      recorded.should == played_back
+      recorded.should == "FOO!"
+    end
+  end
 end
 
