@@ -1,6 +1,13 @@
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.10.1...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.10.2...master)
+
+## 1.10.2 (July 16, 2011)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.10.1...v1.10.2)
+
+* Yanked 1.10.1 and rebuilt gem on 1.8.7 to deal with syck/psych
+  incompatibilties in gemspec.
 
 ## 1.10.1 (July 16, 2011)
 
