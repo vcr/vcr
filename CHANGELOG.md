@@ -1,6 +1,10 @@
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.10.0...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.10.1...master)
+
+## 1.10.1 (July 16, 2011)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.10.0...v1.10.1)
 
 * Fix typo in error message [Bradley](https://github.com/bradleyisotope).
 * Fix excon adapter to properly handle queries specified as a hash.
