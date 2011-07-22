@@ -57,5 +57,12 @@ describe VCR::Response do
         inst.update_content_length_header
       }.to change { inst.headers['content-length'] }.from(['3']).to(['8'])
     end
+
+    it 'sets the content_length header to 0 if the response body is nil' do
+      inst = instance(nil, '3')
+      expect {
+        inst.update_content_length_header
+      }.to change { inst.headers['content-length'] }.from(['3']).to(['0'])
+    end
   end
 end
