@@ -137,11 +137,13 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Aaron Brethorst](http://github.com/aaronbrethorst)
 * [Bartosz Blimke](http://github.com/bblimke)
 * [Ben Hutton](http://github.com/benhutton)
+* [Bradley Isotope](https://github.com/bradleyisotope)
 * [Eric Allam](http://github.com/rubymaverick)
 * [Justin Smestad](https://github.com/jsmestad)
 * [Karl Baum](https://github.com/kbaum)
 * [Nathaniel Bibler](https://github.com/nbibler)
 * [Oliver Searle-Barnes](https://github.com/opsb)
+* [Wesley Beary](https://github.com/geemus)
 
 ## Copyright
 
