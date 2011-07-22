@@ -1,6 +1,13 @@
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.10.2...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.10.3...master)
+
+## 1.10.3 (July 21, 2011)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.10.2...v1.10.3)
+
+* Fix `:update_content_length_header` option so no error is raised if
+  a response body is nil. Bug reported by [jg](https://github.com/jg).
 
 ## 1.10.2 (July 16, 2011)
 
