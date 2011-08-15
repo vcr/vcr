@@ -21,5 +21,12 @@ describe VCR::HttpStubbingAdapters::Typhoeus do
       Typhoeus::VERSION = version
     end
   end
+
+  describe ".after_adapters_loaded" do
+    it 'disables the webmock typhoeus adapter so it does not conflict with our typhoeus adapter' do
+      ::WebMock::HttpLibAdapters::TyphoeusAdapter.should_receive(:disable!)
+      described_class.after_adapters_loaded
+    end
+  end
 end unless RUBY_PLATFORM == 'java'
 

@@ -99,7 +99,9 @@ module VCR
 
       adapters = VCR::Config.http_stubbing_libraries.map { |l| adapter_for(l) }
       raise ArgumentError.new("The http stubbing library is not configured.") if adapters.empty?
-      HttpStubbingAdapters::MultiObjectProxy.for(*adapters)
+      adapter = HttpStubbingAdapters::MultiObjectProxy.for(*adapters)
+      adapter.after_adapters_loaded
+      adapter
     end
   end
 

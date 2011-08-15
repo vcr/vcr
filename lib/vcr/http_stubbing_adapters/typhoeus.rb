@@ -47,6 +47,14 @@ module VCR
         ::Typhoeus::Hydra.stubs = checkpoints.delete(cassette) || super
       end
 
+      def after_adapters_loaded
+        # ensure WebMock's Typhoeus adapter does not conflict with us here
+        # (i.e. to double record requests or whatever).
+        if defined?(::WebMock::HttpLibAdapters::TyphoeusAdapter)
+          ::WebMock::HttpLibAdapters::TyphoeusAdapter.disable!
+        end
+      end
+
       private
 
       def version
