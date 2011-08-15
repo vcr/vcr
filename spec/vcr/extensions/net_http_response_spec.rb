@@ -54,7 +54,7 @@ describe VCR::Net::HTTPResponse, :without_monkey_patches => :all do
           http = Net::HTTP.new('localhost', VCR::SinatraApp.port)
           res = http.send(http_verb_method, '/', &block)
           res.should_not be_a(VCR::Net::HTTPResponse)
-          res.should_not be_a(::WebMock::Net::HTTPResponse)
+          res.should_not be_a(::Net::WebMockHTTPResponse)
           res
         end
       end
