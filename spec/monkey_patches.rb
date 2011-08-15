@@ -12,9 +12,14 @@ module MonkeyPatches
 
   def enable!(scope)
     case scope
-      when :all
-        MONKEY_PATCHES.each do |mp|
-          realias mp.first, mp.last, :with_monkeypatches
+      when :fakeweb
+        realias_all :with_fakeweb
+        enable!(:vcr) # fakeweb adapter relies upon VCR's Net::HTTP monkey patch
+      when :webmock
+        ::WebMock::HttpLibAdapters::NetHttpAdapter.enable!
+        ::WebMock::HttpLibAdapters::TyphoeusAdapter.enable!
+        $original_webmock_callbacks.each do |cb|
+          ::WebMock::CallbackRegistry.add_callback(cb[:options], cb[:block])
         end
       when :vcr
         realias Net::HTTP, :request, :with_vcr
@@ -22,15 +27,13 @@ module MonkeyPatches
     end
   end
 
-  def disable!(scope)
-    case scope
-      when :all
-        MONKEY_PATCHES.each do |mp|
-          realias mp.first, mp.last, :without_monkeypatches
-        end
-      when :vcr
-        realias Net::HTTP, :request, :without_vcr
-      else raise ArgumentError.new("Unexpected scope: #{scope}")
+  def disable_all!
+    realias_all :without_monkeypatches
+
+    if defined?(::WebMock)
+      ::WebMock::HttpLibAdapters::NetHttpAdapter.disable!
+      ::WebMock::HttpLibAdapters::TyphoeusAdapter.disable!
+      ::WebMock::CallbackRegistry.reset
     end
   end
 
@@ -45,13 +48,7 @@ module MonkeyPatches
 
   def capture_method_definition(klass, method, original)
     klass.class_eval do
-      monkeypatch_methods = [
-        :with_vcr,     :without_vcr,
-        :with_fakeweb, :without_fakeweb,
-        :with_webmock, :without_webmock
-      ].select do |m|
-        method_defined?(:"#{method}_#{m}")
-      end
+      monkeypatch_methods = [:vcr, :fakeweb].select { |m| method_defined?(:"#{method}_with_#{m}") }
 
       if original
         if monkeypatch_methods.size > 0
@@ -78,6 +75,12 @@ module MonkeyPatches
   def realias(klass, method, alias_extension)
     klass.class_eval { alias_method method, :"#{method}_#{alias_extension}" }
   end
+
+  def realias_all(alias_extension)
+    MONKEY_PATCHES.each do |mp|
+      realias mp.first, mp.last, alias_extension
+    end
+  end
 end
 
 # Require all the HTTP libraries--these must be required before WebMock
@@ -91,13 +94,26 @@ if RUBY_INTERPRETER == :mri
   require 'typhoeus'
 end
 
-# The FakeWeb adapter must be required after WebMock's so
-# that VCR's Net::HTTP monkey patch is loaded last.
-# This allows us to disable it (i.e. by realiasing to
-# the version of Net::HTTP's methods before it was loaded)
-require 'vcr/http_stubbing_adapters/webmock'
 require 'vcr/http_stubbing_adapters/fakeweb'
 
 # All Net::HTTP monkey patches have now been loaded, so capture the
 # appropriate method definitions so we can disable them later.
 MonkeyPatches.init
+
+# Disable FakeWeb/VCR Net::HTTP patches before WebMock
+# subclasses Net::HTTP and inherits them...
+MonkeyPatches.disable_all!
+
+require 'vcr/http_stubbing_adapters/webmock'
+$original_webmock_callbacks = ::WebMock::CallbackRegistry.callbacks
+
+# disable all by default; we'll enable specific ones when we need them
+MonkeyPatches.disable_all!
+
+RSpec.configure do |config|
+  [:fakeweb, :webmock, :vcr].each do |scope|
+    config.before(:all, :with_monkey_patches => scope) { MonkeyPatches.enable!(scope) }
+    config.after(:all,  :with_monkey_patches => scope) { MonkeyPatches.disable_all!   }
+  end
+end
+

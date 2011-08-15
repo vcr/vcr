@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Net::HTTP Extensions", :without_webmock_callbacks => true do
+describe "Net::HTTP Extensions", :with_monkey_patches => :vcr do
   before(:all) { VCR::SinatraApp.port } # ensure the server is started before instantiating any Net::HTTP instances
 
   let(:uri) { URI.parse("http://localhost:#{VCR::SinatraApp.port}/") }

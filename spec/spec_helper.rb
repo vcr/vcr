@@ -78,22 +78,6 @@ RSpec.configure do |config|
     $stderr = @orig_std_err
   end
 
-  config.before(:all, :without_webmock_callbacks => true) do
-    @original_webmock_callbacks = ::WebMock::CallbackRegistry.callbacks
-    ::WebMock::CallbackRegistry.reset
-  end
-
-  config.after(:all, :without_webmock_callbacks => true) do
-    @original_webmock_callbacks.each do |cb|
-      ::WebMock::CallbackRegistry.add_callback(cb[:options], cb[:block])
-    end
-  end
-
-  [:all, :vcr].each do |scope|
-    config.before(:each, :without_monkey_patches => scope) { MonkeyPatches.disable!(scope) }
-    config.after(:each, :without_monkey_patches => scope)  { MonkeyPatches.enable!(scope)  }
-  end
-
   config.filter_run :focus => true
   config.run_all_when_everything_filtered = true
 

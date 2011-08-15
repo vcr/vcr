@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe VCR::Net::HTTPResponse, :without_monkey_patches => :all do
+describe VCR::Net::HTTPResponse do
   def self.it_allows_the_body_to_be_read(expected_regex)
     it 'allows the body to be read using #body' do
       response.body.to_s.should =~ expected_regex

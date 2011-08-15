@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe VCR::HttpStubbingAdapters::WebMock, :without_monkey_patches => :vcr do
+describe VCR::HttpStubbingAdapters::WebMock, :with_monkey_patches => :webmock do
   it_behaves_like 'an http stubbing adapter',
     %w[net/http patron httpclient em-http-request curb],
     [:method, :uri, :host, :path, :body, :headers]
