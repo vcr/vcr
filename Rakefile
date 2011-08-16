@@ -44,7 +44,7 @@ namespace :ci do
   end
 
   desc "Run a ci build"
-  task :build => [:setup, :spec, :cucumber]
+  task :build => [:setup, :spec]
 end
 
 def ensure_relish_doc_symlinked(filename)
