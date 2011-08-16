@@ -41,36 +41,6 @@ Feature: stub_with
   additional features of WebMock) you can change the `stub_with` configuration
   option and it'll work with no other changes required.
 
-  Scenario Outline: stub_with loads the given HTTP stubbing library
-    Given a file named "vcr_stub_with.rb" with:
-      """
-      require 'vcr'
-
-      VCR.config do |c|
-        c.stub_with <stub_with>
-      end
-
-      puts "FakeWeb Loaded: #{!!defined?(FakeWeb)}"
-      puts "WebMock Loaded: #{!!defined?(WebMock)}"
-      puts "Typhoeus Loaded: #{!!defined?(Typhoeus)}"
-      puts "Excon Loaded: #{!!defined?(Excon)}"
-      """
-    When I run "ruby vcr_stub_with.rb"
-    Then the output should contain:
-      """
-      FakeWeb Loaded: <fakeweb_loaded>
-      WebMock Loaded: <webmock_loaded>
-      Typhoeus Loaded: <typhoeus_loaded>
-      Excon Loaded: <excon_loaded>
-      """
-
-    Examples:
-      | stub_with | fakeweb_loaded | webmock_loaded | typhoeus_loaded | excon_loaded |
-      | :fakeweb  | true           | false          | false           | false        |
-      | :webmock  | false          | true           | false           | false        |
-      | :typhoeus | false          | false          | true            | false        |
-      | :excon    | false          | false          | false           | true         |
-
   Scenario Outline: Record and replay a request using each supported stubbing/http library combination
     Given a file named "stubbing_http_lib_combo.rb" with:
       """
