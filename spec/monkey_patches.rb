@@ -17,7 +17,7 @@ module MonkeyPatches
         enable!(:vcr) # fakeweb adapter relies upon VCR's Net::HTTP monkey patch
       when :webmock
         ::WebMock::HttpLibAdapters::NetHttpAdapter.enable!
-        ::WebMock::HttpLibAdapters::TyphoeusAdapter.enable!
+        ::WebMock::HttpLibAdapters::TyphoeusAdapter.enable! unless RUBY_INTERPRETER == :jruby
         $original_webmock_callbacks.each do |cb|
           ::WebMock::CallbackRegistry.add_callback(cb[:options], cb[:block])
         end
@@ -32,7 +32,7 @@ module MonkeyPatches
 
     if defined?(::WebMock)
       ::WebMock::HttpLibAdapters::NetHttpAdapter.disable!
-      ::WebMock::HttpLibAdapters::TyphoeusAdapter.disable!
+      ::WebMock::HttpLibAdapters::TyphoeusAdapter.disable! unless RUBY_INTERPRETER == :jruby
       ::WebMock::CallbackRegistry.reset
     end
   end
