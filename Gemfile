@@ -30,6 +30,7 @@ group :extras do
 
   platforms :mri_18 do
     gem 'ruby-debug'
+    gem 'linecache', '0.43' # later versions do not work on 1.8.6
   end
 
   platforms :mri_19 do
