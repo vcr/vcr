@@ -41,7 +41,7 @@ module VCR
     def boot
       # Use WEBrick since it's part of the ruby standard library and is available on all ruby interpreters.
       options = { :Port => port }
-      options.merge!(:AccessLog => [], :Logger => WEBrick::BasicLog.new(StringIO.new)) unless ENV['CI']
+      options.merge!(:AccessLog => [], :Logger => WEBrick::BasicLog.new(StringIO.new)) unless ENV['VERBOSE_SERVER']
       Rack::Handler::WEBrick.run(Identify.new(@rack_app), options)
     end
 
