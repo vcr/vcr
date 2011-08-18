@@ -37,5 +37,5 @@ group :extras do
     gem 'ruby-debug19'
     gem 'ruby-debug-base19', RUBY_VERSION == '1.9.1' ? '0.11.23' : '~> 0.11.24'
   end
-end
+end unless ENV['CI']
 
