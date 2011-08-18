@@ -11,11 +11,10 @@ module VCR
         VCR::HttpStubbingAdapters::Faraday.exclusively_enabled do
           VCR.use_cassette(*cassette_arguments(env)) do |cassette|
             request = request_for(env)
-            request_matcher = request.matcher(cassette.match_requests_on)
 
             if VCR::HttpStubbingAdapters::Faraday.uri_should_be_ignored?(request.uri)
               @app.call(env)
-            elsif response = VCR::HttpStubbingAdapters::Faraday.stubbed_response_for(request_matcher)
+            elsif response = VCR::HttpStubbingAdapters::Faraday.stubbed_response_for(request)
               headers = env[:response_headers] ||= ::Faraday::Utils::Headers.new
               headers.update response.headers if response.headers
               env.update :status => response.status.code, :body => response.body

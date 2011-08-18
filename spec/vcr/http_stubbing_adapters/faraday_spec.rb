@@ -27,8 +27,7 @@ describe VCR::HttpStubbingAdapters::Faraday do
     let(:match_attributes) { [:method, :uri] }
 
     def stubbed_response_for(request)
-      matcher = VCR::RequestMatcher.new(request, match_attributes)
-      subject.stubbed_response_for(matcher)
+      subject.stubbed_response_for(request)
     end
 
     before(:each) do
@@ -69,12 +68,6 @@ describe VCR::HttpStubbingAdapters::Faraday do
           VCR::HTTPInteraction.new(request_1, :response_3),
         ], match_attributes)
 
-        subject.restore_stubs_checkpoint(cassette_1)
-        test_stubbed_responses
-      end
-
-      it 'restores the queues to the checkpoint state when a queue has been used' do
-        stubbed_response_for(request_1)
         subject.restore_stubs_checkpoint(cassette_1)
         test_stubbed_responses
       end
