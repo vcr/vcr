@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
     'shoulda'         => '~> 2.9.2',
 
     'fakeweb'         => '~> 1.3.0',
-    'webmock'         => '~> 1.7.0',
+    'webmock'         => '~> 1.7.4',
     'addressable'     => '~> 2.2.6',
 
     'faraday'         => '~> 0.7.2',
