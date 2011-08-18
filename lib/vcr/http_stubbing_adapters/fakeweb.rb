@@ -44,7 +44,7 @@ module VCR
       end
 
       def restore_stubs_checkpoint(cassette)
-        ::FakeWeb::Registry.instance.uri_map = checkpoints.delete(cassette) || super
+        ::FakeWeb::Registry.instance.uri_map = checkpoints.delete(cassette) || raise_no_checkpoint_error(cassette)
       end
 
       def request_stubbed?(request, match_attributes)

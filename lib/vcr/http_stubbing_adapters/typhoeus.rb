@@ -44,7 +44,7 @@ module VCR
       end
 
       def restore_stubs_checkpoint(cassette)
-        ::Typhoeus::Hydra.stubs = checkpoints.delete(cassette) || super
+        ::Typhoeus::Hydra.stubs = checkpoints.delete(cassette) || raise_no_checkpoint_error(cassette)
       end
 
       def after_adapters_loaded

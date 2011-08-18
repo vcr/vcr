@@ -68,7 +68,7 @@ module VCR
         self.http_connections_allowed = VCR::Config.allow_http_connections_when_no_cassette?
       end
 
-      def restore_stubs_checkpoint(cassette)
+      def raise_no_checkpoint_error(cassette)
         raise ArgumentError.new("No checkpoint for #{cassette.inspect} could be found")
       end
 
