@@ -78,7 +78,11 @@ task :prep_relish_release do
   ENV['NEW_RELISH_RELEASE'] = 'true'
 end
 
-task :release => [:prep_relish_release, :relish]
+task :require_ruby_18 do
+  raise "This must be run on Ruby 1.8" unless RUBY_VERSION =~ /^1\.8/
+end
+
+task :release => [:require_ruby_18, :prep_relish_release, :relish]
 
 # For gem-test: http://gem-testers.org/
 task :test => :spec
