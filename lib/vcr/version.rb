@@ -3,7 +3,7 @@ module VCR
 
   def version
     @version ||= begin
-      string = '1.10.3'
+      string = '1.11.0'
 
       def string.parts
         split('.').map { |p| p.to_i }

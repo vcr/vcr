@@ -1,6 +1,12 @@
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.10.3...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.11.0...master)
+
+## 1.11.0 (August 18, 2011)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.10.3...v1.11.0)
+
+* Updates to work with WebMock 1.7.0.
 
 ## 1.10.3 (July 21, 2011)
 
