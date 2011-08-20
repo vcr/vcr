@@ -1,3 +1,4 @@
+bundler_args: --without extras
 script: "bundle exec rake ci:build"
 rvm:
   - 1.8.6
