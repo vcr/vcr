@@ -21,7 +21,12 @@ elsif defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx'
   UNSUPPORTED_HTTP_LIBS = %w[ patron em-http-request curb ]
 elsif RUBY_PLATFORM == 'java'
   # These gems have C extensions and can't install on JRuby.
-  UNSUPPORTED_HTTP_LIBS = %w[ typhoeus patron curb em-http-request ]
+  c_dependent_libs = %w[ typhoeus patron curb em-http-request ]
+
+  # The latest version of httpclient seems to freeze up the cukes
+  # on JRuby.  I'm not sure why, and there's little benefit to running
+  # them on JRuby...so we just skip them.
+  UNSUPPORTED_HTTP_LIBS = c_dependent_libs + %w[ http_client ]
 elsif RUBY_VERSION == '1.8.6' && ENV['TRAVIS']
   UNSUPPORTED_HTTP_LIBS = %w[ em-http-request ]
 end
