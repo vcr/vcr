@@ -43,8 +43,10 @@ namespace :ci do
     t.rspec_opts = %w[--format progress --backtrace]
   end
 
+  ci_tasks = [:setup, :spec]
+  ci_tasks << :cucumber if RUBY_VERSION == '1.9.2' && RUBY_ENGINE == 'ruby'
   desc "Run a ci build"
-  task :build => [:setup, :spec]
+  task :build => ci_tasks
 end
 
 def ensure_relish_doc_symlinked(filename)
