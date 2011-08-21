@@ -6,6 +6,8 @@ require 'net/http'
 #   http://github.com/jnicklas/capybara/blob/0.3.9/lib/capybara/server.rb
 module VCR
   class LocalhostServer
+    READY_MESSAGE = "VCR server ready"
+
     class Identify
       def initialize(app)
         @app = app
@@ -13,7 +15,7 @@ module VCR
 
       def call(env)
         if env["PATH_INFO"] == "/__identify__"
-          [200, {}, [@app.object_id.to_s]]
+          [200, {}, [VCR::LocalhostServer::READY_MESSAGE]]
         else
           @app.call(env)
         end
@@ -47,9 +49,8 @@ module VCR
 
     def booted?
       res = ::Net::HTTP.get_response("localhost", '/__identify__', port)
-
       if res.is_a?(::Net::HTTPSuccess) or res.is_a?(::Net::HTTPRedirection)
-        return res.body == @rack_app.object_id.to_s
+        return res.body == READY_MESSAGE
       end
     rescue Errno::ECONNREFUSED, Errno::EBADF
       return false
