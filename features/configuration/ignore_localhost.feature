@@ -41,7 +41,7 @@ Feature: ignore_localhost
 
       response_body_for(:get, "http://localhost:7777/")
       """
-    When I run "ruby localhost_not_ignored.rb"
+    When I run `ruby localhost_not_ignored.rb`
     Then it should fail with "<error>"
      And the file "cassettes/localhost.yml" should contain "body: Response 1"
 
@@ -85,7 +85,7 @@ Feature: ignore_localhost
 
       puts response_body_for(:get, "http://localhost:7777/")
       """
-    When I run "ruby ignore_localhost_true.rb"
+    When I run `ruby ignore_localhost_true.rb`
     Then it should pass with:
       """
       Response 1

@@ -46,7 +46,7 @@ Feature: Dynamic ERB cassettes
         puts "Response: #{response.body}"
       end
       """
-    When I run "ruby dynamic_erb_example.rb"
+    When I run `ruby dynamic_erb_example.rb`
     Then it should pass with "Response: Hello bas"
 
   Scenario: Pass arguments to the ERB using :erb => { ... }
@@ -86,5 +86,5 @@ Feature: Dynamic ERB cassettes
         puts "Response: #{response.body}"
       end
       """
-    When I run "ruby dynamic_erb_example.rb"
+    When I run `ruby dynamic_erb_example.rb`
     Then it should pass with "Response: Hello baz"

@@ -33,11 +33,11 @@ Feature: Net::HTTP
         puts Net::HTTP.new('localhost', 7777).post('/', '').body
       end
       """
-    When I run "ruby vcr_net_http.rb --with-server"
+    When I run `ruby vcr_net_http.rb --with-server`
     Then the output should contain "VCR works with Net::HTTP posts!"
     And the file "cassettes/net_http.yml" should contain "body: VCR works with Net::HTTP posts!"
 
-    When I run "ruby vcr_net_http.rb"
+    When I run `ruby vcr_net_http.rb`
     Then the output should contain "VCR works with Net::HTTP posts!"
 
     Examples:
@@ -65,11 +65,11 @@ Feature: Net::HTTP
         puts perform_request.body
       end
       """
-    When I run "ruby vcr_net_http.rb --with-server"
+    When I run `ruby vcr_net_http.rb --with-server`
     Then the output should contain "VCR works with Net::HTTP gets!"
     And the file "cassettes/net_http.yml" should contain "body: VCR works with Net::HTTP gets!"
 
-    When I run "ruby vcr_net_http.rb"
+    When I run `ruby vcr_net_http.rb`
     Then the output should contain "VCR works with Net::HTTP gets!"
 
     Examples:
@@ -97,11 +97,11 @@ Feature: Net::HTTP
         puts body
       end
       """
-    When I run "ruby vcr_net_http.rb --with-server"
+    When I run `ruby vcr_net_http.rb --with-server`
     Then the output should contain "VCR works with Net::HTTP gets!"
     And the file "cassettes/net_http.yml" should contain "body: VCR works with Net::HTTP gets!"
 
-    When I run "ruby vcr_net_http.rb"
+    When I run `ruby vcr_net_http.rb`
     Then the output should contain "VCR works with Net::HTTP gets!"
 
     Examples:
@@ -124,11 +124,11 @@ Feature: Net::HTTP
         puts open('http://localhost:7777/').read
       end
       """
-    When I run "ruby vcr_net_http.rb --with-server"
+    When I run `ruby vcr_net_http.rb --with-server`
     Then the output should contain "VCR works with Net::HTTP gets!"
     And the file "cassettes/net_http.yml" should contain "body: VCR works with Net::HTTP gets!"
 
-    When I run "ruby vcr_net_http.rb"
+    When I run `ruby vcr_net_http.rb`
     Then the output should contain "VCR works with Net::HTTP gets!"
 
     Examples:
@@ -157,12 +157,12 @@ Feature: Net::HTTP
           puts response.body
         end
         """
-      When I run "ruby vcr_https.rb"
+      When I run `ruby vcr_https.rb`
       Then the output should contain "VCR gist"
       And the file "cassettes/https.yml" should contain "body: VCR gist"
 
       When I modify the file "cassettes/https.yml" to replace "body: VCR gist" with "body: HTTPS replaying works"
-      And I run "ruby vcr_https.rb"
+      And I run `ruby vcr_https.rb`
       Then the output should contain "HTTPS replaying works"
 
       Examples:

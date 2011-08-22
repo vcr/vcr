@@ -40,7 +40,7 @@ Feature: Cassette format
         make_http_request(:get, "http://localhost:7777/bar")
       end
       """
-    When I run "ruby cassette_format.rb 'Hello'"
+    When I run `ruby cassette_format.rb 'Hello'`
     Then the file "cassettes/example.yml" should contain YAML like:
       """
       --- 

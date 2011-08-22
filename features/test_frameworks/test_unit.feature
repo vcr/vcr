@@ -37,10 +37,10 @@ Feature: Usage with Test::Unit
       end
       """
     And the directory "test/fixtures/vcr_cassettes" does not exist
-    When I run "ruby -Itest test/vcr_example_test.rb -- --with-server"
+    When I run `ruby -Itest test/vcr_example_test.rb -- --with-server`
     Then it should pass with "1 tests, 1 assertions, 0 failures, 0 errors"
     And the file "test/fixtures/vcr_cassettes/test_unit_example.yml" should contain "body: Hello"
 
     # Run again without starting the sinatra server so the response will be replayed
-    When I run "ruby -Itest test/vcr_example_test.rb"
+    When I run `ruby -Itest test/vcr_example_test.rb`
     Then it should pass with "1 tests, 1 assertions, 0 failures, 0 errors"

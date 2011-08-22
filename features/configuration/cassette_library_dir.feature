@@ -24,5 +24,5 @@ Feature: cassette_library_dir
       end
       """
      And the directory "vcr/cassettes" does not exist
-    When I run "ruby cassette_library_dir.rb"
+    When I run `ruby cassette_library_dir.rb`
     Then the file "vcr/cassettes/localhost.yml" should exist

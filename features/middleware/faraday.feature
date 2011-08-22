@@ -45,7 +45,7 @@ Feature: Faraday middleware
       puts "Response 1: #{conn.get('/foo').body}"
       puts "Response 2: #{conn.get('/foo').body}"
       """
-    When I run "ruby faraday_example.rb"
+    When I run `ruby faraday_example.rb`
     Then the output should contain:
       """
       Response 1: Hello foo 1
@@ -77,7 +77,7 @@ Feature: Faraday middleware
       puts "Response 3: #{conn.get('/bar').body}"
       puts "Response 4: #{conn.get('/bar').body}"
       """
-    When I run "ruby faraday_example.rb"
+    When I run `ruby faraday_example.rb`
     Then the output should contain:
       """
       Response 1: Hello foo 1

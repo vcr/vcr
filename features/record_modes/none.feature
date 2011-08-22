@@ -51,7 +51,7 @@ Feature: :none
         puts "Response: #{response.body}"
       end
       """
-    When I run "ruby replay_recorded_response.rb"
+    When I run `ruby replay_recorded_response.rb`
     Then it should pass with "Response: Hello"
 
   Scenario: New requests are prevented
@@ -63,5 +63,5 @@ Feature: :none
         Net::HTTP.get_response('example.com', '/bar')
       end
       """
-    When I run "ruby prevent_new_request.rb"
+    When I run `ruby prevent_new_request.rb`
     Then it should fail with "Real HTTP connections are disabled. Unregistered request: GET http://example.com/bar"

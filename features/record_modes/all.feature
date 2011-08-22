@@ -58,7 +58,7 @@ Feature: :all
         puts "Response: #{response.body}"
       end
       """
-    When I run "ruby re_record.rb"
+    When I run `ruby re_record.rb`
     Then it should pass with "Response: Hello"
     And the file "cassettes/example.yml" should contain "body: Hello"
     But the file "cassettes/example.yml" should not contain "body: old response"
@@ -73,7 +73,7 @@ Feature: :all
         puts "Response: #{response.body}"
       end
       """
-    When I run "ruby record_new.rb"
+    When I run `ruby record_new.rb`
     Then it should pass with "Response: Goodbye"
     And the file "cassettes/example.yml" should contain each of these:
       | body: old response |

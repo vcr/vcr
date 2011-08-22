@@ -69,7 +69,7 @@ Given /^the directory "([^"]*)" does not exist$/ do |dir|
 end
 
 Given /^a previously recorded cassette file "([^"]*)" with:$/ do |file_name, content|
-  create_file(file_name, normalize_cassette_yaml(content))
+  write_file(file_name, normalize_cassette_yaml(content))
 end
 
 Given /^(\d+) days have passed since the cassette was recorded$/ do |day_count|
@@ -90,7 +90,7 @@ end
 
 Then /^the output should contain each of the following:$/ do |table|
   table.raw.flatten.each do |string|
-    assert_partial_output(string)
+    assert_partial_output(string, all_output)
   end
 end
 

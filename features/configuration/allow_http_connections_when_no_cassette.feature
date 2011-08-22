@@ -33,7 +33,7 @@ Feature: Allow HTTP connections when no cassette
 
       puts "Response: " + Net::HTTP.get_response('localhost', '/', 7777).body
       """
-    When I run "ruby no_cassette.rb --with-server"
+    When I run `ruby no_cassette.rb --with-server`
     Then the output should contain "Response: Hello"
 
   Scenario: Cassettes record and replay as normal
@@ -45,10 +45,10 @@ Feature: Allow HTTP connections when no cassette
         puts "Response: " + Net::HTTP.get_response('localhost', '/', 7777).body
       end
       """
-    When I run "ruby record_replay_cassette.rb --with-server"
+    When I run `ruby record_replay_cassette.rb --with-server`
     Then the output should contain "Response: Hello"
     And the file "cassettes/localhost.yml" should contain "body: Hello"
 
-    When I run "ruby record_replay_cassette.rb"
+    When I run `ruby record_replay_cassette.rb`
     Then the output should contain "Response: Hello"
 

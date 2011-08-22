@@ -64,13 +64,13 @@ Feature: stub_with
         puts "The response for request 2 was: #{response_body_for(:get, "http://localhost:7777/")}"
       end
       """
-    When I run "ruby stubbing_http_lib_combo.rb 'Hello World'"
+    When I run `ruby stubbing_http_lib_combo.rb 'Hello World'`
     Then the output should contain each of the following:
       | The response for request 1 was: Hello World |
       | The response for request 2 was: Hello World |
      And the file "vcr_cassettes/example.yml" should contain "body: Hello World"
 
-    When I run "ruby stubbing_http_lib_combo.rb 'Goodbye World'"
+    When I run `ruby stubbing_http_lib_combo.rb 'Goodbye World'`
     Then the output should contain each of the following:
       | The response for request 1 was: Goodbye World |
       | The response for request 2 was: Hello World   |
@@ -141,7 +141,7 @@ Feature: stub_with
 
       puts "Faraday: #{faraday_response}"
       """
-    When I run "ruby stub_with_multiple.rb 'Hello'"
+    When I run `ruby stub_with_multiple.rb 'Hello'`
     Then the output should contain each of the following:
       | Net::HTTP 1: Hello net_http |
       | Typhoeus 1: Hello typhoeus  |
@@ -156,7 +156,7 @@ Feature: stub_with
       | Hello excon    |
       | Hello faraday  |
 
-    When I run "ruby stub_with_multiple.rb 'Goodbye'"
+    When I run `ruby stub_with_multiple.rb 'Goodbye'`
     Then the output should contain each of the following:
       | Net::HTTP 1: Goodbye net_http |
       | Typhoeus 1: Goodbye typhoeus  |

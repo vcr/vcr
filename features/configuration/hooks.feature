@@ -83,7 +83,7 @@ Feature: Hooks
         Net::HTTP.get_response('localhost', '/', 7777)
       end
       """
-    When I run "ruby before_record_example.rb"
+    When I run `ruby before_record_example.rb`
     Then the file "cassettes/recording_example.yml" should contain "body: Hello World"
      And the file "cassettes/recording_example.yml" should not contain "secret"
 
@@ -109,7 +109,7 @@ Feature: Hooks
         puts "Response: #{response.body}"
       end
       """
-    When I run "ruby before_record_ignore.rb"
+    When I run `ruby before_record_ignore.rb`
     Then it should pass with "Response: Hello World"
     And the file "cassettes/recording_example.yml" should not exist
 
@@ -132,7 +132,7 @@ Feature: Hooks
         puts "Response: #{response.body}"
       end
       """
-    When I run "ruby before_playback_example.rb"
+    When I run `ruby before_playback_example.rb`
     Then it should pass with "Response: response from before_playback"
 
   Scenario: Prevent playback by ignoring interaction in before_playback hook
@@ -178,7 +178,7 @@ Feature: Hooks
         puts "Response: #{response.body}"
       end
       """
-    When I run "ruby before_playback_ignore.rb"
+    When I run `ruby before_playback_ignore.rb`
     Then it should pass with "Response: sinatra response"
 
   Scenario: Multiple hooks are run in order
@@ -211,7 +211,7 @@ Feature: Hooks
         puts "Response 2: #{response.body}"
       end
       """
-    When I run "ruby multiple_hooks.rb"
+    When I run `ruby multiple_hooks.rb`
     Then it should pass with:
       """
       In before_playback hook 1
@@ -254,7 +254,7 @@ Feature: Hooks
         end
       end
       """
-    When I run "ruby tagged_hooks.rb"
+    When I run `ruby tagged_hooks.rb`
     Then it should pass with:
       """
       Using tag: :tag_1

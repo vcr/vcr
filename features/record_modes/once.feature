@@ -60,7 +60,7 @@ Feature: :once
         puts "Response: #{response.body}"
       end
       """
-    When I run "ruby replay_recorded_response.rb"
+    When I run `ruby replay_recorded_response.rb`
     Then it should pass with "Response: example.com response"
 
   Scenario: New requests result in an error when the cassette file exists
@@ -73,7 +73,7 @@ Feature: :once
         puts "Response: #{response.body}"
       end
       """
-    When I run "ruby error_for_new_requests_when_cassette_exists.rb"
+    When I run `ruby error_for_new_requests_when_cassette_exists.rb`
     Then it should fail with "Real HTTP connections are disabled"
 
   Scenario: New requests get recorded when there is no cassette file
@@ -87,6 +87,6 @@ Feature: :once
       end
       """
     When I remove the file "cassettes/example.yml"
-    And I run "ruby record_new_requests.rb"
+    And I run `ruby record_new_requests.rb`
     Then it should pass with "Response: Hello"
     And the file "cassettes/example.yml" should contain "body: Hello"

@@ -31,7 +31,7 @@ Feature: default_cassette_options
         puts "ERB: #{VCR.current_cassette.erb}"
       end
       """
-    When I run "ruby default_cassette_options.rb"
+    When I run `ruby default_cassette_options.rb`
     Then the output should contain:
       """
       Record Mode: new_episodes
@@ -47,7 +47,7 @@ Feature: default_cassette_options
         puts "Match Requests On: #{VCR.current_cassette.match_requests_on.inspect}"
       end
       """
-    When I run "ruby default_cassette_options.rb"
+    When I run `ruby default_cassette_options.rb`
     Then the output should contain "Match Requests On: [:method, :uri]"
 
   Scenario: `:record` defaults to `:once` when it has not been set
@@ -65,7 +65,7 @@ Feature: default_cassette_options
         puts "Record mode: #{VCR.current_cassette.record_mode.inspect}"
       end
       """
-    When I run "ruby default_record_mode.rb"
+    When I run `ruby default_record_mode.rb`
     Then the output should contain "Record mode: :once"
 
   Scenario: cassettes can set their own options
@@ -77,7 +77,7 @@ Feature: default_cassette_options
         puts "Re-record Interval: #{VCR.current_cassette.re_record_interval}"
       end
       """
-    When I run "ruby default_cassette_options.rb"
+    When I run `ruby default_cassette_options.rb`
     Then the output should contain "Re-record Interval: 10000"
 
   Scenario: cassettes can override default options
@@ -90,7 +90,7 @@ Feature: default_cassette_options
         puts "ERB: #{VCR.current_cassette.erb}"
       end
       """
-    When I run "ruby default_cassette_options.rb"
+    When I run `ruby default_cassette_options.rb`
     Then the output should contain:
       """
       Record Mode: none

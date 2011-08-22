@@ -48,13 +48,13 @@ Feature: Filter sensitive data
         puts "Response: #{response.body}"
       end
       """
-    When I run "ruby filtering.rb --with-server"
+    When I run `ruby filtering.rb --with-server`
     Then the output should contain "Response: Hello World"
      And the file "cassettes/filtering.yml" should contain "body: <GREETING> <LOCATION>"
      And the file "cassettes/filtering.yml" should not contain "Hello"
      And the file "cassettes/filtering.yml" should not contain "World"
 
-    When I run "ruby filtering.rb"
+    When I run `ruby filtering.rb`
     Then the output should contain "Hello World"
 
   Scenario: Filter tagged cassettes
@@ -87,14 +87,14 @@ Feature: Filter sensitive data
         puts "Untagged Response: #{response.body}"
       end
       """
-    When I run "ruby tagged_filtering.rb --with-server"
+    When I run `ruby tagged_filtering.rb --with-server`
     Then the output should contain each of the following:
       | Tagged Response: Hello World 1   |
       | Untagged Response: Hello World 2 |
      And the file "cassettes/tagged.yml" should contain "body: Hello <LOCATION> 1"
      And the file "cassettes/untagged.yml" should contain "body: Hello World 2"
 
-    When I run "ruby tagged_filtering.rb"
+    When I run `ruby tagged_filtering.rb`
     Then the output should contain each of the following:
       | Tagged Response: Hello World 1   |
       | Untagged Response: Hello World 2 |
@@ -141,7 +141,7 @@ Feature: Filter sensitive data
         )
       end
       """
-    When I run "ruby dynamic_filtering.rb --with-server"
+    When I run `ruby dynamic_filtering.rb --with-server`
     Then the output should contain "john.doe/monkey"
     And the file "cassettes/example.yml" should contain "body: john.doe/<PASSWORD>"
     And the file "cassettes/example.yml" should contain a YAML fragment like:
@@ -150,5 +150,5 @@ Feature: Filter sensitive data
       - <PASSWORD>
       """
 
-    When I run "ruby dynamic_filtering.rb"
+    When I run `ruby dynamic_filtering.rb`
     Then the output should contain "john.doe/monkey"

@@ -77,7 +77,7 @@ Feature: Usage with RSpec
         c.extend VCR::RSpec::Macros
       end
       """
-    When I run "rspec spec/vcr_example_spec.rb"
+    When I run `rspec spec/vcr_example_spec.rb`
     Then the output should contain "2 examples, 0 failures"
      And the file "spec/cassettes/VCR-RSpec_integration/without_an_explicit_cassette_name.yml" should contain "body: Hello"
      And the file "spec/cassettes/net_http_example.yml" should contain "body: Hello"
@@ -103,7 +103,7 @@ Feature: Usage with RSpec
         c.extend VCR::RSpec::Macros
       end
       """
-    When I run "ruby -Ispec spec/vcr_example_spec.rb"
+    When I run `ruby -Ispec spec/vcr_example_spec.rb`
     Then the output should contain "2 examples, 0 failures"
      And the file "spec/cassettes/VCR-RSpec_integration/without_an_explicit_cassette_name.yml" should contain "body: Hello"
      And the file "spec/cassettes/net_http_example.yml" should contain "body: Hello"

@@ -34,7 +34,7 @@ Feature: Error for HTTP request made when no cassette is in use
 
       response_body_for(:get, 'http://example.com/')
       """
-    When I run "ruby no_cassette_error.rb"
+    When I run `ruby no_cassette_error.rb`
     Then it should fail with "<error>"
     And the output should contain each of the following:
       | You can use VCR to automatically record this request and replay it later. |
@@ -85,7 +85,7 @@ Feature: Error for HTTP request made when no cassette is in use
       VCR.turn_on!
       make_request "After calling VCR.turn_on!"
       """
-    When I run "ruby turn_off_vcr.rb"
+    When I run `ruby turn_off_vcr.rb`
     Then the output should contain:
       """
       In VCR.turned_off block
@@ -119,7 +119,7 @@ Feature: Error for HTTP request made when no cassette is in use
       VCR.turn_off!
       VCR.insert_cassette('example')
       """
-    When I run "ruby turn_off_vcr_and_insert_cassette.rb"
+    When I run `ruby turn_off_vcr_and_insert_cassette.rb`
     Then it should fail with "VCR is turned off.  You must turn it on before you can insert a cassette."
 
   Scenario: Turning VCR off with `:ignore_cassettes => true` ignores cassettes
@@ -145,7 +145,7 @@ Feature: Error for HTTP request made when no cassette is in use
         puts "Response: #{response}"
       end
       """
-    When I run "ruby turn_off_vcr_and_insert_cassette.rb"
+    When I run `ruby turn_off_vcr_and_insert_cassette.rb`
     Then it should pass with "Response: Hello"
      And the file "cassettes/example.yml" should not exist
 

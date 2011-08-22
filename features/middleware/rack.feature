@@ -57,7 +57,7 @@ Feature: Rack
         c.allow_http_connections_when_no_cassette = true
       end
       """
-    When I run "ruby client.rb"
+    When I run `ruby client.rb`
     Then the output should contain:
       """
       Response 1: Hello foo 1
@@ -85,7 +85,7 @@ Feature: Rack
         c.allow_http_connections_when_no_cassette = true
       end
       """
-    When I run "ruby client.rb"
+    When I run `ruby client.rb`
     Then the output should contain:
       """
       Response 1: Hello foo 1

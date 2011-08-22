@@ -65,7 +65,7 @@ Feature: Update content_length header
         make_request_and_print_results
       end
       """
-    When I run "ruby default.rb"
+    When I run `ruby default.rb`
     Then the output should contain:
       """
       Body length: 16
@@ -81,7 +81,7 @@ Feature: Update content_length header
         make_request_and_print_results
       end
       """
-    When I run "ruby false.rb"
+    When I run `ruby false.rb`
     Then the output should contain:
       """
       Body length: 16
@@ -97,7 +97,7 @@ Feature: Update content_length header
         make_request_and_print_results
       end
       """
-    When I run "ruby true.rb"
+    When I run `ruby true.rb`
     Then the output should contain:
       """
       Body length: 16

@@ -52,7 +52,7 @@ Feature: Automatic Re-recording
 
   Scenario: Cassette is not re-recorded when not enough time has passed
     Given 6 days have passed since the cassette was recorded
-    When I run "ruby re_record.rb"
+    When I run `ruby re_record.rb`
     Then the output should contain "Old Response"
     But the output should not contain "New Response"
     And the file "cassettes/example.yml" should contain "body: Old Response"
@@ -60,7 +60,7 @@ Feature: Automatic Re-recording
 
   Scenario: Cassette is re-recorded when enough time has passed
     Given 8 days have passed since the cassette was recorded
-    When I run "ruby re_record.rb"
+    When I run `ruby re_record.rb`
     Then the output should contain "New Response"
     But the output should not contain "Old Response"
     And the file "cassettes/example.yml" should contain "body: New Response"

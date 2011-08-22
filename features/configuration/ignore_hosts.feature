@@ -41,7 +41,7 @@ Feature: ignore_hosts
 
       puts response_body_for(:get, "http://localhost:7777/")
       """
-    When I run "ruby ignore_hosts.rb"
+    When I run `ruby ignore_hosts.rb`
     Then it should pass with:
       """
       Response 1

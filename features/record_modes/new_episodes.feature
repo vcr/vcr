@@ -57,7 +57,7 @@ Feature: :new_episodes
         puts "Response: #{response.body}"
       end
       """
-    When I run "ruby replay_recorded_response.rb"
+    When I run `ruby replay_recorded_response.rb`
     Then it should pass with "Response: example.com response"
 
   Scenario: New requests get recorded
@@ -70,7 +70,7 @@ Feature: :new_episodes
         puts "Response: #{response.body}"
       end
       """
-    When I run "ruby record_new_requests.rb"
+    When I run `ruby record_new_requests.rb`
     Then it should pass with "Response: Hello"
     And the file "cassettes/example.yml" should contain each of these:
       | body: example.com response |

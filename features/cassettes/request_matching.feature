@@ -79,7 +79,7 @@ Feature: Request matching
         puts response_body_for(:get, 'http://example.com/foo')
       end
       """
-    When I run "ruby rotate_responses.rb"
+    When I run `ruby rotate_responses.rb`
     Then it should pass with:
       """
       Response 1
@@ -149,7 +149,7 @@ Feature: Request matching
         puts response_body_for(:put,  "http://bar.com/foo?date=#{Date.today.to_s}")
       end
       """
-    When I run "ruby host_path_matching.rb"
+    When I run `ruby host_path_matching.rb`
     Then it should pass with:
       """
       foo.com response
@@ -223,7 +223,7 @@ Feature: Request matching
         puts response_body_for(:post, "http://example.com/", 'a=1')
       end
       """
-    When I run "ruby body_matching.rb"
+    When I run `ruby body_matching.rb`
     Then it should pass with:
       """
       a=2 response
@@ -296,7 +296,7 @@ Feature: Request matching
         puts response_body_for(:get, "http://example.com/dashboard", nil, 'X-User-Id' => '17')
       end
       """
-    When I run "ruby header_matching.rb"
+    When I run `ruby header_matching.rb`
     Then it should pass with:
       """
       user 42 response
@@ -365,7 +365,7 @@ Feature: Request matching
         puts response_body_for(:get, "http://bar.com/foo?date=#{Date.today.to_s}")
       end
       """
-    When I run "ruby uri_regex_matching.rb"
+    When I run `ruby uri_regex_matching.rb`
     Then it should pass with:
       """
       foo.com response

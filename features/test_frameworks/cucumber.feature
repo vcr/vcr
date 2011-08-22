@@ -89,7 +89,7 @@ Feature: Usage with Cucumber
           When a request is made to "http://localhost:7777/disallowed_2"
       """
     And the directory "features/cassettes" does not exist
-    When I run "cucumber WITH_SERVER=true features/vcr_example.feature"
+    When I run `cucumber WITH_SERVER=true features/vcr_example.feature`
     Then it should fail with "3 scenarios (2 failed, 1 passed)"
     And the output should contain each of the following:
       | Real HTTP connections are disabled. Unregistered request: GET http://localhost:7777/disallowed_1 |
@@ -101,7 +101,7 @@ Feature: Usage with Cucumber
 
     # Run again without the server; we'll get the same responses because VCR
     # will replay the recorded responses.
-    When I run "cucumber features/vcr_example.feature"
+    When I run `cucumber features/vcr_example.feature`
     Then it should fail with "3 scenarios (2 failed, 1 passed)"
     And the output should contain each of the following:
       | Real HTTP connections are disabled. Unregistered request: GET http://localhost:7777/disallowed_1 |

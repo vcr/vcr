@@ -51,7 +51,7 @@ Feature: EM HTTP Request
         end
       end
       """
-    When I run "ruby make_requests.rb Hello"
+    When I run `ruby make_requests.rb Hello`
     Then the output should contain:
       """
       Hello foo
@@ -114,7 +114,7 @@ Feature: EM HTTP Request
           http_version: "1.1"
       """
 
-    When I run "ruby make_requests.rb Goodbye"
+    When I run `ruby make_requests.rb Goodbye`
     Then the output should contain:
       """
       Hello foo
@@ -144,7 +144,7 @@ Feature: EM HTTP Request
         end
       end
       """
-    When I run "ruby make_requests.rb Hello"
+    When I run `ruby make_requests.rb Hello`
     Then the output should contain:
       """
       Hello foo
@@ -207,7 +207,7 @@ Feature: EM HTTP Request
           http_version: "1.1"
       """
 
-    When I run "ruby make_requests.rb Goodbye"
+    When I run `ruby make_requests.rb Goodbye`
     Then the output should contain:
       """
       Hello foo

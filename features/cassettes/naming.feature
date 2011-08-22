@@ -25,5 +25,5 @@ Feature: Naming
       end
       """
      And the directory "cassettes" does not exist
-    When I run "ruby name_sanitizing.rb"
+    When I run `ruby name_sanitizing.rb`
     Then the file "cassettes/Fee_Fi_Fo_Fum.yml" should contain "body: Hello"
