@@ -22,6 +22,7 @@ group :extras do
   gem 'growl'
   gem 'relish'
   gem 'fuubar'
+  gem 'fuubar-cucumber'
 
   platforms :mri do
     gem 'rcov'
