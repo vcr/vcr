@@ -25,8 +25,8 @@ elsif RUBY_PLATFORM == 'java'
 
   # The latest version of httpclient seems to freeze up the cukes
   # on JRuby.  I'm not sure why, and there's little benefit to running
-  # them on JRuby...so we just skip them.
-  UNSUPPORTED_HTTP_LIBS = c_dependent_libs + %w[ httpclient ]
+  # them on JRuby...so we just skip them.  Excon seems to have the same issue :(.
+  UNSUPPORTED_HTTP_LIBS = c_dependent_libs + %w[ httpclient excon ]
 elsif RUBY_VERSION == '1.8.6' && ENV['TRAVIS']
   UNSUPPORTED_HTTP_LIBS = %w[ em-http-request ]
 end
