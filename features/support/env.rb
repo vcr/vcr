@@ -2,14 +2,7 @@ require 'rubygems'
 require 'bundler'
 Bundler.setup
 
-# Current version of aruba won't run on JRuby or Rubinius due to
-# dependency on background_process.  We have a work around to fix this.
-NEEDS_ARUBA_FIX = defined?(RUBY_ENGINE) && %w[ jruby rbx ].include?(RUBY_ENGINE)
-
-$LOAD_PATH.unshift File.dirname(__FILE__) + '/aruba_workaround' if NEEDS_ARUBA_FIX
-
-require 'aruba'
-require 'aruba_patches' if NEEDS_ARUBA_FIX
+require 'aruba/cucumber'
 
 Before do
   this_dir = File.dirname(__FILE__)
