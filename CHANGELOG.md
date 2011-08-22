@@ -33,10 +33,10 @@
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.10.0...v1.10.1)
 
-* Fix typo in error message [Bradley](https://github.com/bradleyisotope).
+* Fix typo in error message.  Fix provided by [Bradley](https://github.com/bradleyisotope).
 * Fix excon adapter to properly handle queries specified as a hash.
-* Fix excon adapter to stub a response with a hash as excon expects
-  [Wesley Beary](https://github.com/geemus).
+* Fix excon adapter to stub a response with a hash as excon expects.
+  Fix provided by [Wesley Beary](https://github.com/geemus).
 * Fix excon adapter so that it records a response even when excon raises
   an error due to an unexpected response.
 
