@@ -21,3 +21,7 @@ elsif RUBY_PLATFORM == 'java'
   end
 end
 
+Before do
+  @aruba_timeout_seconds = 10
+end
+
