@@ -17,7 +17,7 @@ module VCR
 
       it 'is a basic object with very few of its own methods' do
         inst_methods = described_class.instance_methods.map { |m| m.to_sym }
-        inst_methods.should_not include(:send, :object_id, :__id__)
+        inst_methods.should_not include(:send, :object_id)
       end
 
       describe '#proxied_objects' do
