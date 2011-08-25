@@ -38,6 +38,6 @@ group :extras do
     gem 'linecache19', '0.5.11' # 0.5.12 cannot install on 1.9.1, and 0.5.11 appears to work with both 1.9.1 & 1.9.2
     gem 'ruby-debug19'
     gem 'ruby-debug-base19', RUBY_VERSION == '1.9.1' ? '0.11.23' : '~> 0.11.24'
-  end
+  end unless RUBY_VERSION == '1.9.3'
 end
 
