@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
 
   {
     'bundler'         => '~> 1.0.7',
-    'rake'            => '~> 0.8.7',
+    'rake'            => '~> 0.9.2',
 
     'rspec'           => '~> 2.6',
     'cucumber'        => '~> 1.0.2',
