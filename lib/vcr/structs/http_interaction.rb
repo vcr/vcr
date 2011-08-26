@@ -10,6 +10,7 @@ module VCR
     end
 
     def ignored?
+      @ignored = false unless defined?(@ignored)
       @ignored
     end
 
