@@ -12,7 +12,7 @@ describe VCR::RSpec::Macros do
           end
         end
 
-        use_vcr_cassette *args
+        use_vcr_cassette(*args)
 
         it 'ejects the cassette in an after hook' do
           VCR.current_cassette.should be_a(VCR::Cassette)

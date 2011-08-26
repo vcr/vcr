@@ -12,7 +12,7 @@ module VCR
         if options[:allow_real_http] == :localhost
           @original_ignored_hosts = VCR::Config.ignored_hosts.dup
           VCR::Config.ignored_hosts.clear
-          VCR::Config.ignore_hosts *VCR::LOCALHOST_ALIASES
+          VCR::Config.ignore_hosts(*VCR::LOCALHOST_ALIASES)
           Kernel.warn "WARNING: #{message}"
         elsif options[:allow_real_http]
           raise ArgumentError.new(message)
@@ -22,7 +22,7 @@ module VCR
       def restore_ignore_localhost_for_deprecation
         if defined?(@original_ignored_hosts)
           VCR::Config.ignored_hosts.clear
-          VCR::Config.ignore_hosts *@original_ignored_hosts
+          VCR::Config.ignore_hosts(*@original_ignored_hosts)
         end
       end
     end

@@ -73,7 +73,7 @@ describe VCR::RequestMatcher do
     end
 
     [[:uri, :host], [:uri, :path], [:uri, :host, :path]].each do |attributes|
-      for_matcher *attributes do
+      for_matcher(*attributes) do
         it "raises an appropriate error" do
           expect { subject }.to raise_error(/match_attributes cannot include/)
         end

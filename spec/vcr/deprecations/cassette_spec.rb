@@ -23,7 +23,7 @@ describe VCR::Cassette, 'deprecations', :disable_warnings => true do
     context "when the ignored_hosts list is set to #{orig_ignored_hosts.inspect} and the :allow_real_http option is set to :localhost" do
       before(:each) do
         VCR::Config.ignored_hosts.clear
-        VCR::Config.ignore_hosts *orig_ignored_hosts
+        VCR::Config.ignore_hosts(*orig_ignored_hosts)
       end
 
       subject { VCR::Cassette.new('cassette name', :allow_real_http => :localhost) }

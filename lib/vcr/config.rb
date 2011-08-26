@@ -44,7 +44,7 @@ module VCR
 
     def ignore_localhost=(value)
       if value
-        ignore_hosts *VCR::LOCALHOST_ALIASES
+        ignore_hosts(*VCR::LOCALHOST_ALIASES)
       else
         ignored_hosts.reject! { |h| VCR::LOCALHOST_ALIASES.include?(h) }
       end

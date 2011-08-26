@@ -12,7 +12,7 @@ shared_examples_for '.ignore_localhost? deprecation' do
   it 'returns false when only some localhost aliases are ignored' do
     aliases = VCR::LOCALHOST_ALIASES.dup
     aliases.pop
-    VCR::Config.ignore_hosts *aliases
+    VCR::Config.ignore_hosts(*aliases)
     described_class.ignore_localhost?.should be_false
   end
 
