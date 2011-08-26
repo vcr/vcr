@@ -22,10 +22,10 @@ describe VCR::Config do
   describe '.default_cassette_options' do
     it 'has a hash with some defaults even if it is set to nil' do
       VCR::Config.default_cassette_options = nil
-      VCR::Config.default_cassette_options.should == {
+      VCR::Config.default_cassette_options.should eq({
         :match_requests_on => VCR::RequestMatcher::DEFAULT_MATCH_ATTRIBUTES,
         :record            => :once
-      }
+      })
     end
 
     it "returns #{VCR::RequestMatcher::DEFAULT_MATCH_ATTRIBUTES.inspect} for :match_requests_on when other defaults have been set" do
@@ -42,14 +42,14 @@ describe VCR::Config do
   describe '.stub_with' do
     it 'stores the given symbols in http_stubbing_libraries' do
       VCR::Config.stub_with :fakeweb, :typhoeus
-      VCR::Config.http_stubbing_libraries.should == [:fakeweb, :typhoeus]
+      VCR::Config.http_stubbing_libraries.should eq([:fakeweb, :typhoeus])
     end
   end
 
   describe '.http_stubbing_libraries' do
     it 'returns an empty array even when the variable is nil' do
       VCR::Config.send(:remove_instance_variable, :@http_stubbing_libraries)
-      VCR::Config.http_stubbing_libraries.should == []
+      VCR::Config.http_stubbing_libraries.should eq([])
     end
   end
 
@@ -63,20 +63,20 @@ describe VCR::Config do
 
     it 'adds the given hosts to the ignored_hosts list' do
       VCR::Config.ignore_hosts 'example.com', 'example.net'
-      VCR::Config.ignored_hosts.should == %w[ example.com example.net ]
+      VCR::Config.ignored_hosts.should eq(%w[ example.com example.net ])
       VCR::Config.ignore_host 'example.org'
-      VCR::Config.ignored_hosts.should == %w[ example.com example.net example.org ]
+      VCR::Config.ignored_hosts.should eq(%w[ example.com example.net example.org ])
     end
 
     it 'removes duplicate hosts' do
       VCR::Config.ignore_host 'example.com'
       VCR::Config.ignore_host 'example.com'
-      VCR::Config.ignored_hosts.should == ['example.com']
+      VCR::Config.ignored_hosts.should eq(['example.com'])
     end
 
     it "updates the http_stubbing_adapter's ignored_hosts list" do
       VCR::Config.ignore_hosts 'example.com', 'example.org'
-      stubbing_adapter.send(:ignored_hosts).should == %w[ example.com example.org ]
+      stubbing_adapter.send(:ignored_hosts).should eq(%w[ example.com example.org ])
     end
   end
 
@@ -88,13 +88,13 @@ describe VCR::Config do
     it 'adds the localhost aliases to the ignored_hosts list when set to true' do
       VCR::Config.ignore_host 'example.com'
       VCR::Config.ignore_localhost = true
-      VCR::Config.ignored_hosts.should == ['example.com', *VCR::LOCALHOST_ALIASES]
+      VCR::Config.ignored_hosts.should eq(['example.com', *VCR::LOCALHOST_ALIASES])
     end
 
     it 'removes the localhost aliases from the ignored_hosts list when set to false' do
       VCR::Config.ignore_host 'example.com', *VCR::LOCALHOST_ALIASES
       VCR::Config.ignore_localhost = false
-      VCR::Config.ignored_hosts.should == ['example.com']
+      VCR::Config.ignored_hosts.should eq(['example.com'])
     end
   end
 
@@ -102,7 +102,7 @@ describe VCR::Config do
     [true, false].each do |val|
       it "sets the allow_http_connections_when_no_cassette to #{val} when set to #{val}" do
         VCR::Config.allow_http_connections_when_no_cassette = val
-        VCR::Config.allow_http_connections_when_no_cassette?.should == val
+        VCR::Config.allow_http_connections_when_no_cassette?.should eq(val)
       end
     end
 

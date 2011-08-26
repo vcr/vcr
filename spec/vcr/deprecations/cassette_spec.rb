@@ -30,7 +30,7 @@ describe VCR::Cassette, 'deprecations', :disable_warnings => true do
 
       it "sets the ignored_hosts list to the list of localhost aliases" do
         subject
-        VCR::Config.ignored_hosts.should == VCR::LOCALHOST_ALIASES
+        VCR::Config.ignored_hosts.should eq(VCR::LOCALHOST_ALIASES)
       end
 
       it "prints a warning: VCR's :allow_real_http cassette option is deprecated.  Instead, use the ignore_localhost configuration option." do
@@ -40,7 +40,7 @@ describe VCR::Cassette, 'deprecations', :disable_warnings => true do
 
       it "reverts ignore_hosts when the cassette is ejected" do
         subject.eject
-        VCR::Config.ignored_hosts.should == orig_ignored_hosts
+        VCR::Config.ignored_hosts.should eq(orig_ignored_hosts)
       end
 
       {
@@ -49,7 +49,7 @@ describe VCR::Cassette, 'deprecations', :disable_warnings => true do
         'http://example.com' => false
       }.each do |url, expected_value|
         it "returns #{expected_value} for #allow_real_http_requests_to? when it is given #{url}" do
-          subject.allow_real_http_requests_to?(URI.parse(url)).should == expected_value
+          subject.allow_real_http_requests_to?(URI.parse(url)).should eq(expected_value)
         end
       end
     end

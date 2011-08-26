@@ -13,8 +13,8 @@ describe VCR do
     it 'takes over as the #current_cassette' do
       orig_cassette = VCR.current_cassette
       new_cassette = insert_cassette
-      new_cassette.should_not == orig_cassette
-      VCR.current_cassette.should == new_cassette
+      new_cassette.should_not eq(orig_cassette)
+      VCR.current_cassette.should eq(new_cassette)
     end
 
     it 'raises an error if the stack of inserted cassettes already contains a cassette with the same name' do
@@ -34,7 +34,7 @@ describe VCR do
 
     it 'returns the ejected cassette' do
       cassette = insert_cassette
-      VCR.eject_cassette.should == cassette
+      VCR.eject_cassette.should eq(cassette)
     end
 
     it 'returns the #current_cassette to the previous one' do
@@ -64,7 +64,7 @@ describe VCR do
 
     it 'yields the cassette instance if the block expects a variable number of args' do
       VCR.use_cassette('name', :record => :new_episodes) do |*args|
-        args.size.should == 1
+        args.size.should eq(1)
         args.first.should equal(VCR.current_cassette)
       end
     end
@@ -92,7 +92,7 @@ describe VCR do
       VCR.config do |obj|
         yielded_object = obj
       end
-      yielded_object.should == VCR::Config
+      yielded_object.should eq(VCR::Config)
     end
 
     it "sets http_stubbing_adapter.http_connections_allowed to the configured default" do
@@ -116,7 +116,7 @@ describe VCR do
         c.ignore_hosts 'example.com', 'example.org'
       end
 
-      VCR::HttpStubbingAdapters::FakeWeb.send(:ignored_hosts).should == %w[example.com example.org]
+      VCR::HttpStubbingAdapters::FakeWeb.send(:ignored_hosts).should eq(%w[example.com example.org])
     end
   end
 
@@ -138,10 +138,10 @@ describe VCR do
 
     it 'returns a multi object proxy for the configured stubbing libraries when multiple libs are configured', :unless => RUBY_PLATFORM == 'java' do
       VCR::Config.stub_with :fakeweb, :typhoeus
-      VCR.http_stubbing_adapter.proxied_objects.should == [
+      VCR.http_stubbing_adapter.proxied_objects.should eq([
         VCR::HttpStubbingAdapters::FakeWeb,
         VCR::HttpStubbingAdapters::Typhoeus
-      ]
+      ])
     end
 
     {
@@ -152,7 +152,7 @@ describe VCR do
     }.each do |symbol, klass|
       it "returns #{klass} for :#{symbol}" do
         VCR::Config.stub_with symbol
-        VCR.http_stubbing_adapter.should == klass
+        VCR.http_stubbing_adapter.should eq(klass)
       end
     end
 
@@ -296,7 +296,7 @@ describe VCR do
         VCR.should_not be_turned_on
       end
 
-      yielded.should == true
+      yielded.should eq(true)
       VCR.should be_turned_on
     end
 

@@ -20,7 +20,7 @@ describe VCR::RSpec::Macros do
         end
 
         it "creates a cassette named '#{expected_cassette_name}" do
-          VCR.current_cassette.name.should == expected_cassette_name
+          VCR.current_cassette.name.should eq(expected_cassette_name)
         end
 
         module_eval(&block) if block
@@ -31,7 +31,7 @@ describe VCR::RSpec::Macros do
 
     perform_test 'when called with an explicit name and some options', 'explicit_name', 'explicit_name', :match_requests_on => [:method, :host] do
       it 'uses the provided cassette options' do
-        VCR.current_cassette.match_requests_on.should == [:method, :host]
+        VCR.current_cassette.match_requests_on.should eq([:method, :host])
       end
     end
 
@@ -39,7 +39,7 @@ describe VCR::RSpec::Macros do
 
     perform_test 'when called with some options', 'VCR::RSpec::Macros/#use_vcr_cassette/when called with some options', :match_requests_on => [:method, :host] do
       it 'uses the provided cassette options' do
-        VCR.current_cassette.match_requests_on.should == [:method, :host]
+        VCR.current_cassette.match_requests_on.should eq([:method, :host])
       end
     end
   end

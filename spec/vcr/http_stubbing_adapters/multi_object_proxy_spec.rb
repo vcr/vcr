@@ -22,7 +22,7 @@ module VCR
 
       describe '#proxied_objects' do
         it 'returns the proxied objects' do
-          subject.proxied_objects.should == [mock1, mock2]
+          subject.proxied_objects.should eq([mock1, mock2])
         end
       end
 
@@ -51,7 +51,7 @@ module VCR
           mock1.should_not respond_to(:request_stubbed?)
           mock2.should_receive(:request_stubbed?).and_return(true)
 
-          subject.request_stubbed?.should == true
+          subject.request_stubbed?.should eq(true)
         end
 
         it 'proxies messages to each object' do
@@ -74,7 +74,7 @@ module VCR
               mock1.should_receive(method).and_return(:return_value_1)
               mock2.should_receive(method).and_return(:return_value_1)
 
-              subject.__send__(method).should == :return_value_1
+              subject.__send__(method).should eq(:return_value_1)
             end
           end
         end

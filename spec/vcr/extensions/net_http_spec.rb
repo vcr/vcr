@@ -8,8 +8,8 @@ describe "Net::HTTP Extensions", :with_monkey_patches => :vcr do
 
   it 'checks if the request is stubbed using a VCR::Request' do
     VCR.http_stubbing_adapter.should_receive(:request_stubbed?) do |request, _|
-      request.uri.should == "http://localhost:#{VCR::SinatraApp.port}/"
-      request.method.should == :get
+      request.uri.should eq("http://localhost:#{VCR::SinatraApp.port}/")
+      request.method.should eq(:get)
       true
     end
     Net::HTTP.get(uri)
@@ -48,8 +48,8 @@ describe "Net::HTTP Extensions", :with_monkey_patches => :vcr do
 
     it "records headers for which Net::HTTP usually sets defaults when the user manually sets their values" do
       VCR.should_receive(:record_http_interaction) do |interaction|
-        interaction.request.headers['content-type'].should == ['foo/bar']
-        interaction.request.headers['host'].should == ['my-example.com']
+        interaction.request.headers['content-type'].should eq(['foo/bar'])
+        interaction.request.headers['host'].should eq(['my-example.com'])
       end
       Net::HTTP.new('localhost', VCR::SinatraApp.port).send_request('POST', '/', '', { 'Content-Type' => 'foo/bar', 'Host' => 'my-example.com' })
     end

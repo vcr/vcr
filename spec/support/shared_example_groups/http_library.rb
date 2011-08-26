@@ -49,7 +49,7 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
             if recorded_val.is_a?(Array) && replayed_val.is_a?(Array)
               replayed_val.should =~ recorded_val
             else
-              replayed_val.should == recorded_val
+              replayed_val.should eq(recorded_val)
             end
           end
         end
@@ -72,7 +72,7 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
         let(:response) { VCR::Response.new(status, nil, response_body, '1.1') }
 
         it 'returns the response for a matching request' do
-          get_body_string(make_http_request(:get, 'http://example.com/')).should == response_body
+          get_body_string(make_http_request(:get, 'http://example.com/')).should eq(response_body)
         end
       end
 
@@ -82,7 +82,7 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
           let(:response)    { VCR::Response.new(status, nil, response_body, '1.1') }
 
           it 'returns the expected response for the same request' do
-            get_body_string(make_http_request(:get, url)).should == response_body
+            get_body_string(make_http_request(:get, url)).should eq(response_body)
           end
         end
       end
@@ -116,7 +116,7 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
 
             valid.each do |val, response|
               it "returns the expected response for a #{val.inspect} request" do
-                get_body_string(make_http_request(val)).should == response
+                get_body_string(make_http_request(val)).should eq(response)
               end
             end
 
@@ -174,7 +174,7 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
       if http_allowed
 
         it 'allows real http requests' do
-          get_body_string(make_http_request(:get, url)).should == 'FOO!'
+          get_body_string(make_http_request(:get, url)).should eq('FOO!')
         end
 
         describe 'recording new http requests' do
@@ -192,11 +192,11 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
           end
 
           it 'records the request uri' do
-            recorded_interaction.request.uri.should == url
+            recorded_interaction.request.uri.should eq(url)
           end
 
           it 'records the request method' do
-            recorded_interaction.request.method.should == :get
+            recorded_interaction.request.method.should eq(:get)
           end
 
           it 'records the request body' do
@@ -208,19 +208,19 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
           end
 
           it 'records the response status code' do
-            recorded_interaction.response.status.code.should == 200
+            recorded_interaction.response.status.code.should eq(200)
           end
 
           it 'records the response status message' do
-            recorded_interaction.response.status.message.should == 'OK'
+            recorded_interaction.response.status.message.should eq('OK')
           end unless other.include?(:status_message_not_exposed)
 
           it 'records the response body' do
-            recorded_interaction.response.body.should == 'FOO!'
+            recorded_interaction.response.body.should eq('FOO!')
           end
 
           it 'records the response headers' do
-            recorded_interaction.response.headers['content-type'].should == ["text/html;charset=utf-8"]
+            recorded_interaction.response.headers['content-type'].should eq(["text/html;charset=utf-8"])
           end
         end
       else
@@ -234,12 +234,12 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
     end
 
     def test_request_stubbed(method, url, expected)
-      subject.request_stubbed?(VCR::Request.new(method, url), [:method, :uri]).should == expected
+      subject.request_stubbed?(VCR::Request.new(method, url), [:method, :uri]).should eq(expected)
     end
 
     it "returns false from #http_connections_allowed? when http_connections_allowed is set to nil" do
       subject.http_connections_allowed = nil
-      subject.http_connections_allowed?.should == false
+      subject.http_connections_allowed?.should eq(false)
     end
 
     describe '.restore_stubs_checkpoint' do
@@ -255,7 +255,7 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
         before(:each) { subject.http_connections_allowed = http_allowed }
 
         it "returns #{http_allowed} for #http_connections_allowed?" do
-          subject.http_connections_allowed?.should == http_allowed
+          subject.http_connections_allowed?.should eq(http_allowed)
         end
 
         test_real_http_request(http_allowed, *other)
@@ -273,7 +273,7 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
 
               %w[ 127.0.0.1 localhost ].each do |localhost_alias|
                 it "allows requests to #{localhost_alias}" do
-                  get_body_string(make_http_request(:get, "http://#{localhost_alias}:#{VCR::SinatraApp.port}/localhost_test")).should == localhost_response
+                  get_body_string(make_http_request(:get, "http://#{localhost_alias}:#{VCR::SinatraApp.port}/localhost_test")).should eq(localhost_response)
                 end
               end
 
@@ -309,12 +309,12 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
           end
 
           it 'rotates through multiple responses for the same request' do
-            get_body_string(make_http_request(:get, 'http://example.com/foo')).should == 'example.com get response 1 with path=foo'
-            get_body_string(make_http_request(:get, 'http://example.com/foo')).should == 'example.com get response 2 with path=foo'
+            get_body_string(make_http_request(:get, 'http://example.com/foo')).should eq('example.com get response 1 with path=foo')
+            get_body_string(make_http_request(:get, 'http://example.com/foo')).should eq('example.com get response 2 with path=foo')
 
             # subsequent requests keep getting the last one
-            get_body_string(make_http_request(:get, 'http://example.com/foo')).should == 'example.com get response 2 with path=foo'
-            get_body_string(make_http_request(:get, 'http://example.com/foo')).should == 'example.com get response 2 with path=foo'
+            get_body_string(make_http_request(:get, 'http://example.com/foo')).should eq('example.com get response 2 with path=foo')
+            get_body_string(make_http_request(:get, 'http://example.com/foo')).should eq('example.com get response 2 with path=foo')
           end unless other.include?(:does_not_support_rotating_responses)
 
           it "correctly handles stubbing multiple values for the same header" do

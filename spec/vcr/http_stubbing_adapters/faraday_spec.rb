@@ -40,10 +40,10 @@ describe VCR::HttpStubbingAdapters::Faraday do
     end
 
     def test_stubbed_responses
-      stubbed_response_for(request_1).should == :response_1
-      stubbed_response_for(request_1).should == :response_2
-      stubbed_response_for(request_1).should == :response_2
-      stubbed_response_for(request_1).should == :response_2
+      stubbed_response_for(request_1).should eq(:response_1)
+      stubbed_response_for(request_1).should eq(:response_2)
+      stubbed_response_for(request_1).should eq(:response_2)
+      stubbed_response_for(request_1).should eq(:response_2)
     end
 
     describe '.stubbed_response_for' do

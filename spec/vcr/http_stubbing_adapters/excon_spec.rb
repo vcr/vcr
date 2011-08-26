@@ -31,8 +31,8 @@ describe VCR::HttpStubbingAdapters::Excon do
         end
       end
 
-      recorded.should == played_back
-      recorded.should == 'query: Tolkien'
+      recorded.should eq(played_back)
+      recorded.should eq('query: Tolkien')
     end
   end
 
@@ -51,8 +51,8 @@ describe VCR::HttpStubbingAdapters::Excon do
         chunks.join
       end
 
-      recorded.should == played_back
-      recorded.should == "FOO!"
+      recorded.should eq(played_back)
+      recorded.should eq("FOO!")
     end
   end
 
@@ -61,7 +61,7 @@ describe VCR::HttpStubbingAdapters::Excon do
       described_class.http_connections_allowed = true
 
       VCR.should_receive(:record_http_interaction) do |interaction|
-        interaction.response.status.code.should == 404
+        interaction.response.status.code.should eq(404)
       end
 
       expect {

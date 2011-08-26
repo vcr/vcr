@@ -4,7 +4,7 @@ describe VCR::Request do
   describe '#matcher' do
     it 'returns a matcher with the given request' do
       req = VCR::Request.new
-      req.matcher([:uri]).request.should == req
+      req.matcher([:uri]).request.should eq(req)
     end
 
     it 'returns a matcher with the given match_attributes' do
@@ -18,7 +18,7 @@ describe VCR::Request do
 
     context 'when given no arguments' do
       it 'returns the HTTP method' do
-        subject.method.should == :get
+        subject.method.should eq(:get)
       end
     end
 
@@ -26,7 +26,7 @@ describe VCR::Request do
       it 'returns the method object for the named method' do
         m = subject.method(:class)
         m.should be_a(Method)
-        m.call.should == described_class
+        m.call.should eq(described_class)
       end
     end
   end
@@ -42,13 +42,13 @@ describe VCR::Request do
     end
 
     it            { should be_instance_of(VCR::Request) }
-    its(:method)  { should == :post  }
-    its(:body)    { should == 'id=7'  }
-    its(:headers) { should == { "content-type" => ["application/x-www-form-urlencoded"] } }
+    its(:method)  { should eq(:post) }
+    its(:body)    { should eq('id=7') }
+    its(:headers) { should eq({ "content-type" => ["application/x-www-form-urlencoded"] }) }
 
     it 'sets the uri using the http_stubbing_adapter.request_uri' do
       VCR.http_stubbing_adapter.should_receive(:request_uri).with(net_http, request).and_return('foo/bar')
-      subject.uri.should == 'foo/bar'
+      subject.uri.should eq('foo/bar')
     end
   end
 

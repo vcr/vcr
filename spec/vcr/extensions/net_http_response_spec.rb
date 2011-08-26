@@ -20,7 +20,7 @@ describe VCR::Net::HTTPResponse do
       dest = ''
       ret_val = response { |r| r.read_body(dest) }.body
       dest.to_s.should =~ expected_regex
-      ret_val.to_s.should == dest
+      ret_val.to_s.should eq(dest)
     end
 
     it 'raises an ArgumentError if both a destination string and a block is given to #read_body' do

@@ -32,7 +32,7 @@ describe VCR::Hooks do
 
         invocations.should be_empty
         subject.invoke_hook(:before_foo, :green)
-        invocations.should == [:callback_1, :callback_2]
+        invocations.should eq([:callback_1, :callback_2])
       end
 
       it 'invokes each of the :before_foo callbacks with no tag' do
@@ -40,7 +40,7 @@ describe VCR::Hooks do
         subject.before_foo { invocations << :no_tag_2 }
 
         subject.invoke_hook(:before_foo, :green)
-        invocations.should == [:no_tag_1, :no_tag_2]
+        invocations.should eq([:no_tag_1, :no_tag_2])
       end
 
       it 'does not invoke any callbacks with a different tag' do
@@ -57,7 +57,7 @@ describe VCR::Hooks do
 
         invocations.should be_empty
         subject.invoke_hook(:before_foo, nil)
-        invocations.should == [:callback_1, :callback_2]
+        invocations.should eq([:callback_1, :callback_2])
       end
 
       it 'does not invoke :before_bar callbacks' do
@@ -75,19 +75,19 @@ describe VCR::Hooks do
       it 'passes along the provided arguments to the callback' do
         subject.before_foo &lambda { |a, b| invocations << [a, b] }
         subject.invoke_hook(:before_foo, nil, :arg1, :arg2)
-        invocations.flatten.should == [:arg1, :arg2]
+        invocations.flatten.should eq([:arg1, :arg2])
       end
 
       it 'only passes along 1 argument when the block accepts only 1 arguments' do
         subject.before_foo &lambda { |a| invocations << a }
         subject.invoke_hook(:before_foo, nil, :arg1, :arg2)
-        invocations.flatten.should == [:arg1]
+        invocations.flatten.should eq([:arg1])
       end
 
       it 'passes along all arguments when the block accepts a variable number of args' do
         subject.before_foo &lambda { |*a| invocations << a }
         subject.invoke_hook(:before_foo, nil, :arg1, :arg2)
-        invocations.flatten.should == [:arg1, :arg2]
+        invocations.flatten.should eq([:arg1, :arg2])
       end
     end
   end

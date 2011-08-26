@@ -18,7 +18,7 @@ describe VCR::CucumberTags do
     VCR.current_cassette.should be_nil
 
     before_blocks_for_tags[tag].call
-    VCR.current_cassette.send(cassette_attribute).should == expected_value
+    VCR.current_cassette.send(cassette_attribute).should eq(expected_value)
     after_blocks_for_tags[tag].call
 
     VCR.current_cassette.should be_nil
@@ -54,7 +54,7 @@ describe VCR::CucumberTags do
     it 'returns the list of cucumber tags' do
       subject.tags 'tag1', 'tag2'
       subject.tags 'tag3', 'tag4'
-      described_class.tags[-4, 4].should == %w(@tag1 @tag2 @tag3 @tag4)
+      described_class.tags[-4, 4].should eq(%w(@tag1 @tag2 @tag3 @tag4))
     end
   end
 end

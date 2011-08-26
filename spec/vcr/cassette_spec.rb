@@ -4,7 +4,7 @@ describe VCR::Cassette do
   describe '#file' do
     it 'combines the cassette_library_dir with the cassette name' do
       cassette = VCR::Cassette.new('the_file')
-      cassette.file.should == File.join(VCR::Config.cassette_library_dir, 'the_file.yml')
+      cassette.file.should eq(File.join(VCR::Config.cassette_library_dir, 'the_file.yml'))
     end
 
     it 'strips out disallowed characters so that it is a valid file name with no spaces' do
@@ -27,9 +27,9 @@ describe VCR::Cassette do
   describe '#record_http_interaction' do
     it 'adds the interaction to #new_recorded_interactions' do
       cassette = VCR::Cassette.new(:test_cassette)
-      cassette.new_recorded_interactions.should == []
+      cassette.new_recorded_interactions.should eq([])
       cassette.record_http_interaction(:the_interaction)
-      cassette.new_recorded_interactions.should == [:the_interaction]
+      cassette.new_recorded_interactions.should eq([:the_interaction])
     end
   end
 
@@ -38,12 +38,12 @@ describe VCR::Cassette do
 
     it "returns the provided options" do
       c = VCR::Cassette.new('example', :match_requests_on => [:uri])
-      c.match_requests_on.should == [:uri]
+      c.match_requests_on.should eq([:uri])
     end
 
     it "returns a the default #match_requests_on when it has not been specified for the cassette" do
       c = VCR::Cassette.new('example')
-      c.match_requests_on.should == [:uri, :method]
+      c.match_requests_on.should eq([:uri, :method])
     end
   end
 
@@ -65,7 +65,7 @@ describe VCR::Cassette do
 
     it 'does not raise an error in the case of an empty file' do
       VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
-      VCR::Cassette.new('empty', :record => :none).recorded_interactions.should == []
+      VCR::Cassette.new('empty', :record => :none).recorded_interactions.should eq([])
     end
 
     it 'creates a stubs checkpoint on the http_stubbing_adapter' do
@@ -124,7 +124,7 @@ describe VCR::Cassette do
 
         it "defaults the record mode to #{record_mode} when VCR::Config.default_cassette_options[:record] is #{record_mode}" do
           cassette = VCR::Cassette.new(:test)
-          cassette.record_mode.should == record_mode
+          cassette.record_mode.should eq(record_mode)
         end
       end
 
@@ -186,7 +186,7 @@ describe VCR::Cassette do
               before(:each) { File.stub(:exist?).with(file_name).and_return(false) }
 
               it "has :#{record_mode} for the record mode" do
-                subject.record_mode.should == record_mode
+                subject.record_mode.should eq(record_mode)
               end
             end
 
@@ -200,7 +200,7 @@ describe VCR::Cassette do
                 before(:each) { File.stub(:stat).with(file_name).and_return(stub(:mtime => Time.now - 7.days + 60)) }
 
                 it "has :#{record_mode} for the record mode" do
-                  subject.record_mode.should == record_mode
+                  subject.record_mode.should eq(record_mode)
                 end
               end
 
@@ -209,12 +209,12 @@ describe VCR::Cassette do
 
                 it "has :all for the record mode when there is an internet connection available" do
                   VCR::InternetConnection.stub(:available? => true)
-                  subject.record_mode.should == :all
+                  subject.record_mode.should eq(:all)
                 end
 
                 it "has :#{record_mode} for the record mode when there is no internet connection available" do
                   VCR::InternetConnection.stub(:available? => false)
-                  subject.record_mode.should == record_mode
+                  subject.record_mode.should eq(record_mode)
                 end
               end
             end
@@ -233,7 +233,7 @@ describe VCR::Cassette do
 
           VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
           cassette = VCR::Cassette.new('with_localhost_requests', :record => record_mode)
-          cassette.recorded_interactions.map { |i| URI.parse(i.uri).host }.should == %w[example.com]
+          cassette.recorded_interactions.map { |i| URI.parse(i.uri).host }.should eq(%w[example.com])
         end
 
         it "loads the recorded interactions from the library yml file" do
@@ -244,16 +244,16 @@ describe VCR::Cassette do
 
           i1, i2, i3 = *cassette.recorded_interactions
 
-          i1.request.method.should == :get
-          i1.request.uri.should == 'http://example.com:80/'
+          i1.request.method.should eq(:get)
+          i1.request.uri.should eq('http://example.com:80/')
           i1.response.body.should =~ /You have reached this web page by typing.+example\.com/
 
-          i2.request.method.should == :get
-          i2.request.uri.should == 'http://example.com:80/foo'
+          i2.request.method.should eq(:get)
+          i2.request.uri.should eq('http://example.com:80/foo')
           i2.response.body.should =~ /foo was not found on this server/
 
-          i3.request.method.should == :get
-          i3.request.uri.should == 'http://example.com:80/'
+          i3.request.method.should eq(:get)
+          i3.request.uri.should eq('http://example.com:80/')
           i3.response.body.should =~ /Another example\.com response/
         end
 
@@ -324,7 +324,7 @@ describe VCR::Cassette do
 
       expect { cassette.eject }.to change { File.exist?(cassette.file) }.from(false).to(true)
       saved_recorded_interactions = VCR::YAML.load_file(cassette.file)
-      saved_recorded_interactions.should == recorded_interactions
+      saved_recorded_interactions.should eq(recorded_interactions)
     end
 
     it 'invokes the appropriately tagged before_record hooks' do
@@ -359,7 +359,7 @@ describe VCR::Cassette do
       cassette.eject
 
       saved_recorded_interactions = VCR::YAML.load_file(cassette.file)
-      saved_recorded_interactions.should == [interaction_2]
+      saved_recorded_interactions.should eq([interaction_2])
     end
 
     it 'does not write the cassette to disk if all interactions have been ignored' do
@@ -380,7 +380,7 @@ describe VCR::Cassette do
 
       expect { cassette.eject }.to change { File.exist?(cassette.file) }.from(false).to(true)
       saved_recorded_interactions = VCR::YAML.load_file(cassette.file)
-      saved_recorded_interactions.should == recorded_interactions
+      saved_recorded_interactions.should eq(recorded_interactions)
     end
 
     [:all, :none, :new_episodes].each do |record_mode|
@@ -440,12 +440,12 @@ describe VCR::Cassette do
             it 'removes the old interactions that match new requests, and saves the new interactions follow the old ones' do
               subject.eject
 
-              saved_recorded_interactions.should == [
+              saved_recorded_interactions.should eq([
                 old_interaction_2,
                 new_interaction_1,
                 new_interaction_2,
                 new_interaction_3
-              ]
+              ])
             end
 
             it "matches old requests to new ones using the cassette's match attributes" do
@@ -464,14 +464,14 @@ describe VCR::Cassette do
             it 'saves the old interactions followed by the new ones to disk' do
               subject.eject
 
-              saved_recorded_interactions.should == [
+              saved_recorded_interactions.should eq([
                 old_interaction_1,
                 old_interaction_2,
                 old_interaction_3,
                 new_interaction_1,
                 new_interaction_2,
                 new_interaction_3
-              ]
+              ])
             end
           end
         end

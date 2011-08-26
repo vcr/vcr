@@ -21,14 +21,14 @@ describe VCR::Cassette::Reader do
 
     context 'when ERB is disabled' do
       it 'reads the raw file content' do
-        read('no_vars', false).should == no_vars_content
-        read('no_vars', nil).should == no_vars_content
+        read('no_vars', false).should eq(no_vars_content)
+        read('no_vars', nil).should eq(no_vars_content)
       end
     end
 
     context 'when ERB is enabled but no variables are passed' do
       it 'renders the file content as ERB' do
-        read('no_vars', true).should == "7. Some ERB"
+        read('no_vars', true).should eq("7. Some ERB")
       end
 
       it 'raises an appropriate error when the ERB template needs variables' do
@@ -43,7 +43,7 @@ describe VCR::Cassette::Reader do
 
     context 'when ERB is enabled and variables are passed' do
       it 'renders the file content as ERB with the passed variables' do
-        read('vars', :var1 => 'foo', :var2 => 'bar').should == 'foo. ERB with Vars! bar'
+        read('vars', :var1 => 'foo', :var2 => 'bar').should eq('foo. ERB with Vars! bar')
       end
 
       it 'raises an appropriate error when one or more of the needed variables are not passed' do

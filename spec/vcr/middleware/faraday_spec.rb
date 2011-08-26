@@ -25,13 +25,13 @@ describe VCR::Middleware::Faraday do
     end
 
     it 'sets the cassette name based on the provided block' do
-      app = lambda { |env| VCR.current_cassette.name.should == 'rack_cassette' }
+      app = lambda { |env| VCR.current_cassette.name.should eq('rack_cassette') }
       instance = described_class.new(app) { |c| c.name 'rack_cassette' }
       instance.call(env_hash)
     end
 
     it 'sets the cassette options based on the provided block' do
-      app = lambda { |env| VCR.current_cassette.erb.should == { :foo => :bar } }
+      app = lambda { |env| VCR.current_cassette.erb.should eq({ :foo => :bar }) }
       instance = described_class.new(app, &lambda do |c|
         c.name    'c'
         c.options :erb => { :foo => :bar }
@@ -42,7 +42,7 @@ describe VCR::Middleware::Faraday do
 
     it 'yields the env to the provided block when the block accepts 2 arguments' do
       instance = described_class.new(lambda { |env| }, &lambda do |c, env|
-        env.should == env_hash
+        env.should eq(env_hash)
         c.name    'c'
       end)
 

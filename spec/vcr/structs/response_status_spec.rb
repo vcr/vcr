@@ -6,8 +6,8 @@ describe VCR::ResponseStatus do
     subject { described_class.from_net_http_response(response) }
 
     it            { should be_instance_of(described_class) }
-    its(:code)    { should == 200 }
-    its(:message) { should == 'OK' }
+    its(:code)    { should eq(200) }
+    its(:message) { should eq('OK') }
   end
 
   it_performs 'status message normalization' do

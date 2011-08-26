@@ -6,7 +6,7 @@ describe VCR::HTTPInteraction do
       sig = mock('request signature')
       sig.should_receive(attr).and_return(:the_value)
       instance = described_class.new(sig, nil)
-      instance.send(attr).should == :the_value
+      instance.send(attr).should eq(:the_value)
     end
   end
 
@@ -62,23 +62,23 @@ describe VCR::HTTPInteraction do
 
     [:request, :response].each do |part|
       it "replaces the sensitive text in the #{part} header keys and values" do
-        subject.send(part).headers.should == {
+        subject.send(part).headers.should eq({
           'x-http-AAA' => ['bar23', '23AAA'],
           'x-http-bar' => ['AAA23', '18']
-        }
+        })
       end
 
       it "replaces the sensitive text in the #{part} body" do
-        subject.send(part).body.should == "The body AAA this is (AAA-Foo)"
+        subject.send(part).body.should eq("The body AAA this is (AAA-Foo)")
       end
     end
 
     it 'replaces the sensitive text in the response status' do
-      subject.response.status.message.should == 'OK AAA'
+      subject.response.status.message.should eq('OK AAA')
     end
 
     it 'replaces sensitive text in the request URI' do
-      subject.request.uri.should == 'http://example-AAA.com:80/AAA/'
+      subject.request.uri.should eq('http://example-AAA.com:80/AAA/')
     end
   end
 end

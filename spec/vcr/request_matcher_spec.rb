@@ -18,11 +18,11 @@ describe VCR::RequestMatcher do
     let(:uri) { 'http://foo.example.com/path/to/something?param=value' }
 
     for_matcher do
-      it("returns a regex that matches any URI") { should == /.*/ }
+      it("returns a regex that matches any URI") { should eq(/.*/) }
     end
 
     for_matcher :uri do
-      it("returns the exact uri") { should == uri }
+      it("returns the exact uri") { should eq(uri) }
     end
 
     for_matcher :host do
@@ -83,7 +83,7 @@ describe VCR::RequestMatcher do
     it "returns the request's URI when it is a regex, regardless of the match attributes" do
       [:uri, :host, :path].each do |attribute|
         matcher = VCR::RequestMatcher.new(stub(:uri => /some regex/), [attribute])
-        matcher.uri.should == /some regex/
+        matcher.uri.should eq(/some regex/)
       end
     end
   end
@@ -91,7 +91,7 @@ describe VCR::RequestMatcher do
   describe '#method' do
     it 'returns the request method when the match attributes include :method' do
       matcher = VCR::RequestMatcher.new(stub(:method => :get), [:method])
-      matcher.method.should == :get
+      matcher.method.should eq(:get)
     end
 
     it 'returns nil when the match attributes do not include :method' do
@@ -103,7 +103,7 @@ describe VCR::RequestMatcher do
   describe '#body' do
     it 'returns the request body when the match attributes include :body' do
       matcher = VCR::RequestMatcher.new(stub(:body => 'id=7'), [:body])
-      matcher.body.should == 'id=7'
+      matcher.body.should eq('id=7')
     end
 
     it 'returns nil when the match attributes do not include :body' do
@@ -115,7 +115,7 @@ describe VCR::RequestMatcher do
   describe '#headers' do
     it 'returns the request headers when the match attributes include :headers' do
       matcher = VCR::RequestMatcher.new(stub(:headers => { 'key' => 'value' }), [:headers])
-      matcher.headers.should == { 'key' => 'value' }
+      matcher.headers.should eq({ 'key' => 'value' })
     end
 
     it 'returns nil when the match attributes do not include :headers' do
@@ -152,14 +152,14 @@ describe VCR::RequestMatcher do
   describe '#hash' do
     it 'returns the same code for two objects when #match_attributes, #method, #uri, #body and #headers are the same, even when the request object is different' do
       m1, m2 = matchers_varying_on(:request)
-      m1.hash.should == m2.hash
+      m1.hash.should eq(m2.hash)
     end
 
     it 'returns the same code for two objects when the matchers are the same, but #match_attributes has its elements in a different order' do
       m1, m2 = matcher, matcher
       m1.match_attributes = [:method, :uri, :body, :headers]
       m2.match_attributes = [:method, :body, :uri, :headers]
-      m1.hash.should == m2.hash
+      m1.hash.should eq(m2.hash)
     end
 
     [:match_attributes, :method, :uri, :body, :headers].each do |different_attr|
@@ -173,19 +173,19 @@ describe VCR::RequestMatcher do
       it 'returns the same code for the same headers' do
         m1 = matcher_with_headers('x-http-header' => ['val1'])
         m2 = matcher_with_headers('x-http-header' => ['val1'])
-        m1.hash.should == m2.hash
+        m1.hash.should eq(m2.hash)
       end
 
       it 'returns the same code when the header keys are ordered differently' do
         m1 = matcher_with_headers('x-http-header1' => ['val1'], 'x-http-header2' => ['val2'])
         m2 = matcher_with_headers('x-http-header2' => ['val2'], 'x-http-header1' => ['val1'])
-        m1.hash.should == m2.hash
+        m1.hash.should eq(m2.hash)
       end
 
       it 'returns the same code when the header value arrays are ordered differently' do
         m1 = matcher_with_headers('x-http-header' => ['val1', 'val2'])
         m2 = matcher_with_headers('x-http-header' => ['val2', 'val1'])
-        m1.hash.should == m2.hash
+        m1.hash.should eq(m2.hash)
       end
 
       it 'returns a different code when the header values are different' do

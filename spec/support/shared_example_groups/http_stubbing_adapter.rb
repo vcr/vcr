@@ -27,11 +27,11 @@ shared_examples_for "an http stubbing adapter" do |supported_http_libraries, sup
     VCR::HttpStubbingAdapters::Common.adapters.each do |adapter|
       if adapter == described_class
         it "yields with #{adapter} enabled" do
-          adapter_enabled?(adapter).should == true
+          adapter_enabled?(adapter).should eq(true)
         end
       else
         it "yields without #{adapter} enabled" do
-          adapter_enabled?(adapter).should == false
+          adapter_enabled?(adapter).should eq(false)
         end
       end
     end
@@ -48,14 +48,14 @@ shared_examples_for "an http stubbing adapter" do |supported_http_libraries, sup
       it 'returns the uri for the given http request' do
         net_http = Net::HTTP.new('example.com', 80)
         request = Net::HTTP::Get.new('/foo/bar')
-        subject.request_uri(net_http, request).should == 'http://example.com:80/foo/bar'
+        subject.request_uri(net_http, request).should eq('http://example.com:80/foo/bar')
       end
 
       it 'handles basic auth' do
         net_http = Net::HTTP.new('example.com',80)
         request = Net::HTTP::Get.new('/auth.txt')
         request.basic_auth 'user', 'pass'
-        subject.request_uri(net_http, request).should == 'http://user:pass@example.com:80/auth.txt'
+        subject.request_uri(net_http, request).should eq('http://user:pass@example.com:80/auth.txt')
       end
     end
 
@@ -73,12 +73,12 @@ shared_examples_for "an http stubbing adapter" do |supported_http_libraries, sup
 
             [valid1, valid2].each do |val|
               it "returns true for a #{val.inspect} request" do
-                subject.request_stubbed?(request(val), [attribute]).should == true
+                subject.request_stubbed?(request(val), [attribute]).should eq(true)
               end
             end
 
             it "returns false for another #{attribute}"  do
-              subject.request_stubbed?(request(invalid), [attribute]).should == false
+              subject.request_stubbed?(request(invalid), [attribute]).should eq(false)
             end
           else
             it 'raises an error indicating matching requests on this attribute is not supported' do

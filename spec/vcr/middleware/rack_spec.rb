@@ -15,7 +15,7 @@ describe VCR::Middleware::Rack do
       rack_app = mock
       rack_app.should_receive(:call).with(env_hash).and_return(:response)
       instance = described_class.new(rack_app) { |c| c.name 'cassette_name' }
-      instance.call(env_hash).should == :response
+      instance.call(env_hash).should eq(:response)
     end
 
     it 'uses a cassette when the rack app is called' do
@@ -27,13 +27,13 @@ describe VCR::Middleware::Rack do
     end
 
     it 'sets the cassette name based on the provided block' do
-      rack_app = lambda { |env| VCR.current_cassette.name.should == 'rack_cassette' }
+      rack_app = lambda { |env| VCR.current_cassette.name.should eq('rack_cassette') }
       instance = described_class.new(rack_app) { |c| c.name 'rack_cassette' }
       instance.call({})
     end
 
     it 'sets the cassette options based on the provided block' do
-      rack_app = lambda { |env| VCR.current_cassette.erb.should == { :foo => :bar } }
+      rack_app = lambda { |env| VCR.current_cassette.erb.should eq({ :foo => :bar }) }
       instance = described_class.new(rack_app, &lambda do |c|
         c.name    'c'
         c.options :erb => { :foo => :bar }
@@ -44,7 +44,7 @@ describe VCR::Middleware::Rack do
 
     it 'yields the rack env to the provided block when the block accepts 2 arguments' do
       instance = described_class.new(lambda { |env| }, &lambda do |c, env|
-        env.should == env_hash
+        env.should eq(env_hash)
         c.name    'c'
       end)
 
