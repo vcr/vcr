@@ -14,6 +14,7 @@ Feature: Usage with Test::Unit
       """
     Given a file named "test/test_helper.rb" with:
       """
+      require 'test/test_server' if ENV['SERVER'] == 'true'
       require 'test/unit'
       require 'vcr'
 
@@ -37,10 +38,12 @@ Feature: Usage with Test::Unit
       end
       """
     And the directory "test/fixtures/vcr_cassettes" does not exist
-    When I run `ruby -Itest -rtest/test_server test/vcr_example_test.rb`
+    When I set the "SERVER" environment variable to "true"
+     And I run `ruby -Itest test/vcr_example_test.rb`
     Then it should pass with "1 tests, 1 assertions, 0 failures, 0 errors"
     And the file "test/fixtures/vcr_cassettes/test_unit_example.yml" should contain "body: Hello"
 
     # Run again without starting the sinatra server so the response will be replayed
-    When I run `ruby -Itest test/vcr_example_test.rb`
+    When I set the "SERVER" environment variable to "false"
+     And I run `ruby -Itest test/vcr_example_test.rb`
     Then it should pass with "1 tests, 1 assertions, 0 failures, 0 errors"
