@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 shared_examples_for "header normalization" do
   let(:instance) do
     with_headers('Some_Header' => 'value1', 'aNother' => ['a', 'b'], 'third' => [], 'fourth' => nil)
