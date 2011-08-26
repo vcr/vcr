@@ -308,13 +308,7 @@ describe VCR do
 
   describe '.turned_on?' do
     it 'is on by default' do
-      # clear internal state
-      VCR.instance_eval do
-        instance_variables.each do |var|
-          remove_instance_variable(var)
-        end
-      end
-
+      VCR.send(:initialize_ivars) # clear internal state
       VCR.should be_turned_on
     end
   end

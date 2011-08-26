@@ -73,6 +73,12 @@ module VCR
       uri = URI.parse(uri) unless uri.respond_to?(:host)
       ignored_hosts.include?(uri.host)
     end
+
+    def initialize_ivars
+      @allow_http_connections_when_no_cassette = nil
+    end
+
+    initialize_ivars # to avoid warnings
   end
 end
 

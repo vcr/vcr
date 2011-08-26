@@ -166,4 +166,10 @@ module VCR
   def cassettes
     @cassettes ||= []
   end
+
+  def initialize_ivars
+    @turned_off = false
+  end
+
+  initialize_ivars # to avoid warnings
 end

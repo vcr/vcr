@@ -35,6 +35,7 @@ module VCR
       VCR.instance_eval do
         instance_variables.each { |ivar| remove_instance_variable(ivar) }
       end
+      VCR.send(:initialize_ivars)
     end
   end
 end

@@ -78,6 +78,12 @@ module VCR
       def checkpoints
         @checkpoints ||= {}
       end
+
+      def initialize_ivars
+        @http_connections_allowed = nil
+      end
+
+      initialize_ivars # to avoid warnings
     end
   end
 end
