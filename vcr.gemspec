@@ -22,8 +22,6 @@ Gem::Specification.new do |s|
     'rake'            => '~> 0.9.2',
 
     'rspec'           => '~> 2.6',
-    'cucumber'        => '~> 1.0.2',
-    'aruba'           => '~> 0.4.6',
     'shoulda'         => '~> 2.9.2',
 
     'fakeweb'         => '~> 1.3.0',
@@ -40,6 +38,14 @@ Gem::Specification.new do |s|
   }.each do |lib, version|
     s.add_development_dependency lib, version
   end
+
+  # Cucumber 1.0.2 seems to have issues installing on 1.8.6 :(.
+  {
+    'cucumber'        => '~> 1.0.2',
+    'aruba'           => '~> 0.4.6',
+  }.each do |lib, version|
+    s.add_development_dependency lib, version
+  end unless RUBY_VERSION == '1.8.6'
 
   {
     'patron'          => '0.4.9',

@@ -25,8 +25,10 @@ task :cleanup_rcov_files do
   rm_rf 'coverage.data'
 end
 
-require 'cucumber/rake/task'
-Cucumber::Rake::Task.new
+unless RUBY_VERSION == '1.8.6'
+  require 'cucumber/rake/task'
+  Cucumber::Rake::Task.new
+end
 
 task :default => [:spec, :cucumber]
 
