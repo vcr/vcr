@@ -13,18 +13,18 @@ Feature: Usage with Shoulda
   errors occur.
 
   Scenario: Use `VCR.insert_cassette` and `VCR.eject_cassette`
+    Given a file named "test/test_server.rb" with:
+      """
+      require 'vcr_cucumber_helpers'
+
+      start_sinatra_app(:port => 7777) do
+        get('/') { "Hello" }
+      end
+      """
     Given a file named "test/test_helper.rb" with:
       """
       require 'test/unit'
       require 'shoulda'
-      require 'vcr_cucumber_helpers'
-
-      if ARGV.include?('--with-server')
-        start_sinatra_app(:port => 7777) do
-          get('/') { "Hello" }
-        end
-      end
-
       require 'vcr'
 
       VCR.config do |c|
@@ -55,7 +55,7 @@ Feature: Usage with Shoulda
       end
       """
     And the directory "test/fixtures/vcr_cassettes" does not exist
-    When I run `ruby -Itest test/vcr_example_test.rb -- --with-server`
+    When I run `ruby -Itest -rtest/test_server test/vcr_example_test.rb`
     Then it should pass with "1 tests, 1 assertions, 0 failures, 0 errors"
     And the file "test/fixtures/vcr_cassettes/shoulda_example.yml" should contain "body: Hello"
 

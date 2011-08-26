@@ -4,17 +4,17 @@ Feature: Usage with Test::Unit
   `VCR.use_cassette`.
 
   Scenario: Use `VCR.use_cassette` in a test
+    Given a file named "test/test_server.rb" with:
+      """
+      require 'vcr_cucumber_helpers'
+
+      start_sinatra_app(:port => 7777) do
+        get('/') { "Hello" }
+      end
+      """
     Given a file named "test/test_helper.rb" with:
       """
       require 'test/unit'
-      require 'vcr_cucumber_helpers'
-
-      if ARGV.include?('--with-server')
-        start_sinatra_app(:port => 7777) do
-          get('/') { "Hello" }
-        end
-      end
-
       require 'vcr'
 
       VCR.config do |c|
@@ -37,7 +37,7 @@ Feature: Usage with Test::Unit
       end
       """
     And the directory "test/fixtures/vcr_cassettes" does not exist
-    When I run `ruby -Itest test/vcr_example_test.rb -- --with-server`
+    When I run `ruby -Itest -rtest/test_server test/vcr_example_test.rb`
     Then it should pass with "1 tests, 1 assertions, 0 failures, 0 errors"
     And the file "test/fixtures/vcr_cassettes/test_unit_example.yml" should contain "body: Hello"
 
