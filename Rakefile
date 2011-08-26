@@ -44,7 +44,7 @@ namespace :ci do
   end
 
   ci_tasks = [:setup, :spec]
-  ci_tasks << :cucumber if %w[ 1.8.7 1.9.2 ].include?(RUBY_VERSION) && (!defined?(RUBY_ENGINE) || RUBY_ENGINE == 'ruby')
+  ci_tasks << :cucumber if %w[ 1.8.7 1.9.2 1.9.3 ].include?(RUBY_VERSION) && (!defined?(RUBY_ENGINE) || RUBY_ENGINE == 'ruby')
   desc "Run a ci build"
   task :build => ci_tasks
 end
