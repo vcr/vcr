@@ -46,6 +46,9 @@ namespace :ci do
 
   RSpec::Core::RakeTask.new(:spec) do |t|
     t.verbose = true
+    t.ruby_opts = "-w -r./spec/capture_warnings"
+    # I'm not sure why, but bundler seems to silence warnings...
+    t.skip_bundler = true
     t.rspec_opts = %w[--format progress --backtrace]
   end
 
