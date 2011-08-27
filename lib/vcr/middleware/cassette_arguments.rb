@@ -2,6 +2,7 @@ module VCR
   module Middleware
     class CassetteArguments
       def initialize
+        @name    = nil
         @options = {}
       end
 

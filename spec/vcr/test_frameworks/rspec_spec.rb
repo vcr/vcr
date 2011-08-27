@@ -7,16 +7,15 @@ describe VCR::RSpec::Macros do
     def self.perform_test(context_name, expected_cassette_name, *args, &block)
       context context_name do
         after(:each) do
-          if @test_ejection
+          if example.metadata[:test_ejection]
             VCR.current_cassette.should be_nil
           end
         end
 
         use_vcr_cassette(*args)
 
-        it 'ejects the cassette in an after hook' do
+        it 'ejects the cassette in an after hook', :test_ejection do
           VCR.current_cassette.should be_a(VCR::Cassette)
-          @test_ejection = true
         end
 
         it "creates a cassette named '#{expected_cassette_name}" do
