@@ -12,6 +12,10 @@
 module VCR
   module Net
     module HTTPResponse
+      def self.extended(response)
+        response.instance_variable_set(:@__read_body_previously_called, false)
+      end
+
       def read_body(dest = nil, &block)
         return super if @__read_body_previously_called
         return @body if dest.nil? && block.nil?

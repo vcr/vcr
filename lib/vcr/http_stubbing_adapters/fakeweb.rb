@@ -93,6 +93,12 @@ module VCR
           raise UnsupportedRequestMatchAttributeError.new("FakeWeb does not support matching requests on #{invalid_attributes.join(' or ')}")
         end
       end
+
+      def initialize_ivars
+        @http_connections_allowed = nil
+      end
+
+      initialize_ivars # to avoid warnings
     end
   end
 end

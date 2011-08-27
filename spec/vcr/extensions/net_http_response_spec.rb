@@ -45,7 +45,7 @@ describe VCR::Net::HTTPResponse do
       let(:http_verb_method) { :"request_#{http_verb}" }
 
       def response(&block)
-        if @response && block
+        if defined?(@response) && block
           block.call(@response)
           return @response
         end

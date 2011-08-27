@@ -75,7 +75,7 @@ module VCR
       attr_writer :http_connections_allowed
 
       def http_connections_allowed?
-        !!@http_connections_allowed
+        defined?(@http_connections_allowed) && !!@http_connections_allowed
       end
 
       def ignored_hosts=(hosts)
