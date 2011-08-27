@@ -11,12 +11,12 @@ require "rspec/core/rake_task"
 
 RSpec::Core::RakeTask.new(:spec) do |t|
   t.verbose = false
-  t.ruby_opts = "-w" if ENV['WARNINGS']
+  t.ruby_opts = "-w -r./spec/capture_warnings"
 
   # I'm not sure why, but bundler seems to silence warnings...
-  t.skip_bundler = true if ENV['WARNINGS'] || !using_git
+  t.skip_bundler = true
 
-  t.rspec_opts = %w[--format progress] #if (ENV['FULL_BUILD'] || !using_git)
+  t.rspec_opts = %w[--format progress] if (ENV['FULL_BUILD'] || !using_git)
 end
 
 desc "Run all examples using rcov"
