@@ -73,7 +73,11 @@ module MonkeyPatches
   end
 
   def realias(klass, method, alias_extension)
-    klass.class_eval { alias_method method, :"#{method}_#{alias_extension}" }
+    klass.class_eval do
+      old_verbose, $VERBOSE = $VERBOSE, nil
+      alias_method method, :"#{method}_#{alias_extension}"
+      $VERBOSE = old_verbose
+    end
   end
 
   def realias_all(alias_extension)
