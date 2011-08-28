@@ -6,6 +6,8 @@ current_dir = Dir.pwd
 at_exit do
   stderr_file.rewind
   lines = stderr_file.read.split("\n").uniq
+  stderr_file.close!
+
   vcr_warnings, other_warnings = lines.partition { |line| line.include?(current_dir) }
 
   if vcr_warnings.any?
