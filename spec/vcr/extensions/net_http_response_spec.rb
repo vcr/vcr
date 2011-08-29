@@ -12,7 +12,7 @@ describe VCR::Net::HTTPResponse do
 
     it 'allows the body to be read using #read_body with a block' do
       yielded_body = ''
-      ret_val = response { |r| r.read_body { |s| yielded_body << s.to_s } }
+      response { |r| r.read_body { |s| yielded_body << s.to_s } }
       yielded_body.should =~ expected_regex
     end
 

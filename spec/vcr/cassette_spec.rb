@@ -283,19 +283,19 @@ describe VCR::Cassette do
           it "stubs the recorded requests with the http stubbing adapter" do
             VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
             VCR.http_stubbing_adapter.should_receive(:stub_requests).with([an_instance_of(VCR::HTTPInteraction)]*3, anything)
-            cassette = VCR::Cassette.new('example', :record => record_mode)
+            VCR::Cassette.new('example', :record => record_mode)
           end
 
           it "passes the :match_request_on option to #stub_requests" do
             VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
             VCR.http_stubbing_adapter.should_receive(:stub_requests).with(anything, [:body, :headers])
-            cassette = VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:body, :headers])
+            VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:body, :headers])
           end
         else
           it "does not stub the recorded requests with the http stubbing adapter" do
             VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
             VCR.http_stubbing_adapter.should_not_receive(:stub_requests)
-            cassette = VCR::Cassette.new('example', :record => record_mode)
+            VCR::Cassette.new('example', :record => record_mode)
           end
         end
       end

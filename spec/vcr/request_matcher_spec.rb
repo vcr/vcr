@@ -10,7 +10,7 @@ describe VCR::RequestMatcher do
   describe '#uri' do
     def self.for_matcher(*attributes, &block)
       context "for match_attributes = #{attributes.inspect}" do
-        subject { matcher = VCR::RequestMatcher.new(stub(:uri => uri), attributes).uri }
+        subject { VCR::RequestMatcher.new(stub(:uri => uri), attributes).uri }
         module_eval(&block)
       end
     end
