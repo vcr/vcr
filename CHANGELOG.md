@@ -1,6 +1,13 @@
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.11.1...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.11.2...master)
+
+## 1.11.2 (August 28, 2011)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.11.1...v1.11.2)
+
+* Updated rake, cucumber and aruba dev dependencies to latest releases.
+* Fix all warnings originating from VCR.  VCR is now warning-free!
 
 ## 1.11.1 (August 18, 2011)
 
