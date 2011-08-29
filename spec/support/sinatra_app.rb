@@ -32,6 +32,8 @@ module VCR
       server.port
     end
 
+    @_boot_failed = false
+
     def self.server
       raise "Sinatra app failed to boot." if @_boot_failed
       @server ||= begin
