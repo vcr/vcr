@@ -10,6 +10,15 @@ at_exit do
 
   vcr_warnings, other_warnings = lines.partition { |line| line.include?(current_dir) }
 
+  # For some weird reason, JRuby is giving me some warnings about
+  # `@proxy` not being initialized, and putting a vcr file/line number
+  # in the warning, but it's really happening in excon.
+  if RUBY_PLATFORM == 'java'
+    vcr_warnings.reject! do |line|
+      line.include?('@proxy not initialized') && line.include?('excon')
+    end
+  end
+
   if vcr_warnings.any?
     puts
     puts "-" * 30 + " VCR Warnings: " + "-" * 30
