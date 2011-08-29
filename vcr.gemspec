@@ -48,9 +48,9 @@ Gem::Specification.new do |s|
   end unless RUBY_VERSION == '1.8.6'
 
   {
-    'patron'          => '0.4.9',
+    'patron'          => '~> 0.4.15',
     'em-http-request' => '~> 0.3.0',
-    'curb'            => '0.7.8',
+    'curb'            => '~> 0.7.15',
     'typhoeus'        => '~> 0.2.1'
   }.each do |lib, version|
     s.add_development_dependency lib, version

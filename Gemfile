@@ -4,9 +4,9 @@ gemspec
 group :development do
   # patron and em-http-request can't install on JRuby, so we have to limit their platform here.
   platforms :ruby do
-    gem 'patron',           '0.4.9'
+    gem 'patron',           '~> 0.4.15'
     gem 'em-http-request',  '~> 0.3.0'
-    gem 'curb',             '0.7.8'
+    gem 'curb',             '~> 0.7.15'
     gem 'typhoeus',         '~> 0.2.1'
   end
 
