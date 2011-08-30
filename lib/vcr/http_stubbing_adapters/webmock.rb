@@ -10,64 +10,58 @@ module VCR
       MAXIMUM_VERSION = '1.7'
 
       def http_connections_allowed=(value)
-        @http_connections_allowed = value
+        super
         update_webmock_allow_net_connect
-      end
-
-      def http_connections_allowed?
-        !!::WebMock::Config.instance.allow_net_connect
       end
 
       def ignored_hosts=(hosts)
-        @ignored_hosts = hosts
+        super
         update_webmock_allow_net_connect
       end
 
-      def stub_requests(http_interactions, match_attributes)
-        grouped_responses(http_interactions, match_attributes).each do |request_matcher, responses|
-          stub = ::WebMock.stub_request(request_matcher.method || :any, request_matcher.uri)
+      def vcr_request_from(webmock_request)
+        VCR::Request.new(
+          webmock_request.method,
+          webmock_request.uri.to_s,
+          webmock_request.body,
+          webmock_request.headers
+        )
+      end
 
-          with_hash = request_signature_hash(request_matcher)
-          stub = stub.with(with_hash) if with_hash.size > 0
-
-          stub.to_return(responses.map{ |r| response_hash(r) })
-        end
+      def stub_requests(*args)
+        super
+        setup_webmock_hook
       end
 
       def create_stubs_checkpoint(cassette)
-        checkpoints[cassette] = ::WebMock::StubRegistry.instance.request_stubs.dup
+        webmock_checkpoints[cassette] = ::WebMock::StubRegistry.instance.request_stubs.dup
+        super
       end
 
       def restore_stubs_checkpoint(cassette)
-        ::WebMock::StubRegistry.instance.request_stubs = checkpoints.delete(cassette) || raise_no_checkpoint_error(cassette)
+        ::WebMock::StubRegistry.instance.request_stubs = webmock_checkpoints.delete(cassette) || raise_no_checkpoint_error(cassette)
+        super
       end
 
-      private
-
-      def version
-        ::WebMock.version
-      end
-
-      def ignored_hosts
-        @ignored_hosts ||= []
-      end
+    private
 
       def update_webmock_allow_net_connect
-        if @http_connections_allowed
+        if http_connections_allowed?
           ::WebMock.allow_net_connect!
         else
           ::WebMock.disable_net_connect!(:allow => ignored_hosts)
         end
       end
 
-      def request_signature_hash(request_matcher)
-        signature = {}
-        signature[:body]    = request_matcher.body    if request_matcher.match_requests_on?(:body)
-        signature[:headers] = request_matcher.headers if request_matcher.match_requests_on?(:headers)
-        signature
+      def webmock_checkpoints
+        @webmock_checkpoints ||= {}
       end
 
-      def response_hash(response)
+      def version
+        ::WebMock.version
+      end
+
+      def response_hash_for(response)
         {
           :body    => response.body,
           :status  => [response.status.code.to_i, response.status.message],
@@ -75,15 +69,25 @@ module VCR
         }
       end
 
-      def checkpoints
-        @checkpoints ||= {}
+      def normalize_uri(uri)
+        ::WebMock::Util::URI.normalize_uri(uri).to_s
       end
 
-      def initialize_ivars
-        @http_connections_allowed = nil
+      def setup_webmock_hook
+        ::WebMock.stub_request(:any, /.*/).with { |request|
+          if uri_should_be_ignored?(request.uri)
+            false
+          elsif has_stubbed_response_for?(vcr_request_from(request))
+            true
+          elsif http_connections_allowed?
+            false
+          else
+            raise_connections_disabled_error(request.method, request.uri.to_s)
+          end
+        }.to_return(lambda { |request|
+          response_hash_for stubbed_response_for(vcr_request_from(request))
+        })
       end
-
-      initialize_ivars # to avoid warnings
     end
   end
 end
@@ -91,12 +95,7 @@ end
 WebMock.after_request(:real_requests_only => true) do |request, response|
   if VCR::HttpStubbingAdapters::WebMock.enabled?
     http_interaction = VCR::HTTPInteraction.new(
-      VCR::Request.new(
-        request.method,
-        request.uri.to_s,
-        request.body,
-        request.headers
-      ),
+      VCR::HttpStubbingAdapters::WebMock.vcr_request_from(request),
       VCR::Response.new(
         VCR::ResponseStatus.new(
           response.status.first,
@@ -118,3 +117,4 @@ WebMock::NetConnectNotAllowedError.class_eval do
     '.  ' + VCR::HttpStubbingAdapters::Common::RECORDING_INSTRUCTIONS
   end
 end
+

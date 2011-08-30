@@ -41,7 +41,7 @@ Feature: Usage with Cucumber
       require 'vcr'
 
       VCR.configure do |c|
-        c.stub_with :webmock
+        c.stub_with :fakeweb
         c.cassette_library_dir     = 'features/cassettes'
       end
 

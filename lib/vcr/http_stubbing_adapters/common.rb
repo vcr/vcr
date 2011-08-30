@@ -8,6 +8,7 @@ module VCR
     autoload :WebMock,          'vcr/http_stubbing_adapters/webmock'
 
     class UnsupportedRequestMatchAttributeError < ArgumentError; end
+    class HttpConnectionNotAllowedError < StandardError; end
 
     module Common
       class << self
@@ -105,18 +106,33 @@ module VCR
         @stub_queues = checkpoints.delete(cassette) || raise_no_checkpoint_error(cassette)
       end
 
-      def stubbed_response_for(request)
+      def stubbed_response_for(request, remove = true)
         return nil unless match_attributes_stack.any?
         request_matcher = request.matcher(match_attributes_stack.last)
         queue = stub_queues[request_matcher]
-        return queue.shift if queue.size > 1
-        queue.first
+
+        if remove && queue.size > 1
+          queue.shift
+        else
+          queue.first
+        end
+      end
+
+      def has_stubbed_response_for?(request)
+        !!stubbed_response_for(request, false)
       end
 
       def reset!
         instance_variables.each do |ivar|
           remove_instance_variable(ivar)
         end
+      end
+
+      def raise_connections_disabled_error(method, uri)
+        raise HttpConnectionNotAllowedError.new(
+          "Real HTTP connections are disabled. Request: #{method} #{uri}.  " +
+          RECORDING_INSTRUCTIONS
+        )
       end
 
       private

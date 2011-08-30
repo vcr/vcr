@@ -6,7 +6,8 @@ module VCR
       include VCR::HttpStubbingAdapters::Common
       extend self
 
-      class HttpConnectionNotAllowedError < StandardError; end
+      # TODO: move this into the VCR namespace
+      HttpConnectionNotAllowedError = VCR::HttpStubbingAdapters::HttpConnectionNotAllowedError
 
       MINIMUM_VERSION = '0.6.5'
       MAXIMUM_VERSION = '0.6'
@@ -32,7 +33,7 @@ module VCR
             when http_connections_allowed?
               record_interaction
             else
-              raise_connections_disabled_error
+              VCR::HttpStubbingAdapters::Excon.raise_connections_disabled_error(params[:method], uri)
           end
         end
 
@@ -159,12 +160,6 @@ module VCR
               join('-')
           end
 
-          def raise_connections_disabled_error
-            raise HttpConnectionNotAllowedError.new(
-              "Real HTTP connections are disabled. Request: #{params[:method]} #{uri}"
-            )
-          end
-
           ::Excon.stub({}) do |params|
             self.new(params).handle
           end
@@ -175,4 +170,4 @@ module VCR
 end
 
 Excon.mock = true
-VCR::HttpStubbingAdapters::Common.add_vcr_info_to_exception_message(VCR::HttpStubbingAdapters::Excon::HttpConnectionNotAllowedError)
+
