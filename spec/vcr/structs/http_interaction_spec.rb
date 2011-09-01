@@ -21,6 +21,11 @@ describe VCR::HTTPInteraction do
     end
   end
 
+  it 'does not include `@ignored` in the serialized output' do
+    subject.ignore!
+    VCR::YAML.dump(subject).should_not include('ignored')
+  end
+
   describe '#filter!' do
     let(:response_status) { VCR::ResponseStatus.new(200, "OK foo") }
     let(:body) { "The body foo this is (foo-Foo)" }

@@ -6,12 +6,18 @@ module VCR
     def_delegators :request, :uri, :method
 
     def ignore!
-      @ignored = true
+      # we don't want to store any additional
+      # ivars on this object because that would get
+      # serialized with the object...so we redefine
+      # `ignored?` instead.
+      (class << self; self; end).class_eval do
+        undef ignored?
+        def ignored?; true; end
+      end
     end
 
     def ignored?
-      @ignored = false unless defined?(@ignored)
-      @ignored
+      false
     end
 
     def filter!(text, replacement_text)
