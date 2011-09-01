@@ -1,6 +1,13 @@
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.11.2...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.11.3...master)
+
+## 1.11.3 (August 31, 2011)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.11.2...v1.11.3)
+
+* Fix cassette serialization so that it does not include extra `ignored`
+  instance variable.
 
 ## 1.11.2 (August 28, 2011)
 
