@@ -3,6 +3,7 @@ stderr_file = Tempfile.new("vcr.stderr")
 $stderr.reopen(stderr_file.path)
 current_dir = Dir.pwd
 
+require 'rubygems' if RUBY_VERSION =~ /^1\.8/
 require 'rspec/core'
 
 RSpec.configure do |config|
