@@ -41,7 +41,7 @@ Gem::Specification.new do |s|
 
   # Cucumber 1.0.2 seems to have issues installing on 1.8.6 :(.
   {
-    'cucumber'        => '~> 1.0.2',
+    'cucumber'        => '~> 1.0.3',
     'aruba'           => '~> 0.4.6',
   }.each do |lib, version|
     s.add_development_dependency lib, version
