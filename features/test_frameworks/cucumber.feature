@@ -8,13 +8,15 @@ Feature: Usage with Cucumber
 
   In a cucumber support file (e.g. features/support/vcr.rb), put code like this:
 
-      VCR.cucumber_tags do |t|
-        t.tag  '@tag1'
-        t.tags '@tag2', '@tag3'
+  ``` ruby
+  VCR.cucumber_tags do |t|
+    t.tag  '@tag1'
+    t.tags '@tag2', '@tag3'
 
-        t.tag  '@tag3', :cassette => :options
-        t.tags '@tag4, '@tag5', :cassette => :options
-      end
+    t.tag  '@tag3', :cassette => :options
+    t.tags '@tag4, '@tag5', :cassette => :options
+  end
+  ```
 
   VCR will use a cassette named "cucumber_tags/<tag_name>" for scenarios
   with each of these tags.  The configured `default_cassette_options` will
