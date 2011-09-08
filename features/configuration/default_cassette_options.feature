@@ -7,6 +7,8 @@ Feature: default_cassette_options
   The `:match_requests_on` option defaults to `[:method, :uri]` when
   it has not been set.
 
+  The `:record` option defaults to `:once` when it has not been set.
+
   Background:
     Given a file named "vcr_setup.rb" with:
       """ruby
