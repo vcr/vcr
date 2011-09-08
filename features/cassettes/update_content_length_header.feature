@@ -41,7 +41,7 @@ Feature: Update content_length header
           http_version: "1.1"
       """
     And a file named "common_stuff.rb" with:
-      """
+      """ruby
       require 'vcr'
 
       VCR.config do |c|
@@ -58,7 +58,7 @@ Feature: Update content_length header
 
   Scenario: Default :update_content_length_header setting
     Given a file named "default.rb" with:
-      """
+      """ruby
       require 'common_stuff'
 
       VCR.use_cassette('example', :record => :none) do
@@ -74,7 +74,7 @@ Feature: Update content_length header
 
   Scenario: :update_content_length_header => false
     Given a file named "false.rb" with:
-      """
+      """ruby
       require 'common_stuff'
 
       VCR.use_cassette('example', :record => :none, :update_content_length_header => false) do
@@ -90,7 +90,7 @@ Feature: Update content_length header
 
   Scenario: :update_content_length_header => true
     Given a file named "true.rb" with:
-      """
+      """ruby
       require 'common_stuff'
 
       VCR.use_cassette('example', :record => :none, :update_content_length_header => true) do

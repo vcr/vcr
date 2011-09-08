@@ -7,7 +7,7 @@ Feature: EM HTTP Request
 
   Background:
     Given a file named "vcr_setup.rb" with:
-      """
+      """ruby
       require 'em-http-request'
       require 'vcr_cucumber_helpers'
 
@@ -30,7 +30,7 @@ Feature: EM HTTP Request
 
   Scenario: multiple simultaneous HttpRequest objects
     Given a file named "make_requests.rb" with:
-      """
+      """ruby
       require 'vcr_setup'
 
       VCR.use_cassette('em_http', :record => :new_episodes) do
@@ -124,7 +124,7 @@ Feature: EM HTTP Request
 
   Scenario: MultiRequest
     Given a file named "make_requests.rb" with:
-      """
+      """ruby
       require 'vcr_setup'
 
       VCR.use_cassette('em_http', :record => :new_episodes) do

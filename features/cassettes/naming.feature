@@ -6,7 +6,7 @@ Feature: Naming
 
   Scenario: Name sanitizing
     Given a file named "name_sanitizing.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
 
       start_sinatra_app(:port => 7777) do

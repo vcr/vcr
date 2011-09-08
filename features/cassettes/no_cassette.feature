@@ -21,7 +21,7 @@ Feature: Error for HTTP request made when no cassette is in use
 
   Scenario Outline: Error for request when no cassette is in use
     Given a file named "no_cassette_error.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
       include_http_adapter_for("<http_lib>")
 
@@ -53,7 +53,7 @@ Feature: Error for HTTP request made when no cassette is in use
 
   Scenario: Temporarily turn VCR off to allow HTTP requests to procede as normal
     Given a file named "turn_off_vcr.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
 
       start_sinatra_app(:port => 7777) do
@@ -109,7 +109,7 @@ Feature: Error for HTTP request made when no cassette is in use
 
   Scenario: Turning VCR off prevents cassettes from being inserted
     Given a file named "turn_off_vcr_and_insert_cassette.rb" with:
-      """
+      """ruby
       require 'vcr'
 
       VCR.config do |c|
@@ -124,7 +124,7 @@ Feature: Error for HTTP request made when no cassette is in use
 
   Scenario: Turning VCR off with `:ignore_cassettes => true` ignores cassettes
     Given a file named "turn_off_vcr_and_insert_cassette.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
 
       start_sinatra_app(:port => 7777) do

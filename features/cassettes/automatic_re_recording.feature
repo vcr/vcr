@@ -31,7 +31,7 @@ Feature: Automatic Re-recording
           http_version: "1.1"
       """
     And a file named "re_record.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
 
       start_sinatra_app(:port => 7777) do

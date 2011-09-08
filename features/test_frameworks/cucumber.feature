@@ -23,7 +23,7 @@ Feature: Usage with Cucumber
 
   Scenario: Record HTTP interactions in a scenario by tagging it
     Given a file named "lib/server.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
 
       if ENV['WITH_SERVER'] == 'true'
@@ -34,7 +34,7 @@ Feature: Usage with Cucumber
       """
 
     Given a file named "features/support/vcr.rb" with:
-      """
+      """ruby
       require "lib/server"
       require 'vcr'
 
@@ -50,7 +50,7 @@ Feature: Usage with Cucumber
       end
       """
     And a file named "features/step_definitions/steps.rb" with:
-      """
+      """ruby
       require 'net/http'
 
       When /^a request is made to "([^"]*)"$/ do |url|

@@ -11,7 +11,7 @@ Feature: :all
 
   Background:
     Given a file named "setup.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
 
       start_sinatra_app(:port => 7777) do
@@ -50,7 +50,7 @@ Feature: :all
 
   Scenario: Re-record previously recorded response
     Given a file named "re_record.rb" with:
-      """
+      """ruby
       require 'setup'
 
       VCR.use_cassette('example', :record => :all) do
@@ -65,7 +65,7 @@ Feature: :all
 
   Scenario: Record new request
     Given a file named "record_new.rb" with:
-      """
+      """ruby
       require 'setup'
 
       VCR.use_cassette('example', :record => :all) do

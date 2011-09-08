@@ -14,7 +14,7 @@ Feature: :once
 
   Background:
     Given a file named "setup.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
 
       start_sinatra_app(:port => 7777) do
@@ -52,7 +52,7 @@ Feature: :once
 
   Scenario: Previously recorded responses are replayed
     Given a file named "replay_recorded_response.rb" with:
-      """
+      """ruby
       require 'setup'
 
       VCR.use_cassette('example', :record => :once) do
@@ -65,7 +65,7 @@ Feature: :once
 
   Scenario: New requests result in an error when the cassette file exists
     Given a file named "error_for_new_requests_when_cassette_exists.rb" with:
-      """
+      """ruby
       require 'setup'
 
       VCR.use_cassette('example', :record => :once) do
@@ -78,7 +78,7 @@ Feature: :once
 
   Scenario: New requests get recorded when there is no cassette file
     Given a file named "record_new_requests.rb" with:
-      """
+      """ruby
       require 'setup'
 
       VCR.use_cassette('example', :record => :once) do

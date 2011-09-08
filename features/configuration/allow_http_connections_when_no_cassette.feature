@@ -7,7 +7,7 @@ Feature: Allow HTTP connections when no cassette
 
   Background:
     Given a file named "vcr_setup.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
 
       if ARGV.include?('--with-server')
@@ -28,7 +28,7 @@ Feature: Allow HTTP connections when no cassette
 
   Scenario: Allow HTTP connections when no cassette
     Given a file named "no_cassette.rb" with:
-      """
+      """ruby
       require 'vcr_setup.rb'
 
       puts "Response: " + Net::HTTP.get_response('localhost', '/', 7777).body
@@ -38,7 +38,7 @@ Feature: Allow HTTP connections when no cassette
 
   Scenario: Cassettes record and replay as normal
     Given a file named "record_replay_cassette.rb" with:
-      """
+      """ruby
       require 'vcr_setup.rb'
 
       VCR.use_cassette('localhost', :record => :new_episodes) do

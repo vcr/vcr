@@ -27,7 +27,7 @@ Feature: Usage with RSpec
         | spec/cassettes/VCR-RSpec_integration/without_an_explicit_cassette_name.yml |
         | spec/cassettes/net_http_example.yml                                        |
     And a file named "spec/sinatra_app.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
 
       start_sinatra_app(:port => 7777) do
@@ -35,7 +35,7 @@ Feature: Usage with RSpec
       end
       """
     And a file named "spec/vcr_example_spec.rb" with:
-      """
+      """ruby
       require 'spec_helper'
 
       describe "VCR-RSpec integration" do
@@ -63,7 +63,7 @@ Feature: Usage with RSpec
 
   Scenario: Use `use_vcr_cassette` macro with RSpec 2
     Given a file named "spec/spec_helper.rb" with:
-      """
+      """ruby
       require 'sinatra_app'
       require 'vcr'
 
@@ -84,7 +84,7 @@ Feature: Usage with RSpec
 
   Scenario: Use `use_vcr_cassette` macro with RSpec 1
     Given a file named "spec/spec_helper.rb" with:
-      """
+      """ruby
       require 'sinatra_app'
       $LOAD_PATH.unshift(File.join(%w[ .. .. vendor rspec-1 lib ]))
 

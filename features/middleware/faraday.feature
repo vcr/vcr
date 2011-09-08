@@ -12,7 +12,7 @@ Feature: Faraday middleware
 
   Background:
     Given a file named "env_setup.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
 
       request_count = 0
@@ -30,7 +30,7 @@ Feature: Faraday middleware
 
   Scenario Outline: Use Faraday middleware
     Given a file named "faraday_example.rb" with:
-      """
+      """ruby
       require 'env_setup'
 
       conn = Faraday::Connection.new(:url => 'http://localhost:7777') do |builder|
@@ -60,7 +60,7 @@ Feature: Faraday middleware
 
   Scenario: Set cassette name based on faraday env
     Given a file named "faraday_example.rb" with:
-      """
+      """ruby
       require 'env_setup'
 
       conn = Faraday::Connection.new(:url => 'http://localhost:7777') do |builder|

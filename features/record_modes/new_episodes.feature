@@ -11,7 +11,7 @@ Feature: :new_episodes
 
   Background:
     Given a file named "setup.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
 
       start_sinatra_app(:port => 7777) do
@@ -49,7 +49,7 @@ Feature: :new_episodes
 
   Scenario: Previously recorded responses are replayed
     Given a file named "replay_recorded_response.rb" with:
-      """
+      """ruby
       require 'setup'
 
       VCR.use_cassette('example', :record => :new_episodes) do
@@ -62,7 +62,7 @@ Feature: :new_episodes
 
   Scenario: New requests get recorded
     Given a file named "record_new_requests.rb" with:
-      """
+      """ruby
       require 'setup'
 
       VCR.use_cassette('example', :record => :new_episodes) do

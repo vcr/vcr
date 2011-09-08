@@ -16,7 +16,7 @@ Feature: Rack
 
   Background:
     Given a file named "remote_server.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
 
       request_count = 0
@@ -25,7 +25,7 @@ Feature: Rack
       end
       """
     And a file named "client.rb" with:
-      """
+      """ruby
       require 'remote_server'
       require 'proxy_server'
       require 'cgi'
@@ -39,7 +39,7 @@ Feature: Rack
 
   Scenario: Use VCR rack middleware to record HTTP responses for a simple rack proxy app
     Given a file named "proxy_server.rb" with:
-      """
+      """ruby
       require 'vcr'
 
       start_sinatra_app(:port => 8888) do
@@ -67,7 +67,7 @@ Feature: Rack
 
   Scenario: Set cassette name based on rack request env
     Given a file named "proxy_server.rb" with:
-      """
+      """ruby
       require 'vcr'
 
       start_sinatra_app(:port => 8888) do

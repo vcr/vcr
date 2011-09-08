@@ -9,7 +9,7 @@ Feature: default_cassette_options
 
   Background:
     Given a file named "vcr_setup.rb" with:
-      """
+      """ruby
       require 'vcr'
 
       VCR.config do |c|
@@ -23,7 +23,7 @@ Feature: default_cassette_options
 
   Scenario: cassettes get default values from configured `default_cassette_options`
     Given a file named "default_cassette_options.rb" with:
-      """
+      """ruby
       require 'vcr_setup.rb'
 
       VCR.use_cassette('example') do
@@ -40,7 +40,7 @@ Feature: default_cassette_options
 
   Scenario: `:match_requests_on` defaults to `[:method, :uri]` when it has not been set
     Given a file named "default_cassette_options.rb" with:
-      """
+      """ruby
       require 'vcr_setup.rb'
 
       VCR.use_cassette('example') do
@@ -52,7 +52,7 @@ Feature: default_cassette_options
 
   Scenario: `:record` defaults to `:once` when it has not been set
     Given a file named "default_record_mode.rb" with:
-      """
+      """ruby
       require 'vcr'
 
       VCR.config do |c|
@@ -70,7 +70,7 @@ Feature: default_cassette_options
 
   Scenario: cassettes can set their own options
     Given a file named "default_cassette_options.rb" with:
-      """
+      """ruby
       require 'vcr_setup.rb'
 
       VCR.use_cassette('example', :re_record_interval => 10000) do
@@ -82,7 +82,7 @@ Feature: default_cassette_options
 
   Scenario: cassettes can override default options
     Given a file named "default_cassette_options.rb" with:
-      """
+      """ruby
       require 'vcr_setup.rb'
 
       VCR.use_cassette('example', :record => :none, :erb => false) do

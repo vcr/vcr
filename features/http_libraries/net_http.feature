@@ -6,7 +6,7 @@ Feature: Net::HTTP
 
   Background:
     Given a file named "vcr_setup.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
 
       if ARGV[0] == '--with-server'
@@ -21,7 +21,7 @@ Feature: Net::HTTP
 
   Scenario Outline: Calling #post on new Net::HTTP instance
     Given a file named "vcr_net_http.rb" with:
-      """
+      """ruby
       require 'vcr_setup.rb'
 
       VCR.config do |c|
@@ -47,7 +47,7 @@ Feature: Net::HTTP
 
   Scenario Outline: Return from yielded block
     Given a file named "vcr_net_http.rb" with:
-      """
+      """ruby
       require 'vcr_setup.rb'
 
       VCR.config do |c|
@@ -79,7 +79,7 @@ Feature: Net::HTTP
 
   Scenario Outline: Use Net::ReadAdapter to read body in fragments
     Given a file named "vcr_net_http.rb" with:
-      """
+      """ruby
       require 'vcr_setup.rb'
 
       VCR.config do |c|
@@ -111,7 +111,7 @@ Feature: Net::HTTP
 
   Scenario Outline: Use open-uri (which is built on top of Net::HTTP and uses a seldom-used Net::HTTP API)
     Given a file named "vcr_net_http.rb" with:
-      """
+      """ruby
       require 'open-uri'
       require 'vcr_setup.rb'
 
@@ -138,7 +138,7 @@ Feature: Net::HTTP
 
     Scenario Outline: Make an HTTPS request
       Given a file named "vcr_https.rb" with:
-        """
+        """ruby
         require 'vcr'
 
         VCR.config do |c|

@@ -11,7 +11,7 @@ Feature: :none
 
   Background:
     Given a file named "vcr_config.rb" with:
-      """
+      """ruby
       require 'vcr'
 
       VCR.config do |c|
@@ -43,7 +43,7 @@ Feature: :none
 
   Scenario: Previously recorded responses are replayed
     Given a file named "replay_recorded_response.rb" with:
-      """
+      """ruby
       require 'vcr_config'
 
       VCR.use_cassette('example', :record => :none) do
@@ -56,7 +56,7 @@ Feature: :none
 
   Scenario: New requests are prevented
     Given a file named "prevent_new_request.rb" with:
-      """
+      """ruby
       require 'vcr_config'
 
       VCR.use_cassette('example', :record => :none) do

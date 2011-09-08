@@ -63,7 +63,7 @@ Feature: Request matching
           http_version: "1.1"
       """
     And a file named "rotate_responses.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
       include_http_adapter_for("<http_lib>")
 
@@ -133,7 +133,7 @@ Feature: Request matching
           http_version: "1.1"
       """
     And a file named "host_path_matching.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
       include_http_adapter_for("<http_lib>")
 
@@ -207,7 +207,7 @@ Feature: Request matching
           http_version: "1.1"
       """
     And a file named "body_matching.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
       include_http_adapter_for("<http_lib>")
 
@@ -280,7 +280,7 @@ Feature: Request matching
           http_version: "1.1"
       """
     And a file named "header_matching.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
       include_http_adapter_for("<http_lib>")
 
@@ -349,7 +349,7 @@ Feature: Request matching
           http_version: "1.1"
       """
     And a file named "uri_regex_matching.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
       include_http_adapter_for("<http_lib>")
 

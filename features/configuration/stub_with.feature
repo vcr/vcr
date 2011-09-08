@@ -43,7 +43,7 @@ Feature: stub_with
 
   Scenario Outline: Record and replay a request using each supported stubbing/http library combination
     Given a file named "stubbing_http_lib_combo.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
       include_http_adapter_for("<http_lib>")
 
@@ -90,7 +90,7 @@ Feature: stub_with
   @exclude-jruby
   Scenario Outline: Use Typhoeus, Excon and Faraday in combination with FakeWeb or WebMock
     Given a file named "stub_with_multiple.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
       require 'typhoeus'
       require 'excon'

@@ -5,7 +5,7 @@ Feature: Usage with Test::Unit
 
   Scenario: Use `VCR.use_cassette` in a test
     Given a file named "test/test_server.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
 
       start_sinatra_app(:port => 7777) do
@@ -13,7 +13,7 @@ Feature: Usage with Test::Unit
       end
       """
     Given a file named "test/test_helper.rb" with:
-      """
+      """ruby
       require 'test/test_server' if ENV['SERVER'] == 'true'
       require 'test/unit'
       require 'vcr'
@@ -25,7 +25,7 @@ Feature: Usage with Test::Unit
       end
       """
     And a file named "test/vcr_example_test.rb" with:
-      """
+      """ruby
       require 'test_helper'
 
       class VCRExampleTest < Test::Unit::TestCase

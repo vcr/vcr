@@ -32,7 +32,7 @@ Feature: Dynamic ERB cassettes
           http_version: "1.1"
       """
     And a file named "dynamic_erb_example.rb" with:
-      """
+      """ruby
       require 'vcr'
 
       VCR.config do |c|
@@ -72,7 +72,7 @@ Feature: Dynamic ERB cassettes
           http_version: "1.1"
       """
     And a file named "dynamic_erb_example.rb" with:
-      """
+      """ruby
       require 'vcr'
 
       VCR.config do |c|

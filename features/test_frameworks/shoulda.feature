@@ -14,7 +14,7 @@ Feature: Usage with Shoulda
 
   Scenario: Use `VCR.insert_cassette` and `VCR.eject_cassette`
     Given a file named "test/test_server.rb" with:
-      """
+      """ruby
       require 'vcr_cucumber_helpers'
 
       start_sinatra_app(:port => 7777) do
@@ -22,7 +22,7 @@ Feature: Usage with Shoulda
       end
       """
     Given a file named "test/test_helper.rb" with:
-      """
+      """ruby
       require 'test/test_server' if ENV['SERVER'] == 'true'
       require 'test/unit'
       require 'shoulda'
@@ -35,7 +35,7 @@ Feature: Usage with Shoulda
       end
       """
     And a file named "test/vcr_example_test.rb" with:
-      """
+      """ruby
       require 'test_helper'
 
       class VCRExampleTest < Test::Unit::TestCase
