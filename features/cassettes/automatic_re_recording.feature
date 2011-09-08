@@ -45,7 +45,7 @@ Feature: Automatic Re-recording
         c.cassette_library_dir = 'cassettes'
       end
 
-      VCR.use_cassette('example', :record => :new_episodes, :re_record_interval => 7.days) do
+      VCR.use_cassette('example', :re_record_interval => 7.days) do
         puts Net::HTTP.get_response('localhost', '/', 7777).body
       end
       """

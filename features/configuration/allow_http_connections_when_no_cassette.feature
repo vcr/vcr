@@ -41,7 +41,7 @@ Feature: Allow HTTP connections when no cassette
       """ruby
       require 'vcr_setup.rb'
 
-      VCR.use_cassette('localhost', :record => :new_episodes) do
+      VCR.use_cassette('localhost') do
         puts "Response: " + Net::HTTP.get_response('localhost', '/', 7777).body
       end
       """

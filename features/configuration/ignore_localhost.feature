@@ -35,7 +35,7 @@ Feature: ignore_localhost
         c.stub_with <stub_with>
       end
 
-      VCR.use_cassette('localhost', :record => :new_episodes) do
+      VCR.use_cassette('localhost') do
         response_body_for(:get, "http://localhost:7777/")
       end
 
@@ -79,7 +79,7 @@ Feature: ignore_localhost
         c.stub_with <stub_with>
       end
 
-      VCR.use_cassette('localhost', :record => :new_episodes) do
+      VCR.use_cassette('localhost') do
         puts response_body_for(:get, "http://localhost:7777/")
       end
 

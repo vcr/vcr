@@ -33,7 +33,7 @@ Feature: EM HTTP Request
       """ruby
       require 'vcr_setup'
 
-      VCR.use_cassette('em_http', :record => :new_episodes) do
+      VCR.use_cassette('em_http') do
         EventMachine.run do
           http_array = %w[ foo bar bazz ].map do |p|
             EventMachine::HttpRequest.new("http://localhost:7777/#{p}").get
@@ -127,7 +127,7 @@ Feature: EM HTTP Request
       """ruby
       require 'vcr_setup'
 
-      VCR.use_cassette('em_http', :record => :new_episodes) do
+      VCR.use_cassette('em_http') do
         EventMachine.run do
           multi = EventMachine::MultiRequest.new
 

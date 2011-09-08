@@ -35,7 +35,7 @@ Feature: ignore_hosts
         c.stub_with <stub_with>
       end
 
-      VCR.use_cassette('example', :record => :new_episodes) do
+      VCR.use_cassette('example') do
         puts response_body_for(:get, "http://localhost:7777/")
       end
 

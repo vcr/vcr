@@ -66,7 +66,6 @@ Feature: Faraday middleware
       conn = Faraday::Connection.new(:url => 'http://localhost:7777') do |builder|
         builder.use VCR::Middleware::Faraday do |cassette, env|
           cassette.name    env[:url].path.sub(/^\//, '')
-          cassette.options :record => :new_episodes
         end
 
         builder.adapter :net_http

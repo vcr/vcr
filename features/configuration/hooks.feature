@@ -79,7 +79,7 @@ Feature: Hooks
 
       end
 
-      VCR.use_cassette('recording_example', :record => :new_episodes) do
+      VCR.use_cassette('recording_example') do
         Net::HTTP.get_response('localhost', '/', 7777)
       end
       """
@@ -104,7 +104,7 @@ Feature: Hooks
         c.before_record { |i| i.ignore! }
       end
 
-      VCR.use_cassette('recording_example', :record => :new_episodes) do
+      VCR.use_cassette('recording_example') do
         response = Net::HTTP.get_response('localhost', '/', 7777)
         puts "Response: #{response.body}"
       end
@@ -127,7 +127,7 @@ Feature: Hooks
         end
       end
 
-      VCR.use_cassette('example', :record => :new_episodes) do
+      VCR.use_cassette('example') do
         response = Net::HTTP.get_response('example.com', '/foo')
         puts "Response: #{response.body}"
       end

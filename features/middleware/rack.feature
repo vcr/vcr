@@ -73,7 +73,6 @@ Feature: Rack
       start_sinatra_app(:port => 8888) do
         use VCR::Middleware::Rack do |cassette, env|
           cassette.name    env['SERVER_NAME']
-          cassette.options :record => :new_episodes
         end
 
         get('/') { Net::HTTP.get_response(URI.parse(params[:url])).body }

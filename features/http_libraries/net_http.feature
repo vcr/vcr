@@ -29,7 +29,7 @@ Feature: Net::HTTP
         c.cassette_library_dir = 'cassettes'
       end
 
-      VCR.use_cassette('net_http', :record => :new_episodes) do
+      VCR.use_cassette('net_http') do
         puts Net::HTTP.new('localhost', 7777).post('/', '').body
       end
       """
@@ -61,7 +61,7 @@ Feature: Net::HTTP
         end
       end
 
-      VCR.use_cassette('net_http', :record => :new_episodes) do
+      VCR.use_cassette('net_http') do
         puts perform_request.body
       end
       """
@@ -87,7 +87,7 @@ Feature: Net::HTTP
         c.cassette_library_dir = 'cassettes'
       end
 
-      VCR.use_cassette('net_http', :record => :new_episodes) do
+      VCR.use_cassette('net_http') do
         body = ''
 
         Net::HTTP.new('localhost', 7777).request_get('/') do |response|
@@ -120,7 +120,7 @@ Feature: Net::HTTP
         c.cassette_library_dir = 'cassettes'
       end
 
-      VCR.use_cassette('net_http', :record => :new_episodes) do
+      VCR.use_cassette('net_http') do
         puts open('http://localhost:7777/').read
       end
       """
@@ -148,7 +148,7 @@ Feature: Net::HTTP
 
         uri = URI("https://raw.github.com/gist/fb555cb593f3349d53af/6921dd638337d3f6a51b0e02e7f30e3c414f70d6/vcr_gist")
 
-        VCR.use_cassette('https', :record => :new_episodes) do
+        VCR.use_cassette('https') do
           http = Net::HTTP.new(uri.host, uri.port)
           http.use_ssl = true
           http.verify_mode = OpenSSL::SSL::VERIFY_NONE

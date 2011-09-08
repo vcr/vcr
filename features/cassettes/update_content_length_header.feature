@@ -61,7 +61,7 @@ Feature: Update content_length header
       """ruby
       require 'common_stuff'
 
-      VCR.use_cassette('example', :record => :none) do
+      VCR.use_cassette('example') do
         make_request_and_print_results
       end
       """
@@ -77,7 +77,7 @@ Feature: Update content_length header
       """ruby
       require 'common_stuff'
 
-      VCR.use_cassette('example', :record => :none, :update_content_length_header => false) do
+      VCR.use_cassette('example', :update_content_length_header => false) do
         make_request_and_print_results
       end
       """
@@ -93,7 +93,7 @@ Feature: Update content_length header
       """ruby
       require 'common_stuff'
 
-      VCR.use_cassette('example', :record => :none, :update_content_length_header => true) do
+      VCR.use_cassette('example', :update_content_length_header => true) do
         make_request_and_print_results
       end
       """

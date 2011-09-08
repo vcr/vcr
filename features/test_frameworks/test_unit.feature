@@ -21,7 +21,6 @@ Feature: Usage with Test::Unit
       VCR.config do |c|
         c.stub_with :webmock
         c.cassette_library_dir = 'test/fixtures/vcr_cassettes'
-        c.default_cassette_options = { :record => :new_episodes }
       end
       """
     And a file named "test/vcr_example_test.rb" with:

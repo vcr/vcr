@@ -74,7 +74,7 @@ Feature: Request matching
         c.cassette_library_dir = 'cassettes'
       end
 
-      VCR.use_cassette('example', :record => :none) do
+      VCR.use_cassette('example') do
         puts response_body_for(:get, 'http://example.com/foo')
         puts response_body_for(:get, 'http://example.com/foo')
       end
@@ -144,7 +144,7 @@ Feature: Request matching
         c.cassette_library_dir = 'cassettes'
       end
 
-      VCR.use_cassette('example', :record => :none, :match_requests_on => [:host, :path]) do
+      VCR.use_cassette('example', :match_requests_on => [:host, :path]) do
         puts response_body_for(:post, "http://foo.com/bar?date=#{Date.today.to_s}")
         puts response_body_for(:put,  "http://bar.com/foo?date=#{Date.today.to_s}")
       end
@@ -218,7 +218,7 @@ Feature: Request matching
         c.cassette_library_dir = 'cassettes'
       end
 
-      VCR.use_cassette('example', :record => :none, :match_requests_on => [:method, :uri, :body]) do
+      VCR.use_cassette('example', :match_requests_on => [:method, :uri, :body]) do
         puts response_body_for(:post, "http://example.com/", 'a=2')
         puts response_body_for(:post, "http://example.com/", 'a=1')
       end
@@ -291,7 +291,7 @@ Feature: Request matching
         c.cassette_library_dir = 'cassettes'
       end
 
-      VCR.use_cassette('example', :record => :none, :match_requests_on => [:method, :uri, :headers]) do
+      VCR.use_cassette('example', :match_requests_on => [:method, :uri, :headers]) do
         puts response_body_for(:get, "http://example.com/dashboard", nil, 'X-User-Id' => '42')
         puts response_body_for(:get, "http://example.com/dashboard", nil, 'X-User-Id' => '17')
       end
@@ -360,7 +360,7 @@ Feature: Request matching
         c.cassette_library_dir = 'cassettes'
       end
 
-      VCR.use_cassette('example', :record => :none) do
+      VCR.use_cassette('example') do
         puts response_body_for(:get, "http://foo.com/bar?date=#{Date.today.to_s}")
         puts response_body_for(:get, "http://bar.com/foo?date=#{Date.today.to_s}")
       end

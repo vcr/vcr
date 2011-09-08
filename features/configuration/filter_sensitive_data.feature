@@ -43,7 +43,7 @@ Feature: Filter sensitive data
         c.filter_sensitive_data('<LOCATION>') { 'World' }
       end
 
-      VCR.use_cassette('filtering', :record => :new_episodes) do
+      VCR.use_cassette('filtering') do
         response = Net::HTTP.get_response('localhost', '/', 7777)
         puts "Response: #{response.body}"
       end
@@ -77,7 +77,7 @@ Feature: Filter sensitive data
         c.filter_sensitive_data('<LOCATION>', :my_tag) { 'World' }
       end
 
-      VCR.use_cassette('tagged', :tag => :my_tag, :record => :new_episodes) do
+      VCR.use_cassette('tagged', :tag => :my_tag) do
         response = Net::HTTP.get_response('localhost', '/', 7777)
         puts "Tagged Response: #{response.body}"
       end
@@ -133,7 +133,7 @@ Feature: Filter sensitive data
         end
       end
 
-      VCR.use_cassette('example', :record => :new_episodes, :match_requests_on => [:method, :uri, :headers]) do
+      VCR.use_cassette('example', :match_requests_on => [:method, :uri, :headers]) do
         puts "Response: " + response_body_for(
           :get, 'http://localhost:7777/', nil,
           'X-HTTP-USERNAME' => 'john.doe',

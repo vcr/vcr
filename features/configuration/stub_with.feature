@@ -60,7 +60,7 @@ Feature: stub_with
         c.cassette_library_dir = 'vcr_cassettes'
       end
 
-      VCR.use_cassette('example', :record => :new_episodes) do
+      VCR.use_cassette('example') do
         puts "The response for request 2 was: #{response_body_for(:get, "http://localhost:7777/")}"
       end
       """
@@ -133,7 +133,7 @@ Feature: stub_with
         c.cassette_library_dir = 'vcr_cassettes'
       end
 
-      VCR.use_cassette('example', :record => :new_episodes) do
+      VCR.use_cassette('example') do
         puts "Net::HTTP 2: #{net_http_response}"
         puts "Typhoeus 2: #{typhoeus_response}"
         puts "Excon 2: #{excon_response}"

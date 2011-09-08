@@ -35,7 +35,7 @@ Feature: Cassette format
         c.cassette_library_dir = 'cassettes'
       end
 
-      VCR.use_cassette('example', :record => :new_episodes) do
+      VCR.use_cassette('example') do
         make_http_request(:get, "http://localhost:7777/foo")
         make_http_request(:get, "http://localhost:7777/bar")
       end

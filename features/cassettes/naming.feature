@@ -20,7 +20,7 @@ Feature: Naming
         c.stub_with :fakeweb
       end
 
-      VCR.use_cassette('Fee, Fi Fo Fum', :record => :new_episodes) do
+      VCR.use_cassette('Fee, Fi Fo Fum') do
         Net::HTTP.get_response('localhost', '/', 7777)
       end
       """

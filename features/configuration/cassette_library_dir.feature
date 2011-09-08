@@ -19,7 +19,7 @@ Feature: cassette_library_dir
         c.stub_with :fakeweb
       end
 
-      VCR.use_cassette('localhost', :record => :new_episodes) do
+      VCR.use_cassette('localhost') do
         Net::HTTP.get_response('localhost', '/', 7777)
       end
       """

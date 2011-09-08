@@ -38,7 +38,6 @@ Feature: Dynamic ERB cassettes
       VCR.config do |c|
         c.stub_with :fakeweb
         c.cassette_library_dir = 'cassettes'
-        c.default_cassette_options = { :record => :none }
       end
 
       VCR.use_cassette('dynamic', :erb => true) do
@@ -78,7 +77,6 @@ Feature: Dynamic ERB cassettes
       VCR.config do |c|
         c.stub_with :fakeweb
         c.cassette_library_dir = 'cassettes'
-        c.default_cassette_options = { :record => :none }
       end
 
       VCR.use_cassette('dynamic', :erb => { :arg1 => 7, :arg2 => 'baz' }) do
