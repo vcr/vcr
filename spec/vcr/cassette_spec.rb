@@ -49,7 +49,7 @@ describe VCR::Cassette do
 
   describe '.new' do
     it 'raises an error with a helpful message when loading an old unsupported cassette' do
-      VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}"
+      VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures"
       expect { VCR::Cassette.new('0_3_1_cassette') }.to raise_error(/The VCR cassette 0_3_1_cassette.yml uses an old format that is now deprecated/)
     end
 
@@ -64,7 +64,7 @@ describe VCR::Cassette do
     end
 
     it 'does not raise an error in the case of an empty file' do
-      VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
+      VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
       VCR::Cassette.new('empty', :record => :none).recorded_interactions.should eq([])
     end
 
@@ -131,7 +131,7 @@ describe VCR::Cassette do
       context "when :#{record_mode} is passed as the record option" do
         if record_mode == :none
           it 'does not allow http connections when there is an existing cassette file with recorded interactions' do
-            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
+            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
             VCR.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(false)
             c = VCR::Cassette.new('example', :record => :once)
             File.should exist(c.file)
@@ -139,7 +139,7 @@ describe VCR::Cassette do
           end
 
           it 'allows http connections when there is an empty existing cassette file' do
-            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
+            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
             VCR.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(true)
             c = VCR::Cassette.new('empty', :record => :once)
             File.should exist(c.file)
@@ -147,7 +147,7 @@ describe VCR::Cassette do
           end
 
           it 'allows http connections when there is not an existing cassette file' do
-            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
+            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
             VCR.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(true)
             c = VCR::Cassette.new('non_existant_file', :record => :once)
             File.should_not exist(c.file)
@@ -158,7 +158,7 @@ describe VCR::Cassette do
           let(:interaction_1) { VCR::HTTPInteraction.new(VCR::Request.new(:get, 'http://example.com/'), VCR::Response.new(VCR::ResponseStatus.new)) }
           let(:interaction_2) { VCR::HTTPInteraction.new(VCR::Request.new(:get, 'http://example.com/'), VCR::Response.new(VCR::ResponseStatus.new)) }
           let(:interactions)  { [interaction_1, interaction_2] }
-          before(:each) { VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec" }
+          before(:each) { VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec" }
 
           it 'updates the content_length headers when given :update_content_length_header => true' do
             VCR::YAML.stub(:load => interactions)
@@ -231,13 +231,13 @@ describe VCR::Cassette do
             uri.to_s !~ /example\.com/
           end
 
-          VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
+          VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
           cassette = VCR::Cassette.new('with_localhost_requests', :record => record_mode)
           cassette.recorded_interactions.map { |i| URI.parse(i.uri).host }.should eq(%w[example.com])
         end
 
         it "loads the recorded interactions from the library yml file" do
-          VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
+          VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
           cassette = VCR::Cassette.new('example', :record => record_mode)
 
           cassette.should have(3).recorded_interactions
@@ -275,25 +275,25 @@ describe VCR::Cassette do
               c.before_playback { |i| i.ignore! if i.request.uri =~ /foo/ }
             end
 
-            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
+            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
             cassette = VCR::Cassette.new('example', :record => record_mode)
             cassette.should have(2).recorded_interactions
           end
 
           it "stubs the recorded requests with the http stubbing adapter" do
-            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
+            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
             VCR.http_stubbing_adapter.should_receive(:stub_requests).with([an_instance_of(VCR::HTTPInteraction)]*3, anything)
             VCR::Cassette.new('example', :record => record_mode)
           end
 
           it "passes the :match_request_on option to #stub_requests" do
-            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
+            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
             VCR.http_stubbing_adapter.should_receive(:stub_requests).with(anything, [:body, :headers])
             VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:body, :headers])
           end
         else
           it "does not stub the recorded requests with the http stubbing adapter" do
-            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
+            VCR::Config.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
             VCR.http_stubbing_adapter.should_not_receive(:stub_requests)
             VCR::Cassette.new('example', :record => record_mode)
           end
@@ -388,7 +388,7 @@ describe VCR::Cassette do
         subject { VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:uri]) }
 
         before(:each) do
-          base_dir = "#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/cassette_spec"
+          base_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
           FileUtils.cp(base_dir + "/example.yml", VCR::Config.cassette_library_dir + "/example.yml")
         end
 

@@ -8,9 +8,6 @@ end
 
 require 'rspec'
 
-# Ruby 1.9.1 has a different yaml serialization format.
-YAML_SERIALIZATION_VERSION = RUBY_VERSION == '1.9.1' ? '1.9.1' : 'not_1.9.1'
-
 Dir['./spec/support/**/*.rb'].each { |f| require f }
 
 require 'vcr'
@@ -42,7 +39,7 @@ end
 
 RSpec.configure do |config|
   config.color_enabled = true
-  config.debug = (using_git && RUBY_INTERPRETER == :mri && !%w[ 1.9.1 1.9.3 ].include?(RUBY_VERSION) && !ENV['CI'])
+  config.debug = (using_git && RUBY_INTERPRETER == :mri && !%w[ 1.9.3 ].include?(RUBY_VERSION) && !ENV['CI'])
   config.treat_symbols_as_metadata_keys_with_true_values = true
 
   tmp_dir = File.expand_path('../../tmp/cassette_library_dir', __FILE__)

@@ -1,1 +1,1 @@
-rvm 1.8.6,1.8.7,1.9.1,1.9.2,ree,rbx rake -f script/FullBuildRakeFile build | tee tmp/full_build.out
+rvm 1.8.7,1.9.2,ree,rbx rake -f script/FullBuildRakeFile build | tee tmp/full_build.out

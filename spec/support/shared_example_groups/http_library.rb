@@ -99,7 +99,7 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
 
     describe '.stub_requests using specific match_attributes' do
       before(:each) { subject.http_connections_allowed = false }
-      let(:interactions) { VCR::YAML.load_file(File.join(VCR::SPEC_ROOT, 'fixtures', YAML_SERIALIZATION_VERSION, 'match_requests_on.yml')) }
+      let(:interactions) { VCR::YAML.load_file(File.join(VCR::SPEC_ROOT, 'fixtures', 'match_requests_on.yml')) }
 
       @supported_request_match_attributes = supported_request_match_attributes
       def self.matching_on(attribute, valid, invalid, &block)
@@ -287,7 +287,7 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
         context 'when some requests are stubbed, after setting a checkpoint' do
           before(:each) do
             subject.create_stubs_checkpoint(:my_checkpoint)
-            @recorded_interactions = VCR::YAML.load_file(File.join(VCR::SPEC_ROOT, 'fixtures', YAML_SERIALIZATION_VERSION, 'fake_example.com_responses.yml'))
+            @recorded_interactions = VCR::YAML.load_file(File.join(VCR::SPEC_ROOT, 'fixtures', 'fake_example.com_responses.yml'))
             subject.stub_requests(@recorded_interactions, VCR::RequestMatcher::DEFAULT_MATCH_ATTRIBUTES)
           end
 

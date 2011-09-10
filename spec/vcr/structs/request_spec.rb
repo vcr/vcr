@@ -32,8 +32,8 @@ describe VCR::Request do
   end
 
   describe '.from_net_http_request' do
-    let(:net_http) { VCR::YAML.load_file("#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/example_net_http.yml") }
-    let(:request)  { VCR::YAML.load_file("#{VCR::SPEC_ROOT}/fixtures/#{YAML_SERIALIZATION_VERSION}/example_net_http_request.yml") }
+    let(:net_http) { VCR::YAML.load_file("#{VCR::SPEC_ROOT}/fixtures/example_net_http.yml") }
+    let(:request)  { VCR::YAML.load_file("#{VCR::SPEC_ROOT}/fixtures/example_net_http_request.yml") }
     subject { described_class.from_net_http_request(net_http, request) }
 
     before(:each) do
