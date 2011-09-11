@@ -1,15 +1,13 @@
 require 'spec_helper'
 
 describe VCR::Hooks do
-  class HooksClass
-    include VCR::Hooks
-  end
+  let(:hooks_class) { Class.new { include VCR::Hooks } }
 
-  subject { HooksClass.new }
+  subject { hooks_class.new }
   let(:invocations) { [] }
 
   before(:each) do
-    subject.instance_eval do
+    hooks_class.instance_eval do
       define_hook :before_foo
       define_hook :before_bar
     end
