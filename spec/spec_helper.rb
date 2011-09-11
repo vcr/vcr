@@ -16,24 +16,9 @@ require 'monkey_patches'
 module VCR
   SPEC_ROOT = File.dirname(__FILE__)
 
-  module Config
-    def reset!(stubbing_lib = :fakeweb)
-      self.default_cassette_options = { :record => :new_episodes }
-
-      if stubbing_lib
-        stub_with stubbing_lib
-      else
-        http_stubbing_libraries.clear
-      end
-
-      clear_hooks
-      @ignored_hosts = []
-
-      VCR.instance_eval do
-        instance_variables.each { |ivar| remove_instance_variable(ivar) }
-      end
-      VCR.send(:initialize_ivars)
-    end
+  def reset!(stubbing_lib = :fakeweb)
+    @configuration = nil
+    configuration.stub_with stubbing_lib if stubbing_lib
   end
 end
 
@@ -44,11 +29,10 @@ RSpec.configure do |config|
 
   tmp_dir = File.expand_path('../../tmp/cassette_library_dir', __FILE__)
   config.before(:each) do
-    VCR::Config.cassette_library_dir = tmp_dir
+    VCR.reset!
+    VCR.configuration.cassette_library_dir = tmp_dir
     VCR.turn_on! unless VCR.turned_on?
     VCR.eject_cassette while VCR.current_cassette
-
-    VCR::Config.reset!
 
     WebMock.allow_net_connect!
     WebMock.reset!

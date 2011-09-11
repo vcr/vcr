@@ -36,7 +36,7 @@ Feature: Filter sensitive data
 
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with :fakeweb
         c.cassette_library_dir = 'cassettes'
         c.filter_sensitive_data('<GREETING>') { 'Hello' }
@@ -71,7 +71,7 @@ Feature: Filter sensitive data
 
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with :fakeweb
         c.cassette_library_dir = 'cassettes'
         c.filter_sensitive_data('<LOCATION>', :my_tag) { 'World' }
@@ -125,7 +125,7 @@ Feature: Filter sensitive data
         'jane.doe' => 'cheetah'
       }
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with :webmock
         c.cassette_library_dir = 'cassettes'
         c.filter_sensitive_data('<PASSWORD>') do |interaction|

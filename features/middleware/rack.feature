@@ -51,7 +51,7 @@ Feature: Rack
         get('/') { Net::HTTP.get_response(URI.parse(params[:url])).body }
       end
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.cassette_library_dir = 'cassettes'
         c.stub_with :fakeweb
         c.allow_http_connections_when_no_cassette = true
@@ -78,7 +78,7 @@ Feature: Rack
         get('/') { Net::HTTP.get_response(URI.parse(params[:url])).body }
       end
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.cassette_library_dir = 'cassettes'
         c.stub_with :fakeweb
         c.allow_http_connections_when_no_cassette = true

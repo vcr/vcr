@@ -67,7 +67,7 @@ Feature: Usage with RSpec
       require 'sinatra_app'
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.cassette_library_dir     = 'spec/cassettes'
         c.stub_with                :fakeweb
       end
@@ -92,7 +92,7 @@ Feature: Usage with RSpec
 
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.cassette_library_dir     = 'spec/cassettes'
         c.stub_with                  :fakeweb
       end

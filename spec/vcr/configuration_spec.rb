@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe VCR::Config do
+describe VCR.configuration do
   def stub_no_http_stubbing_adapter
     VCR.stub(:http_stubbing_adapter).and_raise(ArgumentError)
-    VCR::Config.stub(:http_stubbing_libraries).and_return([])
+    VCR.configuration.stub(:http_stubbing_libraries).and_return([])
   end
 
   describe '.cassette_library_dir=' do
@@ -11,45 +11,45 @@ describe VCR::Config do
     after(:each) { FileUtils.rm_rf tmp_dir }
 
     it 'creates the directory if it does not exist' do
-      expect { VCR::Config.cassette_library_dir = tmp_dir }.to change { File.exist?(tmp_dir) }.from(false).to(true)
+      expect { VCR.configuration.cassette_library_dir = tmp_dir }.to change { File.exist?(tmp_dir) }.from(false).to(true)
     end
 
     it 'does not raise an error if given nil' do
-      expect { VCR::Config.cassette_library_dir = nil }.to_not raise_error
+      expect { VCR.configuration.cassette_library_dir = nil }.to_not raise_error
     end
   end
 
   describe '.default_cassette_options' do
     it 'has a hash with some defaults even if it is set to nil' do
-      VCR::Config.default_cassette_options = nil
-      VCR::Config.default_cassette_options.should eq({
+      VCR.configuration.default_cassette_options = nil
+      VCR.configuration.default_cassette_options.should eq({
         :match_requests_on => VCR::RequestMatcher::DEFAULT_MATCH_ATTRIBUTES,
         :record            => :once
       })
     end
 
     it "returns #{VCR::RequestMatcher::DEFAULT_MATCH_ATTRIBUTES.inspect} for :match_requests_on when other defaults have been set" do
-      VCR::Config.default_cassette_options = { :record => :none }
-      VCR::Config.default_cassette_options.should include(:match_requests_on => VCR::RequestMatcher::DEFAULT_MATCH_ATTRIBUTES)
+      VCR.configuration.default_cassette_options = { :record => :none }
+      VCR.configuration.default_cassette_options.should include(:match_requests_on => VCR::RequestMatcher::DEFAULT_MATCH_ATTRIBUTES)
     end
 
     it "returns :once for :record when other defaults have been set" do
-      VCR::Config.default_cassette_options = { :erb => :true }
-      VCR::Config.default_cassette_options.should include(:record => :once)
+      VCR.configuration.default_cassette_options = { :erb => :true }
+      VCR.configuration.default_cassette_options.should include(:record => :once)
     end
   end
 
   describe '.stub_with' do
     it 'stores the given symbols in http_stubbing_libraries' do
-      VCR::Config.stub_with :fakeweb, :typhoeus
-      VCR::Config.http_stubbing_libraries.should eq([:fakeweb, :typhoeus])
+      VCR.configuration.stub_with :fakeweb, :typhoeus
+      VCR.configuration.http_stubbing_libraries.should eq([:fakeweb, :typhoeus])
     end
   end
 
   describe '.http_stubbing_libraries' do
     it 'returns an empty array even when the variable is nil' do
-      VCR::Config.send(:remove_instance_variable, :@http_stubbing_libraries)
-      VCR::Config.http_stubbing_libraries.should eq([])
+      VCR.configuration.send(:remove_instance_variable, :@http_stubbing_libraries)
+      VCR.configuration.http_stubbing_libraries.should eq([])
     end
   end
 
@@ -58,63 +58,63 @@ describe VCR::Config do
     before(:each) do
       stubbing_adapter.send(:ignored_hosts).should be_empty
       VCR.stub(:http_stubbing_adapter => stubbing_adapter)
-      VCR::Config.ignored_hosts.should be_empty
+      VCR.configuration.ignored_hosts.should be_empty
     end
 
     it 'adds the given hosts to the ignored_hosts list' do
-      VCR::Config.ignore_hosts 'example.com', 'example.net'
-      VCR::Config.ignored_hosts.should eq(%w[ example.com example.net ])
-      VCR::Config.ignore_host 'example.org'
-      VCR::Config.ignored_hosts.should eq(%w[ example.com example.net example.org ])
+      VCR.configuration.ignore_hosts 'example.com', 'example.net'
+      VCR.configuration.ignored_hosts.should eq(%w[ example.com example.net ])
+      VCR.configuration.ignore_host 'example.org'
+      VCR.configuration.ignored_hosts.should eq(%w[ example.com example.net example.org ])
     end
 
     it 'removes duplicate hosts' do
-      VCR::Config.ignore_host 'example.com'
-      VCR::Config.ignore_host 'example.com'
-      VCR::Config.ignored_hosts.should eq(['example.com'])
+      VCR.configuration.ignore_host 'example.com'
+      VCR.configuration.ignore_host 'example.com'
+      VCR.configuration.ignored_hosts.should eq(['example.com'])
     end
 
     it "updates the http_stubbing_adapter's ignored_hosts list" do
-      VCR::Config.ignore_hosts 'example.com', 'example.org'
+      VCR.configuration.ignore_hosts 'example.com', 'example.org'
       stubbing_adapter.send(:ignored_hosts).should eq(%w[ example.com example.org ])
     end
   end
 
   describe '.ignore_localhost=' do
     before(:each) do
-      VCR::Config.ignored_hosts.should be_empty
+      VCR.configuration.ignored_hosts.should be_empty
     end
 
     it 'adds the localhost aliases to the ignored_hosts list when set to true' do
-      VCR::Config.ignore_host 'example.com'
-      VCR::Config.ignore_localhost = true
-      VCR::Config.ignored_hosts.should eq(['example.com', *VCR::LOCALHOST_ALIASES])
+      VCR.configuration.ignore_host 'example.com'
+      VCR.configuration.ignore_localhost = true
+      VCR.configuration.ignored_hosts.should eq(['example.com', *VCR::LOCALHOST_ALIASES])
     end
 
     it 'removes the localhost aliases from the ignored_hosts list when set to false' do
-      VCR::Config.ignore_host 'example.com', *VCR::LOCALHOST_ALIASES
-      VCR::Config.ignore_localhost = false
-      VCR::Config.ignored_hosts.should eq(['example.com'])
+      VCR.configuration.ignore_host 'example.com', *VCR::LOCALHOST_ALIASES
+      VCR.configuration.ignore_localhost = false
+      VCR.configuration.ignored_hosts.should eq(['example.com'])
     end
   end
 
   describe '.allow_http_connections_when_no_cassette=' do
     [true, false].each do |val|
       it "sets the allow_http_connections_when_no_cassette to #{val} when set to #{val}" do
-        VCR::Config.allow_http_connections_when_no_cassette = val
-        VCR::Config.allow_http_connections_when_no_cassette?.should eq(val)
+        VCR.configuration.allow_http_connections_when_no_cassette = val
+        VCR.configuration.allow_http_connections_when_no_cassette?.should eq(val)
       end
     end
 
     it 'sets http_connnections_allowed to the default' do
       VCR.http_stubbing_adapter.should respond_to(:set_http_connections_allowed_to_default)
       VCR.http_stubbing_adapter.should_receive(:set_http_connections_allowed_to_default)
-      VCR::Config.allow_http_connections_when_no_cassette = true
+      VCR.configuration.allow_http_connections_when_no_cassette = true
     end
 
     it "works when the adapter hasn't been set yet" do
       stub_no_http_stubbing_adapter
-      VCR::Config.allow_http_connections_when_no_cassette = true
+      VCR.configuration.allow_http_connections_when_no_cassette = true
     end
   end
 

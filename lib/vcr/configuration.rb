@@ -2,13 +2,16 @@ require 'fileutils'
 require 'vcr/util/hooks'
 
 module VCR
-  module Config
+  class Configuration
     include VCR::Hooks
     include VCR::VariableArgsBlockCaller
-    extend self
 
     define_hook :before_record
     define_hook :before_playback
+
+    def initialize
+      @allow_http_connections_when_no_cassette = nil
+    end
 
     attr_reader :cassette_library_dir
     def cassette_library_dir=(cassette_library_dir)
@@ -73,12 +76,6 @@ module VCR
       uri = URI.parse(uri) unless uri.respond_to?(:host)
       ignored_hosts.include?(uri.host)
     end
-
-    def initialize_ivars
-      @allow_http_connections_when_no_cassette = nil
-    end
-
-    initialize_ivars # to avoid warnings
   end
 end
 

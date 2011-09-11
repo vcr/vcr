@@ -24,7 +24,7 @@ Feature: Net::HTTP
       """ruby
       require 'vcr_setup.rb'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with <stub_with>
         c.cassette_library_dir = 'cassettes'
       end
@@ -50,7 +50,7 @@ Feature: Net::HTTP
       """ruby
       require 'vcr_setup.rb'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with <stub_with>
         c.cassette_library_dir = 'cassettes'
       end
@@ -82,7 +82,7 @@ Feature: Net::HTTP
       """ruby
       require 'vcr_setup.rb'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with <stub_with>
         c.cassette_library_dir = 'cassettes'
       end
@@ -115,7 +115,7 @@ Feature: Net::HTTP
       require 'open-uri'
       require 'vcr_setup.rb'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with <stub_with>
         c.cassette_library_dir = 'cassettes'
       end
@@ -141,7 +141,7 @@ Feature: Net::HTTP
         """ruby
         require 'vcr'
 
-        VCR.config do |c|
+        VCR.configure do |c|
           c.stub_with <stub_with>
           c.cassette_library_dir = 'cassettes'
         end

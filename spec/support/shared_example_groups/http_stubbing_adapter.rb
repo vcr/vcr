@@ -4,8 +4,8 @@ shared_examples_for "an http stubbing adapter" do |supported_http_libraries, sup
 
   describe '.set_http_connections_allowed_to_default' do
     [true, false].each do |default|
-      context "when VCR::Config.allow_http_connections_when_no_cassette is #{default}" do
-        before(:each) { VCR::Config.allow_http_connections_when_no_cassette = default }
+      context "when VCR.configuration.allow_http_connections_when_no_cassette is #{default}" do
+        before(:each) { VCR.configuration.allow_http_connections_when_no_cassette = default }
 
         it "sets http_connections_allowed to #{default}" do
           subject.http_connections_allowed = !default

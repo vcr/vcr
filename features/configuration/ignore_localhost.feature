@@ -29,7 +29,7 @@ Feature: ignore_localhost
 
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         <additional_config>
         c.cassette_library_dir = 'cassettes'
         c.stub_with <stub_with>
@@ -73,7 +73,7 @@ Feature: ignore_localhost
 
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.ignore_localhost = true
         c.cassette_library_dir = 'cassettes'
         c.stub_with <stub_with>

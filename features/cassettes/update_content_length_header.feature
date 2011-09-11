@@ -44,7 +44,7 @@ Feature: Update content_length header
       """ruby
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.cassette_library_dir = 'cassettes'
         c.stub_with :fakeweb
       end

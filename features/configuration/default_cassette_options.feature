@@ -14,7 +14,7 @@ Feature: default_cassette_options
       """ruby
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.default_cassette_options = { :record => :new_episodes, :erb => true }
 
         # not important for this example, but must be set to something
@@ -57,7 +57,7 @@ Feature: default_cassette_options
       """ruby
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         # not important for this example, but must be set to something
         c.stub_with :webmock
         c.cassette_library_dir = 'cassettes'

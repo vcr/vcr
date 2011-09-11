@@ -3,9 +3,11 @@ require 'vcr/util/variable_args_block_caller'
 require 'vcr/util/yaml'
 
 require 'vcr/cassette'
-require 'vcr/config'
+require 'vcr/configuration'
 require 'vcr/request_matcher'
 require 'vcr/version'
+
+require 'vcr/deprecations/vcr'
 
 require 'vcr/http_stubbing_adapters/common'
 
@@ -75,11 +77,15 @@ module VCR
     end
   end
 
-  def config
-    yield VCR::Config
+  def configuration
+    @configuration ||= Configuration.new
+  end
+
+  def configure
+    yield configuration
     http_stubbing_adapter.check_version!
     http_stubbing_adapter.set_http_connections_allowed_to_default
-    http_stubbing_adapter.ignored_hosts = VCR::Config.ignored_hosts
+    http_stubbing_adapter.ignored_hosts = VCR.configuration.ignored_hosts
   end
 
   def cucumber_tags(&block)
@@ -89,11 +95,11 @@ module VCR
 
   def http_stubbing_adapter
     @http_stubbing_adapter ||= begin
-      if [:fakeweb, :webmock].all? { |l| VCR::Config.http_stubbing_libraries.include?(l) }
+      if [:fakeweb, :webmock].all? { |l| VCR.configuration.http_stubbing_libraries.include?(l) }
         raise ArgumentError.new("You have configured VCR to use both :fakeweb and :webmock.  You cannot use both.")
       end
 
-      adapters = VCR::Config.http_stubbing_libraries.map { |l| adapter_for(l) }
+      adapters = VCR.configuration.http_stubbing_libraries.map { |l| adapter_for(l) }
       raise ArgumentError.new("The http stubbing library is not configured.") if adapters.empty?
       adapter = HttpStubbingAdapters::MultiObjectProxy.for(*adapters)
       adapter.after_adapters_loaded
@@ -103,7 +109,7 @@ module VCR
 
   def record_http_interaction(interaction)
     return unless cassette = current_cassette
-    return if VCR::Config.uri_should_be_ignored?(interaction.uri)
+    return if VCR.configuration.uri_should_be_ignored?(interaction.uri)
 
     cassette.record_http_interaction(interaction)
   end

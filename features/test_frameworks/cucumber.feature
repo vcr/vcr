@@ -40,7 +40,7 @@ Feature: Usage with Cucumber
       require "lib/server"
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with :webmock
         c.cassette_library_dir     = 'features/cassettes'
       end

@@ -7,7 +7,7 @@ Feature: Hooks
     - `before_playback`: Called before a cassette sets up its stubs for playback.
 
   To use these, call `config.before_record` or `config.before_playback` in
-  your `VCR.config` block.  Provide a block that accepts 0, 1 or 2 arguments.
+  your `VCR.configure` block.  Provide a block that accepts 0, 1 or 2 arguments.
 
   The first argument, if the block accepts it, will be an HTTP interaction.
   Changes you make to the interaction will be reflected in the recording or
@@ -22,7 +22,7 @@ Feature: Hooks
   You can also use tagging to apply hooks to particular cassettes.  Consider
   this code:
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.before_record(:twitter) { ... } # modify the interactions somehow
       end
 
@@ -69,7 +69,7 @@ Feature: Hooks
 
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with :fakeweb
         c.cassette_library_dir = 'cassettes'
 
@@ -98,7 +98,7 @@ Feature: Hooks
 
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with :fakeweb
         c.cassette_library_dir = 'cassettes'
         c.before_record { |i| i.ignore! }
@@ -118,7 +118,7 @@ Feature: Hooks
       """ruby
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with                :fakeweb
         c.cassette_library_dir     = 'cassettes'
 
@@ -167,7 +167,7 @@ Feature: Hooks
 
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with                :fakeweb
         c.cassette_library_dir     = 'cassettes'
         c.before_playback { |i| i.ignore! }
@@ -192,7 +192,7 @@ Feature: Hooks
 
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with :fakeweb
         c.cassette_library_dir = 'cassettes'
 
@@ -233,7 +233,7 @@ Feature: Hooks
 
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with :fakeweb
         c.cassette_library_dir = 'cassettes'
 

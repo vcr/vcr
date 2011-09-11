@@ -55,7 +55,7 @@ Feature: stub_with
 
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with <stub_with>
         c.cassette_library_dir = 'vcr_cassettes'
       end
@@ -128,7 +128,7 @@ Feature: stub_with
 
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with <stub_with>, :typhoeus, :excon, :faraday
         c.cassette_library_dir = 'vcr_cassettes'
       end

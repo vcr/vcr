@@ -29,7 +29,7 @@ Feature: ignore_hosts
 
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.ignore_hosts '127.0.0.1', 'localhost'
         c.cassette_library_dir = 'cassettes'
         c.stub_with <stub_with>

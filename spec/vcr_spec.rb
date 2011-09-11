@@ -86,32 +86,42 @@ describe VCR do
     end
   end
 
-  describe '.config' do
+  describe '.configuration' do
+    it 'returns the configuration object' do
+      VCR.configuration.should be_a(VCR::Configuration)
+    end
+
+    it 'memoizes the instance' do
+      VCR.configuration.should be(VCR.configuration)
+    end
+  end
+
+  describe '.configure' do
     it 'yields the configuration object' do
       yielded_object = nil
-      VCR.config do |obj|
+      VCR.configure do |obj|
         yielded_object = obj
       end
-      yielded_object.should eq(VCR::Config)
+      yielded_object.should eq(VCR.configuration)
     end
 
     it "sets http_stubbing_adapter.http_connections_allowed to the configured default" do
       VCR.http_stubbing_adapter.should respond_to(:set_http_connections_allowed_to_default)
       VCR.http_stubbing_adapter.should_receive(:set_http_connections_allowed_to_default)
-      VCR.config { }
+      VCR.configure { }
     end
 
     it "checks the adapted library's version to make sure it's compatible with VCR" do
       VCR.http_stubbing_adapter.should respond_to(:check_version!)
       VCR.http_stubbing_adapter.should_receive(:check_version!)
-      VCR.config { }
+      VCR.configure { }
     end
 
     it "sets http_stubbing_adapter.ignored_hosts to the configured hosts when the block completes" do
-      VCR::Config.reset!(nil)
+      VCR.reset!(nil)
       VCR::HttpStubbingAdapters::FakeWeb.send(:ignored_hosts).should be_empty
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with :fakeweb
         c.ignore_hosts 'example.com', 'example.org'
       end
@@ -137,7 +147,7 @@ describe VCR do
     end
 
     it 'returns a multi object proxy for the configured stubbing libraries when multiple libs are configured', :unless => RUBY_PLATFORM == 'java' do
-      VCR::Config.stub_with :fakeweb, :typhoeus
+      VCR.configuration.stub_with :fakeweb, :typhoeus
       VCR.http_stubbing_adapter.proxied_objects.should eq([
         VCR::HttpStubbingAdapters::FakeWeb,
         VCR::HttpStubbingAdapters::Typhoeus
@@ -151,31 +161,31 @@ describe VCR do
       :excon    => VCR::HttpStubbingAdapters::Excon
     }.each do |symbol, klass|
       it "returns #{klass} for :#{symbol}" do
-        VCR::Config.stub_with symbol
+        VCR.configuration.stub_with symbol
         VCR.http_stubbing_adapter.should eq(klass)
       end
     end
 
     it 'calls #after_adapters_loaded on the configured stubbing adapter' do
       VCR::HttpStubbingAdapters::FakeWeb.should_receive(:after_adapters_loaded)
-      VCR::Config.stub_with :fakeweb
+      VCR.configuration.stub_with :fakeweb
       VCR.http_stubbing_adapter
     end
 
     it 'raises an error if both :fakeweb and :webmock are configured' do
-      VCR::Config.stub_with :fakeweb, :webmock
+      VCR.configuration.stub_with :fakeweb, :webmock
 
       expect { VCR.http_stubbing_adapter }.to raise_error(ArgumentError, /cannot use both/)
     end
 
     it 'raises an error for unsupported stubbing libraries' do
-      VCR::Config.stub_with :unsupported_library
+      VCR.configuration.stub_with :unsupported_library
 
       expect { VCR.http_stubbing_adapter }.to raise_error(ArgumentError, /unsupported_library is not a supported HTTP stubbing library/i)
     end
 
     it 'raises an error when no stubbing libraries are configured' do
-      VCR::Config.stub_with
+      VCR.configuration.stub_with
 
       expect { VCR.http_stubbing_adapter }.to raise_error(ArgumentError, /the http stubbing library is not configured/i)
     end
@@ -192,7 +202,7 @@ describe VCR do
       it 'does not record a request' do
         # we can't set a message expectation on nil, but there is no place to record it to...
         # this mostly tests that there is no error.
-        VCR::Config.stub(:uri_should_be_ignored? => false)
+        VCR.configuration.stub(:uri_should_be_ignored? => false)
         VCR.record_http_interaction(interaction)
       end
     end
@@ -201,13 +211,13 @@ describe VCR do
       let(:current_cassette) { mock('current cassette') }
 
       it 'records the request when the uri should not be ignored' do
-        VCR::Config.stub(:uri_should_be_ignored?).with(uri).and_return(false)
+        VCR.configuration.stub(:uri_should_be_ignored?).with(uri).and_return(false)
         current_cassette.should_receive(:record_http_interaction).with(interaction)
         VCR.record_http_interaction(interaction)
       end
 
       it 'does not record the request when the uri should be ignored' do
-        VCR::Config.stub(:uri_should_be_ignored?).with(uri).and_return(true)
+        VCR.configuration.stub(:uri_should_be_ignored?).with(uri).and_return(true)
         current_cassette.should_not_receive(:record_http_interaction)
         VCR.record_http_interaction(interaction)
       end

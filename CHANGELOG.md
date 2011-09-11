@@ -4,6 +4,10 @@
 
 * Removed support for Ruby 1.8.6 and 1.9.1.
 * Removed lots of old deprecated APIs.
+* Deprecated `VCR.config` in favor of `VCR.configure`.
+* Deprecated `VCR::Config` singleton module in favor of
+  `VCR::Configuration` class.  The current configuration instance
+  can be accessed via `VCR.configuration`.
 
 ## 1.11.3 (August 31, 2011)
 

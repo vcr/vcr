@@ -22,7 +22,7 @@ Feature: EM HTTP Request
 
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with :webmock
         c.cassette_library_dir = 'cassettes'
       end

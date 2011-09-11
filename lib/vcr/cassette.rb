@@ -11,7 +11,7 @@ module VCR
     attr_reader :name, :record_mode, :match_requests_on, :erb, :re_record_interval, :tag
 
     def initialize(name, options = {})
-      options = VCR::Config.default_cassette_options.merge(options)
+      options = VCR.configuration.default_cassette_options.merge(options)
       invalid_options = options.keys - [
         :record,
         :erb,
@@ -59,7 +59,7 @@ module VCR
     end
 
     def file
-      File.join(VCR::Config.cassette_library_dir, "#{sanitized_name}.yml") if VCR::Config.cassette_library_dir
+      File.join(VCR.configuration.cassette_library_dir, "#{sanitized_name}.yml") if VCR.configuration.cassette_library_dir
     end
 
     def update_content_length_header?
@@ -88,7 +88,7 @@ module VCR
     def should_allow_http_connections?
       case record_mode
         when :none; false
-        when :once; !File.size?(file)
+        when :once; file.nil? || !File.size?(file)
         else true
       end
     end
@@ -123,7 +123,7 @@ module VCR
         invoke_hook(:before_playback, interactions)
 
         interactions.reject! do |i|
-          i.request.uri.is_a?(String) && VCR::Config.uri_should_be_ignored?(i.request.uri)
+          i.request.uri.is_a?(String) && VCR.configuration.uri_should_be_ignored?(i.request.uri)
         end
 
         if update_content_length_header?
@@ -161,7 +161,7 @@ module VCR
     end
 
     def write_recorded_interactions_to_disk
-      return unless VCR::Config.cassette_library_dir
+      return unless VCR.configuration.cassette_library_dir
       return if new_recorded_interactions.empty?
 
       interactions = merged_interactions
@@ -175,7 +175,7 @@ module VCR
 
     def invoke_hook(type, interactions)
       interactions.delete_if do |i|
-        VCR::Config.invoke_hook(type, tag, i, self)
+        VCR.configuration.invoke_hook(type, tag, i, self)
         i.ignored?
       end
     end

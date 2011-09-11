@@ -28,7 +28,7 @@ Feature: Usage with Shoulda
       require 'shoulda'
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with :webmock
         c.cassette_library_dir = 'test/fixtures/vcr_cassettes'
       end

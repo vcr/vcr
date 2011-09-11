@@ -35,7 +35,7 @@ Feature: Dynamic ERB cassettes
       """ruby
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with :fakeweb
         c.cassette_library_dir = 'cassettes'
       end
@@ -74,7 +74,7 @@ Feature: Dynamic ERB cassettes
       """ruby
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with :fakeweb
         c.cassette_library_dir = 'cassettes'
       end

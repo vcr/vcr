@@ -14,7 +14,7 @@ Feature: cassette_library_dir
 
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.cassette_library_dir = 'vcr/cassettes'
         c.stub_with :fakeweb
       end

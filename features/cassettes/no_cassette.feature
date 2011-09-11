@@ -27,7 +27,7 @@ Feature: Error for HTTP request made when no cassette is in use
 
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with <stub_with>
         c.cassette_library_dir = 'cassettes'
       end
@@ -62,7 +62,7 @@ Feature: Error for HTTP request made when no cassette is in use
 
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with :fakeweb
       end
 
@@ -112,7 +112,7 @@ Feature: Error for HTTP request made when no cassette is in use
       """ruby
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.stub_with :fakeweb
       end
 
@@ -133,7 +133,7 @@ Feature: Error for HTTP request made when no cassette is in use
 
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.cassette_library_dir = 'cassettes'
         c.stub_with :fakeweb
       end

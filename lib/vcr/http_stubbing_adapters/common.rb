@@ -65,7 +65,7 @@ module VCR
       end
 
       def set_http_connections_allowed_to_default
-        self.http_connections_allowed = VCR::Config.allow_http_connections_when_no_cassette?
+        self.http_connections_allowed = VCR.configuration.allow_http_connections_when_no_cassette?
       end
 
       def raise_no_checkpoint_error(cassette)

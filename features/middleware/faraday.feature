@@ -22,7 +22,7 @@ Feature: Faraday middleware
 
       require 'vcr'
 
-      VCR.config do |c|
+      VCR.configure do |c|
         c.cassette_library_dir = 'cassettes'
         c.stub_with :faraday
       end
