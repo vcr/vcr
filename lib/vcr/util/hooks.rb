@@ -23,13 +23,17 @@ module VCR
       end
 
       def define_hook(hook)
-        # We must use string eval so that the dynamically
-        # defined method can accept a block.
-        instance_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def #{hook}(tag = nil, &block)
-            hooks[#{hook.inspect}][tag] << block
+        singleton_class = (class << self; self; end)
+        # We use splat args here because 1.8.7 doesn't allow default
+        # values for block arguments, so we have to fake it.
+        singleton_class.send(:define_method, hook) do |*args, &block|
+          if args.size > 1
+            raise ArgumentError.new("wrong number of arguments (#{args.size} for 1)")
           end
-        RUBY
+
+          tag = args.first
+          hooks[hook][tag] << block
+        end
       end
 
       def hooks_for(hook, tag)
