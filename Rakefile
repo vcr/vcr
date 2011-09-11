@@ -98,10 +98,3 @@ task :release => [:require_ruby_18, :prep_relish_release, :relish]
 # For gem-test: http://gem-testers.org/
 task :test => :spec
 
-task :fix_should_eq do
-  Dir["spec/**/*.rb"].each do |spec_file|
-    contents = File.read(spec_file)
-    contents.gsub!(/should == (.*)$/, 'should eq(\1)')
-    File.open(spec_file, 'w') { |f| f.write(contents) }
-  end
-end
