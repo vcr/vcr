@@ -50,8 +50,12 @@ namespace :ci do
     t.rspec_opts = %w[--format progress --backtrace]
   end
 
+  ci_tasks = [:setup, :spec]
+  # A full jRuby cucumber build takes a verrrry long time on travis,
+  # so let's skip it for now.
+  ci_tasks << :cucumber if RUBY_PLATFORM != 'java'
   desc "Run a ci build"
-  task :build => [:setup, :spec, :cucumber]
+  task :build => ci_tasks
 end
 
 def ensure_relish_doc_symlinked(filename)
