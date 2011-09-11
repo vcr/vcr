@@ -1,5 +1,4 @@
 require 'fakeweb'
-require 'vcr/deprecations/http_stubbing_adapters/fakeweb'
 require 'vcr/extensions/net_http'
 
 module VCR

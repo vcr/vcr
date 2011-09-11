@@ -9,10 +9,6 @@ require 'vcr/version'
 
 require 'vcr/http_stubbing_adapters/common'
 
-require 'vcr/deprecations/cassette'
-require 'vcr/deprecations/config'
-require 'vcr/deprecations/http_stubbing_adapters/common'
-
 require 'vcr/structs/normalizers/body'
 require 'vcr/structs/normalizers/header'
 require 'vcr/structs/normalizers/status_message'

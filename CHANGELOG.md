@@ -3,6 +3,7 @@
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.11.3...master)
 
 * Removed support for Ruby 1.8.6 and 1.9.1.
+* Removed lots of old deprecated APIs.
 
 ## 1.11.3 (August 31, 2011)
 

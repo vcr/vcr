@@ -15,7 +15,6 @@ module VCR
       invalid_options = options.keys - [
         :record,
         :erb,
-        :allow_real_http,
         :match_requests_on,
         :re_record_interval,
         :tag,
@@ -35,7 +34,6 @@ module VCR
       @record_mode        = :all if should_re_record?
       @update_content_length_header = options[:update_content_length_header]
 
-      deprecate_old_cassette_options(options)
       raise_error_unless_valid_record_mode
 
       set_http_connections_allowed
@@ -46,7 +44,6 @@ module VCR
       write_recorded_interactions_to_disk
       VCR.http_stubbing_adapter.restore_stubs_checkpoint(self)
       restore_http_connections_allowed
-      restore_ignore_localhost_for_deprecation
     end
 
     def recorded_interactions
