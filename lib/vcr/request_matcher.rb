@@ -66,10 +66,7 @@ module VCR
     end
 
     def hash
-      # on Ruby 1.8.6, identical sets have different hash values,
-      # but identical arrays have the same hash values,
-      # so we convert match_attributes to an array here.
-      [match_attributes.to_a, method, uri, sorted_header_array, body].hash
+      [match_attributes, method, uri, sorted_header_array, body].hash
     end
 
     private

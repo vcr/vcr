@@ -29,10 +29,8 @@ task :cleanup_rcov_files do
   rm_rf 'coverage.data'
 end
 
-unless RUBY_VERSION == '1.8.6'
-  require 'cucumber/rake/task'
-  Cucumber::Rake::Task.new
-end
+require 'cucumber/rake/task'
+Cucumber::Rake::Task.new
 
 task :default => [:spec, :cucumber]
 
@@ -52,10 +50,8 @@ namespace :ci do
     t.rspec_opts = %w[--format progress --backtrace]
   end
 
-  ci_tasks = [:setup, :spec]
-  ci_tasks << :cucumber if %w[ 1.8.7 1.9.2 1.9.3 ].include?(RUBY_VERSION) && (!defined?(RUBY_ENGINE) || RUBY_ENGINE == 'ruby')
   desc "Run a ci build"
-  task :build => ci_tasks
+  task :build => [:setup, :spec, :cucumber]
 end
 
 def ensure_relish_doc_symlinked(filename)

@@ -7,13 +7,7 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
     raise ArgumentError.new("No http library adapter module could be found for #{library}")
   end
 
-  http_lib_unsupported = if RUBY_INTERPRETER == :mri
-    # em-http-request is causing issues on 1.8.6 on travis like:
-    # ruby: symbol lookup error: /home/travis/.rvm/gems/ruby-1.8.6-p420/gems/em-http-request-0.3.0/lib/http11_client.so: undefined symbol: rb_hash_lookup
-    library =~ /em-http/ && RUBY_VERSION == '1.8.6' && ENV['TRAVIS']
-  else
-    library =~ /(typhoeus|curb|patron|em-http)/
-  end
+  http_lib_unsupported = (RUBY_INTERPRETER != :mri && library =~ /(typhoeus|curb|patron|em-http)/)
 
   describe "using #{adapter_module.http_library_name}", :unless => http_lib_unsupported do
     include adapter_module
