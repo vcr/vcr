@@ -6,7 +6,7 @@ describe VCR::HttpStubbingAdapters::Typhoeus do
     ::Typhoeus::Hydra.allow_net_connect = true
   end
 
-  it_behaves_like 'an http stubbing adapter', ['typhoeus'], [:method, :uri, :host, :path, :body, :headers]
+  it_behaves_like 'an http stubbing adapter', 'typhoeus'
 
   it_performs('version checking',
     :valid    => %w[ 0.2.1 0.2.99 ],

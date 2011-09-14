@@ -43,6 +43,7 @@ RSpec.configure do |config|
     VCR::HttpStubbingAdapters::Faraday.reset!
     VCR::HttpStubbingAdapters::Excon.reset!
     VCR::HttpStubbingAdapters::WebMock.reset!
+    VCR::HttpStubbingAdapters::FakeWeb.reset!
   end
 
   config.after(:each) do

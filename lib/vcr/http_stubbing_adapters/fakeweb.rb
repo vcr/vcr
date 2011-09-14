@@ -1,5 +1,6 @@
 require 'fakeweb'
-require 'vcr/extensions/net_http'
+require 'net/http'
+require 'vcr/extensions/net_http_response'
 
 module VCR
   module HttpStubbingAdapters
@@ -7,135 +8,126 @@ module VCR
       include VCR::HttpStubbingAdapters::Common
       extend self
 
-      UNSUPPORTED_REQUEST_MATCH_ATTRIBUTES = [:body, :headers]
-
       MINIMUM_VERSION = '1.3.0'
       MAXIMUM_VERSION = '1.3'
 
-      def http_connections_allowed=(value)
-        @http_connections_allowed = value
-        update_fakeweb_allow_net_connect
-      end
-
-      def http_connections_allowed?
-        !!::FakeWeb.allow_net_connect?("http://some.url/besides/localhost")
-      end
-
-      def ignored_hosts=(hosts)
-        @ignored_hosts = hosts
-        update_fakeweb_allow_net_connect
-      end
-
-      def stub_requests(http_interactions, match_attributes)
-        validate_match_attributes(match_attributes)
-
-        grouped_responses(http_interactions, match_attributes).each do |request_matcher, responses|
-          ::FakeWeb.register_uri(
-            request_matcher.method || :any,
-            request_matcher.uri,
-            responses.map{ |r| response_hash(r) }
-          )
-        end
-      end
-
-      def create_stubs_checkpoint(cassette)
-        checkpoints[cassette] = ::FakeWeb::Registry.instance.uri_map.dup
-      end
-
-      def restore_stubs_checkpoint(cassette)
-        ::FakeWeb::Registry.instance.uri_map = checkpoints.delete(cassette) || raise_no_checkpoint_error(cassette)
-      end
-
-      def request_stubbed?(request, match_attributes)
-        validate_match_attributes(match_attributes)
-        !!::FakeWeb.registered_uri?(request.method, request.uri)
-      end
-
-      def on_net_http_request(net_http, request, body = nil, &block)
-        unless enabled?
-          return net_http.request_without_vcr(request, body, &block)
-        end
-
-        vcr_request = vcr_request_from(net_http, request)
-        response = net_http.request_without_vcr(request, body)
-
-        match_attributes = if cass = VCR.current_cassette
-          cass.match_requests_on
-        else
-          VCR::RequestMatcher::DEFAULT_MATCH_ATTRIBUTES
-        end
-
-        if net_http.started? && !request_stubbed?(vcr_request, match_attributes)
-          VCR.record_http_interaction VCR::HTTPInteraction.new(vcr_request, vcr_response_from(response))
-          response.extend VCR::Net::HTTPResponse # "unwind" the response
-        end
-
-        yield response if block_given?
-        response
-      end
-
     private
-
-      def ignored_hosts
-        @ignored_hosts ||= []
-      end
 
       def version
         ::FakeWeb::VERSION
       end
 
-      def update_fakeweb_allow_net_connect
-        ::FakeWeb.allow_net_connect = if @http_connections_allowed
-          true
-        elsif ignored_hosts.any?
-          VCR::Regexes.url_regex_for_hosts(ignored_hosts)
-        else
-          false
+      class RequestHandler
+        extend Forwardable
+
+        attr_reader :net_http, :request, :request_body, :block
+        def_delegators :"VCR::HttpStubbingAdapters::FakeWeb",
+                       :enabled?,
+                       :uri_should_be_ignored?,
+                       :stubbed_response_for,
+                       :http_connections_allowed?
+
+        def initialize(net_http, request, request_body = nil, &block)
+          @net_http, @request, @request_body, @block =
+           net_http,  request,  request_body,  block
+        end
+
+        def handle
+          if !enabled? || uri_should_be_ignored?(uri)
+            perform_request
+          elsif stubbed_response
+            perform_stubbed_request
+          elsif http_connections_allowed?
+            perform_and_record_request
+          else
+            raise_connections_disabled_error
+          end
+        end
+
+        def perform_and_record_request
+          # Net::HTTP calls #request recursively in certain circumstances.
+          # We only want to record hte request when the request is started, as
+          # that is the final time through #request.
+          return perform_request unless net_http.started?
+
+          perform_request do |response|
+            VCR.record_http_interaction VCR::HTTPInteraction.new(vcr_request, vcr_response_from(response))
+            response.extend VCR::Net::HTTPResponse # "unwind" the response
+            block.call(response) if block
+          end
+        end
+
+        def perform_stubbed_request
+          with_exclusive_fakeweb_stub(stubbed_response) do
+            perform_request
+          end
+        end
+
+        def perform_request(&record_block)
+          net_http.request_without_vcr(request, request_body, &(record_block || block))
+        end
+
+        def raise_connections_disabled_error
+          VCR::HttpStubbingAdapters::FakeWeb.
+            raise_connections_disabled_error(vcr_request.method, vcr_request.uri)
+        end
+
+        def uri
+          @uri ||= ::FakeWeb::Utility.request_uri_as_string(net_http, request)
+        end
+
+        def response_hash(response)
+          (response.headers || {}).merge(
+            :body   => response.body,
+            :status => [response.status.code.to_s, response.status.message]
+          )
+        end
+
+        def with_exclusive_fakeweb_stub(response)
+          original_map = ::FakeWeb::Registry.instance.uri_map.dup
+          ::FakeWeb.clean_registry
+          ::FakeWeb.register_uri(:any, /.*/, response_hash(response))
+
+          begin
+            return yield
+          ensure
+            ::FakeWeb::Registry.instance.uri_map = original_map
+          end
+        end
+
+        def stubbed_response
+          @stubbed_response ||= stubbed_response_for(vcr_request)
+        end
+
+        def vcr_request
+          @vcr_request ||= VCR::Request.new \
+            request.method.downcase.to_sym,
+            uri,
+            request_body,
+            request.to_hash
+        end
+
+        def vcr_response_from(response)
+          VCR::Response.new \
+            VCR::ResponseStatus.new(response.code.to_i, response.message),
+            response.to_hash,
+            response.body,
+            response.http_version
         end
       end
-
-      def checkpoints
-        @checkpoints ||= {}
-      end
-
-      def response_hash(response)
-        (response.headers || {}).merge(
-          :body   => response.body,
-          :status => [response.status.code.to_s, response.status.message]
-        )
-      end
-
-      def vcr_request_from(net_http, request)
-        VCR::Request.new \
-          request.method.downcase.to_sym,
-          ::FakeWeb::Utility.request_uri_as_string(net_http, request),
-          request.body,
-          request.to_hash
-      end
-
-      def vcr_response_from(response)
-        VCR::Response.new \
-          VCR::ResponseStatus.new(response.code.to_i, response.message),
-          response.to_hash,
-          response.body,
-          response.http_version
-      end
-
-      def validate_match_attributes(match_attributes)
-        invalid_attributes = match_attributes & UNSUPPORTED_REQUEST_MATCH_ATTRIBUTES
-        if invalid_attributes.size > 0
-          raise UnsupportedRequestMatchAttributeError.new("FakeWeb does not support matching requests on #{invalid_attributes.join(' or ')}")
-        end
-      end
-
-      def initialize_ivars
-        @http_connections_allowed = nil
-      end
-
-      initialize_ivars # to avoid warnings
     end
   end
 end
 
-VCR::HttpStubbingAdapters::Common.add_vcr_info_to_exception_message(FakeWeb::NetConnectNotAllowedError)
+module Net
+  class HTTP
+    def request_with_vcr(*args, &block)
+      VCR::HttpStubbingAdapters::FakeWeb::RequestHandler.new(
+        self, *args, &block
+      ).handle
+    end
 
+    alias request_without_vcr request
+    alias request request_with_vcr
+  end
+end

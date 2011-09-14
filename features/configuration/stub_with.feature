@@ -21,10 +21,6 @@ Feature: stub_with
   There are some addiitonal trade offs to consider when deciding which
   stubbing library to use:
 
-    - FakeWeb does not allow you to stub a request based on the headers or body.
-      Therefore, the `:match_requests_on` option does not support `:body` or
-      `:headers` when you use FakeWeb.  Typhoeus, WebMock and Faraday both
-      support matching on `:body` and `:headers`.
     - FakeWeb is currently about 4 times faster than WebMock for stubbing
       Net::HTTP (see benchmarks/http_stubbing_libraries.rb for details).
     - FakeWeb and WebMock both use extensive monkey patching to stub their

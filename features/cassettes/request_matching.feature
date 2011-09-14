@@ -16,8 +16,8 @@ Feature: Request matching
     - `:path` - The path of the URI. You can use this (alone, or in combination
       with `:host`) as an alternative to `:uri` to cause VCR to match using a regex
       that matches the path.
-    - `:body` - The body of the request. (Unsupported when you use FakeWeb.)
-    - `:headers` - The request headers. (Unsupported when you use FakeWeb.)
+    - `:body` - The body of the request.
+    - `:headers` - The request headers.
 
   Alternately, you can manually edit a cassette and change a URI to the YAML
   of a regular expression.
@@ -232,6 +232,7 @@ Feature: Request matching
 
     Examples:
       | stub_with  | http_lib        |
+      | :fakeweb   | net/http        |
       | :webmock   | net/http        |
       | :webmock   | httpclient      |
       | :webmock   | patron          |
@@ -305,6 +306,7 @@ Feature: Request matching
 
     Examples:
       | stub_with  | http_lib        |
+      | :fakeweb   | net/http        |
       | :webmock   | net/http        |
       | :webmock   | httpclient      |
       | :webmock   | patron          |

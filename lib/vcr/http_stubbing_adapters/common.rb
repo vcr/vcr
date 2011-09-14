@@ -130,7 +130,7 @@ module VCR
 
       def raise_connections_disabled_error(method, uri)
         raise HttpConnectionNotAllowedError.new(
-          "Real HTTP connections are disabled. Request: #{method} #{uri}.  " +
+          "Real HTTP connections are disabled. Request: #{method.upcase} #{uri}.  " +
           RECORDING_INSTRUCTIONS
         )
       end

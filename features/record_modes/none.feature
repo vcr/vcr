@@ -64,4 +64,4 @@ Feature: :none
       end
       """
     When I run `ruby prevent_new_request.rb`
-    Then it should fail with "Real HTTP connections are disabled. Unregistered request: GET http://example.com/bar"
+    Then it should fail with "Real HTTP connections are disabled. Request: GET http://example.com:80/bar"

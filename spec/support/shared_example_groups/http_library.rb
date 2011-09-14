@@ -2,7 +2,7 @@ require 'cgi'
 
 NET_CONNECT_NOT_ALLOWED_ERROR = /You can use VCR to automatically record this request and replay it later/
 
-shared_examples_for "an http library" do |library, supported_request_match_attributes, *other|
+shared_examples_for "an http library" do |library, *other|
   unless adapter_module = HTTP_LIBRARY_ADAPTERS[library]
     raise ArgumentError.new("No http library adapter module could be found for #{library}")
   end
@@ -95,32 +95,23 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
       before(:each) { subject.http_connections_allowed = false }
       let(:interactions) { VCR::YAML.load_file(File.join(VCR::SPEC_ROOT, 'fixtures', 'match_requests_on.yml')) }
 
-      @supported_request_match_attributes = supported_request_match_attributes
       def self.matching_on(attribute, valid, invalid, &block)
-        supported_request_match_attributes = @supported_request_match_attributes
-
         describe ":#{attribute}" do
           let(:perform_stubbing) { subject.stub_requests(interactions, match_requests_on) }
           let(:match_requests_on) { [attribute] }
           let(:record_mode) { :none }
 
-          if supported_request_match_attributes.include?(attribute)
-            before(:each) { perform_stubbing }
-            module_eval(&block)
+          before(:each) { perform_stubbing }
+          module_eval(&block)
 
-            valid.each do |val, response|
-              it "returns the expected response for a #{val.inspect} request" do
-                get_body_string(make_http_request(val)).should eq(response)
-              end
+          valid.each do |val, response|
+            it "returns the expected response for a #{val.inspect} request" do
+              get_body_string(make_http_request(val)).should eq(response)
             end
+          end
 
-            it "raises an error for a request with a different #{attribute}" do
-              expect { make_http_request(invalid) }.to raise_error(NET_CONNECT_NOT_ALLOWED_ERROR)
-            end
-          else
-            it 'raises an error indicating matching requests on this attribute is not supported' do
-              expect { perform_stubbing }.to raise_error(/does not support matching requests on #{attribute}/)
-            end
+          it "raises an error for a request with a different #{attribute}" do
+            expect { make_http_request(invalid) }.to raise_error(NET_CONNECT_NOT_ALLOWED_ERROR)
           end
         end
       end
@@ -227,10 +218,6 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
       end
     end
 
-    def test_request_stubbed(method, url, expected)
-      subject.request_stubbed?(VCR::Request.new(method, url), [:method, :uri]).should eq(expected)
-    end
-
     it "returns false from #http_connections_allowed? when http_connections_allowed is set to nil" do
       subject.http_connections_allowed = nil
       subject.http_connections_allowed?.should eq(false)
@@ -285,18 +272,6 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
             subject.stub_requests(@recorded_interactions, VCR::RequestMatcher::DEFAULT_MATCH_ATTRIBUTES)
           end
 
-          if other.include?(:needs_net_http_extension)
-            it 'returns true from #request_stubbed? for the requests that are stubbed' do
-              test_request_stubbed(:post, 'http://example.com', true)
-              test_request_stubbed(:get, 'http://example.com/foo', true)
-            end
-
-            it 'returns false from #request_stubbed? for requests that are not stubbed' do
-              test_request_stubbed(:post, 'http://example.com/foo', false)
-              test_request_stubbed(:get, 'http://google.com', false)
-            end
-          end
-
           it 'gets the stubbed responses when requests are made to http://example.com/foo, and does not record them' do
             VCR.should_receive(:record_http_interaction).never
             get_body_string(make_http_request(:get, 'http://example.com/foo')).should =~ /example\.com get response \d with path=foo/
@@ -321,14 +296,6 @@ shared_examples_for "an http library" do |library, supported_request_match_attri
             before(:each) { subject.restore_stubs_checkpoint(:my_checkpoint) }
 
             test_real_http_request(http_allowed, *other)
-
-            if other.include?(:needs_net_http_extension)
-              it 'returns false from #request_stubbed?' do
-                test_request_stubbed(:get, 'http://example.com/foo', false)
-                test_request_stubbed(:post, 'http://example.com', false)
-                test_request_stubbed(:get, 'http://google.com', false)
-              end
-            end
           end
         end
       end
