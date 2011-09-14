@@ -51,11 +51,30 @@ module VCR
         !!::FakeWeb.registered_uri?(request.method, request.uri)
       end
 
-      def request_uri(net_http, request)
-        ::FakeWeb::Utility.request_uri_as_string(net_http, request)
+      def on_net_http_request(net_http, request, body = nil, &block)
+        unless enabled?
+          return net_http.request_without_vcr(request, body, &block)
+        end
+
+        vcr_request = vcr_request_from(net_http, request)
+        response = net_http.request_without_vcr(request, body)
+
+        match_attributes = if cass = VCR.current_cassette
+          cass.match_requests_on
+        else
+          VCR::RequestMatcher::DEFAULT_MATCH_ATTRIBUTES
+        end
+
+        if net_http.started? && !request_stubbed?(vcr_request, match_attributes)
+          VCR.record_http_interaction VCR::HTTPInteraction.new(vcr_request, vcr_response_from(response))
+          response.extend VCR::Net::HTTPResponse # "unwind" the response
+        end
+
+        yield response if block_given?
+        response
       end
 
-      private
+    private
 
       def ignored_hosts
         @ignored_hosts ||= []
@@ -84,6 +103,22 @@ module VCR
           :body   => response.body,
           :status => [response.status.code.to_s, response.status.message]
         )
+      end
+
+      def vcr_request_from(net_http, request)
+        VCR::Request.new \
+          request.method.downcase.to_sym,
+          ::FakeWeb::Utility.request_uri_as_string(net_http, request),
+          request.body,
+          request.to_hash
+      end
+
+      def vcr_response_from(response)
+        VCR::Response.new \
+          VCR::ResponseStatus.new(response.code.to_i, response.message),
+          response.to_hash,
+          response.body,
+          response.http_version
       end
 
       def validate_match_attributes(match_attributes)

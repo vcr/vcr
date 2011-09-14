@@ -44,21 +44,6 @@ shared_examples_for "an http stubbing adapter" do |supported_http_libraries, sup
   end
 
   if other.include?(:needs_net_http_extension)
-    describe '.request_uri' do
-      it 'returns the uri for the given http request' do
-        net_http = Net::HTTP.new('example.com', 80)
-        request = Net::HTTP::Get.new('/foo/bar')
-        subject.request_uri(net_http, request).should eq('http://example.com:80/foo/bar')
-      end
-
-      it 'handles basic auth' do
-        net_http = Net::HTTP.new('example.com',80)
-        request = Net::HTTP::Get.new('/auth.txt')
-        request.basic_auth 'user', 'pass'
-        subject.request_uri(net_http, request).should eq('http://user:pass@example.com:80/auth.txt')
-      end
-    end
-
     describe '.request_stubbed? using specific match_attributes' do
       let(:interactions) { VCR::YAML.load_file(File.join(VCR::SPEC_ROOT, 'fixtures', 'match_requests_on.yml')) }
 

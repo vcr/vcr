@@ -35,7 +35,7 @@ module VCR
         end
 
         def method_return_val_important?(method_name)
-          method_name == :request_uri || method_name.to_s =~ /\?$/
+          method_name.to_s =~ /\?$/
         end
     end
   end

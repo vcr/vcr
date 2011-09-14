@@ -61,21 +61,19 @@ module VCR
           subject.stub_requests(:arg1, :arg2)
         end
 
-        [:http_connections_allowed?, :request_uri].each do |method|
-          context "for ##{method}" do
-            it 'raises an error if the the objects return different values' do
-              mock1.should_receive(method).and_return(:return_value_1)
-              mock2.should_receive(method).and_return(:return_value_2)
+        context "for #http_connections_allowed?" do
+          it 'raises an error if the the objects return different values' do
+            mock1.should_receive(:http_connections_allowed?).and_return(:return_value_1)
+            mock2.should_receive(:http_connections_allowed?).and_return(:return_value_2)
 
-              expect { subject.__send__(method) }.to raise_error(/proxied objects returned different values/)
-            end
+            expect { subject.__send__(:http_connections_allowed?) }.to raise_error(/proxied objects returned different values/)
+          end
 
-            it 'returns the value returned by both objects when they return the same value' do
-              mock1.should_receive(method).and_return(:return_value_1)
-              mock2.should_receive(method).and_return(:return_value_1)
+          it 'returns the value returned by both objects when they return the same value' do
+            mock1.should_receive(:http_connections_allowed?).and_return(:return_value_1)
+            mock2.should_receive(:http_connections_allowed?).and_return(:return_value_1)
 
-              subject.__send__(method).should eq(:return_value_1)
-            end
+            subject.__send__(:http_connections_allowed?).should eq(:return_value_1)
           end
         end
 

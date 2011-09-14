@@ -31,27 +31,6 @@ describe VCR::Request do
     end
   end
 
-  describe '.from_net_http_request' do
-    let(:net_http) { VCR::YAML.load_file("#{VCR::SPEC_ROOT}/fixtures/example_net_http.yml") }
-    let(:request)  { VCR::YAML.load_file("#{VCR::SPEC_ROOT}/fixtures/example_net_http_request.yml") }
-    subject { described_class.from_net_http_request(net_http, request) }
-
-    before(:each) do
-      VCR.http_stubbing_adapter.should respond_to(:request_uri)
-      VCR.http_stubbing_adapter.stub!(:request_uri)
-    end
-
-    it            { should be_instance_of(VCR::Request) }
-    its(:method)  { should eq(:post) }
-    its(:body)    { should eq('id=7') }
-    its(:headers) { should eq({ "content-type" => ["application/x-www-form-urlencoded"] }) }
-
-    it 'sets the uri using the http_stubbing_adapter.request_uri' do
-      VCR.http_stubbing_adapter.should_receive(:request_uri).with(net_http, request).and_return('foo/bar')
-      subject.uri.should eq('foo/bar')
-    end
-  end
-
   it_performs 'uri normalization' do
     def instance(uri)
       VCR::Request.new(:get, uri, '', {})
