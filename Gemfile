@@ -1,5 +1,6 @@
 source :rubygems
 gemspec
+gem 'ya2yaml'
 
 group :development do
   # patron and em-http-request can't install on JRuby, so we have to limit their platform here.

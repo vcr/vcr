@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.required_ruby_version = '>= 1.8.6'
   s.required_rubygems_version = '>= 1.3.5'
+  s.add_dependency 'ya2yaml', '~> 0.30'
 
   {
     'bundler'         => '~> 1.0.7',
@@ -35,6 +36,7 @@ Gem::Specification.new do |s|
     'timecop'         => '~> 0.3.5',
     'rack'            => '1.1.0',
     'sinatra'         => '~> 1.1.0'
+    'ya2yaml'         => '~> 0.30'
   }.each do |lib, version|
     s.add_development_dependency lib, version
   end

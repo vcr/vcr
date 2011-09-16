@@ -1,6 +1,7 @@
 require 'fileutils'
 require 'erb'
 require 'set'
+require 'ya2yaml'
 
 require 'vcr/cassette/reader'
 
@@ -170,7 +171,7 @@ module VCR
 
       directory = File.dirname(file)
       FileUtils.mkdir_p directory unless File.exist?(directory)
-      File.open(file, 'w') { |f| f.write VCR::YAML.dump(interactions) }
+      File.open(file, 'w') { |f| f.write VCR::YAML.dump(interactions.ya2yaml(:syck_compatible => true)) }
     end
 
     def invoke_hook(type, interactions)
