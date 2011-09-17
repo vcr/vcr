@@ -40,11 +40,7 @@ RSpec.configure do |config|
     FakeWeb.allow_net_connect = true
     FakeWeb.clean_registry
 
-    VCR::HttpStubbingAdapters::Faraday.reset!
-    VCR::HttpStubbingAdapters::Excon.reset!
-    VCR::HttpStubbingAdapters::WebMock.reset!
-    VCR::HttpStubbingAdapters::FakeWeb.reset!
-    VCR::HttpStubbingAdapters::Typhoeus.reset!
+    VCR::HttpStubbingAdapters::Common.adapters.each(&:reset!)
   end
 
   config.after(:each) do
