@@ -8,6 +8,8 @@
 * Deprecated `VCR::Config` singleton module in favor of
   `VCR::Configuration` class.  The current configuration instance
   can be accessed via `VCR.configuration`.
+* Add test coverage of using WebMock as the stubbing library and
+  Typhoeus as the HTTP library.
 
 ## 1.11.3 (August 31, 2011)
 

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe VCR::HttpStubbingAdapters::WebMock, :with_monkey_patches => :webmock do
   it_behaves_like 'an http stubbing adapter',
-    %w[net/http patron httpclient em-http-request curb]
+    %w[net/http patron httpclient em-http-request curb typhoeus]
 
   it_performs('version checking',
     :valid    => %w[ 1.7.0 1.7.99 ],

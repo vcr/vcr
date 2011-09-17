@@ -59,6 +59,8 @@ Feature: ignore_localhost
       | :webmock   | patron          | c.ignore_localhost = false |
       | :webmock   | em-http-request |                            |
       | :webmock   | em-http-request | c.ignore_localhost = false |
+      | :webmock   | typhoeus        |                            |
+      | :webmock   | typhoeus        | c.ignore_localhost = false |
       | :typhoeus  | typhoeus        |                            |
       | :typhoeus  | typhoeus        | c.ignore_localhost = false |
       | :excon     | excon           |                            |
@@ -101,6 +103,7 @@ Feature: ignore_localhost
       | :webmock   | patron          |
       | :webmock   | curb            |
       | :webmock   | em-http-request |
+      | :webmock   | typhoeus        |
       | :typhoeus  | typhoeus        |
       | :excon     | excon           |
 

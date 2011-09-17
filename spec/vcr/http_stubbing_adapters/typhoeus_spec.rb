@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe VCR::HttpStubbingAdapters::Typhoeus do
+describe VCR::HttpStubbingAdapters::Typhoeus, :with_monkey_patches => :typhoeus do
   before(:each) do
     ::Typhoeus::Hydra.stubs = []
     ::Typhoeus::Hydra.allow_net_connect = true

@@ -1,26 +1,35 @@
+require 'typhoeus' if RUBY_INTERPRETER == :mri
+
 module MonkeyPatches
   extend self
 
   NET_HTTP_SINGLETON = class << Net::HTTP; self; end
 
-  MONKEY_PATCHES = [
+  NET_HTTP_MONKEY_PATCHES = [
     [Net::BufferedIO,    :initialize],
     [Net::HTTP,          :request],
     [Net::HTTP,          :connect],
     [NET_HTTP_SINGLETON, :socket_type]
   ]
 
+  ALL_MONKEY_PATCHES = NET_HTTP_MONKEY_PATCHES.dup
+
+  ALL_MONKEY_PATCHES << [Typhoeus::Hydra::Stubbing::SharedMethods, :find_stub_from_request] if RUBY_INTERPRETER == :mri
+
   def enable!(scope)
     case scope
       when :fakeweb
-        realias_all :with_fakeweb
+        realias_net_http :with_fakeweb
         enable!(:vcr) # fakeweb adapter relies upon VCR's Net::HTTP monkey patch
       when :webmock
         ::WebMock::HttpLibAdapters::NetHttpAdapter.enable!
-        ::WebMock::HttpLibAdapters::TyphoeusAdapter.enable! unless RUBY_INTERPRETER == :jruby
+        ::WebMock::HttpLibAdapters::TyphoeusAdapter.enable! if RUBY_INTERPRETER == :mri
         $original_webmock_callbacks.each do |cb|
           ::WebMock::CallbackRegistry.add_callback(cb[:options], cb[:block])
         end
+      when :typhoeus
+        Typhoeus::Hydra.global_hooks = $original_typhoeus_hooks
+        realias Typhoeus::Hydra::Stubbing::SharedMethods, :find_stub_from_request, :with_vcr
       when :vcr
         realias Net::HTTP, :request, :with_vcr
       else raise ArgumentError.new("Unexpected scope: #{scope}")
@@ -35,11 +44,15 @@ module MonkeyPatches
       ::WebMock::HttpLibAdapters::TyphoeusAdapter.disable! unless RUBY_INTERPRETER == :jruby
       ::WebMock::CallbackRegistry.reset
     end
+
+    if defined?(::Typhoeus)
+      Typhoeus::Hydra.clear_global_hooks
+    end
   end
 
   def init
     # capture the monkey patched definitions so we can realias to them in the future
-    MONKEY_PATCHES.each do |mp|
+    ALL_MONKEY_PATCHES.each do |mp|
       capture_method_definition(mp.first, mp.last, false)
     end
   end
@@ -68,7 +81,7 @@ module MonkeyPatches
 
   # capture the original method definitions before the monkey patches have been defined
   # so we can realias to the originals in the future
-  MONKEY_PATCHES.each do |mp|
+  ALL_MONKEY_PATCHES.each do |mp|
     capture_method_definition(mp.first, mp.last, true)
   end
 
@@ -81,7 +94,13 @@ module MonkeyPatches
   end
 
   def realias_all(alias_extension)
-    MONKEY_PATCHES.each do |mp|
+    ALL_MONKEY_PATCHES.each do |mp|
+      realias mp.first, mp.last, alias_extension
+    end
+  end
+
+  def realias_net_http(alias_extension)
+    NET_HTTP_MONKEY_PATCHES.each do |mp|
       realias mp.first, mp.last, alias_extension
     end
   end
@@ -95,7 +114,14 @@ if RUBY_INTERPRETER == :mri
   require 'patron'
   require 'em-http-request'
   require 'curb'
-  require 'typhoeus'
+
+  require 'vcr/http_stubbing_adapters/typhoeus'
+  $original_typhoeus_hooks = Typhoeus::Hydra.global_hooks.dup
+
+  # define an alias that we can re-alias to in the future
+  Typhoeus::Hydra::Stubbing::SharedMethods.class_eval do
+    alias find_stub_from_request_with_vcr find_stub_from_request
+  end
 end
 
 require 'vcr/http_stubbing_adapters/fakeweb'
@@ -115,7 +141,7 @@ $original_webmock_callbacks = ::WebMock::CallbackRegistry.callbacks
 MonkeyPatches.disable_all!
 
 RSpec.configure do |config|
-  [:fakeweb, :webmock, :vcr].each do |scope|
+  [:fakeweb, :webmock, :vcr, :typhoeus].each do |scope|
     config.before(:all, :with_monkey_patches => scope) { MonkeyPatches.enable!(scope) }
     config.after(:all,  :with_monkey_patches => scope) { MonkeyPatches.disable_all!   }
   end

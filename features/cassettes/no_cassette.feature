@@ -48,6 +48,7 @@ Feature: Error for HTTP request made when no cassette is in use
       | :webmock   | curb            |
       | :webmock   | patron          |
       | :webmock   | em-http-request |
+      | :webmock   | typhoeus        |
       | :typhoeus  | typhoeus        |
       | :excon     | excon           |
 

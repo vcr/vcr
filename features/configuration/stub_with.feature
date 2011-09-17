@@ -1,7 +1,7 @@
 Feature: stub_with
 
   The `stub_with` configuration option determines which HTTP stubbing library
-  VCR will use.  There are currently 4 supported stubbing libraries which
+  VCR will use.  There are currently 5 supported stubbing libraries which
   support many different HTTP libraries:
 
     - FakeWeb can be used to stub Net::HTTP.
@@ -11,6 +11,7 @@ Feature: stub_with
       - Patron
       - Curb (Curl::Easy, but not Curl::Multi)
       - EM HTTP Request
+      - Typhoeusa (Typhoeus::Hydra, but not Typhoeus::Easy or Typhoeus::Multi)
     - Typhoeus can be used to stub itself (as long as you use Typhoeus::Hydra,
       but not Typhoeus::Easy or Typhoeus::Multi).
     - Excon can be used to stub itself.
@@ -80,6 +81,7 @@ Feature: stub_with
       | :webmock   | patron          |
       | :webmock   | curb            |
       | :webmock   | em-http-request |
+      | :webmock   | typhoeus        |
       | :typhoeus  | typhoeus        |
       | :excon     | excon           |
 
