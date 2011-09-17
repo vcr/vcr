@@ -68,8 +68,7 @@ module VCR
         end
 
         def raise_connections_disabled_error
-          VCR::HttpStubbingAdapters::FakeWeb.
-            raise_connections_disabled_error(vcr_request.method, vcr_request.uri)
+          VCR::HttpStubbingAdapters::FakeWeb.raise_connections_disabled_error(vcr_request)
         end
 
         def uri

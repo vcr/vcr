@@ -75,14 +75,16 @@ module VCR
 
       def setup_webmock_hook
         ::WebMock.stub_request(:any, /.*/).with { |request|
+          vcr_request = vcr_request_from(request)
+
           if uri_should_be_ignored?(request.uri)
             false
-          elsif has_stubbed_response_for?(vcr_request_from(request))
+          elsif has_stubbed_response_for?(vcr_request)
             true
           elsif http_connections_allowed?
             false
           else
-            raise_connections_disabled_error(request.method, request.uri.to_s)
+            raise_connections_disabled_error(vcr_request)
           end
         }.to_return(lambda { |request|
           response_hash_for stubbed_response_for(vcr_request_from(request))

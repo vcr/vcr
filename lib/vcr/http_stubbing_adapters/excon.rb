@@ -33,7 +33,7 @@ module VCR
             when http_connections_allowed?
               record_interaction
             else
-              VCR::HttpStubbingAdapters::Excon.raise_connections_disabled_error(params[:method], uri)
+              VCR::HttpStubbingAdapters::Excon.raise_connections_disabled_error(vcr_request)
           end
         end
 
