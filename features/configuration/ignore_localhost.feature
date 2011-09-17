@@ -42,27 +42,27 @@ Feature: ignore_localhost
       response_body_for(:get, "http://localhost:7777/")
       """
     When I run `ruby localhost_not_ignored.rb`
-    Then it should fail with "<error>"
+    Then it should fail with "Real HTTP connections are disabled"
      And the file "cassettes/localhost.yml" should contain "body: Response 1"
 
     Examples:
-      | stub_with  | http_lib        | error                              | additional_config          |
-      | :fakeweb   | net/http        | Real HTTP connections are disabled |                            |
-      | :fakeweb   | net/http        | Real HTTP connections are disabled | c.ignore_localhost = false |
-      | :webmock   | net/http        | Real HTTP connections are disabled |                            |
-      | :webmock   | net/http        | Real HTTP connections are disabled | c.ignore_localhost = false |
-      | :webmock   | httpclient      | Real HTTP connections are disabled |                            |
-      | :webmock   | httpclient      | Real HTTP connections are disabled | c.ignore_localhost = false |
-      | :webmock   | curb            | Real HTTP connections are disabled |                            |
-      | :webmock   | curb            | Real HTTP connections are disabled | c.ignore_localhost = false |
-      | :webmock   | patron          | Real HTTP connections are disabled |                            |
-      | :webmock   | patron          | Real HTTP connections are disabled | c.ignore_localhost = false |
-      | :webmock   | em-http-request | Real HTTP connections are disabled |                            |
-      | :webmock   | em-http-request | Real HTTP connections are disabled | c.ignore_localhost = false |
-      | :typhoeus  | typhoeus        | Real HTTP requests are not allowed |                            |
-      | :typhoeus  | typhoeus        | Real HTTP requests are not allowed | c.ignore_localhost = false |
-      | :excon     | excon           | Real HTTP connections are disabled |                            |
-      | :excon     | excon           | Real HTTP connections are disabled | c.ignore_localhost = false |
+      | stub_with  | http_lib        | additional_config          |
+      | :fakeweb   | net/http        |                            |
+      | :fakeweb   | net/http        | c.ignore_localhost = false |
+      | :webmock   | net/http        |                            |
+      | :webmock   | net/http        | c.ignore_localhost = false |
+      | :webmock   | httpclient      |                            |
+      | :webmock   | httpclient      | c.ignore_localhost = false |
+      | :webmock   | curb            |                            |
+      | :webmock   | curb            | c.ignore_localhost = false |
+      | :webmock   | patron          |                            |
+      | :webmock   | patron          | c.ignore_localhost = false |
+      | :webmock   | em-http-request |                            |
+      | :webmock   | em-http-request | c.ignore_localhost = false |
+      | :typhoeus  | typhoeus        |                            |
+      | :typhoeus  | typhoeus        | c.ignore_localhost = false |
+      | :excon     | excon           |                            |
+      | :excon     | excon           | c.ignore_localhost = false |
 
   Scenario Outline: localhost requests are allowed and not recorded when ignore_localhost = true
     Given a file named "ignore_localhost_true.rb" with:

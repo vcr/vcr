@@ -35,21 +35,21 @@ Feature: Error for HTTP request made when no cassette is in use
       response_body_for(:get, 'http://example.com/')
       """
     When I run `ruby no_cassette_error.rb`
-    Then it should fail with "<error>"
+    Then it should fail with "Real HTTP connections are disabled"
     And the output should contain each of the following:
       | You can use VCR to automatically record this request and replay it later. |
       | no_cassette_error.rb:11                                                   |
 
     Examples:
-      | stub_with  | http_lib        | error                              |
-      | :fakeweb   | net/http        | Real HTTP connections are disabled |
-      | :webmock   | net/http        | Real HTTP connections are disabled |
-      | :webmock   | httpclient      | Real HTTP connections are disabled |
-      | :webmock   | curb            | Real HTTP connections are disabled |
-      | :webmock   | patron          | Real HTTP connections are disabled |
-      | :webmock   | em-http-request | Real HTTP connections are disabled |
-      | :typhoeus  | typhoeus        | Real HTTP requests are not allowed |
-      | :excon     | excon           | Real HTTP connections are disabled |
+      | stub_with  | http_lib        |
+      | :fakeweb   | net/http        |
+      | :webmock   | net/http        |
+      | :webmock   | httpclient      |
+      | :webmock   | curb            |
+      | :webmock   | patron          |
+      | :webmock   | em-http-request |
+      | :typhoeus  | typhoeus        |
+      | :excon     | excon           |
 
   Scenario: Temporarily turn VCR off to allow HTTP requests to procede as normal
     Given a file named "turn_off_vcr.rb" with:

@@ -44,6 +44,7 @@ RSpec.configure do |config|
     VCR::HttpStubbingAdapters::Excon.reset!
     VCR::HttpStubbingAdapters::WebMock.reset!
     VCR::HttpStubbingAdapters::FakeWeb.reset!
+    VCR::HttpStubbingAdapters::Typhoeus.reset!
   end
 
   config.after(:each) do

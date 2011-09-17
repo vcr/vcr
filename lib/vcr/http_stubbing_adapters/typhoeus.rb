@@ -9,44 +9,6 @@ module VCR
       MINIMUM_VERSION = '0.2.1'
       MAXIMUM_VERSION = '0.2'
 
-      def http_connections_allowed=(value)
-        ::Typhoeus::Hydra.allow_net_connect = value
-      end
-
-      def http_connections_allowed?
-        !!::Typhoeus::Hydra.allow_net_connect?
-      end
-
-      def ignored_hosts=(hosts)
-        ::Typhoeus::Hydra.ignore_hosts = hosts
-      end
-
-      def stub_requests(http_interactions, match_attributes)
-        grouped_responses(http_interactions, match_attributes).each do |request_matcher, responses|
-          ::Typhoeus::Hydra.stub(
-            request_matcher.method || :any,
-            request_matcher.uri,
-            request_hash(request_matcher)
-          ).and_return(
-            responses.map do |response|
-              ::Typhoeus::Response.new(
-                :code         => response.status.code,
-                :body         => response.body,
-                :headers_hash => normalized_response_headers(response)
-              )
-            end
-          )
-        end
-      end
-
-      def create_stubs_checkpoint(cassette)
-        checkpoints[cassette] = ::Typhoeus::Hydra.stubs.dup
-      end
-
-      def restore_stubs_checkpoint(cassette)
-        ::Typhoeus::Hydra.stubs = checkpoints.delete(cassette) || raise_no_checkpoint_error(cassette)
-      end
-
       def after_adapters_loaded
         # ensure WebMock's Typhoeus adapter does not conflict with us here
         # (i.e. to double record requests or whatever).
@@ -55,33 +17,81 @@ module VCR
         end
       end
 
-      private
+      def vcr_request_from(request)
+        VCR::Request.new \
+          request.method,
+          request.url,
+          request.body,
+          request.headers
+      end
+
+    private
 
       def version
         ::Typhoeus::VERSION
       end
 
-      def checkpoints
-        @checkpoints ||= {}
-      end
+      class RequestHandler
+        extend Forwardable
 
-      def request_hash(request_matcher)
-        hash = {}
+        attr_reader :request
+        def_delegators :"VCR::HttpStubbingAdapters::Typhoeus",
+          :enabled?,
+          :uri_should_be_ignored?,
+          :stubbed_response_for,
+          :http_connections_allowed?,
+          :vcr_request_from
 
-        hash[:body]    = request_matcher.body    if request_matcher.match_requests_on?(:body)
-        hash[:headers] = request_matcher.headers if request_matcher.match_requests_on?(:headers)
+        def initialize(request)
+          @request = request
+        end
 
-        hash
-      end
+        def handle
+          if !enabled? || uri_should_be_ignored?(request.url)
+            nil # allow the request to be performed
+          elsif stubbed_response
+            hydra_mock
+          elsif http_connections_allowed?
+            nil # allow the request to be performed and recorded
+          else
+            raise_connections_disabled_error
+          end
+        end
 
-      def normalized_response_headers(response)
-        hash = {}
+        def raise_connections_disabled_error
+          VCR::HttpStubbingAdapters::Typhoeus.raise_connections_disabled_error(vcr_request)
+        end
 
-        response.headers.each do |key, values|
-          hash[key] = values.size == 1 ? values.first : values
-        end if response.headers
+        def vcr_request
+          @vcr_request ||= vcr_request_from(request)
+        end
 
-        hash
+        def stubbed_response
+          @stubbed_response ||= stubbed_response_for(vcr_request)
+        end
+
+        def typhoeus_response
+          @typhoeus_response ||= ::Typhoeus::Response.new \
+            :http_version   => stubbed_response.http_version,
+            :code           => stubbed_response.status.code,
+            :status_message => stubbed_response.status.message,
+            :headers_hash   => stubbed_response_headers,
+            :body           => stubbed_response.body
+        end
+
+        def hydra_mock
+          @hydra_mock ||= ::Typhoeus::HydraMock.new(/.*/, :any).tap do |m|
+            m.and_return(typhoeus_response)
+          end
+        end
+
+        def stubbed_response_headers
+          @stubbed_response_headers ||= {}.tap do |hash|
+            stubbed_response.headers.each do |key, values|
+              hash[key] = values.size == 1 ? values.first : values
+            end if stubbed_response.headers
+          end
+        end
       end
     end
   end
@@ -90,12 +100,7 @@ end
 Typhoeus::Hydra.after_request_before_on_complete do |request|
   if VCR::HttpStubbingAdapters::Typhoeus.enabled? && !request.response.mock?
     http_interaction = VCR::HTTPInteraction.new(
-      VCR::Request.new(
-        request.method,
-        request.url,
-        request.body,
-        request.headers
-      ),
+      VCR::HttpStubbingAdapters::Typhoeus.vcr_request_from(request),
       VCR::Response.new(
         VCR::ResponseStatus.new(
           request.response.code,
@@ -111,5 +116,10 @@ Typhoeus::Hydra.after_request_before_on_complete do |request|
   end
 end
 
-VCR::HttpStubbingAdapters::Common.add_vcr_info_to_exception_message(Typhoeus::Hydra::NetConnectNotAllowedError)
+Typhoeus::Hydra::Stubbing::SharedMethods.class_eval do
+  undef find_stub_from_request
+  def find_stub_from_request(request)
+    VCR::HttpStubbingAdapters::Typhoeus::RequestHandler.new(request).handle
+  end
+end
 
