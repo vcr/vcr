@@ -113,12 +113,7 @@ module VCR
     def load_recorded_interactions
       VCR.http_stubbing_adapter.create_stubs_checkpoint(self)
       if file && File.size?(file)
-        begin
-          interactions = VCR::YAML.load(raw_yaml_content)
-        rescue TypeError, ArgumentError # Syck raises TypeError, Psych raises ArgumentError
-          raise unless raw_yaml_content =~ /VCR::RecordedResponse/
-          raise "The VCR cassette #{sanitized_name}.yml uses an old format that is now deprecated.  VCR provides a rake task to migrate your old cassettes to the new format.  See http://github.com/myronmarston/vcr/blob/master/CHANGELOG.md for more info."
-        end
+        interactions = VCR::YAML.load(raw_yaml_content)
 
         invoke_hook(:before_playback, interactions)
 

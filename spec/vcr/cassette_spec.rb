@@ -50,11 +50,6 @@ describe VCR::Cassette do
   end
 
   describe '.new' do
-    it 'raises an error with a helpful message when loading an old unsupported cassette' do
-      VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures"
-      expect { VCR::Cassette.new('0_3_1_cassette') }.to raise_error(/The VCR cassette 0_3_1_cassette.yml uses an old format that is now deprecated/)
-    end
-
     it "raises an error if given an invalid record mode" do
       expect { VCR::Cassette.new(:test, :record => :not_a_record_mode) }.to raise_error(ArgumentError)
     end
