@@ -1,3 +1,5 @@
+require 'vcr/structs/response_status'
+
 module VCR
   class Response < Struct.new(:status, :headers, :body, :http_version)
     include Normalizers::Header

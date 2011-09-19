@@ -10,15 +10,7 @@ require 'vcr/version'
 require 'vcr/deprecations/vcr'
 
 require 'vcr/http_stubbing_adapters/common'
-
-require 'vcr/structs/normalizers/body'
-require 'vcr/structs/normalizers/header'
-require 'vcr/structs/normalizers/status_message'
-require 'vcr/structs/normalizers/uri'
 require 'vcr/structs/http_interaction'
-require 'vcr/structs/request'
-require 'vcr/structs/response'
-require 'vcr/structs/response_status'
 
 module VCR
   include VariableArgsBlockCaller

@@ -1,4 +1,10 @@
 require 'forwardable'
+require 'vcr/structs/normalizers/body'
+require 'vcr/structs/normalizers/header'
+require 'vcr/structs/normalizers/status_message'
+require 'vcr/structs/normalizers/uri'
+require 'vcr/structs/request'
+require 'vcr/structs/response'
 
 module VCR
   class HTTPInteraction < Struct.new(:request, :response)
