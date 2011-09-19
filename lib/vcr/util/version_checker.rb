@@ -20,41 +20,37 @@ module VCR
 
   private
 
-    attr_reader :library_name, :library_version, :min_patch_level, :max_minor_version, :comparison_result,
-                :major, :minor, :patch, :min_major, :min_minor, :min_patch, :max_major, :max_minor
-
     def too_low?
-      comparison_result == :too_low
+      @comparison_result == :too_low
     end
 
     def too_high?
-      comparison_result == :too_high
+      @comparison_result == :too_high
     end
 
     def raise_too_low_error
-      raise LibraryVersionTooLowError, "You are using #{library_name} #{library_version}. " +
-                                       "VCR requires version #{version_requirement}."
+      raise LibraryVersionTooLowError, "You are using #{@library_name} #{@library_version}. " +
+                                       "VCR requires version #{@version_requirement}."
     end
 
     def warn_about_too_high
-      Kernel.warn "You are using #{library_name} #{library_version}. " +
-                  "VCR is known to work with #{library_name} #{version_requirement}. " +
+      Kernel.warn "You are using #{@library_name} #{@library_version}. " +
+                  "VCR is known to work with #{@library_name} #{@version_requirement}. " +
                   "It may not work with this version."
     end
 
     def compare_version
       case
-        when major < min_major then :too_low
-        when major > max_major then :too_high
-        when minor < min_minor then :too_low
-        when minor > max_minor then :too_high
-        when patch < min_patch then :too_low
+        when @major < @min_major then :too_low
+        when @major > @max_major then :too_high
+        when @minor < @min_minor then :too_low
+        when @minor > @max_minor then :too_high
+        when @patch < @min_patch then :too_low
       end
     end
 
     def version_requirement
-      max_major, max_minor = parse_version(max_minor_version)
-      ">= #{min_patch_level}, < #{max_major}.#{max_minor + 1}"
+      ">= #{@min_patch_level}, < #{@max_major}.#{@max_minor + 1}"
     end
 
     def parse_version(version)
