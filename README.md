@@ -82,9 +82,7 @@ contain backwards-incompatible changes to the public API.
 
 VCR has been tested on the following ruby interpreters:
 
-* MRI 1.8.6
 * MRI 1.8.7
-* MRI 1.9.1
 * MRI 1.9.2
 * REE 1.8.7
 * JRuby 1.5.6
