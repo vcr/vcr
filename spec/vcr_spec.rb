@@ -86,6 +86,13 @@ describe VCR do
     end
   end
 
+  describe '.request_matcher_registry' do
+    it 'always returns the same memoized request matcher registry instance' do
+      VCR.request_matcher_registry.should be_a(VCR::RequestMatcherRegistry)
+      VCR.request_matcher_registry.should be(VCR.request_matcher_registry)
+    end
+  end
+
   describe '.configuration' do
     it 'returns the configuration object' do
       VCR.configuration.should be_a(VCR::Configuration)

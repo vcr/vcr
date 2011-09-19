@@ -5,6 +5,7 @@ require 'vcr/util/yaml'
 require 'vcr/cassette'
 require 'vcr/configuration'
 require 'vcr/request_matcher'
+require 'vcr/request_matcher_registry'
 require 'vcr/version'
 
 require 'vcr/deprecations/vcr'
@@ -67,6 +68,10 @@ module VCR
     ensure
       eject_cassette
     end
+  end
+
+  def request_matcher_registry
+    @request_matcher_registry ||= RequestMatcherRegistry.new
   end
 
   def configuration
