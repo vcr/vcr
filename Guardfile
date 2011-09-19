@@ -7,8 +7,3 @@ guard 'rspec', :version => 2 do
   watch(%r|^spec/spec_helper.rb|)    { "spec" }
 end
 
-guard 'cucumber' do
-  watch(%r|^features/(.*).feature|)
-  watch(%r|^features/support|)                       { 'features' }
-  watch(%r|^features/step_definitions|)              { 'features' }
-end
