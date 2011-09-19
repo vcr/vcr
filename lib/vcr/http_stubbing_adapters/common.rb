@@ -1,3 +1,5 @@
+require 'vcr/util/version_checker'
+
 module VCR
   module HttpStubbingAdapters
     autoload :Excon,            'vcr/http_stubbing_adapters/excon'
@@ -53,12 +55,12 @@ module VCR
       end
 
       def check_version!
-        case compare_version
-          when :too_low
-            raise "You are using #{library_name} #{version}.  VCR requires version #{version_requirement}."
-          when :too_high
-            warn "You are using #{library_name} #{version}.  VCR is known to work with #{library_name} #{version_requirement}.  It may not work with this version."
-        end
+        VersionChecker.new(
+          library_name,
+          version,
+          self::MIN_PATCH_LEVEL,
+          self::MAX_MINOR_VERSION
+        ).check_version!
       end
 
       def library_name
@@ -135,7 +137,7 @@ module VCR
         )
       end
 
-      private
+    private
 
       def ignored_hosts
         @ignored_hosts ||= []
@@ -165,29 +167,6 @@ module VCR
 
       def hash_of_arrays
         Hash.new { |h, k| h[k] = [] }
-      end
-
-      def compare_version
-        major,     minor,     patch     = parse_version(version)
-        min_major, min_minor, min_patch = parse_version(self::MINIMUM_VERSION)
-        max_major, max_minor            = parse_version(self::MAXIMUM_VERSION)
-
-        case
-          when major < min_major; :too_low
-          when major > max_major; :too_high
-          when minor < min_minor; :too_low
-          when minor > max_minor; :too_high
-          when patch < min_patch; :too_low
-        end
-      end
-
-      def version_requirement
-        max_major, max_minor = parse_version(self::MAXIMUM_VERSION)
-        ">= #{self::MINIMUM_VERSION}, < #{max_major}.#{max_minor + 1}"
-      end
-
-      def parse_version(version)
-        version.split('.').map { |v| v.to_i }
       end
 
       def grouped_responses(http_interactions, match_attributes)

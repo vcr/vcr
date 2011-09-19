@@ -6,8 +6,8 @@ module VCR
       include Common
       extend self
 
-      MINIMUM_VERSION = '0.6.0'
-      MAXIMUM_VERSION = '0.6'
+      MIN_PATCH_LEVEL   = '0.6.0'
+      MAX_MINOR_VERSION = '0.6'
 
       private
 

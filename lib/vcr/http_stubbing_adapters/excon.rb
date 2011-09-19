@@ -9,8 +9,8 @@ module VCR
       # TODO: move this into the VCR namespace
       HttpConnectionNotAllowedError = VCR::HttpStubbingAdapters::HttpConnectionNotAllowedError
 
-      MINIMUM_VERSION = '0.6.5'
-      MAXIMUM_VERSION = '0.6'
+      MIN_PATCH_LEVEL   = '0.6.5'
+      MAX_MINOR_VERSION = '0.6'
 
       private
 

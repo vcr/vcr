@@ -8,8 +8,8 @@ module VCR
       include VCR::HttpStubbingAdapters::Common
       extend self
 
-      MINIMUM_VERSION = '1.3.0'
-      MAXIMUM_VERSION = '1.3'
+      MIN_PATCH_LEVEL   = '1.3.0'
+      MAX_MINOR_VERSION = '1.3'
 
     private
 

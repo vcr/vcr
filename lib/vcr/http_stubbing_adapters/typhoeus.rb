@@ -6,8 +6,8 @@ module VCR
       include VCR::HttpStubbingAdapters::Common
       extend self
 
-      MINIMUM_VERSION = '0.2.1'
-      MAXIMUM_VERSION = '0.2'
+      MIN_PATCH_LEVEL   = '0.2.1'
+      MAX_MINOR_VERSION = '0.2'
 
       def after_adapters_loaded
         # ensure WebMock's Typhoeus adapter does not conflict with us here
