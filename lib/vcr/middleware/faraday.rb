@@ -14,7 +14,7 @@ module VCR
 
             if VCR::HttpStubbingAdapters::Faraday.uri_should_be_ignored?(request.uri)
               @app.call(env)
-            elsif response = VCR::HttpStubbingAdapters::Faraday.stubbed_response_for(request)
+            elsif response = VCR.http_interactions.response_for(request)
               headers = env[:response_headers] ||= ::Faraday::Utils::Headers.new
               headers.update response.headers if response.headers
               env.update :status => response.status.code, :body => response.body

@@ -24,7 +24,6 @@ module VCR
         def_delegators :"VCR::HttpStubbingAdapters::FakeWeb",
                        :enabled?,
                        :uri_should_be_ignored?,
-                       :stubbed_response_for,
                        :http_connections_allowed?
 
         def initialize(net_http, request, request_body = nil, &block)
@@ -95,7 +94,7 @@ module VCR
         end
 
         def stubbed_response
-          @stubbed_response ||= stubbed_response_for(vcr_request)
+          @stubbed_response ||= VCR.http_interactions.response_for(vcr_request)
         end
 
         def vcr_request

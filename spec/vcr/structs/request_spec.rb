@@ -1,18 +1,6 @@
 require 'spec_helper'
 
 describe VCR::Request do
-  describe '#matcher' do
-    it 'returns a matcher with the given request' do
-      req = VCR::Request.new
-      req.matcher([:uri]).request.should eq(req)
-    end
-
-    it 'returns a matcher with the given match_attributes' do
-      req = VCR::Request.new
-      req.matcher([:uri, :headers]).match_attributes.to_a.should =~ [:uri, :headers]
-    end
-  end
-
   describe '#method' do
     subject { VCR::Request.new(:get) }
 

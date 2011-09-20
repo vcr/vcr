@@ -9,9 +9,5 @@ module VCR
       return super if args.empty?
       @@object_method.bind(self).call(*args)
     end
-
-    def matcher(match_attributes)
-      RequestMatcher.new(self, match_attributes)
-    end
   end
 end

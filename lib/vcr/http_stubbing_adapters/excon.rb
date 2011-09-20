@@ -45,7 +45,7 @@ module VCR
 
           def stubbed_response
             @stubbed_response ||= begin
-              if stubbed_response = VCR::HttpStubbingAdapters::Excon.stubbed_response_for(vcr_request)
+              if stubbed_response = VCR.http_interactions.response_for(vcr_request)
                 {
                   :body     => stubbed_response.body,
                   :headers  => normalized_headers(stubbed_response.headers || {}),

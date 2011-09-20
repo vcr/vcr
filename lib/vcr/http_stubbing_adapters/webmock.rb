@@ -32,17 +32,13 @@ module VCR
         }
       end
 
-      def normalize_uri(uri)
-        ::WebMock::Util::URI.normalize_uri(uri).to_s
-      end
-
       GLOBAL_VCR_HOOK = ::WebMock::RequestStub.new(:any, /.*/).tap do |stub|
         stub.with { |request|
           vcr_request = vcr_request_from(request)
 
           if uri_should_be_ignored?(request.uri)
             false
-          elsif has_stubbed_response_for?(vcr_request)
+          elsif VCR.http_interactions.has_interaction_matching?(vcr_request)
             true
           elsif http_connections_allowed?
             false
@@ -50,7 +46,7 @@ module VCR
             raise_connections_disabled_error(vcr_request)
           end
         }.to_return(lambda { |request|
-          response_hash_for stubbed_response_for(vcr_request_from(request))
+          response_hash_for VCR.http_interactions.response_for(vcr_request_from(request))
         })
       end
 

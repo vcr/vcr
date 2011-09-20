@@ -3,12 +3,13 @@ require 'erb'
 require 'set'
 
 require 'vcr/cassette/reader'
+require 'vcr/cassette/http_interaction_list'
 
 module VCR
   class Cassette
     VALID_RECORD_MODES = [:all, :none, :new_episodes, :once]
 
-    attr_reader :name, :record_mode, :match_requests_on, :erb, :re_record_interval, :tag
+    attr_reader :name, :record_mode, :match_requests_on, :erb, :re_record_interval, :tag, :http_interactions
 
     def initialize(name, options = {})
       options = VCR.configuration.default_cassette_options.merge(options)
@@ -42,7 +43,6 @@ module VCR
 
     def eject
       write_recorded_interactions_to_disk
-      VCR.http_stubbing_adapter.restore_stubs_checkpoint(self)
       restore_http_connections_allowed
     end
 
@@ -111,7 +111,6 @@ module VCR
     end
 
     def load_recorded_interactions
-      VCR.http_stubbing_adapter.create_stubs_checkpoint(self)
       if file && File.size?(file)
         interactions = VCR::YAML.load(raw_yaml_content)
 
@@ -128,9 +127,8 @@ module VCR
         recorded_interactions.replace(interactions)
       end
 
-      if should_stub_requests?
-        VCR.http_stubbing_adapter.stub_requests(recorded_interactions, match_requests_on)
-      end
+      interactions = should_stub_requests? ? recorded_interactions : []
+      @http_interactions = HTTPInteractionList.new(interactions, match_requests_on, VCR.http_interactions)
     end
 
     def raw_yaml_content
@@ -141,14 +139,9 @@ module VCR
       old_interactions = recorded_interactions
 
       if should_remove_matching_existing_interactions?
-        match_attributes = match_requests_on
-
-        new_request_matchers = Set.new new_recorded_interactions.map do |i|
-          i.request.matcher(match_attributes)
-        end
-
+        new_interaction_list = HTTPInteractionList.new(new_recorded_interactions, match_requests_on)
         old_interactions = old_interactions.reject do |i|
-          new_request_matchers.include?(i.request.matcher(match_attributes))
+          new_interaction_list.has_interaction_matching?(i.request)
         end
       end
 

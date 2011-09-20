@@ -76,13 +76,13 @@ module VCR
           response(body)
       end
 
-      let(:list) do
-        HTTPInteractionList.new([
-          interaction('put response', :method => :put),
-          interaction('post response 1', :method => :post),
-          interaction('post response 2', :method => :post)
-        ], [:method])
-      end
+      let(:original_list_array) do [
+        interaction('put response', :method => :put),
+        interaction('post response 1', :method => :post),
+        interaction('post response 2', :method => :post)
+      ] end
+
+      let(:list) { HTTPInteractionList.new(original_list_array, [:method]) }
 
       describe "#has_interaction_matching?" do
         it_behaves_like "an HTTP interaction finding method", :has_interaction_matching? do
@@ -130,6 +130,12 @@ module VCR
             response = list.response_for(request_with(:method => :post))
             response ? response.body : nil
           }.should eq(["post response 2"] * 10)
+        end
+
+        it 'does not modify the original interaction array the list was initialized with' do
+          original_dup = original_list_array.dup
+          list.response_for(request_with(:method => :post))
+          original_list_array.should == original_dup
         end
       end
     end

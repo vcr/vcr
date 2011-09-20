@@ -65,16 +65,6 @@ describe VCR::Cassette do
       VCR::Cassette.new('empty', :record => :none).recorded_interactions.should eq([])
     end
 
-    it 'creates a stubs checkpoint on the http_stubbing_adapter' do
-      cassette = nil
-
-      VCR.http_stubbing_adapter.should_receive(:create_stubs_checkpoint) do |c|
-        cassette = c
-      end
-
-      VCR::Cassette.new('example').should equal(cassette)
-    end
-
     describe "reading the file from disk" do
       before(:each) do
         File.stub(:size? => true)
@@ -277,22 +267,18 @@ describe VCR::Cassette do
             cassette.should have(2).recorded_interactions
           end
 
-          it "stubs the recorded requests with the http stubbing adapter" do
+          it 'instantiates the http_interactions with the loaded interactions and the request matchers' do
             VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
-            VCR.http_stubbing_adapter.should_receive(:stub_requests).with([an_instance_of(VCR::HTTPInteraction)]*3, anything)
-            VCR::Cassette.new('example', :record => record_mode)
-          end
-
-          it "passes the :match_request_on option to #stub_requests" do
-            VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
-            VCR.http_stubbing_adapter.should_receive(:stub_requests).with(anything, [:body, :headers])
-            VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:body, :headers])
+            cassette = VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:body, :headers])
+            cassette.http_interactions.interactions.should have(3).interactions
+            cassette.http_interactions.request_matchers.should == [:body, :headers]
           end
         else
-          it "does not stub the recorded requests with the http stubbing adapter" do
+          it 'instantiates the http_interactions with the no interactions and the request matchers' do
             VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
-            VCR.http_stubbing_adapter.should_not_receive(:stub_requests)
-            VCR::Cassette.new('example', :record => record_mode)
+            cassette = VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:body, :headers])
+            cassette.http_interactions.interactions.should have(0).interactions
+            cassette.http_interactions.request_matchers.should == [:body, :headers]
           end
         end
       end
@@ -389,11 +375,6 @@ describe VCR::Cassette do
           FileUtils.cp(base_dir + "/example.yml", VCR.configuration.cassette_library_dir + "/example.yml")
         end
 
-        it "restore the stubs checkpoint on the http stubbing adapter" do
-          VCR.http_stubbing_adapter.should_receive(:restore_stubs_checkpoint).with(subject)
-          subject.eject
-        end
-
         it "does not re-write to disk the previously recorded interactions if there are no new ones" do
           yaml_file = subject.file
           File.should_not_receive(:open).with(subject.file, 'w')
@@ -401,74 +382,39 @@ describe VCR::Cassette do
         end
 
         context 'when some new interactions have been recorded' do
-          let(:new_interaction_1) { VCR::HTTPInteraction.new(VCR::Request.new, :response_1) }
-          let(:new_interaction_2) { VCR::HTTPInteraction.new(VCR::Request.new, :response_2) }
-          let(:new_interaction_3) { VCR::HTTPInteraction.new(VCR::Request.new, :response_3) }
+          def interaction(response, request_attributes)
+            request = VCR::Request.new
+            request_attributes.each do |key, value|
+              request.send("#{key}=", value)
+            end
+            VCR::HTTPInteraction.new(request, response)
+          end
 
-          let(:old_interaction_1) { subject.recorded_interactions[0] }
-          let(:old_interaction_2) { subject.recorded_interactions[1] }
-          let(:old_interaction_3) { subject.recorded_interactions[2] }
+          let(:interaction_foo_1) { interaction("foo 1", :uri => 'http://foo.com/') }
+          let(:interaction_foo_2) { interaction("foo 2", :uri => 'http://foo.com/') }
+          let(:interaction_bar)   { interaction("bar", :uri => 'http://bar.com/') }
 
           let(:saved_recorded_interactions) { VCR::YAML.load_file(subject.file) }
 
-          def stub_matcher_for(interaction, matcher)
-            # There are issues with serializing an object stubbed w/ rspec-mocks using Psych.
-            # So we manually define the method here.
-            class << interaction.request; self; end.class_eval do
-              define_method(:matcher) { |*a| matcher }
-            end
-          end
-
           before(:each) do
-            stub_matcher_for(old_interaction_1, :matcher_c)
-            stub_matcher_for(old_interaction_2, :matcher_d)
-            stub_matcher_for(old_interaction_3, :matcher_c)
-
-            stub_matcher_for(new_interaction_1, :matcher_a)
-            stub_matcher_for(new_interaction_2, :matcher_b)
-            stub_matcher_for(new_interaction_3, :matcher_c)
-
-            [new_interaction_1, new_interaction_2, new_interaction_3].each do |i|
-              subject.record_http_interaction(i)
-            end
+            subject.stub(:recorded_interactions => [interaction_foo_1])
+            subject.record_http_interaction(interaction_foo_2)
+            subject.record_http_interaction(interaction_bar)
+            subject.eject
           end
 
           if record_mode == :all
-            it 'removes the old interactions that match new requests, and saves the new interactions follow the old ones' do
-              subject.eject
-
-              saved_recorded_interactions.should eq([
-                old_interaction_2,
-                new_interaction_1,
-                new_interaction_2,
-                new_interaction_3
-              ])
+            it 'replaces previously recorded interactions with new ones when the requests match' do
+              saved_recorded_interactions.first.should eq(interaction_foo_2)
+              saved_recorded_interactions.should_not include(interaction_foo_1)
             end
 
-            it "matches old requests to new ones using the cassette's match attributes" do
-              pending("Need to fix this to work with Psych", :if => defined?(::Psych)) do
-                [
-                  old_interaction_1, old_interaction_2, old_interaction_3,
-                  new_interaction_1, new_interaction_2, new_interaction_3
-                ].each do |i|
-                  i.request.should_receive(:matcher).with(subject.match_requests_on).and_return(:the_matcher)
-                end
-
-                subject.eject
-              end
-            end unless ENV['CI']
+            it 'appends new recorded interactions that do not match existing ones' do
+              saved_recorded_interactions.last.should eq(interaction_bar)
+            end
           else
-            it 'saves the old interactions followed by the new ones to disk' do
-              subject.eject
-
-              saved_recorded_interactions.should eq([
-                old_interaction_1,
-                old_interaction_2,
-                old_interaction_3,
-                new_interaction_1,
-                new_interaction_2,
-                new_interaction_3
-              ])
+            it 'appends new recorded interactions after existing ones' do
+              saved_recorded_interactions.should eq([interaction_foo_1, interaction_foo_2, interaction_bar])
             end
           end
         end

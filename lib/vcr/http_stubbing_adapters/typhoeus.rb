@@ -38,7 +38,6 @@ module VCR
         def_delegators :"VCR::HttpStubbingAdapters::Typhoeus",
           :enabled?,
           :uri_should_be_ignored?,
-          :stubbed_response_for,
           :http_connections_allowed?,
           :vcr_request_from
 
@@ -67,7 +66,7 @@ module VCR
         end
 
         def stubbed_response
-          @stubbed_response ||= stubbed_response_for(vcr_request)
+          @stubbed_response ||= VCR.http_interactions.response_for(vcr_request)
         end
 
         def typhoeus_response
@@ -116,6 +115,8 @@ Typhoeus::Hydra.after_request_before_on_complete do |request|
   end
 end
 
+# TODO: add Typhoeus::Hydra.register_stub_finder API to Typhoeus
+#       so we can use that instead of monkey-patching it.
 Typhoeus::Hydra::Stubbing::SharedMethods.class_eval do
   undef find_stub_from_request
   def find_stub_from_request(request)

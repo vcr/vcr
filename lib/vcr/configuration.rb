@@ -22,7 +22,7 @@ module VCR
     attr_writer :default_cassette_options
     def default_cassette_options
       @default_cassette_options ||= {}
-      @default_cassette_options[:match_requests_on] ||= RequestMatcher::DEFAULT_MATCH_ATTRIBUTES
+      @default_cassette_options[:match_requests_on] ||= RequestMatcherRegistry::DEFAULT_MATCHERS
       @default_cassette_options[:record] ||= :once
       @default_cassette_options
     end

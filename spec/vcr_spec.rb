@@ -86,6 +86,18 @@ describe VCR do
     end
   end
 
+  describe '.http_interactions' do
+    it 'returns the current_cassette.http_interactions when there is a current cassette' do
+      cassette = VCR.insert_cassette("a cassette")
+      VCR.http_interactions.should be(cassette.http_interactions)
+    end
+
+    it 'returns a null list when there is no current cassette' do
+      VCR.current_cassette.should be_nil
+      VCR.http_interactions.should be_a(VCR::Cassette::HTTPInteractionList::NullList)
+    end
+  end
+
   describe '.request_matcher_registry' do
     it 'always returns the same memoized request matcher registry instance' do
       VCR.request_matcher_registry.should be_a(VCR::RequestMatcherRegistry)

@@ -1,10 +1,8 @@
-require 'vcr/util/regexes'
 require 'vcr/util/variable_args_block_caller'
 require 'vcr/util/yaml'
 
 require 'vcr/cassette'
 require 'vcr/configuration'
-require 'vcr/request_matcher'
 require 'vcr/request_matcher_registry'
 require 'vcr/version'
 
@@ -68,6 +66,11 @@ module VCR
     ensure
       eject_cassette
     end
+  end
+
+  def http_interactions
+    return current_cassette.http_interactions if current_cassette
+    VCR::Cassette::HTTPInteractionList::NullList.new
   end
 
   def request_matcher_registry
