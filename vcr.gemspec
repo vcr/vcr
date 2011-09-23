@@ -39,6 +39,7 @@ Gem::Specification.new do |s|
     'rack'            => '1.1.0',
     'sinatra'         => '~> 1.1.0',
 
+    'yard'            => '~> 0.7.4',
     'multi_json'      => '~> 1.0.3'
   }.each do |lib, version|
     s.add_development_dependency lib, version

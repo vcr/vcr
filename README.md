@@ -119,6 +119,12 @@ VCR has been tested on the following ruby interpreters:
   and create a topic branch for every separate change you make.
 * See the [Contributing](https://github.com/myronmarston/vcr/blob/master/CONTRIBUTING.md)
   guide for instructions on running the specs and features.
+* Documentation is generated with [YARD](http://yardoc.org/) ([cheat sheet](http://cheat.errtheblog.com/s/yard/)).
+  To generate while developing:
+
+```
+yard server --reload
+```
 
 If you find VCR useful, please recommend me on [working with rails](http://workingwithrails.com/person/16590-myron-marston).
 
