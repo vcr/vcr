@@ -34,11 +34,6 @@ RSpec.configure do |config|
     VCR.turn_on! unless VCR.turned_on?
     VCR.eject_cassette while VCR.current_cassette
 
-    WebMock.allow_net_connect!
-
-    FakeWeb.allow_net_connect = true
-    FakeWeb.clean_registry
-
     VCR::HttpStubbingAdapters::Common.adapters.each(&:reset!)
   end
 
