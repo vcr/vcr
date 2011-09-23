@@ -7,3 +7,8 @@ rvm:
   - 1.9.3
   - ree
   - jruby
+branches:
+  only:
+    - master
+    - 1-x-stable
+
