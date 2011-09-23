@@ -9,16 +9,6 @@ module VCR
       MIN_PATCH_LEVEL   = '1.7.0'
       MAX_MINOR_VERSION = '1.7'
 
-      def http_connections_allowed=(value)
-        super
-        update_webmock_allow_net_connect
-      end
-
-      def ignored_hosts=(hosts)
-        super
-        update_webmock_allow_net_connect
-      end
-
       def vcr_request_from(webmock_request)
         VCR::Request.new(
           webmock_request.method,
@@ -28,34 +18,7 @@ module VCR
         )
       end
 
-      def stub_requests(*args)
-        super
-        setup_webmock_hook
-      end
-
-      def create_stubs_checkpoint(cassette)
-        webmock_checkpoints[cassette] = ::WebMock::StubRegistry.instance.request_stubs.dup
-        super
-      end
-
-      def restore_stubs_checkpoint(cassette)
-        ::WebMock::StubRegistry.instance.request_stubs = webmock_checkpoints.delete(cassette) || raise_no_checkpoint_error(cassette)
-        super
-      end
-
     private
-
-      def update_webmock_allow_net_connect
-        if http_connections_allowed?
-          ::WebMock.allow_net_connect!
-        else
-          ::WebMock.disable_net_connect!(:allow => ignored_hosts)
-        end
-      end
-
-      def webmock_checkpoints
-        @webmock_checkpoints ||= {}
-      end
 
       def version
         ::WebMock.version
@@ -73,8 +36,8 @@ module VCR
         ::WebMock::Util::URI.normalize_uri(uri).to_s
       end
 
-      def setup_webmock_hook
-        ::WebMock.stub_request(:any, /.*/).with { |request|
+      GLOBAL_VCR_HOOK = ::WebMock::RequestStub.new(:any, /.*/).tap do |stub|
+        stub.with { |request|
           vcr_request = vcr_request_from(request)
 
           if uri_should_be_ignored?(request.uri)
@@ -90,6 +53,9 @@ module VCR
           response_hash_for stubbed_response_for(vcr_request_from(request))
         })
       end
+
+      ::WebMock::StubRegistry.instance.register_request_stub(GLOBAL_VCR_HOOK)
+      ::WebMock.allow_net_connect!
     end
   end
 end
@@ -117,6 +83,13 @@ WebMock::NetConnectNotAllowedError.class_eval do
   undef stubbing_instructions
   def stubbing_instructions(*args)
     '.  ' + VCR::HttpStubbingAdapters::Common::RECORDING_INSTRUCTIONS
+  end
+end
+
+WebMock::StubRegistry.class_eval do
+  undef reset!
+  def reset!
+    self.request_stubs = [VCR::HttpStubbingAdapters::WebMock::GLOBAL_VCR_HOOK]
   end
 end
 

@@ -35,7 +35,6 @@ RSpec.configure do |config|
     VCR.eject_cassette while VCR.current_cassette
 
     WebMock.allow_net_connect!
-    WebMock.reset!
 
     FakeWeb.allow_net_connect = true
     FakeWeb.clean_registry
