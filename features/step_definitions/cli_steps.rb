@@ -109,7 +109,3 @@ Then /^the cassette "([^"]*)" should have the following response bodies:$/ do |f
   actual_response_bodies.should =~ expected_response_bodies
 end
 
-Given /^the scenario is pending: "([^"]*)"$/ do |message|
-  pending message
-end
-

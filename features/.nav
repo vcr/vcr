@@ -6,7 +6,6 @@
   - format.feature
   - naming.feature
   - no_cassette.feature
-  - request_matching.feature
   - dynamic_erb.feature
   - automatic_re_recording.feature
   - update_content_length_header.feature
@@ -23,6 +22,14 @@
   - ignore_localhost.feature
   - hooks.feature
   - allow_http_connections_when_no_cassette.feature
+- request_matching:
+  - method.feature
+  - uri.feature
+  - host.feature
+  - path.feature
+  - body.feature
+  - headers.feature
+  - identical_request_sequence.feature
 - test_frameworks:
   - test_unit.feature
   - shoulda.feature
