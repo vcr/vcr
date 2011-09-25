@@ -12,8 +12,6 @@ Feature: ignore_hosts
   Background:
     Given a file named "sinatra_app.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
-
       response_count = 0
       start_sinatra_app(:port => 7777) do
         get('/') { "Response #{response_count += 1}" }
@@ -23,7 +21,6 @@ Feature: ignore_hosts
   Scenario Outline: ignored host requests are not recorded and are always allowed
     Given a file named "ignore_hosts.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
       include_http_adapter_for("<http_lib>")
       require 'sinatra_app.rb'
 

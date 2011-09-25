@@ -12,8 +12,6 @@ Feature: :new_episodes
   Background:
     Given a file named "setup.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
-
       start_sinatra_app(:port => 7777) do
         get('/') { 'Hello' }
       end

@@ -12,8 +12,6 @@ Feature: ignore_localhost
   Background:
     Given a file named "sinatra_app.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
-
       response_count = 0
       start_sinatra_app(:port => 7777) do
         get('/') { "Response #{response_count += 1}" }
@@ -23,7 +21,6 @@ Feature: ignore_localhost
   Scenario Outline: localhost requests are not treated differently by default and when the setting is false
     Given a file named "localhost_not_ignored.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
       include_http_adapter_for("<http_lib>")
       require 'sinatra_app.rb'
 
@@ -69,7 +66,6 @@ Feature: ignore_localhost
   Scenario Outline: localhost requests are allowed and not recorded when ignore_localhost = true
     Given a file named "ignore_localhost_true.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
       include_http_adapter_for("<http_lib>")
       require 'sinatra_app.rb'
 

@@ -7,8 +7,6 @@ Feature: Net::HTTP
   Background:
     Given a file named "vcr_setup.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
-
       if ARGV[0] == '--with-server'
         start_sinatra_app(:port => 7777) do
           get('/')  { 'VCR works with Net::HTTP gets!' }

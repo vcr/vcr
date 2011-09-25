@@ -17,8 +17,6 @@ Feature: Rack
   Background:
     Given a file named "remote_server.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
-
       request_count = 0
       start_sinatra_app(:port => 7777) do
         get('/:path') { "Hello #{params[:path]} #{request_count += 1}" }

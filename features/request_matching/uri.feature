@@ -44,7 +44,6 @@ Feature: Matching on URI
   Scenario Outline: Replay interaction that matches the request URI
     And a file named "uri_matching.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
       include_http_adapter_for("<http_lib>")
 
       require 'vcr'

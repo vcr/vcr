@@ -8,8 +8,6 @@ Feature: Allow HTTP connections when no cassette
   Background:
     Given a file named "vcr_setup.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
-
       if ARGV.include?('--with-server')
         start_sinatra_app(:port => 7777) do
           get('/') { "Hello" }

@@ -45,7 +45,6 @@ Feature: Matching on Host
   Scenario Outline: Replay interaction that matches the host
     And a file named "host_matching.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
       include_http_adapter_for("<http_lib>")
 
       require 'vcr'

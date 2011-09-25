@@ -26,8 +26,6 @@ Feature: Filter sensitive data
   Scenario: Multiple filterings
     Given a file named "filtering.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
-
       if ARGV.include?('--with-server')
         start_sinatra_app(:port => 7777) do
           get('/') { "Hello World" }
@@ -60,8 +58,6 @@ Feature: Filter sensitive data
   Scenario: Filter tagged cassettes
     Given a file named "tagged_filtering.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
-
       if ARGV.include?('--with-server')
         response_count = 0
         start_sinatra_app(:port => 7777) do
@@ -102,7 +98,6 @@ Feature: Filter sensitive data
   Scenario: Filter dynamic data based on yielded HTTP interaction
     Given a file named "dynamic_filtering.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
       include_http_adapter_for('net/http')
 
       if ARGV.include?('--with-server')

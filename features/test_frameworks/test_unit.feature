@@ -6,8 +6,6 @@ Feature: Usage with Test::Unit
   Scenario: Use `VCR.use_cassette` in a test
     Given a file named "test/test_server.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
-
       start_sinatra_app(:port => 7777) do
         get('/') { "Hello" }
       end

@@ -32,8 +32,6 @@ Feature: Automatic Re-recording
       """
     And a file named "re_record.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
-
       start_sinatra_app(:port => 7777) do
         get('/') { 'New Response' }
       end

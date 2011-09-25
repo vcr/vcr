@@ -4,24 +4,22 @@ Bundler.setup
 
 require 'aruba/cucumber'
 
-Before do
-  this_dir = File.dirname(__FILE__)
-  in_current_dir do
-    FileUtils.ln_s File.join(this_dir, 'vcr_cucumber_helpers.rb'), 'vcr_cucumber_helpers.rb'
-  end
-end
-
+cucumer_helpers_file = '../../features/support/vcr_cucumber_helpers'
 if RUBY_VERSION > '1.9.1'
   Before do
-    set_env('RUBYOPT', '-I.:../../lib')
+    set_env('RUBYOPT', "-I.:../../lib -r#{cucumer_helpers_file}")
   end
 elsif RUBY_PLATFORM == 'java'
   Before do
-    set_env('RUBYOPT', '-I../../lib -rubygems')
+    set_env('RUBYOPT', "-I../../lib -rubygems -r#{cucumer_helpers_file}")
 
     # ideas taken from: http://blog.headius.com/2010/03/jruby-startup-time-tips.html
     set_env('JRUBY_OPTS', '-X-C') # disable JIT since these processes are so short lived
     set_env('JAVA_OPTS', '-d32') # force jRuby to use client JVM for faster startup times
+  end
+else
+  Before do
+    set_env('RUBYOPT', "-rubygems -r#{cucumer_helpers_file}")
   end
 end
 

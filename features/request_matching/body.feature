@@ -41,7 +41,6 @@ Feature: Matching on Body
   Scenario Outline: Replay interaction that matches the body
     And a file named "body_matching.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
       include_http_adapter_for("<http_lib>")
 
       require 'vcr'

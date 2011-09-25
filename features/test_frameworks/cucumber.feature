@@ -26,8 +26,6 @@ Feature: Usage with Cucumber
   Scenario: Record HTTP interactions in a scenario by tagging it
     Given a file named "lib/server.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
-
       if ENV['WITH_SERVER'] == 'true'
         start_sinatra_app(:port => 7777) do
           get('/:path') { "Hello #{params[:path]}" }

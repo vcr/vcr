@@ -9,7 +9,6 @@ Feature: EM HTTP Request
     Given a file named "vcr_setup.rb" with:
       """ruby
       require 'em-http-request'
-      require 'vcr_cucumber_helpers'
 
       start_sinatra_app(:port => 7777) do
         %w[ foo bar bazz ].each_with_index do |path, index|

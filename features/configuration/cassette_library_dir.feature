@@ -6,8 +6,6 @@ Feature: cassette_library_dir
   Scenario: cassette_library_dir
     Given a file named "cassette_library_dir.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
-
       start_sinatra_app(:port => 7777) do
         get('/') { "Hello" }
       end

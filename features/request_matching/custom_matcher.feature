@@ -52,7 +52,6 @@ Feature: Register and use a custom matcher
   Scenario Outline: Match the URI on all but the timestamp query parameter
     And a file named "custom_matcher.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
       include_http_adapter_for("<http_lib>")
 
       require 'vcr'

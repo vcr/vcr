@@ -21,7 +21,6 @@ Feature: Cassette format
   Scenario Outline: Request/Response data is saved to disk as YAML
     Given a file named "cassette_format.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
       include_http_adapter_for("<http_lib>")
 
       start_sinatra_app(:port => 7777) do

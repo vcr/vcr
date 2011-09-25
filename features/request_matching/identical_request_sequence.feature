@@ -42,7 +42,6 @@ Feature: Identical requests are replayed in sequence
       """
     And a file named "rotate_responses.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
       include_http_adapter_for("<http_lib>")
 
       require 'vcr'

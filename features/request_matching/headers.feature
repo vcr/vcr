@@ -45,7 +45,6 @@ Feature: Matching on Headers
   Scenario Outline: Replay interaction that matches the headers
     And a file named "header_matching.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
       include_http_adapter_for("<http_lib>")
 
       require 'vcr'

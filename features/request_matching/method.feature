@@ -46,7 +46,6 @@ Feature: Matching on Method
   Scenario Outline: Replay interaction that matches the HTTP method
     And a file named "method_matching.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
       include_http_adapter_for("<http_lib>")
 
       require 'vcr'

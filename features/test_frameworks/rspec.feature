@@ -28,8 +28,6 @@ Feature: Usage with RSpec
         | spec/cassettes/net_http_example.yml                                        |
     And a file named "spec/sinatra_app.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
-
       start_sinatra_app(:port => 7777) do
         get('/') { "Hello" }
       end

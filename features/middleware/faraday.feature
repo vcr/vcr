@@ -13,8 +13,6 @@ Feature: Faraday middleware
   Background:
     Given a file named "env_setup.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
-
       request_count = 0
       start_sinatra_app(:port => 7777) do
         get('/:path') { "Hello #{params[:path]} #{request_count += 1}" }

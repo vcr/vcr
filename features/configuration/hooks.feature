@@ -61,8 +61,6 @@ Feature: Hooks
   Scenario: Replace sensitive data with before_record hook
     Given a file named "before_record_example.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
-
       start_sinatra_app(:port => 7777) do
         get('/') { "Hello <secret>" }
       end
@@ -90,8 +88,6 @@ Feature: Hooks
   Scenario: Prevent recording by ignoring interaction in before_record hook
     Given a file named "before_record_ignore.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
-
       start_sinatra_app(:port => 7777) do
         get('/') { "Hello World" }
       end
@@ -159,8 +155,6 @@ Feature: Hooks
       """
     And a file named "before_playback_ignore.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
-
       start_sinatra_app(:port => 7777) do
         get('/') { "sinatra response" }
       end
@@ -184,8 +178,6 @@ Feature: Hooks
   Scenario: Multiple hooks are run in order
     Given a file named "multiple_hooks.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
-
       start_sinatra_app(:port => 7777) do
         get('/') { "Hello World" }
       end
@@ -225,8 +217,6 @@ Feature: Hooks
   Scenario: Use tagging to apply hooks to only certain cassettes
     Given a file named "tagged_hooks.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
-
       start_sinatra_app(:port => 7777) do
         get('/') { "Hello World" }
       end

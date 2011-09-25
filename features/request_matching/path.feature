@@ -46,7 +46,6 @@ Feature: Matching on Path
   Scenario Outline: Replay interaction that matches the path
     And a file named "path_matching.rb" with:
       """ruby
-      require 'vcr_cucumber_helpers'
       include_http_adapter_for("<http_lib>")
 
       require 'vcr'
