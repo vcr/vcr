@@ -2,12 +2,20 @@
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.11.3...master)
 
-* Removed support for Ruby 1.8.6 and 1.9.1.
-* Removed lots of old deprecated APIs.
+### Removed
+
+* Support for Ruby 1.8.6 and 1.9.1.
+* Lots of old deprecated APIs.
+* Support for manually changing the URI in a cassette to a regex.
+
+### Deprecated
+
 * Deprecated `VCR.config` in favor of `VCR.configure`.
 * Deprecated `VCR::Config` singleton module in favor of
   `VCR::Configuration` class.  The current configuration instance
   can be accessed via `VCR.configuration`.
+
+### Added
 * Add test coverage of using WebMock as the stubbing library and
   Typhoeus as the HTTP library.
 
