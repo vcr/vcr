@@ -35,6 +35,10 @@ module VCR
       @http_stubbing_libraries ||= []
     end
 
+    def register_request_matcher(name, &block)
+      VCR.request_matcher_registry.register(name, &block)
+    end
+
     def ignore_hosts(*hosts)
       ignored_hosts.push(*hosts).uniq!
       VCR.http_stubbing_adapter.ignored_hosts = ignored_hosts if http_stubbing_libraries.any?

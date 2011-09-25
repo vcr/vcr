@@ -17,6 +17,10 @@ Specify an array of attributes to match on.  Supported attributes are:
   - `:body` - The body of the request.
   - `:headers` - The request headers.
 
+You can also register a custom request matcher. This particularly comes
+in handy for dealing with APIs that use non-deterministic URIs (i.e. by
+including a timestamp as a query parameter or whatever).
+
 When a cassette contains multiple HTTP interactions that match a request
 based on the configured `:match_requests_on` setting, the responses are
 sequenced: the first matching request will get the first response,

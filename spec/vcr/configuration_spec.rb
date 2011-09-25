@@ -39,6 +39,19 @@ describe VCR::Configuration do
     end
   end
 
+  describe '#register_request_matcher' do
+    it 'registers the given request matcher' do
+      expect {
+        VCR.request_matcher_registry[:custom]
+      }.to raise_error(VCR::UnregisteredMatcherError)
+
+      matcher_run = false
+      subject.register_request_matcher(:custom) { |r1, r2| matcher_run = true }
+      VCR.request_matcher_registry[:custom].matches?(:r1, :r2)
+      matcher_run.should be_true
+    end
+  end
+
   describe '#stub_with' do
     it 'stores the given symbols in http_stubbing_libraries' do
       subject.stub_with :fakeweb, :typhoeus

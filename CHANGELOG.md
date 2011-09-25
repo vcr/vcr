@@ -18,6 +18,7 @@
 ### Added
 * Add test coverage of using WebMock as the stubbing library and
   Typhoeus as the HTTP library.
+* Add ability to register custom request matchers.
 
 ## 1.11.3 (August 31, 2011)
 
