@@ -1,4 +1,3 @@
-require 'vcr/util/variable_args_block_caller'
 require 'vcr/util/yaml'
 
 require 'vcr/cassette'
@@ -12,7 +11,6 @@ require 'vcr/http_stubbing_adapters/common'
 require 'vcr/structs/http_interaction'
 
 module VCR
-  include VariableArgsBlockCaller
   extend self
 
   autoload :BasicObject,        'vcr/util/basic_object'
@@ -58,11 +56,11 @@ module VCR
     cassette
   end
 
-  def use_cassette(*args, &block)
+  def use_cassette(*args)
     cassette = insert_cassette(*args)
 
     begin
-      call_block(block, cassette)
+      yield cassette
     ensure
       eject_cassette
     end
