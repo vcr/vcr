@@ -9,7 +9,6 @@ module VCR
     autoload :Typhoeus,         'vcr/http_stubbing_adapters/typhoeus'
     autoload :WebMock,          'vcr/http_stubbing_adapters/webmock'
 
-    class UnsupportedRequestMatchAttributeError < ArgumentError; end
     class HttpConnectionNotAllowedError < StandardError; end
 
     module Common
