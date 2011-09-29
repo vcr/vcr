@@ -1,12 +1,14 @@
 module VCR
   module Hooks
+    include VariableArgsBlockCaller
+
     def self.included(klass)
       klass.extend(ClassMethods)
     end
 
     def invoke_hook(hook, tag, *args)
       hooks_for(hook, tag).each do |callback|
-        callback.call(*args)
+        call_block(callback, *args)
       end
     end
 

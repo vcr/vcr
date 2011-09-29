@@ -52,14 +52,14 @@ describe VCR do
 
     it 'yields' do
       yielded = false
-      VCR.use_cassette(:cassette_test) { yielded = true }
+      VCR.use_cassette(:cassette_test, &lambda { yielded = true })
       yielded.should be_true
     end
 
     it 'yields the cassette instance if the block expects an argument' do
-      VCR.use_cassette('name', :record => :new_episodes) do |cassette|
+      VCR.use_cassette('name', :record => :new_episodes, &lambda do |cassette|
         cassette.should equal(VCR.current_cassette)
-      end
+      end)
     end
 
     it 'yields the cassette instance if the block expects a variable number of args' do

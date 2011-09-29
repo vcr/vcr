@@ -4,6 +4,7 @@ require 'vcr/util/hooks'
 module VCR
   class Configuration
     include VCR::Hooks
+    include VCR::VariableArgsBlockCaller
 
     define_hook :before_record
     define_hook :before_playback
@@ -65,13 +66,13 @@ module VCR
       !!@allow_http_connections_when_no_cassette
     end
 
-    def filter_sensitive_data(placeholder, tag = nil)
+    def filter_sensitive_data(placeholder, tag = nil, &block)
       before_record(tag) do |interaction|
-        interaction.filter!((yield interaction), placeholder)
+        interaction.filter!(call_block(block, interaction), placeholder)
       end
 
       before_playback(tag) do |interaction|
-        interaction.filter!(placeholder, (yield interaction))
+        interaction.filter!(placeholder, call_block(block, interaction))
       end
     end
 

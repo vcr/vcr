@@ -150,13 +150,13 @@ describe VCR::Configuration do
     before(:each) { interaction.stub(:filter!) }
 
     it 'adds a before_record hook that replaces the string returned by the block with the given string' do
-      subject.filter_sensitive_data('foo') { 'bar' }
+      subject.filter_sensitive_data('foo', &lambda { 'bar' })
       interaction.should_receive(:filter!).with('bar', 'foo')
       subject.invoke_hook(:before_record, nil, interaction)
     end
 
     it 'adds a before_playback hook that replaces the given string with the string returned by the block' do
-      subject.filter_sensitive_data('foo') { 'bar' }
+      subject.filter_sensitive_data('foo', &lambda { 'bar' })
       interaction.should_receive(:filter!).with('foo', 'bar')
       subject.invoke_hook(:before_playback, nil, interaction)
     end
@@ -173,14 +173,14 @@ describe VCR::Configuration do
 
     it 'yields the interaction to the block for the before_record hook' do
       yielded_interaction = nil
-      subject.filter_sensitive_data('foo') { |i| yielded_interaction = i; 'bar' }
+      subject.filter_sensitive_data('foo', &lambda { |i| yielded_interaction = i; 'bar' })
       subject.invoke_hook(:before_record, nil, interaction)
       yielded_interaction.should equal(interaction)
     end
 
     it 'yields the interaction to the block for the before_playback hook' do
       yielded_interaction = nil
-      subject.filter_sensitive_data('foo') { |i| yielded_interaction = i; 'bar' }
+      subject.filter_sensitive_data('foo', &lambda { |i| yielded_interaction = i; 'bar' })
       subject.invoke_hook(:before_playback, nil, interaction)
       yielded_interaction.should equal(interaction)
     end
