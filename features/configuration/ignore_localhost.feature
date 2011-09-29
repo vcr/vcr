@@ -18,7 +18,7 @@ Feature: ignore_localhost
       end
       """
 
-  Scenario Outline: localhost requests are not treated differently by default and when the setting is false
+  Scenario Outline: localhost requests are not treated differently by default
     Given a file named "localhost_not_ignored.rb" with:
       """ruby
       include_http_adapter_for("<http_lib>")
@@ -27,7 +27,6 @@ Feature: ignore_localhost
       require 'vcr'
 
       VCR.configure do |c|
-        <additional_config>
         c.cassette_library_dir = 'cassettes'
         c.stub_with <stub_with>
       end
@@ -43,25 +42,16 @@ Feature: ignore_localhost
      And the file "cassettes/localhost.yml" should contain "body: Response 1"
 
     Examples:
-      | stub_with  | http_lib        | additional_config          |
-      | :fakeweb   | net/http        |                            |
-      | :fakeweb   | net/http        | c.ignore_localhost = false |
-      | :webmock   | net/http        |                            |
-      | :webmock   | net/http        | c.ignore_localhost = false |
-      | :webmock   | httpclient      |                            |
-      | :webmock   | httpclient      | c.ignore_localhost = false |
-      | :webmock   | curb            |                            |
-      | :webmock   | curb            | c.ignore_localhost = false |
-      | :webmock   | patron          |                            |
-      | :webmock   | patron          | c.ignore_localhost = false |
-      | :webmock   | em-http-request |                            |
-      | :webmock   | em-http-request | c.ignore_localhost = false |
-      | :webmock   | typhoeus        |                            |
-      | :webmock   | typhoeus        | c.ignore_localhost = false |
-      | :typhoeus  | typhoeus        |                            |
-      | :typhoeus  | typhoeus        | c.ignore_localhost = false |
-      | :excon     | excon           |                            |
-      | :excon     | excon           | c.ignore_localhost = false |
+      | stub_with  | http_lib        |
+      | :fakeweb   | net/http        |
+      | :webmock   | net/http        |
+      | :webmock   | httpclient      |
+      | :webmock   | curb            |
+      | :webmock   | patron          |
+      | :webmock   | em-http-request |
+      | :webmock   | typhoeus        |
+      | :typhoeus  | typhoeus        |
+      | :excon     | excon           |
 
   Scenario Outline: localhost requests are allowed and not recorded when ignore_localhost = true
     Given a file named "ignore_localhost_true.rb" with:
