@@ -56,7 +56,7 @@ module VCR
           end
 
           def http_connections_allowed?
-            VCR::HttpStubbingAdapters::Excon.http_connections_allowed?
+            VCR.real_http_connections_allowed?
           end
 
           def response_from_excon_error(error)

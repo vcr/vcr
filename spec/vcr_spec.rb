@@ -98,6 +98,44 @@ describe VCR do
     end
   end
 
+  describe '.real_http_connections_allowed?' do
+    context 'when a cassette is inserted' do
+      it 'returns true if the cassette is recording' do
+        VCR.insert_cassette('foo', :record => :all)
+        VCR.current_cassette.should be_recording
+        VCR.real_http_connections_allowed?.should be_true
+      end
+
+      it 'returns false if the cassette is not recording' do
+        VCR.insert_cassette('foo', :record => :none)
+        VCR.current_cassette.should_not be_recording
+        VCR.real_http_connections_allowed?.should be_false
+      end
+    end
+
+    context 'when no cassette is inserted' do
+      before(:each) { VCR.current_cassette.should be_nil }
+
+      it 'returns true if the allow_http_connections_when_no_cassette option is set to true' do
+        VCR.should be_turned_on
+        VCR.configure { |c| c.allow_http_connections_when_no_cassette = true }
+        VCR.real_http_connections_allowed?.should be_true
+      end
+
+      it 'returns true if VCR is turned off' do
+        VCR.turn_off!
+        VCR.configure { |c| c.allow_http_connections_when_no_cassette = false }
+        VCR.real_http_connections_allowed?.should be_true
+      end
+
+      it 'returns false if the allow_http_connections_when_no_cassette option is set to false and VCR is turned on' do
+        VCR.should be_turned_on
+        VCR.configure { |c| c.allow_http_connections_when_no_cassette = false }
+        VCR.real_http_connections_allowed?.should be_false
+      end
+    end
+  end
+
   describe '.request_matcher_registry' do
     it 'always returns the same memoized request matcher registry instance' do
       VCR.request_matcher_registry.should be_a(VCR::RequestMatcherRegistry)
@@ -122,12 +160,6 @@ describe VCR do
         yielded_object = obj
       end
       yielded_object.should eq(VCR.configuration)
-    end
-
-    it "sets http_stubbing_adapter.http_connections_allowed to the configured default" do
-      VCR.http_stubbing_adapter.should respond_to(:set_http_connections_allowed_to_default)
-      VCR.http_stubbing_adapter.should_receive(:set_http_connections_allowed_to_default)
-      VCR.configure { }
     end
 
     it "checks the adapted library's version to make sure it's compatible with VCR" do
@@ -244,19 +276,9 @@ describe VCR do
   end
 
   describe '.turn_off!' do
-    before(:each) { VCR.http_stubbing_adapter.http_connections_allowed = false }
-
     it 'indicates it is turned off' do
       VCR.turn_off!
       VCR.should_not be_turned_on
-    end
-
-    it 'allows http requests' do
-      expect {
-        VCR.turn_off!
-      }.to change {
-        VCR.http_stubbing_adapter.http_connections_allowed?
-      }.from(false).to(true)
     end
 
     it 'raises an error if a cassette is in use' do
@@ -306,12 +328,6 @@ describe VCR do
     it 'indicates it is turned on' do
       VCR.turn_on!
       VCR.should be_turned_on
-    end
-
-    it 'sets http_connections_allowed to the default' do
-      VCR.http_stubbing_adapter.should respond_to(:set_http_connections_allowed_to_default)
-      VCR.http_stubbing_adapter.should_receive(:set_http_connections_allowed_to_default)
-      VCR.turn_on!
     end
   end
 

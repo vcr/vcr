@@ -38,8 +38,9 @@ module VCR
         def_delegators :"VCR::HttpStubbingAdapters::Typhoeus",
           :enabled?,
           :uri_should_be_ignored?,
-          :http_connections_allowed?,
           :vcr_request_from
+
+        def_delegators :VCR, :real_http_connections_allowed?
 
         def initialize(request)
           @request = request
@@ -50,7 +51,7 @@ module VCR
             nil # allow the request to be performed
           elsif stubbed_response
             hydra_mock
-          elsif http_connections_allowed?
+          elsif real_http_connections_allowed?
             nil # allow the request to be performed and recorded
           else
             raise_connections_disabled_error

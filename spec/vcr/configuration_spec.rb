@@ -1,11 +1,6 @@
 require 'spec_helper'
 
 describe VCR::Configuration do
-  def stub_no_http_stubbing_adapter
-    VCR.stub(:http_stubbing_adapter).and_raise(ArgumentError)
-    subject.stub(:http_stubbing_libraries).and_return([])
-  end
-
   describe '#cassette_library_dir=' do
     let(:tmp_dir) { VCR::SPEC_ROOT + '/../tmp/cassette_library_dir/new_dir' }
     after(:each) { FileUtils.rm_rf tmp_dir }
@@ -110,18 +105,6 @@ describe VCR::Configuration do
         subject.allow_http_connections_when_no_cassette = val
         subject.allow_http_connections_when_no_cassette?.should eq(val)
       end
-    end
-
-    it 'sets http_connnections_allowed to the default' do
-      subject.stub_with :fakeweb
-      VCR.http_stubbing_adapter.should respond_to(:set_http_connections_allowed_to_default)
-      VCR.http_stubbing_adapter.should_receive(:set_http_connections_allowed_to_default)
-      subject.allow_http_connections_when_no_cassette = true
-    end
-
-    it "works when the adapter hasn't been set yet" do
-      stub_no_http_stubbing_adapter
-      subject.allow_http_connections_when_no_cassette = true
     end
   end
 

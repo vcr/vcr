@@ -21,7 +21,7 @@ describe VCR::HttpStubbingAdapters::Excon do
     let(:excon) { ::Excon.new("http://localhost:#{VCR::SinatraApp.port}/search") }
 
     it 'properly records and plays back the response' do
-      described_class.http_connections_allowed = true
+      VCR.stub(:real_http_connections_allowed? => true)
       recorded, played_back = [1, 2].map do
         VCR.use_cassette('excon_query', :record => :once) do
           excon.request(:method => :get, :query => { :q => 'Tolkien' }).body
@@ -35,7 +35,7 @@ describe VCR::HttpStubbingAdapters::Excon do
 
   context "when Excon's streaming API is used" do
     it 'properly records and plays back the response' do
-      described_class.http_connections_allowed = true
+      VCR.stub(:real_http_connections_allowed? => true)
       recorded, played_back = [1, 2].map do
         chunks = []
 
@@ -55,7 +55,7 @@ describe VCR::HttpStubbingAdapters::Excon do
 
   context 'when Excon raises an error due to an unexpected response status' do
     it 'still records properly' do
-      described_class.http_connections_allowed = true
+      VCR.stub(:real_http_connections_allowed? => true)
 
       VCR.should_receive(:record_http_interaction) do |interaction|
         interaction.response.status.code.should eq(404)

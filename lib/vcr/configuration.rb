@@ -57,11 +57,7 @@ module VCR
       end
     end
 
-    def allow_http_connections_when_no_cassette=(value)
-      @allow_http_connections_when_no_cassette = value
-      VCR.http_stubbing_adapter.set_http_connections_allowed_to_default if http_stubbing_libraries.any?
-    end
-
+    attr_writer :allow_http_connections_when_no_cassette
     def allow_http_connections_when_no_cassette?
       !!@allow_http_connections_when_no_cassette
     end

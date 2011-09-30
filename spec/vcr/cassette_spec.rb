@@ -35,6 +35,46 @@ describe VCR::Cassette do
     end
   end
 
+  describe "#recording?" do
+    [:all, :new_episodes].each do |mode|
+      it "returns true when the record mode is :#{mode}" do
+        cassette = VCR::Cassette.new("foo", :record => mode)
+        cassette.should be_recording
+      end
+    end
+
+    it "returns false when the record mode is :none" do
+      cassette = VCR::Cassette.new("foo", :record => :none)
+      cassette.should_not be_recording
+    end
+
+    context 'when the record mode is :once' do
+      before(:each) do
+        VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
+      end
+
+      it 'returns false when there is an existing cassette file with content' do
+        cassette = VCR::Cassette.new("example", :record => :once)
+        File.should exist(cassette.file)
+        File.size?(cassette.file).should be_true
+        cassette.should_not be_recording
+      end
+
+      it 'returns true when there is an empty existing cassette file' do
+        cassette = VCR::Cassette.new("empty", :record => :once)
+        File.should exist(cassette.file)
+        File.size?(cassette.file).should be_false
+        cassette.should be_recording
+      end
+
+      it 'returns true when there is no existing cassette file' do
+        cassette = VCR::Cassette.new("non_existant_file", :record => :once)
+        File.should_not exist(cassette.file)
+        cassette.should be_recording
+      end
+    end
+  end
+
   describe '#match_requests_on' do
     before(:each) { VCR.configuration.default_cassette_options.merge!(:match_requests_on => [:uri, :method]) }
 
@@ -103,7 +143,6 @@ describe VCR::Cassette do
     end
 
     VCR::Cassette::VALID_RECORD_MODES.each do |record_mode|
-      http_connections_allowed = (record_mode != :none)
       stub_requests = (record_mode != :all)
 
       context "when VCR.configuration.default_cassette_options[:record] is :#{record_mode}" do
@@ -116,31 +155,6 @@ describe VCR::Cassette do
       end
 
       context "when :#{record_mode} is passed as the record option" do
-        if record_mode == :none
-          it 'does not allow http connections when there is an existing cassette file with recorded interactions' do
-            VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
-            VCR.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(false)
-            c = VCR::Cassette.new('example', :record => :once)
-            File.should exist(c.file)
-            File.size?(c.file).should be_true
-          end
-
-          it 'allows http connections when there is an empty existing cassette file' do
-            VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
-            VCR.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(true)
-            c = VCR::Cassette.new('empty', :record => :once)
-            File.should exist(c.file)
-            File.size?(c.file).should be_false
-          end
-
-          it 'allows http connections when there is not an existing cassette file' do
-            VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
-            VCR.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(true)
-            c = VCR::Cassette.new('non_existant_file', :record => :once)
-            File.should_not exist(c.file)
-          end
-        end
-
         unless record_mode == :all
           let(:interaction_1) { VCR::HTTPInteraction.new(VCR::Request.new(:get, 'http://example.com/'), VCR::Response.new(VCR::ResponseStatus.new)) }
           let(:interaction_2) { VCR::HTTPInteraction.new(VCR::Request.new(:get, 'http://example.com/'), VCR::Response.new(VCR::ResponseStatus.new)) }
@@ -206,11 +220,6 @@ describe VCR::Cassette do
               end
             end
           end
-        end
-
-        it "sets http_connections_allowed to #{http_connections_allowed} on the http stubbing adapter" do
-          VCR.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(http_connections_allowed)
-          VCR::Cassette.new(:name, :record => record_mode)
         end
 
         it 'does not load ignored interactions' do
@@ -286,15 +295,6 @@ describe VCR::Cassette do
   end
 
   describe '#eject' do
-    [true, false].each do |orig_http_connections_allowed|
-      it "resets #{orig_http_connections_allowed} on the http stubbing adapter if it was originally #{orig_http_connections_allowed}" do
-        VCR.http_stubbing_adapter.should_receive(:http_connections_allowed?).and_return(orig_http_connections_allowed)
-        cassette = VCR::Cassette.new(:name)
-        VCR.http_stubbing_adapter.should_receive(:http_connections_allowed=).with(orig_http_connections_allowed)
-        cassette.eject
-      end
-    end
-
     it "writes the recorded interactions to disk as yaml" do
       recorded_interactions = [
         VCR::HTTPInteraction.new(:req_sig_1, :response_1),

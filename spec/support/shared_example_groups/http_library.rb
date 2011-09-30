@@ -96,7 +96,7 @@ shared_examples_for "an http library" do |library, *other|
     end
 
     describe '.stub_requests using specific match_attributes' do
-      before(:each) { subject.http_connections_allowed = false }
+      before(:each) { VCR.stub(:real_http_connections_allowed? => false) }
       let(:interactions) { VCR::YAML.load_file(File.join(VCR::SPEC_ROOT, 'fixtures', 'match_requests_on.yml')) }
 
       def self.matching_on(attribute, valid, invalid, &block)
@@ -222,18 +222,9 @@ shared_examples_for "an http library" do |library, *other|
       end
     end
 
-    it "returns false from #http_connections_allowed? when http_connections_allowed is set to nil" do
-      subject.http_connections_allowed = nil
-      subject.http_connections_allowed?.should eq(false)
-    end
-
     [true, false].each do |http_allowed|
-      context "when http_connections_allowed is set to #{http_allowed}" do
-        before(:each) { subject.http_connections_allowed = http_allowed }
-
-        it "returns #{http_allowed} for #http_connections_allowed?" do
-          subject.http_connections_allowed?.should eq(http_allowed)
-        end
+      context "when VCR.real_http_connections_allowed? is returning #{http_allowed}" do
+        before(:each) { VCR.stub(:real_http_connections_allowed? => http_allowed) }
 
         test_real_http_request(http_allowed, *other)
 
@@ -261,7 +252,7 @@ shared_examples_for "an http library" do |library, *other|
           end
         end
 
-        context 'when some requests are stubbed, after setting a checkpoint' do
+        context 'when some requests are stubbed' do
           before(:each) do
             @recorded_interactions = VCR::YAML.load_file(File.join(VCR::SPEC_ROOT, 'fixtures', 'fake_example.com_responses.yml'))
             stub_requests(@recorded_interactions, VCR::RequestMatcherRegistry::DEFAULT_MATCHERS)

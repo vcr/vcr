@@ -23,8 +23,9 @@ module VCR
         attr_reader :net_http, :request, :request_body, :block
         def_delegators :"VCR::HttpStubbingAdapters::FakeWeb",
                        :enabled?,
-                       :uri_should_be_ignored?,
-                       :http_connections_allowed?
+                       :uri_should_be_ignored?
+
+        def_delegators :VCR, :real_http_connections_allowed?
 
         def initialize(net_http, request, request_body = nil, &block)
           @net_http, @request, @request_body, @block =
@@ -36,7 +37,7 @@ module VCR
             perform_request
           elsif stubbed_response
             perform_stubbed_request
-          elsif http_connections_allowed?
+          elsif real_http_connections_allowed?
             perform_and_record_request
           else
             raise_connections_disabled_error

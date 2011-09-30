@@ -66,16 +66,6 @@ module VCR
         @library_name ||= self.to_s.split('::').last
       end
 
-      def set_http_connections_allowed_to_default
-        self.http_connections_allowed = VCR.configuration.allow_http_connections_when_no_cassette?
-      end
-
-      attr_writer :http_connections_allowed
-
-      def http_connections_allowed?
-        defined?(@http_connections_allowed) && !!@http_connections_allowed
-      end
-
       def ignored_hosts=(hosts)
         @ignored_hosts = hosts
       end

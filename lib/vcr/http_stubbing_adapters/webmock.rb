@@ -40,7 +40,7 @@ module VCR
             false
           elsif VCR.http_interactions.has_interaction_matching?(vcr_request)
             true
-          elsif http_connections_allowed?
+          elsif VCR.real_http_connections_allowed?
             false
           else
             raise_connections_disabled_error(vcr_request)

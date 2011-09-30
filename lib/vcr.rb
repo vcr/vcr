@@ -73,6 +73,11 @@ module VCR
     VCR::Cassette::HTTPInteractionList::NullList.new
   end
 
+  def real_http_connections_allowed?
+    return current_cassette.recording? if current_cassette
+    configuration.allow_http_connections_when_no_cassette? || @turned_off
+  end
+
   def request_matcher_registry
     @request_matcher_registry ||= RequestMatcherRegistry.new
   end
@@ -84,7 +89,6 @@ module VCR
   def configure
     yield configuration
     http_stubbing_adapter.check_version!
-    http_stubbing_adapter.set_http_connections_allowed_to_default
     http_stubbing_adapter.ignored_hosts = VCR.configuration.ignored_hosts
   end
 
@@ -135,12 +139,10 @@ module VCR
       raise ArgumentError.new("You passed some invalid options: #{invalid_options.inspect}")
     end
 
-    VCR.http_stubbing_adapter.http_connections_allowed = true
     @turned_off = true
   end
 
   def turn_on!
-    VCR.http_stubbing_adapter.set_http_connections_allowed_to_default
     @turned_off = false
   end
 

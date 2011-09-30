@@ -37,13 +37,11 @@ module VCR
 
       raise_error_unless_valid_record_mode
 
-      set_http_connections_allowed
       load_recorded_interactions
     end
 
     def eject
       write_recorded_interactions_to_disk
-      restore_http_connections_allowed
     end
 
     def recorded_interactions
@@ -66,7 +64,15 @@ module VCR
       @update_content_length_header
     end
 
-    private
+    def recording?
+      case record_mode
+        when :none; false
+        when :once; file.nil? || !File.size?(file)
+        else true
+      end
+    end
+
+  private
 
     def sanitized_name
       name.to_s.gsub(/[^\w\-\/]+/, '_')
@@ -85,29 +91,12 @@ module VCR
       InternetConnection.available?
     end
 
-    def should_allow_http_connections?
-      case record_mode
-        when :none; false
-        when :once; file.nil? || !File.size?(file)
-        else true
-      end
-    end
-
     def should_stub_requests?
       record_mode != :all
     end
 
     def should_remove_matching_existing_interactions?
       record_mode == :all
-    end
-
-    def set_http_connections_allowed
-      @orig_http_connections_allowed = VCR.http_stubbing_adapter.http_connections_allowed?
-      VCR.http_stubbing_adapter.http_connections_allowed = should_allow_http_connections?
-    end
-
-    def restore_http_connections_allowed
-      VCR.http_stubbing_adapter.http_connections_allowed = @orig_http_connections_allowed
     end
 
     def load_recorded_interactions

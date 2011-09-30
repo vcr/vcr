@@ -22,7 +22,7 @@ module VCR
               faraday_response = ::Faraday::Response.new
               faraday_response.finish(env) unless env[:parallel_manager]
               env[:response] = faraday_response
-            elsif VCR::HttpStubbingAdapters::Faraday.http_connections_allowed?
+            elsif VCR.real_http_connections_allowed?
               response = @app.call(env)
 
               # Checking #enabled? isn't strictly needed, but conforms

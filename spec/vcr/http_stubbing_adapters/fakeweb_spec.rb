@@ -19,7 +19,7 @@ describe VCR::HttpStubbingAdapters::FakeWeb, :with_monkey_patches => :fakeweb do
 
   describe "some specific Net::HTTP edge cases" do
     before(:each) do
-      described_class.http_connections_allowed = true
+      VCR.stub(:real_http_connections_allowed? => true)
     end
 
     it "does not record headers for which Net::HTTP sets defaults near the end of the real request" do
