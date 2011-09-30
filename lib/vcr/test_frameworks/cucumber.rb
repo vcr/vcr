@@ -18,7 +18,7 @@ module VCR
     def tags(*tag_names)
       options = tag_names.last.is_a?(::Hash) ? tag_names.pop : {}
       tag_names.each do |tag_name|
-        tag_name = "@#{tag_name}" unless tag_name =~ /^@/
+        tag_name = "@#{tag_name}" unless tag_name =~ /\A@/
         cassette_name = "cucumber_tags/#{tag_name.gsub(/\A@/, '')}"
 
         # It would be nice to use an Around hook here, but
