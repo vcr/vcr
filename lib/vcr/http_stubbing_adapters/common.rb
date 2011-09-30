@@ -66,15 +66,6 @@ module VCR
         @library_name ||= self.to_s.split('::').last
       end
 
-      def ignored_hosts=(hosts)
-        @ignored_hosts = hosts
-      end
-
-      def uri_should_be_ignored?(uri)
-        uri = URI.parse(uri) unless uri.respond_to?(:host)
-        ignored_hosts.include?(uri.host)
-      end
-
       def reset!
         instance_variables.each do |ivar|
           remove_instance_variable(ivar)
@@ -86,12 +77,6 @@ module VCR
           "Real HTTP connections are disabled. Request: #{request.method.to_s.upcase} #{request.uri}.  " +
           RECORDING_INSTRUCTIONS
         )
-      end
-
-    private
-
-      def ignored_hosts
-        @ignored_hosts ||= []
       end
     end
   end

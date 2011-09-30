@@ -12,7 +12,7 @@ module VCR
           VCR.use_cassette(*cassette_arguments(env)) do |cassette|
             request = request_for(env)
 
-            if VCR::HttpStubbingAdapters::Faraday.uri_should_be_ignored?(request.uri)
+            if VCR.request_ignorer.ignore?(request)
               @app.call(env)
             elsif response = VCR.http_interactions.response_for(request)
               headers = env[:response_headers] ||= ::Faraday::Utils::Headers.new

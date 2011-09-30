@@ -21,10 +21,7 @@ module VCR
         extend Forwardable
 
         attr_reader :net_http, :request, :request_body, :block
-        def_delegators :"VCR::HttpStubbingAdapters::FakeWeb",
-                       :enabled?,
-                       :uri_should_be_ignored?
-
+        def_delegators :"VCR::HttpStubbingAdapters::FakeWeb", :enabled?
         def_delegators :VCR, :real_http_connections_allowed?
 
         def initialize(net_http, request, request_body = nil, &block)
@@ -33,7 +30,7 @@ module VCR
         end
 
         def handle
-          if !enabled? || uri_should_be_ignored?(uri)
+          if !enabled? || VCR.request_ignorer.ignore?(vcr_request)
             perform_request
           elsif stubbed_response
             perform_stubbed_request

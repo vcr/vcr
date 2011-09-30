@@ -40,7 +40,7 @@ module VCR
         private
 
           def request_should_be_ignored?
-            VCR::HttpStubbingAdapters::Excon.uri_should_be_ignored?(uri)
+            VCR.request_ignorer.ignore?(vcr_request)
           end
 
           def stubbed_response

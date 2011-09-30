@@ -47,7 +47,7 @@ module VCR
         end
 
         def handle
-          if !enabled? || uri_should_be_ignored?(request.url)
+          if !enabled? || VCR.request_ignorer.ignore?(vcr_request)
             nil # allow the request to be performed
           elsif stubbed_response
             hydra_mock

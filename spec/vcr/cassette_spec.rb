@@ -223,8 +223,8 @@ describe VCR::Cassette do
         end
 
         it 'does not load ignored interactions' do
-          VCR.configuration.stub(:uri_should_be_ignored?) do |uri|
-            uri.to_s !~ /example\.com/
+          VCR.request_ignorer.stub(:ignore?) do |request|
+            request.uri !~ /example\.com/
           end
 
           VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"

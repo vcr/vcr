@@ -17,7 +17,9 @@ module VCR
   SPEC_ROOT = File.dirname(__FILE__)
 
   def reset!(stubbing_lib = :fakeweb)
-    @configuration = nil
+    instance_variables.each do |ivar|
+      instance_variable_set(ivar, nil)
+    end
     configuration.stub_with stubbing_lib if stubbing_lib
   end
 end
@@ -39,9 +41,6 @@ RSpec.configure do |config|
 
   config.after(:each) do
     FileUtils.rm_rf tmp_dir
-    VCR::HttpStubbingAdapters::Common.adapters.each do |a|
-      a.ignored_hosts = []
-    end
   end
 
   config.before(:all, :disable_warnings => true) do

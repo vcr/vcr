@@ -13,7 +13,7 @@ describe VCR::Middleware::Faraday do
     let(:env_hash) { { :url => 'http://localhost:3000/' } }
 
     before(:each) do
-      VCR::HttpStubbingAdapters::Faraday.ignored_hosts = ['localhost']
+      VCR.configure { |c| c.ignore_hosts 'localhost' }
     end
 
     it 'uses a cassette when the app is called' do

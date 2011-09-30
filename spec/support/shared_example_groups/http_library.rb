@@ -231,23 +231,21 @@ shared_examples_for "an http library" do |library, *other|
         unless http_allowed
           localhost_response = "Localhost response"
 
-          describe '.ignore_hosts' do
-            let(:record_mode) { :none }
+          let(:record_mode) { :none }
 
-            context 'when set to ["127.0.0.1", "localhost"]' do
-              before(:each) do
-                subject.ignored_hosts = ["127.0.0.1", "localhost"]
-              end
+          context 'when ignore_hosts is configured to "127.0.0.1", "localhost"' do
+            before(:each) do
+              VCR.configure { |c| c.ignore_hosts "127.0.0.1", "localhost" }
+            end
 
-              %w[ 127.0.0.1 localhost ].each do |localhost_alias|
-                it "allows requests to #{localhost_alias}" do
-                  get_body_string(make_http_request(:get, "http://#{localhost_alias}:#{VCR::SinatraApp.port}/localhost_test")).should eq(localhost_response)
-                end
+            %w[ 127.0.0.1 localhost ].each do |localhost_alias|
+              it "allows requests to #{localhost_alias}" do
+                get_body_string(make_http_request(:get, "http://#{localhost_alias}:#{VCR::SinatraApp.port}/localhost_test")).should eq(localhost_response)
               end
+            end
 
-              it 'does not allow requests to 0.0.0.0' do
-                expect { make_http_request(:get, "http://0.0.0.0:#{VCR::SinatraApp.port}/localhost_test") }.to raise_error(NET_CONNECT_NOT_ALLOWED_ERROR)
-              end
+            it 'does not allow requests to 0.0.0.0' do
+              expect { make_http_request(:get, "http://0.0.0.0:#{VCR::SinatraApp.port}/localhost_test") }.to raise_error(NET_CONNECT_NOT_ALLOWED_ERROR)
             end
           end
         end

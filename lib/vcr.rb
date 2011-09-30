@@ -4,6 +4,7 @@ require 'vcr/util/yaml'
 require 'vcr/cassette'
 require 'vcr/configuration'
 require 'vcr/request_matcher_registry'
+require 'vcr/request_ignorer'
 require 'vcr/version'
 
 require 'vcr/deprecations/vcr'
@@ -19,8 +20,6 @@ module VCR
   autoload :CucumberTags,       'vcr/test_frameworks/cucumber'
   autoload :InternetConnection, 'vcr/util/internet_connection'
   autoload :RSpec,              'vcr/test_frameworks/rspec'
-
-  LOCALHOST_ALIASES = %w( localhost 127.0.0.1 0.0.0.0 )
 
   class CassetteInUseError < StandardError; end
   class TurnedOffError < StandardError; end
@@ -82,6 +81,10 @@ module VCR
     @request_matcher_registry ||= RequestMatcherRegistry.new
   end
 
+  def request_ignorer
+    @request_ignorer ||= RequestIgnorer.new
+  end
+
   def configuration
     @configuration ||= Configuration.new
   end
@@ -89,7 +92,6 @@ module VCR
   def configure
     yield configuration
     http_stubbing_adapter.check_version!
-    http_stubbing_adapter.ignored_hosts = VCR.configuration.ignored_hosts
   end
 
   def cucumber_tags(&block)
@@ -113,7 +115,7 @@ module VCR
 
   def record_http_interaction(interaction)
     return unless cassette = current_cassette
-    return if VCR.configuration.uri_should_be_ignored?(interaction.uri)
+    return if VCR.request_ignorer.ignore?(interaction.request)
 
     cassette.record_http_interaction(interaction)
   end

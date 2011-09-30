@@ -36,7 +36,7 @@ module VCR
         stub.with { |request|
           vcr_request = vcr_request_from(request)
 
-          if uri_should_be_ignored?(request.uri)
+          if VCR.request_ignorer.ignore?(vcr_request)
             false
           elsif VCR.http_interactions.has_interaction_matching?(vcr_request)
             true

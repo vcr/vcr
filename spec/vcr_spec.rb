@@ -143,6 +143,13 @@ describe VCR do
     end
   end
 
+  describe '.request_ignorera' do
+    it 'always returns the same memoized request ignorer instance' do
+      VCR.request_ignorer.should be_a(VCR::RequestIgnorer)
+      VCR.request_ignorer.should be(VCR.request_ignorer)
+    end
+  end
+
   describe '.configuration' do
     it 'returns the configuration object' do
       VCR.configuration.should be_a(VCR::Configuration)
@@ -166,18 +173,6 @@ describe VCR do
       VCR.http_stubbing_adapter.should respond_to(:check_version!)
       VCR.http_stubbing_adapter.should_receive(:check_version!)
       VCR.configure { }
-    end
-
-    it "sets http_stubbing_adapter.ignored_hosts to the configured hosts when the block completes" do
-      VCR.reset!(nil)
-      VCR::HttpStubbingAdapters::FakeWeb.send(:ignored_hosts).should be_empty
-
-      VCR.configure do |c|
-        c.stub_with :fakeweb
-        c.ignore_hosts 'example.com', 'example.org'
-      end
-
-      VCR::HttpStubbingAdapters::FakeWeb.send(:ignored_hosts).should eq(%w[example.com example.org])
     end
   end
 
@@ -244,8 +239,7 @@ describe VCR do
 
   describe '.record_http_interaction' do
     before(:each) { VCR.stub(:current_cassette => current_cassette) }
-    let(:uri) { 'http://some-host.com/' }
-    let(:interaction) { stub(:uri => uri) }
+    let(:interaction) { stub(:request => stub) }
 
     context 'when there is not a current cassette' do
       let(:current_cassette) { nil }
@@ -253,7 +247,6 @@ describe VCR do
       it 'does not record a request' do
         # we can't set a message expectation on nil, but there is no place to record it to...
         # this mostly tests that there is no error.
-        VCR.configuration.stub(:uri_should_be_ignored? => false)
         VCR.record_http_interaction(interaction)
       end
     end
@@ -261,14 +254,14 @@ describe VCR do
     context 'when there is a current cassette' do
       let(:current_cassette) { mock('current cassette') }
 
-      it 'records the request when the uri should not be ignored' do
-        VCR.configuration.stub(:uri_should_be_ignored?).with(uri).and_return(false)
+      it 'records the request when it should not be ignored' do
+        VCR.request_ignorer.stub(:ignore?).with(interaction.request).and_return(false)
         current_cassette.should_receive(:record_http_interaction).with(interaction)
         VCR.record_http_interaction(interaction)
       end
 
-      it 'does not record the request when the uri should be ignored' do
-        VCR.configuration.stub(:uri_should_be_ignored?).with(uri).and_return(true)
+      it 'does not record the request when it should be ignored' do
+        VCR.request_ignorer.stub(:ignore?).with(interaction.request).and_return(true)
         current_cassette.should_not_receive(:record_http_interaction)
         VCR.record_http_interaction(interaction)
       end

@@ -106,7 +106,7 @@ module VCR
         invoke_hook(:before_playback, interactions)
 
         interactions.reject! do |i|
-          i.request.uri.is_a?(String) && VCR.configuration.uri_should_be_ignored?(i.request.uri)
+          i.request.uri.is_a?(String) && VCR.request_ignorer.ignore?(i.request)
         end
 
         if update_content_length_header?
