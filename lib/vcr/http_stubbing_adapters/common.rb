@@ -45,12 +45,6 @@ module VCR
         end
       end
 
-      def reset!
-        instance_variables.each do |ivar|
-          remove_instance_variable(ivar)
-        end
-      end
-
       def raise_connections_disabled_error(request)
         raise HttpConnectionNotAllowedError.new(
           "Real HTTP connections are disabled. Request: #{request.method.to_s.upcase} #{request.uri}.  " +

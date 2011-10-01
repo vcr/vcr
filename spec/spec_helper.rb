@@ -33,10 +33,6 @@ RSpec.configure do |config|
   config.before(:each) do
     VCR.reset!
     VCR.configuration.cassette_library_dir = tmp_dir
-    VCR.turn_on! unless VCR.turned_on?
-    VCR.eject_cassette while VCR.current_cassette
-
-    VCR::HttpStubbingAdapters::Common.adapters.each(&:reset!)
   end
 
   config.after(:each) do
