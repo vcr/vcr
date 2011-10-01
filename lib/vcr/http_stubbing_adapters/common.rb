@@ -15,14 +15,6 @@ module VCR
       class << self
         attr_accessor :exclusively_enabled_adapter
 
-        def add_vcr_info_to_exception_message(exception_klass)
-          exception_klass.class_eval do
-            def initialize(message)
-              super(message + '.  ' + VCR::HttpStubbingAdapters::Common::RECORDING_INSTRUCTIONS)
-            end
-          end
-        end
-
         def adapters
           @adapters ||= []
         end

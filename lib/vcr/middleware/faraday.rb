@@ -5,8 +5,6 @@ module VCR
     class Faraday < ::Faraday::Middleware
       include Common
 
-      class HttpConnectionNotAllowedError < StandardError; end
-
       def call(env)
         VCR::HttpStubbingAdapters::Faraday.exclusively_enabled do
           VCR.use_cassette(*cassette_arguments(env)) do |cassette|
@@ -33,9 +31,7 @@ module VCR
 
               response
             else
-              raise HttpConnectionNotAllowedError.new(
-                "Real HTTP connections are disabled. Request: #{request.method.inspect} #{request.uri}"
-              )
+              VCR::HttpStubbingAdapters::Faraday.raise_connections_disabled_error(request)
             end
           end
         end

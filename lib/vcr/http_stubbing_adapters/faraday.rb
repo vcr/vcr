@@ -18,4 +18,3 @@ module VCR
   end
 end
 
-VCR::HttpStubbingAdapters::Common.add_vcr_info_to_exception_message(VCR::Middleware::Faraday::HttpConnectionNotAllowedError)
