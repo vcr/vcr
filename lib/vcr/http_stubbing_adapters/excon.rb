@@ -1,19 +1,12 @@
 require 'excon'
 
+VCR::VersionChecker.new('Excon', Excon::VERSION, '0.6.5', '0.6').check_version!
+
 module VCR
   module HttpStubbingAdapters
     module Excon
       include VCR::HttpStubbingAdapters::Common
       extend self
-
-      MIN_PATCH_LEVEL   = '0.6.5'
-      MAX_MINOR_VERSION = '0.6'
-
-      private
-
-      def version
-        ::Excon::VERSION
-      end
 
       class RequestHandler
         attr_reader :params

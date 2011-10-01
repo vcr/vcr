@@ -3,7 +3,7 @@ require 'spec_helper'
 describe VCR::HttpStubbingAdapters::FakeWeb, :with_monkey_patches => :fakeweb do
   it_behaves_like 'an http stubbing adapter', 'net/http'
 
-  it_performs('version checking',
+  it_performs('version checking', 'FakeWeb',
     :valid    => %w[ 1.3.0 1.3.1 1.3.99 ],
     :too_low  => %w[ 1.2.8 1.1.30 0.30.30 ],
     :too_high => %w[ 1.4.0 1.10.0 2.0.0 ]

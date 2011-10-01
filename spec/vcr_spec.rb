@@ -168,12 +168,6 @@ describe VCR do
       end
       yielded_object.should eq(VCR.configuration)
     end
-
-    it "checks the adapted library's version to make sure it's compatible with VCR" do
-      VCR.http_stubbing_adapter.should respond_to(:check_version!)
-      VCR.http_stubbing_adapter.should_receive(:check_version!)
-      VCR.configure { }
-    end
   end
 
   describe '.cucumber_tags' do

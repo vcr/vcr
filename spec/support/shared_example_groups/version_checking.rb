@@ -1,12 +1,12 @@
-shared_examples_for "version checking" do |options|
-  library = described_class.library_name
+shared_examples_for "version checking" do |library, options|
+  file = "vcr/http_stubbing_adapters/#{library.downcase}.rb"
 
-  describe '.check_version!', :disable_warnings => true do
+  context 'when loading the adapter file', :disable_warnings => true do
     options[:valid].each do |version|
       it "does nothing when #{library}'s version is #{version}" do
         stub_version(version)
         Kernel.should_not_receive(:warn)
-        expect { described_class.check_version! }.to_not raise_error
+        expect { load file }.to_not raise_error
       end
     end
 
@@ -14,7 +14,7 @@ shared_examples_for "version checking" do |options|
       it "raises an error when #{library}'s version is #{version}" do
         stub_version(version)
         Kernel.should_not_receive(:warn)
-        expect { described_class.check_version! }.to raise_error(/You are using #{library} #{version}. VCR requires version/)
+        expect { load file }.to raise_error(/You are using #{library} #{version}. VCR requires version/)
       end
     end
 
@@ -22,7 +22,7 @@ shared_examples_for "version checking" do |options|
       it "does nothing when #{library}'s version is #{version}" do
         stub_version(version)
         Kernel.should_receive(:warn).with(/VCR is known to work with #{library}/)
-        expect { described_class.check_version! }.to_not raise_error
+        expect { load file }.to_not raise_error
       end
     end
   end

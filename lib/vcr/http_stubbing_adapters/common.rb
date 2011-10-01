@@ -45,19 +45,6 @@ module VCR
         end
       end
 
-      def check_version!
-        VersionChecker.new(
-          library_name,
-          version,
-          self::MIN_PATCH_LEVEL,
-          self::MAX_MINOR_VERSION
-        ).check_version!
-      end
-
-      def library_name
-        @library_name ||= self.to_s.split('::').last
-      end
-
       def reset!
         instance_variables.each do |ivar|
           remove_instance_variable(ivar)

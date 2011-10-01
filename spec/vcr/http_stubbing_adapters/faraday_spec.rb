@@ -5,7 +5,7 @@ describe VCR::HttpStubbingAdapters::Faraday do
     %w[ faraday-typhoeus faraday-net_http faraday-patron ],
     :status_message_not_exposed, :does_not_support_rotating_responses
 
-  it_performs('version checking',
+  it_performs('version checking', 'Faraday',
     :valid    => %w[ 0.6.0 0.6.10 ],
     :too_low  => %w[ 0.5.9 0.4.99 ],
     :too_high => %w[ 0.7.0 1.0.0 ]

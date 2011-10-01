@@ -1,13 +1,12 @@
 require 'typhoeus'
 
+VCR::VersionChecker.new('Typhoeus', Typhoeus::VERSION, '0.2.1', '0.2').check_version!
+
 module VCR
   module HttpStubbingAdapters
     module Typhoeus
       include VCR::HttpStubbingAdapters::Common
       extend self
-
-      MIN_PATCH_LEVEL   = '0.2.1'
-      MAX_MINOR_VERSION = '0.2'
 
       def after_adapters_loaded
         # ensure WebMock's Typhoeus adapter does not conflict with us here
@@ -23,12 +22,6 @@ module VCR
           request.url,
           request.body,
           request.headers
-      end
-
-    private
-
-      def version
-        ::Typhoeus::VERSION
       end
 
       class RequestHandler

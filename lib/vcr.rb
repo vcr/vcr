@@ -91,7 +91,6 @@ module VCR
 
   def configure
     yield configuration
-    http_stubbing_adapter.check_version!
   end
 
   def cucumber_tags(&block)

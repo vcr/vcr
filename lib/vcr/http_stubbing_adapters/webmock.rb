@@ -1,13 +1,12 @@
 require 'webmock'
 
+VCR::VersionChecker.new('WebMock', WebMock.version, '1.7.0', '1.7').check_version!
+
 module VCR
   module HttpStubbingAdapters
     module WebMock
       include VCR::HttpStubbingAdapters::Common
       extend self
-
-      MIN_PATCH_LEVEL   = '1.7.0'
-      MAX_MINOR_VERSION = '1.7'
 
       def vcr_request_from(webmock_request)
         VCR::Request.new(
@@ -19,10 +18,6 @@ module VCR
       end
 
     private
-
-      def version
-        ::WebMock.version
-      end
 
       def response_hash_for(response)
         {

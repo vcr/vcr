@@ -3,7 +3,7 @@ require 'spec_helper'
 describe VCR::HttpStubbingAdapters::Typhoeus, :with_monkey_patches => :typhoeus do
   it_behaves_like 'an http stubbing adapter', 'typhoeus'
 
-  it_performs('version checking',
+  it_performs('version checking', 'Typhoeus',
     :valid    => %w[ 0.2.1 0.2.99 ],
     :too_low  => %w[ 0.1.0 0.1.31 0.2.0 ],
     :too_high => %w[ 0.3.0 1.0.0 ]

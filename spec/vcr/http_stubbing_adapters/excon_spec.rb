@@ -3,7 +3,7 @@ require 'spec_helper'
 describe VCR::HttpStubbingAdapters::Excon do
   it_behaves_like 'an http stubbing adapter', 'excon', :status_message_not_exposed
 
-  it_performs('version checking',
+  it_performs('version checking', 'Excon',
     :valid    => %w[ 0.6.5 0.6.99 ],
     :too_low  => %w[ 0.5.99 0.6.4 ],
     :too_high => %w[ 0.7.0 1.0.0 ]

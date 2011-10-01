@@ -2,20 +2,13 @@ require 'fakeweb'
 require 'net/http'
 require 'vcr/extensions/net_http_response'
 
+VCR::VersionChecker.new('FakeWeb', FakeWeb::VERSION, '1.3.0', '1.3').check_version!
+
 module VCR
   module HttpStubbingAdapters
     module FakeWeb
       include VCR::HttpStubbingAdapters::Common
       extend self
-
-      MIN_PATCH_LEVEL   = '1.3.0'
-      MAX_MINOR_VERSION = '1.3'
-
-    private
-
-      def version
-        ::FakeWeb::VERSION
-      end
 
       class RequestHandler
         extend Forwardable
@@ -117,13 +110,15 @@ end
 
 module Net
   class HTTP
-    def request_with_vcr(*args, &block)
-      VCR::HttpStubbingAdapters::FakeWeb::RequestHandler.new(
-        self, *args, &block
-      ).handle
-    end
+    unless method_defined?(:request_with_vcr)
+      def request_with_vcr(*args, &block)
+        VCR::HttpStubbingAdapters::FakeWeb::RequestHandler.new(
+          self, *args, &block
+        ).handle
+      end
 
-    alias request_without_vcr request
-    alias request request_with_vcr
+      alias request_without_vcr request
+      alias request request_with_vcr
+    end
   end
 end
