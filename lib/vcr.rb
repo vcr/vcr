@@ -91,6 +91,7 @@ module VCR
 
   def configure
     yield configuration
+    http_stubbing_adapter # to force it to load. TODO: find a better way...
   end
 
   def cucumber_tags(&block)
