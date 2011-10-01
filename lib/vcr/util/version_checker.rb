@@ -30,12 +30,12 @@ module VCR
 
     def raise_too_low_error
       raise LibraryVersionTooLowError, "You are using #{@library_name} #{@library_version}. " +
-                                       "VCR requires version #{@version_requirement}."
+                                       "VCR requires version #{version_requirement}."
     end
 
     def warn_about_too_high
       Kernel.warn "You are using #{@library_name} #{@library_version}. " +
-                  "VCR is known to work with #{@library_name} #{@version_requirement}. " +
+                  "VCR is known to work with #{@library_name} #{version_requirement}. " +
                   "It may not work with this version."
     end
 
