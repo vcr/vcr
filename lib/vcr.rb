@@ -53,6 +53,10 @@ module VCR
     cassette
   end
 
+  # Stub HTTP(S) requests using the specified cassette.
+  #
+  # @param name [#to_s] Name of cassette
+  # @yield Block to run with this cassette stubbing HTTP
   def use_cassette(*args, &block)
     cassette = insert_cassette(*args)
 
