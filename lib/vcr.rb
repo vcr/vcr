@@ -77,8 +77,8 @@ module VCR
     configuration.allow_http_connections_when_no_cassette? || @turned_off
   end
 
-  def request_matcher_registry
-    @request_matcher_registry ||= RequestMatcherRegistry.new
+  def request_matchers
+    @request_matchers ||= RequestMatcherRegistry.new
   end
 
   def request_ignorer

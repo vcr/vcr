@@ -45,7 +45,7 @@ module VCR
 
       def interaction_matches_request?(request, interaction)
         @request_matchers.all? do |matcher|
-          VCR.request_matcher_registry[matcher].matches?(request, interaction.request)
+          VCR.request_matchers[matcher].matches?(request, interaction.request)
         end
       end
     end

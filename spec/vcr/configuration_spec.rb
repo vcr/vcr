@@ -37,12 +37,12 @@ describe VCR::Configuration do
   describe '#register_request_matcher' do
     it 'registers the given request matcher' do
       expect {
-        VCR.request_matcher_registry[:custom]
+        VCR.request_matchers[:custom]
       }.to raise_error(VCR::UnregisteredMatcherError)
 
       matcher_run = false
       subject.register_request_matcher(:custom) { |r1, r2| matcher_run = true }
-      VCR.request_matcher_registry[:custom].matches?(:r1, :r2)
+      VCR.request_matchers[:custom].matches?(:r1, :r2)
       matcher_run.should be_true
     end
   end

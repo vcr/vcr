@@ -136,10 +136,10 @@ describe VCR do
     end
   end
 
-  describe '.request_matcher_registry' do
+  describe '.request_matchers' do
     it 'always returns the same memoized request matcher registry instance' do
-      VCR.request_matcher_registry.should be_a(VCR::RequestMatcherRegistry)
-      VCR.request_matcher_registry.should be(VCR.request_matcher_registry)
+      VCR.request_matchers.should be_a(VCR::RequestMatcherRegistry)
+      VCR.request_matchers.should be(VCR.request_matchers)
     end
   end
 

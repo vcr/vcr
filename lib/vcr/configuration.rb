@@ -36,7 +36,7 @@ module VCR
     end
 
     def register_request_matcher(name, &block)
-      VCR.request_matcher_registry.register(name, &block)
+      VCR.request_matchers.register(name, &block)
     end
 
     def ignore_hosts(*hosts)

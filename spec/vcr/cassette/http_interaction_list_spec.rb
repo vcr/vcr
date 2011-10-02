@@ -31,11 +31,11 @@ module VCR
       end
 
       it 'invokes each matcher block to find the matching interaction' do
-        VCR.request_matcher_registry.register(:foo) { |r1, r2| true }
-        VCR.request_matcher_registry.register(:bar) { |r1, r2| true }
+        VCR.request_matchers.register(:foo) { |r1, r2| true }
+        VCR.request_matchers.register(:bar) { |r1, r2| true }
 
         calls = 0
-        VCR.request_matcher_registry.register(:baz) { |r1, r2| calls += 1; calls == 2 }
+        VCR.request_matchers.register(:baz) { |r1, r2| calls += 1; calls == 2 }
 
         list = HTTPInteractionList.new([
           interaction('response', :method => :put)
@@ -55,7 +55,7 @@ module VCR
 
     describe HTTPInteractionList do
       before(:each) do
-        VCR.stub(:request_matcher_registry => VCR::RequestMatcherRegistry.new)
+        VCR.stub(:request_matchers => VCR::RequestMatcherRegistry.new)
       end
 
       def request_with(values)
