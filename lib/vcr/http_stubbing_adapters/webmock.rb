@@ -53,7 +53,6 @@ module VCR
       end
 
       ::WebMock::StubRegistry.instance.register_request_stub(GLOBAL_VCR_HOOK)
-      ::WebMock.allow_net_connect!
 
       ::WebMock.after_request(:real_requests_only => true) do |request, response|
         if enabled?
@@ -68,7 +67,17 @@ module VCR
   end
 end
 
+class << WebMock
+  # ensure HTTP requests are always allowed; VCR takes care of disallowing
+  # them at the appropriate times in its hook
+  undef net_connect_allowed?
+  def net_connect_allowed?(*args)
+    true
+  end
+end
+
 WebMock::StubRegistry.class_eval do
+  # ensure our VCR hook is not removed when WebMock is reset
   undef reset!
   def reset!
     self.request_stubs = [VCR::HttpStubbingAdapters::WebMock::GLOBAL_VCR_HOOK]
