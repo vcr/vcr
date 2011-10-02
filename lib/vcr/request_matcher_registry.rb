@@ -31,6 +31,30 @@ module VCR
       end
     end
 
+    def uri_without_params(*ignores)
+      ignores = ignores.map { |i| i.to_s }
+
+      lambda do |request_1, request_2|
+        uri_1, uri_2 = [request_1, request_2].map do |r|
+          URI(r.uri).tap do |uri|
+            uri.query = uri.query.split('&').tap { |params|
+              params.map! do |p|
+                key, value = p.split('=')
+                key.gsub!(/\[\]\z/, '') # handle params like tag[]=
+                [key, value]
+              end
+
+              params.reject! { |p| ignores.include?(p.first) }
+              params.map!    { |p| p.join('=') }
+            }.join('&')
+          end
+        end
+
+        uri_1 == uri_2
+      end
+    end
+    alias uri_without_param uri_without_params
+
   private
 
     def raise_unregistered_matcher_error(name)

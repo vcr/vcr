@@ -4,6 +4,14 @@ require 'uri'
 
 module VCR
   describe RequestMatcherRegistry do
+    def request_with(values)
+      VCR::Request.new.tap do |request|
+        values.each do |name, value|
+          request.send("#{name}=", value)
+        end
+      end
+    end
+
     describe "#register" do
       it 'registers a request matcher block that can be used later' do
         matcher_called = false
@@ -60,15 +68,60 @@ module VCR
       end
     end
 
-    describe "built-ins" do
-      def request_with(values)
-        VCR::Request.new.tap do |request|
-          values.each do |name, value|
-            request.send("#{name}=", value)
-          end
+    [:uri_without_param, :uri_without_params].each do |meth|
+      describe "##{meth}" do
+        it 'matches two requests with URIs that are identical' do
+          subject[subject.send(meth, :foo)].matches?(
+            request_with(:uri => 'http://example.com/search?foo=123'),
+            request_with(:uri => 'http://example.com/search?foo=123')
+          ).should be_true
+        end
+
+        it 'does not matches two requests with different path parts' do
+          subject[subject.send(meth, :foo)].matches?(
+            request_with(:uri => 'http://example.com/search?foo=123'),
+            request_with(:uri => 'http://example.com/find?foo=123')
+          ).should be_false
+        end
+
+        it 'ignores the given query parameters when it is at the start' do
+          subject[subject.send(meth, :foo)].matches?(
+            request_with(:uri => 'http://example.com/search?foo=123&bar=r'),
+            request_with(:uri => 'http://example.com/search?foo=124&bar=r')
+          ).should be_true
+        end
+
+        it 'ignores the given query parameters when it is at the end' do
+          subject[subject.send(meth, :bar)].matches?(
+            request_with(:uri => 'http://example.com/search?foo=124&bar=r'),
+            request_with(:uri => 'http://example.com/search?foo=124&bar=q')
+          ).should be_true
+        end
+
+        it 'still takes into account other query params' do
+          subject[subject.send(meth, :bar)].matches?(
+            request_with(:uri => 'http://example.com/search?foo=123&bar=r'),
+            request_with(:uri => 'http://example.com/search?foo=124&bar=q')
+          ).should be_false
+        end
+
+        it 'handles multiple query params of the same name' do
+          subject[subject.send(meth, :tag)].matches?(
+            request_with(:uri => 'http://example.com/search?foo=124&tag[]=a&tag[]=b'),
+            request_with(:uri => 'http://example.com/search?foo=124&tag[]=d&tag[]=e')
+          ).should be_true
+        end
+
+        it 'can ignore multiple named parameters' do
+          subject[subject.send(meth, :foo, :bar)].matches?(
+            request_with(:uri => 'http://example.com/search?foo=123&bar=r&baz=9'),
+            request_with(:uri => 'http://example.com/search?foo=124&baz=9&bar=q')
+          ).should be_true
         end
       end
+    end
 
+    describe "built-ins" do
       describe ":method" do
         it 'matches when it is the same' do
           subject[:method].matches?(
