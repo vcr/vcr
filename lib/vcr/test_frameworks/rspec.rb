@@ -14,7 +14,7 @@ module VCR
         end
       end
 
-      private
+    private
 
       def infer_cassette_name
         # RSpec 1 exposes #description_parts; use that if its available

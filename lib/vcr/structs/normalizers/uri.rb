@@ -11,7 +11,7 @@ module VCR
         normalize_uri
       end
 
-      private
+    private
 
       def normalize_uri
         u = begin

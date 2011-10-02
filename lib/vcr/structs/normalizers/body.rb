@@ -6,7 +6,7 @@ module VCR
         normalize_body
       end
 
-      private
+    private
 
       def normalize_body
         # Ensure that the body is a raw string, in case the string instance

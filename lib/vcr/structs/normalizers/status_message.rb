@@ -6,7 +6,7 @@ module VCR
         normalize_status_message
       end
 
-      private
+    private
 
       def normalize_status_message
         self.message = message.strip if message

@@ -37,27 +37,27 @@ module VCR
         end
       end
 
-      private
+    private
 
-        def request_for(env)
-          VCR::Request.new(
-            env[:method],
-            env[:url].to_s,
-            env[:body],
-            env[:request_headers]
-          )
-        end
+      def request_for(env)
+        VCR::Request.new(
+          env[:method],
+          env[:url].to_s,
+          env[:body],
+          env[:request_headers]
+        )
+      end
 
-        def response_for(env)
-          response = env[:response]
+      def response_for(env)
+        response = env[:response]
 
-          VCR::Response.new(
-            VCR::ResponseStatus.new(response.status, nil),
-            response.headers,
-            response.body,
-            '1.1'
-          )
-        end
+        VCR::Response.new(
+          VCR::ResponseStatus.new(response.status, nil),
+          response.headers,
+          response.body,
+          '1.1'
+        )
+      end
     end
   end
 end

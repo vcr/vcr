@@ -8,13 +8,13 @@ module VCR
         @app, @cassette_arguments_block = app, block
       end
 
-      private
+    private
 
-        def cassette_arguments(env)
-          arguments = CassetteArguments.new
-          call_block(@cassette_arguments_block, arguments, env)
-          [arguments.name, arguments.options]
-        end
+      def cassette_arguments(env)
+        arguments = CassetteArguments.new
+        call_block(@cassette_arguments_block, arguments, env)
+        [arguments.name, arguments.options]
+      end
     end
   end
 end

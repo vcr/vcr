@@ -156,7 +156,7 @@ module VCR
     @ignore_cassettes
   end
 
-  private
+private
 
   def adapter_for(lib)
     case lib

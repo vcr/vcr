@@ -17,7 +17,7 @@ module VCR
         normalize_headers
       end
 
-      private
+    private
 
       def important_header_values(k, values)
         skip_values = HEADERS_TO_SKIP[k] || []

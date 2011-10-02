@@ -31,28 +31,28 @@ module VCR
       filter_object!(self, text, replacement_text)
     end
 
-    private
+  private
 
-      def filter_object!(object, text, replacement_text)
-        if object.respond_to?(:gsub)
-          object.gsub!(text, replacement_text) if object.include?(text)
-        elsif Hash === object
-          filter_hash!(object, text, replacement_text)
-        elsif object.respond_to?(:each)
-          # This handles nested arrays and structs
-          object.each { |o| filter_object!(o, text, replacement_text) }
-        end
-
-        object
+    def filter_object!(object, text, replacement_text)
+      if object.respond_to?(:gsub)
+        object.gsub!(text, replacement_text) if object.include?(text)
+      elsif Hash === object
+        filter_hash!(object, text, replacement_text)
+      elsif object.respond_to?(:each)
+        # This handles nested arrays and structs
+        object.each { |o| filter_object!(o, text, replacement_text) }
       end
 
-      def filter_hash!(hash, text, replacement_text)
-        filter_object!(hash.values, text, replacement_text)
+      object
+    end
 
-        hash.keys.each do |k|
-          new_key = filter_object!(k.dup, text, replacement_text)
-          hash[new_key] = hash.delete(k) unless k == new_key
-        end
+    def filter_hash!(hash, text, replacement_text)
+      filter_object!(hash.values, text, replacement_text)
+
+      hash.keys.each do |k|
+        new_key = filter_object!(k.dup, text, replacement_text)
+        hash[new_key] = hash.delete(k) unless k == new_key
       end
+    end
   end
 end
