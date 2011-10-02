@@ -14,26 +14,23 @@ module VCR
     def initialize(name, options = {})
       options = VCR.configuration.default_cassette_options.merge(options)
       invalid_options = options.keys - [
-        :record,
-        :erb,
-        :match_requests_on,
-        :re_record_interval,
-        :tag,
-        :update_content_length_header
+        :record, :erb, :match_requests_on, :re_record_interval, :tag,
+        :update_content_length_header, :allow_playback_repeats
       ]
 
       if invalid_options.size > 0
         raise ArgumentError.new("You passed the following invalid options to VCR::Cassette.new: #{invalid_options.inspect}.")
       end
 
-      @name               = name
-      @record_mode        = options[:record]
-      @erb                = options[:erb]
-      @match_requests_on  = options[:match_requests_on]
-      @re_record_interval = options[:re_record_interval]
-      @tag                = options[:tag]
-      @record_mode        = :all if should_re_record?
+      @name                         = name
+      @record_mode                  = options[:record]
+      @erb                          = options[:erb]
+      @match_requests_on            = options[:match_requests_on]
+      @re_record_interval           = options[:re_record_interval]
+      @tag                          = options[:tag]
+      @record_mode                  = :all if should_re_record?
       @update_content_length_header = options[:update_content_length_header]
+      @allow_playback_repeats       = options[:allow_playback_repeats]
 
       raise_error_unless_valid_record_mode
 
@@ -117,7 +114,7 @@ module VCR
       end
 
       interactions = should_stub_requests? ? recorded_interactions : []
-      @http_interactions = HTTPInteractionList.new(interactions, match_requests_on, VCR.http_interactions)
+      @http_interactions = HTTPInteractionList.new(interactions, match_requests_on, @allow_playback_repeats, VCR.http_interactions)
     end
 
     def raw_yaml_content

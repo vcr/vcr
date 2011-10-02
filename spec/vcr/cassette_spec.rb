@@ -253,6 +253,14 @@ describe VCR::Cassette do
           i3.response.body.should =~ /Another example\.com response/
         end
 
+        [true, false].each do |value|
+          it "instantiates the http_interactions with allow_playback_repeats = #{value} if given :allow_playback_repeats => #{value}" do
+            VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
+            cassette = VCR::Cassette.new('example', :record => record_mode, :allow_playback_repeats => value)
+            cassette.http_interactions.allow_playback_repeats.should eq(value)
+          end
+        end
+
         if stub_requests
           it 'invokes the appropriately tagged before_playback hooks' do
             VCR.configuration.should_receive(:invoke_hook).with(

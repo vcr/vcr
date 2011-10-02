@@ -264,10 +264,6 @@ shared_examples_for "an http library" do |library, *other|
           it 'rotates through multiple responses for the same request' do
             get_body_string(make_http_request(:get, 'http://example.com/foo')).should eq('example.com get response 1 with path=foo')
             get_body_string(make_http_request(:get, 'http://example.com/foo')).should eq('example.com get response 2 with path=foo')
-
-            # subsequent requests keep getting the last one
-            get_body_string(make_http_request(:get, 'http://example.com/foo')).should eq('example.com get response 2 with path=foo')
-            get_body_string(make_http_request(:get, 'http://example.com/foo')).should eq('example.com get response 2 with path=foo')
           end unless other.include?(:does_not_support_rotating_responses)
 
           it "correctly handles stubbing multiple values for the same header" do

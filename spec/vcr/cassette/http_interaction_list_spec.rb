@@ -48,7 +48,7 @@ module VCR
       it "delegates to the parent list when it can't find a matching interaction" do
         parent_list = mock(method => response('parent'))
         HTTPInteractionList.new(
-          [], [:method], parent_list
+          [], [:method], false, parent_list
         ).send(method, stub).should respond_with('parent')
       end
     end
@@ -82,7 +82,8 @@ module VCR
         interaction('post response 2', :method => :post)
       ] end
 
-      let(:list) { HTTPInteractionList.new(original_list_array, [:method]) }
+      let(:allow_playback_repeats) { false } # the default
+      let(:list) { HTTPInteractionList.new(original_list_array, [:method], allow_playback_repeats) }
 
       describe "#has_interaction_matching?" do
         it_behaves_like "an HTTP interaction finding method", :has_interaction_matching? do
@@ -100,12 +101,28 @@ module VCR
           list.response_for(request_with(:method => :post)).body.should eq("post response 1")
         end
 
-        it 'returns true when there is a used (but no unused) matching interactions' do
-          list.response_for(request_with(:method => :put))
+        context 'when allow_playback_repeats is set to false' do
+          let(:allow_playback_repeats) { false }
 
-          10.times.map {
-            list.has_interaction_matching?(request_with(:method => :put))
-          }.should eq([true] * 10)
+          it 'returns false when there is a used (but no unused) matching interactions' do
+            list.response_for(request_with(:method => :put))
+
+            10.times.map {
+              list.has_interaction_matching?(request_with(:method => :put))
+            }.should eq([false] * 10)
+          end
+        end
+
+        context 'when allow_playback_repeats is set to true' do
+          let(:allow_playback_repeats) { true }
+
+          it 'returns true when there is a used (but no unused) matching interactions' do
+            list.response_for(request_with(:method => :put))
+
+            10.times.map {
+              list.has_interaction_matching?(request_with(:method => :put))
+            }.should eq([true] * 10)
+          end
         end
       end
 
@@ -123,13 +140,30 @@ module VCR
           list.response_for(request_with(:method => :post)).body.should eq("post response 2")
         end
 
-        it 'continues to return the response from the last matching interaction when there are no more' do
-          list.response_for(request_with(:method => :post))
+        context 'when allow_playback_repeats is set to true' do
+          let(:allow_playback_repeats) { true }
 
-          10.times.map {
-            response = list.response_for(request_with(:method => :post))
-            response ? response.body : nil
-          }.should eq(["post response 2"] * 10)
+          it 'continues to return the response from the last matching interaction when there are no more' do
+            list.response_for(request_with(:method => :post))
+
+            10.times.map {
+              response = list.response_for(request_with(:method => :post))
+              response ? response.body : nil
+            }.should eq(["post response 2"] * 10)
+          end
+        end
+
+        context 'when allow_playback_repeats is set to false' do
+          let(:allow_playback_repeats) { false }
+
+          it 'returns nil when there are no more unused interactions' do
+            list.response_for(request_with(:method => :post))
+            list.response_for(request_with(:method => :post))
+
+            10.times.map {
+              response = list.response_for(request_with(:method => :post))
+            }.should eq([nil] * 10)
+          end
         end
 
         it 'does not modify the original interaction array the list was initialized with' do

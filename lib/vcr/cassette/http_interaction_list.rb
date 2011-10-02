@@ -6,13 +6,14 @@ module VCR
         def has_interaction_matching?(*a); false; end
       end
 
-      attr_reader :interactions, :request_matchers
+      attr_reader :interactions, :request_matchers, :allow_playback_repeats
 
-      def initialize(interactions, request_matchers, parent_list = NullList.new)
-        @interactions      = interactions.dup
-        @request_matchers  = request_matchers
-        @parent_list       = parent_list
-        @used_interactions = []
+      def initialize(interactions, request_matchers, allow_playback_repeats = false, parent_list = NullList.new)
+        @interactions           = interactions.dup
+        @request_matchers       = request_matchers
+        @allow_playback_repeats = allow_playback_repeats
+        @parent_list            = parent_list
+        @used_interactions      = []
       end
 
       def response_for(request)
@@ -40,6 +41,7 @@ module VCR
       end
 
       def matching_used_interaction_for(request)
+        return nil unless @allow_playback_repeats
         @used_interactions.find { |i| interaction_matches_request?(request, i) }
       end
 
