@@ -144,6 +144,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Nathaniel Bibler](https://github.com/nbibler)
 * [Oliver Searle-Barnes](https://github.com/opsb)
 * [Wesley Beary](https://github.com/geemus)
+* [Avdi Grimm](https://github.com/avdi)
 
 ## Copyright
 
