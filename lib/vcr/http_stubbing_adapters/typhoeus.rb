@@ -16,23 +16,11 @@ module VCR
         end
       end
 
-      def vcr_request_from(request)
-        VCR::Request.new \
-          request.method,
-          request.url,
-          request.body,
-          request.headers
-      end
-
       class RequestHandler
         extend Forwardable
 
         attr_reader :request
-        def_delegators :"VCR::HttpStubbingAdapters::Typhoeus",
-          :enabled?,
-          :uri_should_be_ignored?,
-          :vcr_request_from
-
+        def_delegators :"VCR::HttpStubbingAdapters::Typhoeus", :enabled?
         def_delegators :VCR, :real_http_connections_allowed?
 
         def initialize(request)
@@ -51,12 +39,30 @@ module VCR
           end
         end
 
+      private
+
         def raise_connections_disabled_error
           VCR::HttpStubbingAdapters::Typhoeus.raise_connections_disabled_error(vcr_request)
         end
 
         def vcr_request
-          @vcr_request ||= vcr_request_from(request)
+          @vcr_request ||= self.class.vcr_request_from(request)
+        end
+
+        def self.vcr_request_from(request)
+          VCR::Request.new \
+            request.method,
+            request.url,
+            request.body,
+            request.headers
+        end
+
+        def self.vcr_response_from(response)
+          VCR::Response.new \
+            VCR::ResponseStatus.new(response.code, response.status_message),
+            response.headers_hash,
+            response.body,
+            response.http_version
         end
 
         def stubbed_response
@@ -85,27 +91,16 @@ module VCR
             end if stubbed_response.headers
           end
         end
+
+        ::Typhoeus::Hydra.after_request_before_on_complete do |request|
+          if VCR::HttpStubbingAdapters::Typhoeus.enabled? && !request.response.mock?
+            http_interaction = VCR::HTTPInteraction.new(vcr_request_from(request), vcr_response_from(request.response))
+            VCR.record_http_interaction(http_interaction)
+          end
+        end
+
       end
     end
-  end
-end
-
-Typhoeus::Hydra.after_request_before_on_complete do |request|
-  if VCR::HttpStubbingAdapters::Typhoeus.enabled? && !request.response.mock?
-    http_interaction = VCR::HTTPInteraction.new(
-      VCR::HttpStubbingAdapters::Typhoeus.vcr_request_from(request),
-      VCR::Response.new(
-        VCR::ResponseStatus.new(
-          request.response.code,
-          request.response.status_message
-        ),
-        request.response.headers_hash,
-        request.response.body,
-        request.response.http_version
-      )
-    )
-
-    VCR.record_http_interaction(http_interaction)
   end
 end
 
