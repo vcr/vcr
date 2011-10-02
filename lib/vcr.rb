@@ -91,7 +91,7 @@ module VCR
 
   def configure
     yield configuration
-    http_stubbing_adapter # to force it to load. TODO: find a better way...
+    http_stubbing_adapters # to force it to load. TODO: find a better way...
   end
 
   def cucumber_tags(&block)
@@ -99,17 +99,16 @@ module VCR
     yield VCR::CucumberTags.new(main_object)
   end
 
-  def http_stubbing_adapter
-    @http_stubbing_adapter ||= begin
+  def http_stubbing_adapters
+    @http_stubbing_adapters ||= begin
       if [:fakeweb, :webmock].all? { |l| VCR.configuration.http_stubbing_libraries.include?(l) }
         raise ArgumentError.new("You have configured VCR to use both :fakeweb and :webmock.  You cannot use both.")
       end
 
       adapters = VCR.configuration.http_stubbing_libraries.map { |l| adapter_for(l) }
       raise ArgumentError.new("The http stubbing library is not configured.") if adapters.empty?
-      adapter = HttpStubbingAdapters::MultiObjectProxy.for(*adapters)
-      adapter.after_adapters_loaded
-      adapter
+      adapters.each { |a| a.after_adapters_loaded }
+      adapters
     end
   end
 

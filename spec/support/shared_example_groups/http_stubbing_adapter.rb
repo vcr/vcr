@@ -2,7 +2,6 @@ shared_examples_for "an http stubbing adapter" do |*args|
   supported_http_libraries = args.shift
   other = args
 
-  before(:each) { VCR.stub!(:http_stubbing_adapter).and_return(subject) }
   subject { described_class }
 
   describe '.exclusively_enabled' do
