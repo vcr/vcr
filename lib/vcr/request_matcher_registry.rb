@@ -4,9 +4,9 @@ module VCR
   class RequestMatcherRegistry
     DEFAULT_MATCHERS = [:method, :uri]
 
-    module Matcher
+    class Matcher < Struct.new(:callable)
       def matches?(request_1, request_2)
-        call(request_1, request_2)
+        callable.call(request_1, request_2)
       end
     end
 
@@ -20,19 +20,24 @@ module VCR
         warn "WARNING: There is already a VCR request matcher registered for #{name.inspect}. Overriding it."
       end
 
-      block.extend Matcher
-      @registry[name] = block
+      @registry[name] = Matcher.new(block)
     end
 
-    def [](name)
-      @registry.fetch(name) do
-        raise UnregisteredMatcherError.new \
-          "There is no matcher registered for #{name.inspect}. " +
-          "Did you mean one of #{@registry.keys.map(&:inspect).join(', ')}?"
+    def [](matcher)
+      @registry.fetch(matcher) do
+        matcher.respond_to?(:call) ?
+          Matcher.new(matcher) :
+          raise_unregistered_matcher_error(matcher)
       end
     end
 
   private
+
+    def raise_unregistered_matcher_error(name)
+      raise UnregisteredMatcherError.new \
+        "There is no matcher registered for #{name.inspect}. " +
+        "Did you mean one of #{@registry.keys.map(&:inspect).join(', ')}?"
+    end
 
     def register_built_ins
       register(:method)  { |r1, r2| r1.method == r2.method }

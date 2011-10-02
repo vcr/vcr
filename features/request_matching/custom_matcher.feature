@@ -1,17 +1,16 @@
 Feature: Register and use a custom matcher
 
-  You can register and use a custom request matcher if the built-in
-  matches do not meet your needs:
+  If the built-in matchers do not meet your needs, you can use a custom matcher.
 
-    VCR.configure do |c|
-      c.register_request_matcher :my_custom_matcher do |request_1, request_2|
-        identical?(request_1, request_2)
-      end
-    end
+  Any 2-argument callable (that is, an object that responds to #call and accepts
+  2 arguments) can be a matcher.  Simply put the callable in your
+  `:match_requests_on` array.
 
-    VCR.use_cassette('my_cassete', :match_requests_on => [:my_custom_matcher] do
-      make_http_request
-    end
+  In addition, you can register a named custom matcher with VCR, and use
+  the name in your `:match_requests_on` array.
+
+  Either way, your custom matcher should return a truthy value if the
+  given requests should be considered equivalent.
 
   Background:
     Given a previously recorded cassette file "cassettes/example.yml" with:
@@ -20,7 +19,7 @@ Feature: Register and use a custom matcher
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :get
-          uri: http://example.com:80/search?q=foo&timestamp=1316920490
+          uri: http://foo.com:9000/foo
           body: 
           headers: 
         response: !ruby/struct:VCR::Response 
@@ -29,13 +28,13 @@ Feature: Register and use a custom matcher
             message: OK
           headers: 
             content-length: 
-            - "12"
-          body: foo response
+            - "18"
+          body: port 9000 response
           http_version: "1.1"
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :get
-          uri: http://example.com:80/search?q=bar&timestamp=1296723437
+          uri: http://foo.com:8000/foo
           body: 
           headers: 
         response: !ruby/struct:VCR::Response 
@@ -44,50 +43,40 @@ Feature: Register and use a custom matcher
             message: OK
           headers: 
             content-length: 
-            - "12"
-          body: bar response
+            - "18"
+          body: port 8000 response
           http_version: "1.1"
       """
 
-  Scenario Outline: Match the URI on all but the timestamp query parameter
-    And a file named "custom_matcher.rb" with:
+  Scenario Outline: Use a callable as a custom request matcher
+    And a file named "callable_matcher.rb" with:
       """ruby
       include_http_adapter_for("<http_lib>")
 
       require 'vcr'
-      require 'addressable/uri'
 
       VCR.configure do |c|
         c.stub_with <stub_with>
         c.cassette_library_dir = 'cassettes'
-        c.register_request_matcher :uri_without_timestamp do |request_1, request_2|
-          uri_1, uri_2 = [request_1, request_2].map do |r|
-            uri = Addressable::URI.parse(r.uri)
-            uri.query_values = uri.query_values.tap { |q| q.delete('timestamp') }
-            uri.to_s
-          end
-
-          uri_1 == uri_2
-        end
       end
 
-      def search_url(q)
-        "http://example.com:80/search?q=#{q}&timestamp=#{Time.now.to_i}"
+      port_matcher = lambda do |request_1, request_2|
+        URI(request_1.uri).port == URI(request_2.uri).port
       end
 
-      VCR.use_cassette('example', :match_requests_on => [:method, :uri_without_timestamp]) do
-        puts "Response for bar: " + response_body_for(:get, search_url("bar"))
+      VCR.use_cassette('example', :match_requests_on => [:method, port_matcher]) do
+        puts "Response for port 8000: " + response_body_for(:get, "http://example.com:8000/")
       end
 
-      VCR.use_cassette('example', :match_requests_on => [:method, :uri_without_timestamp]) do
-        puts "Response for foo: " + response_body_for(:get, search_url("foo"))
+      VCR.use_cassette('example', :match_requests_on => [:method, port_matcher]) do
+        puts "Response for port 9000: " + response_body_for(:get, "http://example.com:9000/")
       end
       """
-    When I run `ruby custom_matcher.rb`
+    When I run `ruby callable_matcher.rb`
     Then it should pass with:
       """
-      Response for bar: bar response
-      Response for foo: foo response
+      Response for port 8000: port 8000 response
+      Response for port 9000: port 9000 response
       """
 
     Examples:
@@ -101,4 +90,34 @@ Feature: Register and use a custom matcher
       | :webmock   | typhoeus        |
       | :typhoeus  | typhoeus        |
       | :excon     | excon           |
+
+  Scenario: Register a named custom matcher
+    And a file named "register_custom_matcher.rb" with:
+      """ruby
+      include_http_adapter_for("net/http")
+
+      require 'vcr'
+
+      VCR.configure do |c|
+        c.stub_with :fakeweb
+        c.cassette_library_dir = 'cassettes'
+        c.register_request_matcher :port do |request_1, request_2|
+          URI(request_1.uri).port == URI(request_2.uri).port
+        end
+      end
+
+      VCR.use_cassette('example', :match_requests_on => [:method, :port]) do
+        puts "Response for port 8000: " + response_body_for(:get, "http://example.com:8000/")
+      end
+
+      VCR.use_cassette('example', :match_requests_on => [:method, :port]) do
+        puts "Response for port 9000: " + response_body_for(:get, "http://example.com:9000/")
+      end
+      """
+    When I run `ruby register_custom_matcher.rb`
+    Then it should pass with:
+      """
+      Response for port 8000: port 8000 response
+      Response for port 9000: port 9000 response
+      """
 

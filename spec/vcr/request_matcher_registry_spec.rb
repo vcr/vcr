@@ -37,7 +37,7 @@ module VCR
       it 'returns a previously registered matcher' do
         matcher = lambda { }
         subject.register(:my_matcher, &matcher)
-        subject[:my_matcher].should be(matcher)
+        subject[:my_matcher].should eq(RequestMatcherRegistry::Matcher.new(matcher))
       end
 
       it 'raises an ArgumentError when no matcher has been registered for the given name' do
@@ -46,11 +46,17 @@ module VCR
         }.to raise_error(UnregisteredMatcherError)
       end
 
-      it 'returns an object that calls the block when #matches? is called on it' do
+      it 'returns an object that calls the named block when #matches? is called on it' do
         subject.register(:foo) { |r1, r2| r1 == 5 || r2 == 10 }
         subject[:foo].matches?(5, 0).should be_true
         subject[:foo].matches?(0, 10).should be_true
         subject[:foo].matches?(7, 7).should be_false
+      end
+
+      it 'returns an object that calls the given callable when #matches? is called on it' do
+        block_called = false
+        subject[lambda { |r1, r2| block_called = true }].matches?(5, 0)
+        block_called.should be_true
       end
     end
 
