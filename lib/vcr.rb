@@ -14,10 +14,7 @@ require 'vcr/structs/http_interaction'
 
 module VCR
   include VariableArgsBlockCaller
-  include Hooks
   extend self
-
-  define_hook :after_http_stubbing_adapters_loaded
 
   autoload :BasicObject,        'vcr/util/basic_object'
   autoload :CucumberTags,       'vcr/test_frameworks/cucumber'
@@ -94,25 +91,12 @@ module VCR
 
   def configure
     yield configuration
-    http_stubbing_adapters # to force it to load. TODO: find a better way...
+    configuration.invoke_hook(:after_http_stubbing_adapters_loaded)
   end
 
   def cucumber_tags(&block)
     main_object = eval('self', block.binding)
     yield VCR::CucumberTags.new(main_object)
-  end
-
-  def http_stubbing_adapters
-    @http_stubbing_adapters ||= begin
-      if [:fakeweb, :webmock].all? { |l| VCR.configuration.http_stubbing_libraries.include?(l) }
-        raise ArgumentError.new("You have configured VCR to use both :fakeweb and :webmock.  You cannot use both.")
-      end
-
-      adapters = VCR.configuration.http_stubbing_libraries.map { |l| adapter_for(l) }
-      raise ArgumentError.new("The http stubbing library is not configured.") if adapters.empty?
-      invoke_hook(:after_http_stubbing_adapters_loaded)
-      adapters
-    end
   end
 
   def record_http_interaction(interaction)
@@ -159,17 +143,6 @@ module VCR
   end
 
 private
-
-  def adapter_for(lib)
-    case lib
-      when :excon;    HttpStubbingAdapters::Excon
-      when :fakeweb;  HttpStubbingAdapters::FakeWeb
-      when :faraday;  HttpStubbingAdapters::Faraday
-      when :typhoeus; HttpStubbingAdapters::Typhoeus
-      when :webmock;  HttpStubbingAdapters::WebMock
-      else raise ArgumentError.new("#{lib.inspect} is not a supported HTTP stubbing library.")
-    end
-  end
 
   def cassettes
     @cassettes ||= []

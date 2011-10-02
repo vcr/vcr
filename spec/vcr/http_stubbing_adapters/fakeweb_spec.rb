@@ -54,4 +54,30 @@ describe VCR::HttpStubbingAdapters::FakeWeb, :with_monkey_patches => :fakeweb do
       Net::HTTP.new('localhost', VCR::SinatraApp.port).post('/', nil)
     end
   end
+
+  describe "VCR.configuration.after_http_stubbing_adapters_loaded hook", :disable_warnings do
+    before(:each) do
+      load "vcr/http_stubbing_adapters/fakeweb.rb" # to re-add the hook since it's cleared by each test
+    end
+
+    let(:run_hook) { VCR.configuration.invoke_hook(:after_http_stubbing_adapters_loaded) }
+
+    context 'when WebMock has been loaded' do
+      before(:each) { defined?(WebMock).should be_true }
+
+      it 'raises an error since FakeWeb and WebMock cannot both be used simultaneously' do
+        expect { run_hook }.to raise_error(ArgumentError, /cannot use both/)
+      end
+    end
+
+    context 'when WebMock has not been loaded' do
+      let!(:orig_webmock_constant) { ::WebMock }
+      before(:each) { Object.send(:remove_const, :WebMock) }
+      after(:each)  { ::WebMock = orig_webmock_constant }
+
+      it 'does not raise an error' do
+        run_hook # should not raise an error
+      end
+    end
+  end
 end

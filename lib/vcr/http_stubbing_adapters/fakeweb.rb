@@ -1,3 +1,4 @@
+require 'vcr/http_stubbing_adapters/common'
 require 'fakeweb'
 require 'net/http'
 require 'vcr/extensions/net_http_response'
@@ -122,3 +123,10 @@ module Net
     end
   end
 end
+
+VCR.configuration.after_http_stubbing_adapters_loaded do
+  if defined?(WebMock)
+    raise ArgumentError.new("You have configured VCR to use both :fakeweb and :webmock. You cannot use both.")
+  end
+end
+

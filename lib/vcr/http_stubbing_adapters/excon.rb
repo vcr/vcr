@@ -1,3 +1,4 @@
+require 'vcr/http_stubbing_adapters/common'
 require 'excon'
 
 VCR::VersionChecker.new('Excon', Excon::VERSION, '0.6.5', '0.6').check_version!

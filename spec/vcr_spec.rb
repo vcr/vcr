@@ -168,6 +168,21 @@ describe VCR do
       end
       yielded_object.should eq(VCR.configuration)
     end
+
+    it 'invokes the after_http_stubbing_adapters_loaded hook after yielding' do
+      yield_order = []
+
+      VCR.configuration.after_http_stubbing_adapters_loaded do
+        yield_order << :after_loaded_hook
+      end
+
+      VCR.configure do |c|
+        c.stub_with :webmock # to prevent the "stub_wth must be configured" error
+        yield_order << :configure
+      end
+
+      yield_order.should == [:configure, :after_loaded_hook]
+    end
   end
 
   describe '.cucumber_tags' do
@@ -177,57 +192,6 @@ describe VCR do
         yielded_object = obj
       end
       yielded_object.should be_instance_of(VCR::CucumberTags)
-    end
-  end
-
-  describe '.http_stubbing_adapters' do
-    subject { VCR.http_stubbing_adapters }
-
-    it 'loads multiple stubbing adapters when configured with multiple' do
-      VCR.configuration.stub_with :fakeweb, :excon
-      VCR.http_stubbing_adapters.should =~ [
-        VCR::HttpStubbingAdapters::FakeWeb,
-        VCR::HttpStubbingAdapters::Excon
-      ]
-    end
-
-    {
-      :fakeweb  => VCR::HttpStubbingAdapters::FakeWeb,
-      :webmock  => VCR::HttpStubbingAdapters::WebMock,
-      :faraday  => VCR::HttpStubbingAdapters::Faraday,
-      :excon    => VCR::HttpStubbingAdapters::Excon,
-      :faraday  => VCR::HttpStubbingAdapters::Faraday
-    }.each do |symbol, klass|
-      it "returns #{klass} for :#{symbol}" do
-        VCR.configuration.stub_with symbol
-        VCR.http_stubbing_adapters.should eq([klass])
-      end
-    end
-
-    it 'invokes the after_htp_stubbing_adapters_loaded hook' do
-      called = false
-      VCR.after_http_stubbing_adapters_loaded { called = true }
-      VCR.configuration.stub_with :fakeweb
-      VCR.http_stubbing_adapters
-      called.should be_true
-    end
-
-    it 'raises an error if both :fakeweb and :webmock are configured' do
-      VCR.configuration.stub_with :fakeweb, :webmock
-
-      expect { VCR.http_stubbing_adapters }.to raise_error(ArgumentError, /cannot use both/)
-    end
-
-    it 'raises an error for unsupported stubbing libraries' do
-      VCR.configuration.stub_with :unsupported_library
-
-      expect { VCR.http_stubbing_adapters }.to raise_error(ArgumentError, /unsupported_library is not a supported HTTP stubbing library/i)
-    end
-
-    it 'raises an error when no stubbing libraries are configured' do
-      VCR.configuration.stub_with
-
-      expect { VCR.http_stubbing_adapters }.to raise_error(ArgumentError, /the http stubbing library is not configured/i)
     end
   end
 

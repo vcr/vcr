@@ -1,3 +1,4 @@
+require 'vcr/http_stubbing_adapters/common'
 require 'typhoeus'
 
 VCR::VersionChecker.new('Typhoeus', Typhoeus::VERSION, '0.2.1', '0.2').check_version!
@@ -105,7 +106,7 @@ Typhoeus::Hydra::Stubbing::SharedMethods.class_eval do
   end
 end
 
-VCR.after_http_stubbing_adapters_loaded do
+VCR.configuration.after_http_stubbing_adapters_loaded do
   # ensure WebMock's Typhoeus adapter does not conflict with us here
   # (i.e. to double record requests or whatever).
   if defined?(WebMock::HttpLibAdapters::TyphoeusAdapter)

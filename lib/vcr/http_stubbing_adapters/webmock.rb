@@ -1,3 +1,4 @@
+require 'vcr/http_stubbing_adapters/common'
 require 'webmock'
 
 VCR::VersionChecker.new('WebMock', WebMock.version, '1.7.0', '1.7').check_version!

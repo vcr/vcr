@@ -48,15 +48,29 @@ describe VCR::Configuration do
   end
 
   describe '#stub_with' do
-    it 'stores the given symbols in http_stubbing_libraries' do
-      subject.stub_with :fakeweb, :typhoeus
-      subject.http_stubbing_libraries.should eq([:fakeweb, :typhoeus])
+    it 'requires the named adapters' do
+      subject.should_receive(:require).with("vcr/http_stubbing_adapters/fakeweb")
+      subject.should_receive(:require).with("vcr/http_stubbing_adapters/excon")
+      subject.stub_with :fakeweb, :excon
+    end
+
+    it 'raises an error for unsupported stubbing libraries' do
+      expect {
+        subject.stub_with :unsupported_library
+      }.to raise_error(ArgumentError, /unsupported_library is not a supported HTTP stubbing library/i)
     end
   end
 
-  describe '#http_stubbing_libraries' do
-    it 'returns an empty array when it has not been set' do
-      subject.http_stubbing_libraries.should eq([])
+  describe "after_http_stubbing_adapters_loaded hook" do
+    let(:run_hook) { subject.invoke_hook(:after_http_stubbing_adapters_loaded) }
+
+    it 'raises an error if no stubbing adapter has been configured' do
+      expect { run_hook }.to raise_error(/VCR must be configured with an HTTP stubbing library/)
+    end
+
+    it 'does not raise an error if a stubbing adapter has been configured' do
+      subject.stub_with :webmock
+      run_hook
     end
   end
 
