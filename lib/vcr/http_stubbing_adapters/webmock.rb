@@ -8,15 +8,6 @@ module VCR
       include VCR::HttpStubbingAdapters::Common
       extend self
 
-      def vcr_request_from(webmock_request)
-        VCR::Request.new(
-          webmock_request.method,
-          webmock_request.uri.to_s,
-          webmock_request.body,
-          webmock_request.headers
-        )
-      end
-
     private
 
       def response_hash_for(response)
@@ -25,6 +16,22 @@ module VCR
           :status  => [response.status.code.to_i, response.status.message],
           :headers => response.headers
         }
+      end
+
+      def vcr_request_from(webmock_request)
+        VCR::Request.new \
+          webmock_request.method,
+          webmock_request.uri.to_s,
+          webmock_request.body,
+          webmock_request.headers
+      end
+
+      def vcr_response_from(response)
+        VCR::Response.new \
+          VCR::ResponseStatus.new(response.status.first, response.status.last),
+          response.headers,
+          response.body,
+          '1.1'
       end
 
       GLOBAL_VCR_HOOK = ::WebMock::RequestStub.new(:any, /.*/).tap do |stub|
@@ -47,26 +54,17 @@ module VCR
 
       ::WebMock::StubRegistry.instance.register_request_stub(GLOBAL_VCR_HOOK)
       ::WebMock.allow_net_connect!
+
+      ::WebMock.after_request(:real_requests_only => true) do |request, response|
+        if enabled?
+          http_interaction = VCR::HTTPInteraction.new \
+            vcr_request_from(request),
+            vcr_response_from(response)
+
+          VCR.record_http_interaction(http_interaction)
+        end
+      end
     end
-  end
-end
-
-WebMock.after_request(:real_requests_only => true) do |request, response|
-  if VCR::HttpStubbingAdapters::WebMock.enabled?
-    http_interaction = VCR::HTTPInteraction.new(
-      VCR::HttpStubbingAdapters::WebMock.vcr_request_from(request),
-      VCR::Response.new(
-        VCR::ResponseStatus.new(
-          response.status.first,
-          response.status.last
-        ),
-        response.headers,
-        response.body,
-        '1.1'
-      )
-    )
-
-    VCR.record_http_interaction(http_interaction)
   end
 end
 
