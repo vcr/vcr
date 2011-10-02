@@ -31,10 +31,6 @@ module VCR
         [nil, self].include? VCR::HttpStubbingAdapters::Common.exclusively_enabled_adapter
       end
 
-      def after_adapters_loaded
-        # no-op
-      end
-
       def exclusively_enabled
         VCR::HttpStubbingAdapters::Common.exclusively_enabled_adapter = self
 

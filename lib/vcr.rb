@@ -14,7 +14,10 @@ require 'vcr/structs/http_interaction'
 
 module VCR
   include VariableArgsBlockCaller
+  include Hooks
   extend self
+
+  define_hook :after_http_stubbing_adapters_loaded
 
   autoload :BasicObject,        'vcr/util/basic_object'
   autoload :CucumberTags,       'vcr/test_frameworks/cucumber'
@@ -107,7 +110,7 @@ module VCR
 
       adapters = VCR.configuration.http_stubbing_libraries.map { |l| adapter_for(l) }
       raise ArgumentError.new("The http stubbing library is not configured.") if adapters.empty?
-      adapters.each { |a| a.after_adapters_loaded }
+      invoke_hook(:after_http_stubbing_adapters_loaded)
       adapters
     end
   end

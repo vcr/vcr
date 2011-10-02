@@ -6,7 +6,7 @@ module VCR
       klass.extend(ClassMethods)
     end
 
-    def invoke_hook(hook, tag, *args)
+    def invoke_hook(hook, tag=nil, *args)
       hooks_for(hook, tag).each do |callback|
         call_block(callback, *args)
       end

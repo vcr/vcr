@@ -204,10 +204,12 @@ describe VCR do
       end
     end
 
-    it 'calls #after_adapters_loaded on the configured stubbing adapters' do
-      VCR::HttpStubbingAdapters::FakeWeb.should_receive(:after_adapters_loaded)
+    it 'invokes the after_htp_stubbing_adapters_loaded hook' do
+      called = false
+      VCR.after_http_stubbing_adapters_loaded { called = true }
       VCR.configuration.stub_with :fakeweb
       VCR.http_stubbing_adapters
+      called.should be_true
     end
 
     it 'raises an error if both :fakeweb and :webmock are configured' do

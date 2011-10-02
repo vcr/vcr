@@ -17,10 +17,11 @@ describe VCR::HttpStubbingAdapters::Typhoeus, :with_monkey_patches => :typhoeus 
     end
   end
 
-  describe ".after_adapters_loaded" do
+  describe "VCR.after_http_stubbing_adapters_loaded hook", :disable_warnings do
     it 'disables the webmock typhoeus adapter so it does not conflict with our typhoeus adapter' do
+      load "vcr/http_stubbing_adapters/typhoeus.rb"
       ::WebMock::HttpLibAdapters::TyphoeusAdapter.should_receive(:disable!)
-      described_class.after_adapters_loaded
+      VCR.invoke_hook(:after_http_stubbing_adapters_loaded)
     end
   end
 end unless RUBY_PLATFORM == 'java'

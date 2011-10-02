@@ -8,14 +8,6 @@ module VCR
       include VCR::HttpStubbingAdapters::Common
       extend self
 
-      def after_adapters_loaded
-        # ensure WebMock's Typhoeus adapter does not conflict with us here
-        # (i.e. to double record requests or whatever).
-        if defined?(::WebMock::HttpLibAdapters::TyphoeusAdapter)
-          ::WebMock::HttpLibAdapters::TyphoeusAdapter.disable!
-        end
-      end
-
       class RequestHandler
         extend Forwardable
 
@@ -110,6 +102,14 @@ Typhoeus::Hydra::Stubbing::SharedMethods.class_eval do
   undef find_stub_from_request
   def find_stub_from_request(request)
     VCR::HttpStubbingAdapters::Typhoeus::RequestHandler.new(request).handle
+  end
+end
+
+VCR.after_http_stubbing_adapters_loaded do
+  # ensure WebMock's Typhoeus adapter does not conflict with us here
+  # (i.e. to double record requests or whatever).
+  if defined?(WebMock::HttpLibAdapters::TyphoeusAdapter)
+    WebMock::HttpLibAdapters::TyphoeusAdapter.disable!
   end
 end
 
