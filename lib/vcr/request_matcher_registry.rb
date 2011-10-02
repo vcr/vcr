@@ -16,7 +16,7 @@ module VCR
     end
 
     def register(name, &block)
-      if @registry[name]
+      if @registry.has_key?(name)
         warn "WARNING: There is already a VCR request matcher registered for #{name.inspect}. Overriding it."
       end
 
