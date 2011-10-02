@@ -6,7 +6,7 @@ module VCR
       include Common
 
       def call(env)
-        VCR::HttpStubbingAdapters::Faraday.exclusively_enabled do
+        VCR.http_stubbing_adapters.exclusively_enabled(:faraday) do
           VCR.use_cassette(*cassette_arguments(env)) do |cassette|
             request = request_for(env)
 
@@ -22,16 +22,10 @@ module VCR
               env[:response] = faraday_response
             elsif VCR.real_http_connections_allowed?
               response = @app.call(env)
-
-              # Checking #enabled? isn't strictly needed, but conforms
-              # the Faraday adapter to the behavior of the other adapters
-              if VCR::HttpStubbingAdapters::Faraday.enabled?
-                VCR.record_http_interaction(VCR::HTTPInteraction.new(request, response_for(env)))
-              end
-
+              VCR.record_http_interaction(VCR::HTTPInteraction.new(request, response_for(env)))
               response
             else
-              VCR::HttpStubbingAdapters::Faraday.raise_connections_disabled_error(request)
+              VCR::HTTPStubbingAdapters::Common.raise_connections_disabled_error(request)
             end
           end
         end

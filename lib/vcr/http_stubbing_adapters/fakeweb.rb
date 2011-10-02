@@ -6,16 +6,12 @@ require 'vcr/extensions/net_http_response'
 VCR::VersionChecker.new('FakeWeb', FakeWeb::VERSION, '1.3.0', '1.3').check_version!
 
 module VCR
-  module HttpStubbingAdapters
+  class HTTPStubbingAdapters
     module FakeWeb
-      include VCR::HttpStubbingAdapters::Common
-      extend self
-
       class RequestHandler
         extend Forwardable
 
         attr_reader :net_http, :request, :request_body, :block
-        def_delegators :"VCR::HttpStubbingAdapters::FakeWeb", :enabled?
         def_delegators :VCR, :real_http_connections_allowed?
 
         def initialize(net_http, request, request_body = nil, &block)
@@ -24,7 +20,7 @@ module VCR
         end
 
         def handle
-          if !enabled? || VCR.request_ignorer.ignore?(vcr_request)
+          if disabled? || VCR.request_ignorer.ignore?(vcr_request)
             perform_request
           elsif stubbed_response
             perform_stubbed_request
@@ -33,6 +29,12 @@ module VCR
           else
             raise_connections_disabled_error
           end
+        end
+
+      private
+
+        def disabled?
+          VCR.http_stubbing_adapters.disabled?(:fakeweb)
         end
 
         def perform_and_record_request
@@ -59,7 +61,7 @@ module VCR
         end
 
         def raise_connections_disabled_error
-          VCR::HttpStubbingAdapters::FakeWeb.raise_connections_disabled_error(vcr_request)
+          VCR::HTTPStubbingAdapters::Common.raise_connections_disabled_error(vcr_request)
         end
 
         def uri
@@ -113,7 +115,7 @@ module Net
   class HTTP
     unless method_defined?(:request_with_vcr)
       def request_with_vcr(*args, &block)
-        VCR::HttpStubbingAdapters::FakeWeb::RequestHandler.new(
+        VCR::HTTPStubbingAdapters::FakeWeb::RequestHandler.new(
           self, *args, &block
         ).handle
       end

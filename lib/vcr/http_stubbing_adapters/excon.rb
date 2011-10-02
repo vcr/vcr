@@ -4,11 +4,8 @@ require 'excon'
 VCR::VersionChecker.new('Excon', Excon::VERSION, '0.6.5', '0.6').check_version!
 
 module VCR
-  module HttpStubbingAdapters
+  class HTTPStubbingAdapters
     module Excon
-      include VCR::HttpStubbingAdapters::Common
-      extend self
-
       class RequestHandler
         attr_reader :params
         def initialize(params)
@@ -24,13 +21,14 @@ module VCR
             when http_connections_allowed?
               record_interaction
             else
-              VCR::HttpStubbingAdapters::Excon.raise_connections_disabled_error(vcr_request)
+              VCR::HTTPStubbingAdapters::Common.raise_connections_disabled_error(vcr_request)
           end
         end
 
       private
 
         def request_should_be_ignored?
+          VCR.http_stubbing_adapters.disabled?(:excon) ||
           VCR.request_ignorer.ignore?(vcr_request)
         end
 
@@ -77,7 +75,7 @@ module VCR
 
         def record_interaction
           perform_real_request do |response|
-            if VCR::HttpStubbingAdapters::Excon.enabled?
+            unless VCR.http_stubbing_adapters.disabled?(:excon)
               http_interaction = http_interaction_for(response)
               VCR.record_http_interaction(http_interaction)
             end

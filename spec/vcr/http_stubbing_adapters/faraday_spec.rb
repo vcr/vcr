@@ -1,9 +1,10 @@
 require 'spec_helper'
 
-describe VCR::HttpStubbingAdapters::Faraday do
+describe "Faraday adapter" do
   it_behaves_like 'an http stubbing adapter',
     %w[ faraday-typhoeus faraday-net_http faraday-patron ],
-    :status_message_not_exposed, :does_not_support_rotating_responses
+    :status_message_not_exposed, :does_not_support_rotating_responses,
+    :not_disableable
 
   it_performs('version checking', 'Faraday',
     :valid    => %w[ 0.6.0 0.6.10 ],

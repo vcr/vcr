@@ -4,16 +4,12 @@ require 'typhoeus'
 VCR::VersionChecker.new('Typhoeus', Typhoeus::VERSION, '0.2.1', '0.2').check_version!
 
 module VCR
-  module HttpStubbingAdapters
+  class HTTPStubbingAdapters
     module Typhoeus
-      include VCR::HttpStubbingAdapters::Common
-      extend self
-
       class RequestHandler
         extend Forwardable
 
         attr_reader :request
-        def_delegators :"VCR::HttpStubbingAdapters::Typhoeus", :enabled?
         def_delegators :VCR, :real_http_connections_allowed?
 
         def initialize(request)
@@ -21,7 +17,7 @@ module VCR
         end
 
         def handle
-          if !enabled? || VCR.request_ignorer.ignore?(vcr_request)
+          if disabled? || VCR.request_ignorer.ignore?(vcr_request)
             nil # allow the request to be performed
           elsif stubbed_response
             hydra_mock
@@ -34,8 +30,12 @@ module VCR
 
       private
 
+        def disabled?
+          VCR.http_stubbing_adapters.disabled?(:typhoeus)
+        end
+
         def raise_connections_disabled_error
-          VCR::HttpStubbingAdapters::Typhoeus.raise_connections_disabled_error(vcr_request)
+          VCR::HTTPStubbingAdapters::Common.raise_connections_disabled_error(vcr_request)
         end
 
         def vcr_request
@@ -86,7 +86,7 @@ module VCR
         end
 
         ::Typhoeus::Hydra.after_request_before_on_complete do |request|
-          if VCR::HttpStubbingAdapters::Typhoeus.enabled? && !request.response.mock?
+          unless VCR.http_stubbing_adapters.disabled?(:typhoeus) || request.response.mock?
             http_interaction = VCR::HTTPInteraction.new(vcr_request_from(request), vcr_response_from(request.response))
             VCR.record_http_interaction(http_interaction)
           end
@@ -102,7 +102,7 @@ end
 Typhoeus::Hydra::Stubbing::SharedMethods.class_eval do
   undef find_stub_from_request
   def find_stub_from_request(request)
-    VCR::HttpStubbingAdapters::Typhoeus::RequestHandler.new(request).handle
+    VCR::HTTPStubbingAdapters::Typhoeus::RequestHandler.new(request).handle
   end
 end
 

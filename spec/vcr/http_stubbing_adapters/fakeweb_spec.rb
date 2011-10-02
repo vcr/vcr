@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe VCR::HttpStubbingAdapters::FakeWeb, :with_monkey_patches => :fakeweb do
+describe "FakeWeb adapter", :with_monkey_patches => :fakeweb do
   it_behaves_like 'an http stubbing adapter', 'net/http'
 
   it_performs('version checking', 'FakeWeb',

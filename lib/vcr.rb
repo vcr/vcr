@@ -9,7 +9,7 @@ require 'vcr/version'
 
 require 'vcr/deprecations/vcr'
 
-require 'vcr/http_stubbing_adapters/common'
+require 'vcr/http_stubbing_adapters'
 require 'vcr/structs/http_interaction'
 
 module VCR
@@ -83,6 +83,10 @@ module VCR
 
   def request_ignorer
     @request_ignorer ||= RequestIgnorer.new
+  end
+
+  def http_stubbing_adapters
+    @http_stubbing_adapters ||= HTTPStubbingAdapters.new
   end
 
   def configuration

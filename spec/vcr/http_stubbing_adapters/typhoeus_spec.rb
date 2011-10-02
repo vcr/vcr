@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe VCR::HttpStubbingAdapters::Typhoeus, :with_monkey_patches => :typhoeus do
+describe "Typhoeus Adapter", :with_monkey_patches => :typhoeus do
   it_behaves_like 'an http stubbing adapter', 'typhoeus'
 
   it_performs('version checking', 'Typhoeus',

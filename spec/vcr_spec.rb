@@ -150,6 +150,13 @@ describe VCR do
     end
   end
 
+  describe '.http_stubbing_adapters' do
+    it 'always returns the same memoized HTTPStubbingAdapters instance' do
+      VCR.http_stubbing_adapters.should be_a(VCR::HTTPStubbingAdapters)
+      VCR.http_stubbing_adapters.should be(VCR.http_stubbing_adapters)
+    end
+  end
+
   describe '.configuration' do
     it 'returns the configuration object' do
       VCR.configuration.should be_a(VCR::Configuration)
