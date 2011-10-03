@@ -3,13 +3,12 @@ require 'vcr/util/yaml'
 
 require 'vcr/cassette'
 require 'vcr/configuration'
+require 'vcr/deprecations'
+require 'vcr/http_stubbing_adapters'
 require 'vcr/request_matcher_registry'
 require 'vcr/request_ignorer'
 require 'vcr/version'
 
-require 'vcr/deprecations/vcr'
-
-require 'vcr/http_stubbing_adapters'
 require 'vcr/structs/http_interaction'
 
 module VCR
