@@ -143,7 +143,7 @@ describe VCR do
     end
   end
 
-  describe '.request_ignorera' do
+  describe '.request_ignorer' do
     it 'always returns the same memoized request ignorer instance' do
       VCR.request_ignorer.should be_a(VCR::RequestIgnorer)
       VCR.request_ignorer.should be(VCR.request_ignorer)
