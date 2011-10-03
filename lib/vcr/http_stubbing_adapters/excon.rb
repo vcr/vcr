@@ -1,4 +1,4 @@
-require 'vcr/http_stubbing_adapters/common'
+require 'vcr/util/version_checker'
 require 'excon'
 
 VCR::VersionChecker.new('Excon', Excon::VERSION, '0.6.5', '0.6').check_version!
@@ -21,7 +21,7 @@ module VCR
             when http_connections_allowed?
               record_interaction
             else
-              VCR::HTTPStubbingAdapters::Common.raise_connections_disabled_error(vcr_request)
+              raise VCR::HTTPConnectionNotAllowedError.new(vcr_request)
           end
         end
 

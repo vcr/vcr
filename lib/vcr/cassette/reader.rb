@@ -1,7 +1,5 @@
 module VCR
   class Cassette
-    class MissingERBVariableError < NameError; end
-
     class Reader
       def initialize(file_name, erb)
         @file_name, @erb = file_name, erb
@@ -20,7 +18,7 @@ module VCR
       def handle_name_error(e)
         example_hash = (erb_variables || {}).merge(e.name => 'some value')
 
-        raise MissingERBVariableError.new(
+        raise Errors::MissingERBVariableError.new(
           "The ERB in the #{@file_name} cassette file references undefined variable #{e.name}.  " +
           "Pass it to the cassette using :erb => #{ example_hash.inspect }."
         )

@@ -39,4 +39,25 @@ describe VCR, 'deprecations', :disable_warnings do
       }.to raise_error(NameError)
     end
   end
+
+  describe "Cassette::MissingERBVariableError" do
+    it 'returns VCR::Errors::MissingERBVariableError' do
+      VCR::Cassette::MissingERBVariableError.should be(VCR::Errors::MissingERBVariableError)
+    end
+
+    it 'prints a deprecation warning' do
+      VCR::Cassette.should_receive(:warn).with \
+        "WARNING: `VCR::Cassette::MissingERBVariableError` is deprecated.  Use `VCR::Errors::MissingERBVariableError` instead."
+
+      VCR::Cassette::MissingERBVariableError
+    end
+
+    it 'preserves the normal undefined constant behavior' do
+      expect {
+        VCR::Cassette::SomeUndefinedConstant
+      }.to raise_error(NameError)
+    end
+
+  end
 end
+

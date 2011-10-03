@@ -1,4 +1,4 @@
-require 'vcr/http_stubbing_adapters/common'
+require 'vcr/util/version_checker'
 require 'typhoeus'
 
 VCR::VersionChecker.new('Typhoeus', Typhoeus::VERSION, '0.2.1', '0.2').check_version!
@@ -24,7 +24,7 @@ module VCR
           elsif real_http_connections_allowed?
             nil # allow the request to be performed and recorded
           else
-            raise_connections_disabled_error
+            raise VCR::HTTPConnectionNotAllowedError.new(vcr_request)
           end
         end
 
@@ -32,10 +32,6 @@ module VCR
 
         def disabled?
           VCR.http_stubbing_adapters.disabled?(:typhoeus)
-        end
-
-        def raise_connections_disabled_error
-          VCR::HTTPStubbingAdapters::Common.raise_connections_disabled_error(vcr_request)
         end
 
         def vcr_request

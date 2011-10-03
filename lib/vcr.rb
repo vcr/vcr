@@ -5,6 +5,7 @@ require 'vcr/cassette'
 require 'vcr/configuration'
 require 'vcr/deprecations'
 require 'vcr/http_stubbing_adapters'
+require 'vcr/errors'
 require 'vcr/request_matcher_registry'
 require 'vcr/request_ignorer'
 require 'vcr/version'
@@ -13,15 +14,14 @@ require 'vcr/structs/http_interaction'
 
 module VCR
   include VariableArgsBlockCaller
+  include Errors
+
   extend self
 
   autoload :BasicObject,        'vcr/util/basic_object'
   autoload :CucumberTags,       'vcr/test_frameworks/cucumber'
   autoload :InternetConnection, 'vcr/util/internet_connection'
   autoload :RSpec,              'vcr/test_frameworks/rspec'
-
-  class CassetteInUseError < StandardError; end
-  class TurnedOffError < StandardError; end
 
   module Middleware
     autoload :CassetteArguments, 'vcr/middleware/cassette_arguments'

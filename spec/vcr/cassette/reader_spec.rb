@@ -34,7 +34,7 @@ describe VCR::Cassette::Reader do
       it 'raises an appropriate error when the ERB template needs variables' do
         expect {
           read('vars', true)
-        }.to raise_error(VCR::Cassette::MissingERBVariableError,
+        }.to raise_error(VCR::Errors::MissingERBVariableError,
           %{The ERB in the vars cassette file references undefined variable var1.  } +
           %{Pass it to the cassette using :erb => #{ {:var1=>"some value"}.inspect }.}
         )
@@ -49,7 +49,7 @@ describe VCR::Cassette::Reader do
       it 'raises an appropriate error when one or more of the needed variables are not passed' do
         expect {
           read('vars', :var1 => 'foo')
-        }.to raise_error(VCR::Cassette::MissingERBVariableError,
+        }.to raise_error(VCR::Errors::MissingERBVariableError,
           %{The ERB in the vars cassette file references undefined variable var2.  } +
           %{Pass it to the cassette using :erb => #{ {:var1 => "foo", :var2 => "some value"}.inspect }.}
         )

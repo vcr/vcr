@@ -1,4 +1,4 @@
-require 'vcr/http_stubbing_adapters/common'
+require 'vcr/util/version_checker'
 require 'webmock'
 
 VCR::VersionChecker.new('WebMock', WebMock.version, '1.7.0', '1.7').check_version!
@@ -49,7 +49,7 @@ module VCR
           elsif VCR.real_http_connections_allowed?
             false
           else
-            VCR::HTTPStubbingAdapters::Common.raise_connections_disabled_error(vcr_request)
+            raise VCR::HTTPConnectionNotAllowedError.new(vcr_request)
           end
         }.to_return(lambda { |request|
           response_hash_for VCR.http_interactions.response_for(vcr_request_from(request))

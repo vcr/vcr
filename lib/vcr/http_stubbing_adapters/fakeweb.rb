@@ -1,4 +1,4 @@
-require 'vcr/http_stubbing_adapters/common'
+require 'vcr/util/version_checker'
 require 'fakeweb'
 require 'net/http'
 require 'vcr/extensions/net_http_response'
@@ -27,7 +27,7 @@ module VCR
           elsif real_http_connections_allowed?
             perform_and_record_request
           else
-            raise_connections_disabled_error
+            raise VCR::HTTPConnectionNotAllowedError.new(vcr_request)
           end
         end
 
@@ -58,10 +58,6 @@ module VCR
 
         def perform_request(&record_block)
           net_http.request_without_vcr(request, request_body, &(record_block || block))
-        end
-
-        def raise_connections_disabled_error
-          VCR::HTTPStubbingAdapters::Common.raise_connections_disabled_error(vcr_request)
         end
 
         def uri

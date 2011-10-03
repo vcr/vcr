@@ -25,7 +25,7 @@ module VCR
               VCR.record_http_interaction(VCR::HTTPInteraction.new(request, response_for(env)))
               response
             else
-              VCR::HTTPStubbingAdapters::Common.raise_connections_disabled_error(request)
+              raise VCR::HTTPConnectionNotAllowedError.new(request)
             end
           end
         end
