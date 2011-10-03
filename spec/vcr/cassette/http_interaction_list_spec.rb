@@ -161,7 +161,7 @@ module VCR
             list.response_for(request_with(:method => :post))
 
             10.times.map {
-              response = list.response_for(request_with(:method => :post))
+              list.response_for(request_with(:method => :post))
             }.should eq([nil] * 10)
           end
         end
