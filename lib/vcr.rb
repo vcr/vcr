@@ -18,14 +18,11 @@ module VCR
 
   extend self
 
-  autoload :BasicObject,        'vcr/util/basic_object'
   autoload :CucumberTags,       'vcr/test_frameworks/cucumber'
   autoload :InternetConnection, 'vcr/util/internet_connection'
   autoload :RSpec,              'vcr/test_frameworks/rspec'
 
   module Middleware
-    autoload :CassetteArguments, 'vcr/middleware/cassette_arguments'
-    autoload :Common,            'vcr/middleware/common'
     autoload :Faraday,           'vcr/middleware/faraday'
     autoload :Rack,              'vcr/middleware/rack'
   end

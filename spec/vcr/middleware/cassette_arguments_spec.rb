@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'vcr/middleware/common'
 
 describe VCR::Middleware::CassetteArguments do
   describe '#name' do

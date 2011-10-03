@@ -1,3 +1,5 @@
+require 'vcr/middleware/common'
+
 module VCR
   module Middleware
     class Rack

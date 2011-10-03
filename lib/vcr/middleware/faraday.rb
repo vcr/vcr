@@ -1,4 +1,5 @@
 require 'faraday'
+require 'vcr/middleware/common'
 
 module VCR
   module Middleware
