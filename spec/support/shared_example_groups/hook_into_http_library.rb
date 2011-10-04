@@ -58,11 +58,9 @@ shared_examples_for "a hook into an HTTP library" do |library, *other|
       let(:status)        { VCR::ResponseStatus.new(200, 'OK') }
       let(:interaction)   { VCR::HTTPInteraction.new(request, response) }
       let(:response_body) { "The response body" }
-      let(:match_requests_on) { [:method, :uri] }
-      let(:record_mode) { :none }
 
       before(:each) do
-        stub_requests([interaction], match_requests_on)
+        stub_requests([interaction], [:method, :uri])
       end
 
       context "when the the stubbed request and response has no headers" do
@@ -101,9 +99,7 @@ shared_examples_for "a hook into an HTTP library" do |library, *other|
 
       def self.matching_on(attribute, valid, invalid, &block)
         describe ":#{attribute}" do
-          let(:perform_stubbing) { stub_requests(interactions, match_requests_on) }
-          let(:match_requests_on) { [attribute] }
-          let(:record_mode) { :none }
+          let(:perform_stubbing) { stub_requests(interactions, [attribute]) }
 
           before(:each) { perform_stubbing }
           module_eval(&block)
@@ -214,8 +210,6 @@ shared_examples_for "a hook into an HTTP library" do |library, *other|
           end
         end
       else
-        let(:record_mode) { :none }
-
         it 'does not allow real HTTP requests or record them' do
           VCR.should_receive(:record_http_interaction).never
           expect { make_http_request(:get, url) }.to raise_error(NET_CONNECT_NOT_ALLOWED_ERROR)
@@ -231,8 +225,6 @@ shared_examples_for "a hook into an HTTP library" do |library, *other|
 
         unless http_allowed
           localhost_response = "Localhost response"
-
-          let(:record_mode) { :none }
 
           context 'when ignore_hosts is configured to "127.0.0.1", "localhost"' do
             before(:each) do

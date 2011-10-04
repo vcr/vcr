@@ -1,5 +1,5 @@
 shared_examples_for "version checking" do |library, options|
-  file = "vcr/http_stubbing_adapters/#{library.downcase}.rb"
+  file = options[:file] || "vcr/http_stubbing_adapters/#{library.downcase}.rb"
 
   context 'when loading the adapter file', :disable_warnings => true do
     options[:valid].each do |version|

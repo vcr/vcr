@@ -175,21 +175,6 @@ describe VCR do
       end
       yielded_object.should eq(VCR.configuration)
     end
-
-    it 'invokes the after_http_stubbing_adapters_loaded hook after yielding' do
-      yield_order = []
-
-      VCR.configuration.after_http_stubbing_adapters_loaded do
-        yield_order << :after_loaded_hook
-      end
-
-      VCR.configure do |c|
-        c.stub_with :webmock # to prevent the "stub_wth must be configured" error
-        yield_order << :configure
-      end
-
-      yield_order.should == [:configure, :after_loaded_hook]
-    end
   end
 
   describe '.cucumber_tags' do

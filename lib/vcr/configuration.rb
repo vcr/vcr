@@ -12,11 +12,6 @@ module VCR
 
     def initialize
       @allow_http_connections_when_no_cassette = nil
-
-      @stubbing_library_configured = false
-      after_http_stubbing_adapters_loaded do
-        raise ArgumentError.new("VCR must be configured with an HTTP stubbing library.") unless @stubbing_library_configured
-      end
     end
 
     attr_reader :cassette_library_dir
@@ -34,8 +29,8 @@ module VCR
     end
 
     def stub_with(*adapters)
-      @stubbing_library_configured = true if adapters.any?
       adapters.each { |a| load_stubbing_adapter(a) }
+      invoke_hook(:after_http_stubbing_adapters_loaded)
     end
 
     def register_request_matcher(name, &block)

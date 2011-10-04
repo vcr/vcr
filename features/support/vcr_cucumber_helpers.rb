@@ -22,7 +22,7 @@ end
 
 def include_http_adapter_for(lib)
   require 'support/http_library_adapters'
-  require lib
+  require (lib =~ /faraday/ ? 'faraday' : lib)
   include HTTP_LIBRARY_ADAPTERS[lib]
 end
 

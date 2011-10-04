@@ -1,52 +1,25 @@
 require 'spec_helper'
 
 describe VCR::Middleware::Faraday do
-  describe '.new' do
-    it 'raises an error if no cassette arguments block is provided' do
-      expect {
-        described_class.new(lambda { |env| })
-      }.to raise_error(ArgumentError)
-    end
+  %w[ typhoeus net_http patron ].each do |lib|
+    it_behaves_like 'a hook into an HTTP library', "faraday (w/ #{lib})",
+      :status_message_not_exposed,
+      :does_not_support_rotating_responses,
+      :not_disableable
   end
 
-  describe '#call' do
-    let(:env_hash) { { :url => 'http://localhost:3000/' } }
+  it_performs('version checking', 'Faraday',
+    :valid    => %w[ 0.7.0 0.7.10 ],
+    :too_low  => %w[ 0.6.9 0.5.99 ],
+    :too_high => %w[ 0.8.0 1.0.0 ],
+    :file     => 'vcr/middleware/faraday.rb'
+  ) do
+    before(:each) { @orig_version = Faraday::VERSION }
+    after(:each)  { Faraday::VERSION = @orig_version }
 
-    before(:each) do
-      VCR.configure { |c| c.ignore_hosts 'localhost' }
-    end
-
-    it 'uses a cassette when the app is called' do
-      VCR.current_cassette.should be_nil
-      app = lambda { |env| VCR.current_cassette.should_not be_nil }
-      instance = described_class.new(app) { |c| c.name 'cassette_name' }
-      instance.call(env_hash)
-      VCR.current_cassette.should be_nil
-    end
-
-    it 'sets the cassette name based on the provided block' do
-      app = lambda { |env| VCR.current_cassette.name.should eq('rack_cassette') }
-      instance = described_class.new(app) { |c| c.name 'rack_cassette' }
-      instance.call(env_hash)
-    end
-
-    it 'sets the cassette options based on the provided block' do
-      app = lambda { |env| VCR.current_cassette.erb.should eq({ :foo => :bar }) }
-      instance = described_class.new(app, &lambda do |c|
-        c.name    'c'
-        c.options :erb => { :foo => :bar }
-      end)
-
-      instance.call(env_hash)
-    end
-
-    it 'yields the env to the provided block when the block accepts 2 arguments' do
-      instance = described_class.new(lambda { |env| }, &lambda do |c, env|
-        env.should eq(env_hash)
-        c.name    'c'
-      end)
-
-      instance.call(env_hash)
+    # Cannot be regular method def as that raises a "dynamic constant assignment" error
+    define_method :stub_version do |version|
+      ::Faraday::VERSION = version
     end
   end
 end

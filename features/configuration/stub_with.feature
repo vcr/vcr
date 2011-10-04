@@ -1,7 +1,7 @@
 Feature: stub_with
 
   The `stub_with` configuration option determines which HTTP stubbing library
-  VCR will use.  There are currently 5 supported stubbing libraries which
+  VCR will use.  There are currently 4 supported stubbing libraries which
   support many different HTTP libraries:
 
     - FakeWeb can be used to stub Net::HTTP.
@@ -11,13 +11,14 @@ Feature: stub_with
       - Patron
       - Curb (Curl::Easy, but not Curl::Multi)
       - EM HTTP Request
-      - Typhoeusa (Typhoeus::Hydra, but not Typhoeus::Easy or Typhoeus::Multi)
+      - Typhoeus (Typhoeus::Hydra, but not Typhoeus::Easy or Typhoeus::Multi)
     - Typhoeus can be used to stub itself (as long as you use Typhoeus::Hydra,
       but not Typhoeus::Easy or Typhoeus::Multi).
     - Excon can be used to stub itself.
-    - Faraday can be used (in combination with the provided Faraday middleware)
-      to stub requests made through Faraday (regardless of which Faraday HTTP
-      adapter is used).
+
+  In addition, you can use VCR with Faraday if you use the provided
+  middleware in your Faraday connection stack.  When you use VCR with Faraday,
+  you do not need to configure `stub_with` (since the middleware is sufficient).
 
   There are some addiitonal trade offs to consider when deciding which
   stubbing library to use:
@@ -28,8 +29,7 @@ Feature: stub_with
       supported HTTP libraries.  No monkey patching is used for Typhoeus or
       Faraday.
     - FakeWeb and WebMock cannot both be used at the same time.
-    - Typhoeus, Excon and Faraday can be used together, and with either
-      FakeWeb or WebMock.
+    - Typhoeus and Excon can be used together, and with either FakeWeb or WebMock.
 
   Regardless of which library you use, VCR takes care of all of the configuration
   for you.  You should not need to interact directly with FakeWeb, WebMock or the
@@ -43,17 +43,19 @@ Feature: stub_with
       """ruby
       include_http_adapter_for("<http_lib>")
 
+      require 'vcr'
+      VCR.configure { |c| c.ignore_localhost = true }
+
       start_sinatra_app(:port => 7777) do
         get('/') { ARGV[0] }
       end
 
       puts "The response for request 1 was: #{response_body_for(:get, "http://localhost:7777/")}"
 
-      require 'vcr'
-
       VCR.configure do |c|
-        c.stub_with <stub_with>
+        <configuration>
         c.cassette_library_dir = 'vcr_cassettes'
+        c.ignore_localhost = false
       end
 
       VCR.use_cassette('example') do
@@ -73,16 +75,19 @@ Feature: stub_with
      And the file "vcr_cassettes/example.yml" should contain "body: Hello World"
 
    Examples:
-      | stub_with  | http_lib        |
-      | :fakeweb   | net/http        |
-      | :webmock   | net/http        |
-      | :webmock   | httpclient      |
-      | :webmock   | patron          |
-      | :webmock   | curb            |
-      | :webmock   | em-http-request |
-      | :webmock   | typhoeus        |
-      | :typhoeus  | typhoeus        |
-      | :excon     | excon           |
+      | configuration         | http_lib              |
+      | c.stub_with :fakeweb  | net/http              |
+      | c.stub_with :webmock  | net/http              |
+      | c.stub_with :webmock  | httpclient            |
+      | c.stub_with :webmock  | curb                  |
+      | c.stub_with :webmock  | patron                |
+      | c.stub_with :webmock  | em-http-request       |
+      | c.stub_with :webmock  | typhoeus              |
+      | c.stub_with :typhoeus | typhoeus              |
+      | c.stub_with :excon    | excon                 |
+      |                       | faraday (w/ net_http) |
+      |                       | faraday (w/ typhoeus) |
+      |                       | faraday (w/ patron)   |
 
   @exclude-jruby
   Scenario Outline: Use Typhoeus, Excon and Faraday in combination with FakeWeb or WebMock
@@ -90,6 +95,10 @@ Feature: stub_with
       """ruby
       require 'typhoeus'
       require 'excon'
+      require 'faraday'
+      require 'vcr'
+
+      VCR.configure { |c| c.ignore_localhost = true }
 
       start_sinatra_app(:port => 7777) do
         get('/:path') { "#{ARGV[0]} #{params[:path]}" }
@@ -109,11 +118,7 @@ Feature: stub_with
 
       def faraday_response
         Faraday::Connection.new(:url => 'http://localhost:7777') do |builder|
-          builder.use VCR::Middleware::Faraday do |cassette|
-            cassette.name    'example'
-            cassette.options :record => :new_episodes
-          end
-
+          builder.use VCR::Middleware::Faraday
           builder.adapter :<faraday_adapter>
         end.get('/faraday').body
       end
@@ -121,31 +126,31 @@ Feature: stub_with
       puts "Net::HTTP 1: #{net_http_response}"
       puts "Typhoeus 1: #{typhoeus_response}"
       puts "Excon 1: #{excon_response}"
-
-      require 'vcr'
+      puts "Faraday 1: #{faraday_response}"
 
       VCR.configure do |c|
-        c.stub_with <stub_with>, :typhoeus, :excon, :faraday
+        c.stub_with <stub_with>, :typhoeus, :excon
         c.cassette_library_dir = 'vcr_cassettes'
+        c.ignore_localhost = false
       end
 
       VCR.use_cassette('example') do
         puts "Net::HTTP 2: #{net_http_response}"
         puts "Typhoeus 2: #{typhoeus_response}"
         puts "Excon 2: #{excon_response}"
+        puts "Faraday 2: #{faraday_response}"
       end
-
-      puts "Faraday: #{faraday_response}"
       """
     When I run `ruby stub_with_multiple.rb 'Hello'`
     Then the output should contain each of the following:
       | Net::HTTP 1: Hello net_http |
       | Typhoeus 1: Hello typhoeus  |
       | Excon 1: Hello excon        |
+      | Faraday 1: Hello faraday    |
       | Net::HTTP 2: Hello net_http |
       | Typhoeus 2: Hello typhoeus  |
       | Excon 2: Hello excon        |
-      | Faraday: Hello faraday      |
+      | Faraday 2: Hello faraday    |
     And the cassette "vcr_cassettes/example.yml" should have the following response bodies:
       | Hello net_http |
       | Hello typhoeus |
@@ -157,10 +162,11 @@ Feature: stub_with
       | Net::HTTP 1: Goodbye net_http |
       | Typhoeus 1: Goodbye typhoeus  |
       | Excon 1: Goodbye excon        |
+      | Faraday 1: Goodbye faraday    |
       | Net::HTTP 2: Hello net_http   |
       | Typhoeus 2: Hello typhoeus    |
       | Excon 2: Hello excon          |
-      | Faraday: Hello faraday        |
+      | Faraday 2: Hello faraday      |
 
     Examples:
       | stub_with | faraday_adapter |

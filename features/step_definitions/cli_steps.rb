@@ -10,9 +10,9 @@ module VCRHelpers
       s.response.headers.reject! { |k, v| %w[ server date ].include?(k) }
     end
 
-    case $stubbing_lib_for_current_scenario
-      when ':excon'
-        # Excon does not expose the status message or http version,
+    case @stubbing_lib_for_current_scenario
+      when /excon|faraday/
+        # Excon/Faraday do not expose the status message or http version,
         # so we have no way to record these attributes.
         structs.each do |s|
           s.response.status.message = nil

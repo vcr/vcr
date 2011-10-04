@@ -137,7 +137,7 @@ HTTP_LIBRARY_ADAPTERS['excon'] = Module.new do
 end
 
 %w[ net_http typhoeus patron ].each do |_faraday_adapter|
-  HTTP_LIBRARY_ADAPTERS["faraday-#{_faraday_adapter}"] = Module.new do
+  HTTP_LIBRARY_ADAPTERS["faraday (w/ #{_faraday_adapter})"] = Module.new do
     class << self; self; end.class_eval do
       define_method(:http_library_name) do
         "Faraday (#{_faraday_adapter})"
@@ -175,20 +175,10 @@ end
 
     def faraday_connection(url_root)
       Faraday::Connection.new(:url => url_root) do |builder|
-        builder.use VCR::Middleware::Faraday do |cassette|
-          cassette.name    'faraday_example'
-
-          if respond_to?(:match_requests_on)
-            cassette.options :match_requests_on => match_requests_on
-          end
-
-          if respond_to?(:record_mode)
-            cassette.options :record => record_mode
-          end
-        end
-
+        builder.use     VCR::Middleware::Faraday
         builder.adapter faraday_adapter
       end
     end
   end
 end
+

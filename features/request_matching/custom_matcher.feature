@@ -56,7 +56,7 @@ Feature: Register and use a custom matcher
       require 'vcr'
 
       VCR.configure do |c|
-        c.stub_with <stub_with>
+        <configuration>
         c.cassette_library_dir = 'cassettes'
       end
 
@@ -80,16 +80,19 @@ Feature: Register and use a custom matcher
       """
 
     Examples:
-      | stub_with  | http_lib        |
-      | :fakeweb   | net/http        |
-      | :webmock   | net/http        |
-      | :webmock   | httpclient      |
-      | :webmock   | patron          |
-      | :webmock   | curb            |
-      | :webmock   | em-http-request |
-      | :webmock   | typhoeus        |
-      | :typhoeus  | typhoeus        |
-      | :excon     | excon           |
+      | configuration         | http_lib              |
+      | c.stub_with :fakeweb  | net/http              |
+      | c.stub_with :webmock  | net/http              |
+      | c.stub_with :webmock  | httpclient            |
+      | c.stub_with :webmock  | curb                  |
+      | c.stub_with :webmock  | patron                |
+      | c.stub_with :webmock  | em-http-request       |
+      | c.stub_with :webmock  | typhoeus              |
+      | c.stub_with :typhoeus | typhoeus              |
+      | c.stub_with :excon    | excon                 |
+      |                       | faraday (w/ net_http) |
+      |                       | faraday (w/ typhoeus) |
+      |                       | faraday (w/ patron)   |
 
   Scenario: Register a named custom matcher
     And a file named "register_custom_matcher.rb" with:

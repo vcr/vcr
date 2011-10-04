@@ -59,18 +59,12 @@ describe VCR::Configuration do
         subject.stub_with :unsupported_library
       }.to raise_error(ArgumentError, /unsupported_library is not a supported HTTP stubbing library/i)
     end
-  end
 
-  describe "after_http_stubbing_adapters_loaded hook" do
-    let(:run_hook) { subject.invoke_hook(:after_http_stubbing_adapters_loaded) }
-
-    it 'raises an error if no stubbing adapter has been configured' do
-      expect { run_hook }.to raise_error(/VCR must be configured with an HTTP stubbing library/)
-    end
-
-    it 'does not raise an error if a stubbing adapter has been configured' do
-      subject.stub_with :webmock
-      run_hook
+    it 'invokes the after_http_stubbing_adapters_loaded hooks' do
+      called = false
+      subject.after_http_stubbing_adapters_loaded { called = true }
+      subject.stub_with :fakeweb
+      called.should be_true
     end
   end
 

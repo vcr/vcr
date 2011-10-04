@@ -40,19 +40,12 @@ if defined?(UNSUPPORTED_HTTP_LIBS)
   end
 end
 
-stubbing_libs = %w[ :fakeweb :webmock :typhoeus :faraday :excon ]
-
 # Set a global based on the current stubbing lib so we can put special-case
 # logic in our step definitions based on the http stubbing library.
 Before do |scenario|
   if scenario.respond_to?(:cell_values)
-    stub_with = stubbing_libs & scenario.cell_values
-    if stub_with.size == 1
-      $stubbing_lib_for_current_scenario = stub_with.first
-    else
-      $stubbing_lib_for_current_scenario = nil
-    end
+    @stubbing_lib_for_current_scenario = scenario.cell_values.find { |v| v =~ /fakeweb|webmock|typhoeus|faraday|excon/ }
   else
-    $stubbing_lib_for_current_scenario = nil
+    @stubbing_lib_for_current_scenario = nil
   end
 end

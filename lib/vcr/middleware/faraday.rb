@@ -1,57 +1,73 @@
 require 'faraday'
-require 'vcr/middleware/common'
+require 'vcr/util/version_checker'
+require 'vcr/request_handler'
+
+VCR::VersionChecker.new('Faraday', Faraday::VERSION, '0.7.0', '0.7').check_version!
 
 module VCR
   module Middleware
-    class Faraday < ::Faraday::Middleware
-      include Common
+    class Faraday
+      include VCR::Deprecations::Middleware::Faraday
+
+      def initialize(app)
+        super
+        @app = app
+      end
 
       def call(env)
+        # Faraday must be exlusive here in case another adapter is being used.
+        # We don't want double recording/double playback.
         VCR.http_stubbing_adapters.exclusively_enabled(:faraday) do
-          VCR.use_cassette(*cassette_arguments(env)) do |cassette|
-            request = request_for(env)
-
-            if VCR.request_ignorer.ignore?(request)
-              @app.call(env)
-            elsif response = VCR.http_interactions.response_for(request)
-              headers = env[:response_headers] ||= ::Faraday::Utils::Headers.new
-              headers.update response.headers if response.headers
-              env.update :status => response.status.code, :body => response.body
-
-              faraday_response = ::Faraday::Response.new
-              faraday_response.finish(env) unless env[:parallel_manager]
-              env[:response] = faraday_response
-            elsif VCR.real_http_connections_allowed?
-              response = @app.call(env)
-              VCR.record_http_interaction(VCR::HTTPInteraction.new(request, response_for(env)))
-              response
-            else
-              raise VCR::HTTPConnectionNotAllowedError.new(request)
-            end
-          end
+          RequestHandler.new(@app, env).handle
         end
       end
 
-    private
+      class RequestHandler < ::VCR::RequestHandler
+        attr_reader :app, :env
+        def initialize(app, env)
+          @app, @env = app, env
+        end
 
-      def request_for(env)
-        VCR::Request.new(
-          env[:method],
-          env[:url].to_s,
-          env[:body],
-          env[:request_headers]
-        )
-      end
+      private
 
-      def response_for(env)
-        response = env[:response]
+        def vcr_request
+          @vcr_request ||= VCR::Request.new \
+            env[:method],
+            env[:url].to_s,
+            env[:body],
+            env[:request_headers]
+        end
 
-        VCR::Response.new(
-          VCR::ResponseStatus.new(response.status, nil),
-          response.headers,
-          response.body,
-          '1.1'
-        )
+        def response_for(env)
+          response = env[:response]
+
+          VCR::Response.new(
+            VCR::ResponseStatus.new(response.status, nil),
+            response.headers,
+            response.body,
+            '1.1'
+          )
+        end
+
+        def on_ignored_request
+          app.call(env)
+        end
+
+        def on_stubbed_request
+          headers = env[:response_headers] ||= ::Faraday::Utils::Headers.new
+          headers.update stubbed_response.headers if stubbed_response.headers
+          env.update :status => stubbed_response.status.code, :body => stubbed_response.body
+
+          faraday_response = ::Faraday::Response.new
+          faraday_response.finish(env) unless env[:parallel_manager]
+          env[:response] = faraday_response
+        end
+
+        def on_recordable_request
+          app.call(env).on_complete do |env|
+            VCR.record_http_interaction(VCR::HTTPInteraction.new(vcr_request, response_for(env)))
+          end
+        end
       end
     end
   end

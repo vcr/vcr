@@ -28,7 +28,7 @@ Feature: ignore_localhost
 
       VCR.configure do |c|
         c.cassette_library_dir = 'cassettes'
-        c.stub_with <stub_with>
+        <configuration>
       end
 
       VCR.use_cassette('localhost') do
@@ -42,16 +42,17 @@ Feature: ignore_localhost
      And the file "cassettes/localhost.yml" should contain "body: Response 1"
 
     Examples:
-      | stub_with  | http_lib        |
-      | :fakeweb   | net/http        |
-      | :webmock   | net/http        |
-      | :webmock   | httpclient      |
-      | :webmock   | curb            |
-      | :webmock   | patron          |
-      | :webmock   | em-http-request |
-      | :webmock   | typhoeus        |
-      | :typhoeus  | typhoeus        |
-      | :excon     | excon           |
+      | configuration         | http_lib              |
+      | c.stub_with :fakeweb  | net/http              |
+      | c.stub_with :webmock  | net/http              |
+      | c.stub_with :webmock  | httpclient            |
+      | c.stub_with :webmock  | curb                  |
+      | c.stub_with :webmock  | patron                |
+      | c.stub_with :webmock  | em-http-request       |
+      | c.stub_with :webmock  | typhoeus              |
+      | c.stub_with :typhoeus | typhoeus              |
+      | c.stub_with :excon    | excon                 |
+      |                       | faraday (w/ net_http) |
 
   Scenario Outline: localhost requests are allowed and not recorded when ignore_localhost = true
     Given a file named "ignore_localhost_true.rb" with:
@@ -64,7 +65,7 @@ Feature: ignore_localhost
       VCR.configure do |c|
         c.ignore_localhost = true
         c.cassette_library_dir = 'cassettes'
-        c.stub_with <stub_with>
+        <configuration>
       end
 
       VCR.use_cassette('localhost') do
@@ -82,14 +83,15 @@ Feature: ignore_localhost
     And the file "cassettes/localhost.yml" should not exist
 
     Examples:
-      | stub_with  | http_lib        |
-      | :fakeweb   | net/http        |
-      | :webmock   | net/http        |
-      | :webmock   | httpclient      |
-      | :webmock   | patron          |
-      | :webmock   | curb            |
-      | :webmock   | em-http-request |
-      | :webmock   | typhoeus        |
-      | :typhoeus  | typhoeus        |
-      | :excon     | excon           |
+      | configuration         | http_lib              |
+      | c.stub_with :fakeweb  | net/http              |
+      | c.stub_with :webmock  | net/http              |
+      | c.stub_with :webmock  | httpclient            |
+      | c.stub_with :webmock  | curb                  |
+      | c.stub_with :webmock  | patron                |
+      | c.stub_with :webmock  | em-http-request       |
+      | c.stub_with :webmock  | typhoeus              |
+      | c.stub_with :typhoeus | typhoeus              |
+      | c.stub_with :excon    | excon                 |
+      |                       | faraday (w/ net_http) |
 

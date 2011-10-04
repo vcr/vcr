@@ -57,7 +57,21 @@ describe VCR, 'deprecations', :disable_warnings do
         VCR::Cassette::SomeUndefinedConstant
       }.to raise_error(NameError)
     end
+  end
 
+  describe "VCR.configure { |c| c.stub_with :faraday }" do
+    it 'prints a descriptive warning' do
+      Kernel.should_receive(:warn).with(/Just use `VCR::Middleware::Faraday` in your faraday stack/)
+      # simulate the loading of the adapter (since it may have already been required)
+      load 'vcr/http_stubbing_adapters/faraday.rb'
+    end
+  end
+
+  describe "VCR::Middleware::Faraday" do
+    it 'prints a deprecation warning when passed a block' do
+      Kernel.should_receive(:warn).with(/Passing a block .* is deprecated/)
+      VCR::Middleware::Faraday.new(stub) { }
+    end
   end
 end
 
