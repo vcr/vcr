@@ -1,4 +1,5 @@
 require 'vcr/util/version_checker'
+require 'vcr/request_handler'
 require 'excon'
 
 VCR::VersionChecker.new('Excon', Excon::VERSION, '0.6.5', '0.6').check_version!
@@ -6,46 +7,20 @@ VCR::VersionChecker.new('Excon', Excon::VERSION, '0.6.5', '0.6').check_version!
 module VCR
   class HTTPStubbingAdapters
     module Excon
-      class RequestHandler
+      class RequestHandler < ::VCR::RequestHandler
         attr_reader :params
         def initialize(params)
           @params = params
         end
 
-        def handle
-          case
-            when request_should_be_ignored?
-              perform_real_request
-            when stubbed_response
-              stubbed_response
-            when http_connections_allowed?
-              record_interaction
-            else
-              raise VCR::HTTPConnectionNotAllowedError.new(vcr_request)
-          end
-        end
-
       private
 
-        def request_should_be_ignored?
-          VCR.http_stubbing_adapters.disabled?(:excon) ||
-          VCR.request_ignorer.ignore?(vcr_request)
-        end
-
-        def stubbed_response
-          @stubbed_response ||= begin
-            if stubbed_response = VCR.http_interactions.response_for(vcr_request)
-              {
-                :body     => stubbed_response.body,
-                :headers  => normalized_headers(stubbed_response.headers || {}),
-                :status   => stubbed_response.status.code
-              }
-            end
-          end
-        end
-
-        def http_connections_allowed?
-          VCR.real_http_connections_allowed?
+        def on_stubbed_request
+          {
+            :body     => stubbed_response.body,
+            :headers  => normalized_headers(stubbed_response.headers || {}),
+            :status   => stubbed_response.status.code
+          }
         end
 
         def response_from_excon_error(error)
@@ -72,8 +47,9 @@ module VCR
 
           response.attributes
         end
+        alias on_ignored_request perform_real_request
 
-        def record_interaction
+        def on_recordable_request
           perform_real_request do |response|
             unless VCR.http_stubbing_adapters.disabled?(:excon)
               http_interaction = http_interaction_for(response)

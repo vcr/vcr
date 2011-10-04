@@ -2,40 +2,21 @@ require 'vcr/util/version_checker'
 require 'fakeweb'
 require 'net/http'
 require 'vcr/extensions/net_http_response'
+require 'vcr/request_handler'
 
 VCR::VersionChecker.new('FakeWeb', FakeWeb::VERSION, '1.3.0', '1.3').check_version!
 
 module VCR
   class HTTPStubbingAdapters
     module FakeWeb
-      class RequestHandler
-        extend Forwardable
-
+      class RequestHandler < ::VCR::RequestHandler
         attr_reader :net_http, :request, :request_body, :block
-        def_delegators :VCR, :real_http_connections_allowed?
-
         def initialize(net_http, request, request_body = nil, &block)
           @net_http, @request, @request_body, @block =
            net_http,  request,  request_body,  block
         end
 
-        def handle
-          if disabled? || VCR.request_ignorer.ignore?(vcr_request)
-            perform_request
-          elsif stubbed_response
-            perform_stubbed_request
-          elsif real_http_connections_allowed?
-            perform_and_record_request
-          else
-            raise VCR::HTTPConnectionNotAllowedError.new(vcr_request)
-          end
-        end
-
       private
-
-        def disabled?
-          VCR.http_stubbing_adapters.disabled?(:fakeweb)
-        end
 
         def perform_and_record_request
           # Net::HTTP calls #request recursively in certain circumstances.
@@ -49,16 +30,19 @@ module VCR
             block.call(response) if block
           end
         end
+        alias on_recordable_request perform_and_record_request
 
         def perform_stubbed_request
           with_exclusive_fakeweb_stub(stubbed_response) do
             perform_request
           end
         end
+        alias on_stubbed_request perform_stubbed_request
 
         def perform_request(&record_block)
           net_http.request_without_vcr(request, request_body, &(record_block || block))
         end
+        alias on_ignored_request perform_request
 
         def uri
           @uri ||= ::FakeWeb::Utility.request_uri_as_string(net_http, request)
@@ -81,10 +65,6 @@ module VCR
           ensure
             ::FakeWeb::Registry.instance.uri_map = original_map
           end
-        end
-
-        def stubbed_response
-          @stubbed_response ||= VCR.http_interactions.response_for(vcr_request)
         end
 
         def vcr_request

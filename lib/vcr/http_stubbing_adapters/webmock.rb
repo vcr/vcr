@@ -1,4 +1,5 @@
 require 'vcr/util/version_checker'
+require 'vcr/request_handler'
 require 'webmock'
 
 VCR::VersionChecker.new('WebMock', WebMock.version, '1.7.0', '1.7').check_version!
@@ -6,9 +7,7 @@ VCR::VersionChecker.new('WebMock', WebMock.version, '1.7.0', '1.7').check_versio
 module VCR
   class HTTPStubbingAdapters
     module WebMock
-
-      # helper methods
-      class << self
+      module Helpers
         def response_hash_for(response)
           {
             :body    => response.body,
@@ -32,25 +31,36 @@ module VCR
             response.body,
             '1.1'
         end
-
-        def disabled?
-          VCR.http_stubbing_adapters.disabled?(:webmock)
-        end
       end
+
+      class RequestHandler < ::VCR::RequestHandler
+        include Helpers
+
+        attr_reader :request
+        def initialize(request)
+          @request = request
+        end
+
+      private
+
+        def stubbed_response
+          VCR.http_interactions.has_interaction_matching?(vcr_request)
+        end
+
+        def vcr_request
+          @vcr_request ||= vcr_request_from(request)
+        end
+
+        def on_ignored_request;    false; end
+        def on_stubbed_request;    true;  end
+        def on_recordable_request; false; end
+      end
+
+      extend Helpers
 
       GLOBAL_VCR_HOOK = ::WebMock::RequestStub.new(:any, /.*/).tap do |stub|
         stub.with { |request|
-          vcr_request = vcr_request_from(request)
-
-          if disabled? || VCR.request_ignorer.ignore?(vcr_request)
-            false
-          elsif VCR.http_interactions.has_interaction_matching?(vcr_request)
-            true
-          elsif VCR.real_http_connections_allowed?
-            false
-          else
-            raise VCR::HTTPConnectionNotAllowedError.new(vcr_request)
-          end
+          RequestHandler.new(request).handle
         }.to_return(lambda { |request|
           response_hash_for VCR.http_interactions.response_for(vcr_request_from(request))
         })
@@ -59,7 +69,7 @@ module VCR
       ::WebMock::StubRegistry.instance.register_request_stub(GLOBAL_VCR_HOOK)
 
       ::WebMock.after_request(:real_requests_only => true) do |request, response|
-        unless disabled?
+        unless VCR.http_stubbing_adapters.disabled?(:webmock)
           http_interaction = VCR::HTTPInteraction.new \
             vcr_request_from(request),
             vcr_response_from(response)
