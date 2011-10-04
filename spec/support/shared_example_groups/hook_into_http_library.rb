@@ -2,7 +2,7 @@ require 'cgi'
 
 NET_CONNECT_NOT_ALLOWED_ERROR = /You can use VCR to automatically record this request and replay it later/
 
-shared_examples_for "an http library" do |library, *other|
+shared_examples_for "a hook into an HTTP library" do |library, *other|
   unless adapter_module = HTTP_LIBRARY_ADAPTERS[library]
     raise ArgumentError.new("No http library adapter module could be found for #{library}")
   end

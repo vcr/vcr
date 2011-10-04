@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 describe "WebMock adapter", :with_monkey_patches => :webmock do
-  it_behaves_like 'an http stubbing adapter',
-    %w[net/http patron httpclient em-http-request curb typhoeus]
+  %w[net/http patron httpclient em-http-request curb typhoeus].each do |lib|
+    it_behaves_like 'a hook into an HTTP library', lib
+  end
 
   it_performs('version checking', 'WebMock',
     :valid    => %w[ 1.7.0 1.7.99 ],

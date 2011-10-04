@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Typhoeus Adapter", :with_monkey_patches => :typhoeus do
-  it_behaves_like 'an http stubbing adapter', 'typhoeus'
+  it_behaves_like 'a hook into an HTTP library', 'typhoeus'
 
   it_performs('version checking', 'Typhoeus',
     :valid    => %w[ 0.2.1 0.2.99 ],

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Excon adapter" do
-  it_behaves_like 'an http stubbing adapter', 'excon', :status_message_not_exposed
+  it_behaves_like 'a hook into an HTTP library', 'excon', :status_message_not_exposed
 
   it_performs('version checking', 'Excon',
     :valid    => %w[ 0.6.5 0.6.99 ],

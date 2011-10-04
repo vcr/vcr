@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "FakeWeb adapter", :with_monkey_patches => :fakeweb do
-  it_behaves_like 'an http stubbing adapter', 'net/http'
+  it_behaves_like 'a hook into an HTTP library', 'net/http'
 
   it_performs('version checking', 'FakeWeb',
     :valid    => %w[ 1.3.0 1.3.1 1.3.99 ],
