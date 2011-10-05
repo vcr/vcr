@@ -82,5 +82,4 @@ Feature: Matching on Host
       | c.stub_with :excon    | excon                 |
       |                       | faraday (w/ net_http) |
       |                       | faraday (w/ typhoeus) |
-      |                       | faraday (w/ patron)   |
 

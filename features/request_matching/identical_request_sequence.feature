@@ -76,5 +76,4 @@ Feature: Identical requests are replayed in sequence
       | c.stub_with :excon    | excon                 |
       |                       | faraday (w/ net_http) |
       |                       | faraday (w/ typhoeus) |
-      |                       | faraday (w/ patron)   |
 

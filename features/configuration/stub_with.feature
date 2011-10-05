@@ -87,7 +87,6 @@ Feature: stub_with
       | c.stub_with :excon    | excon                 |
       |                       | faraday (w/ net_http) |
       |                       | faraday (w/ typhoeus) |
-      |                       | faraday (w/ patron)   |
 
   @exclude-jruby
   Scenario Outline: Use Typhoeus, Excon and Faraday in combination with FakeWeb or WebMock

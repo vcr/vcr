@@ -92,7 +92,6 @@ Feature: Register and use a custom matcher
       | c.stub_with :excon    | excon                 |
       |                       | faraday (w/ net_http) |
       |                       | faraday (w/ typhoeus) |
-      |                       | faraday (w/ patron)   |
 
   Scenario: Register a named custom matcher
     And a file named "register_custom_matcher.rb" with:
