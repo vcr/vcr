@@ -1,6 +1,4 @@
 module VCR
-  class LibraryVersionTooLowError < StandardError; end
-
   class VersionChecker
     def initialize(library_name, library_version, min_patch_level, max_minor_version)
       @library_name, @library_version = library_name, library_version
@@ -29,8 +27,9 @@ module VCR
     end
 
     def raise_too_low_error
-      raise LibraryVersionTooLowError, "You are using #{@library_name} #{@library_version}. " +
-                                       "VCR requires version #{version_requirement}."
+      raise Errors::LibraryVersionTooLowError,
+        "You are using #{@library_name} #{@library_version}. " +
+        "VCR requires version #{version_requirement}."
     end
 
     def warn_about_too_high

@@ -1,9 +1,12 @@
 module VCR
   module Errors
-    class Error                   < StandardError; end
-    class CassetteInUseError      < Error; end
-    class TurnedOffError          < Error; end
-    class MissingERBVariableError < Error; end
+    class Error                     < StandardError; end
+    class CassetteInUseError        < Error; end
+    class TurnedOffError            < Error; end
+    class MissingERBVariableError   < Error; end
+    class LibraryVersionTooLowError < Error; end
+    class UnregisteredMatcherError  < Error; end
+
 
     class HTTPConnectionNotAllowedError < Error
       def initialize(request)

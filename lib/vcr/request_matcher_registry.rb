@@ -1,6 +1,4 @@
 module VCR
-  class UnregisteredMatcherError < ArgumentError; end
-
   class RequestMatcherRegistry
     DEFAULT_MATCHERS = [:method, :uri]
 
@@ -58,7 +56,7 @@ module VCR
   private
 
     def raise_unregistered_matcher_error(name)
-      raise UnregisteredMatcherError.new \
+      raise Errors::UnregisteredMatcherError.new \
         "There is no matcher registered for #{name.inspect}. " +
         "Did you mean one of #{@registry.keys.map(&:inspect).join(', ')}?"
     end
