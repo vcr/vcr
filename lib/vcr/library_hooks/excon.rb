@@ -51,10 +51,8 @@ module VCR
 
         def on_recordable_request
           perform_real_request do |response|
-            unless disabled?
-              http_interaction = http_interaction_for(response)
-              VCR.record_http_interaction(http_interaction)
-            end
+            http_interaction = http_interaction_for(response)
+            VCR.record_http_interaction(http_interaction)
           end
         end
 
