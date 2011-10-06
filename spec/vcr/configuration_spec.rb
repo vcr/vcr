@@ -15,8 +15,7 @@ describe VCR::Configuration do
   end
 
   describe '#default_cassette_options' do
-    it 'has a hash with some defaults even if it is set to nil' do
-      subject.default_cassette_options = nil
+    it 'has a hash with some defaults' do
       subject.default_cassette_options.should eq({
         :match_requests_on => VCR::RequestMatcherRegistry::DEFAULT_MATCHERS,
         :record            => :once
@@ -31,6 +30,16 @@ describe VCR::Configuration do
     it "returns :once for :record when other defaults have been set" do
       subject.default_cassette_options = { :erb => :true }
       subject.default_cassette_options.should include(:record => :once)
+    end
+
+    it "allows defaults to be overriden" do
+      subject.default_cassette_options = { :record => :all }
+      subject.default_cassette_options.should include(:record => :all)
+    end
+
+    it "allows other keys to be set" do
+      subject.default_cassette_options = { :re_record_interval => 10 }
+      subject.default_cassette_options.should include(:re_record_interval => 10)
     end
   end
 

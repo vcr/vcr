@@ -12,6 +12,10 @@ module VCR
 
     def initialize
       @allow_http_connections_when_no_cassette = nil
+      @default_cassette_options = {
+        :record            => :once,
+        :match_requests_on => RequestMatcherRegistry::DEFAULT_MATCHERS
+      }
     end
 
     attr_reader :cassette_library_dir
@@ -20,12 +24,9 @@ module VCR
       FileUtils.mkdir_p(cassette_library_dir) if cassette_library_dir
     end
 
-    attr_writer :default_cassette_options
-    def default_cassette_options
-      @default_cassette_options ||= {}
-      @default_cassette_options[:match_requests_on] ||= RequestMatcherRegistry::DEFAULT_MATCHERS
-      @default_cassette_options[:record] ||= :once
-      @default_cassette_options
+    attr_reader :default_cassette_options
+    def default_cassette_options=(overrides)
+      @default_cassette_options.merge!(overrides)
     end
 
     def stub_with(*adapters)
