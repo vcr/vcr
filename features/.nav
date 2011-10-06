@@ -16,11 +16,12 @@
   - all.feature
 - configuration:
   - cassette_library_dir.feature
-  - stub_with.feature
+  - hook_into.feature
   - default_cassette_options.feature
   - ignore_hosts.feature
   - ignore_localhost.feature
   - hooks.feature
+  - filter_sensitive_data.feature
   - allow_http_connections_when_no_cassette.feature
 - request_matching:
   - method.feature
@@ -30,6 +31,9 @@
   - body.feature
   - headers.feature
   - identical_request_sequence.feature
+  - custom_matcher.feature
+  - uri_without_param.feature
+  - playback_repeats.feature
 - test_frameworks:
   - test_unit.feature
   - shoulda.feature
