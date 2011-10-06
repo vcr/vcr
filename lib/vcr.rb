@@ -91,7 +91,6 @@ module VCR
 
   def configure
     yield configuration
-    configuration.invoke_hook(:after_http_stubbing_adapters_loaded)
   end
 
   def cucumber_tags(&block)
