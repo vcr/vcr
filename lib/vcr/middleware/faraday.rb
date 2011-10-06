@@ -15,9 +15,9 @@ module VCR
       end
 
       def call(env)
-        # Faraday must be exlusive here in case another adapter is being used.
+        # Faraday must be exlusive here in case another library hook is being used.
         # We don't want double recording/double playback.
-        VCR.http_stubbing_adapters.exclusively_enabled(:faraday) do
+        VCR.library_hooks.exclusively_enabled(:faraday) do
           RequestHandler.new(@app, env).handle
         end
       end

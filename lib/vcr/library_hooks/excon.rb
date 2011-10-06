@@ -5,7 +5,7 @@ require 'excon'
 VCR::VersionChecker.new('Excon', Excon::VERSION, '0.6.5', '0.6').check_version!
 
 module VCR
-  class HTTPStubbingAdapters
+  class LibraryHooks
     module Excon
       class RequestHandler < ::VCR::RequestHandler
         attr_reader :params
@@ -51,7 +51,7 @@ module VCR
 
         def on_recordable_request
           perform_real_request do |response|
-            unless VCR.http_stubbing_adapters.disabled?(:excon)
+            unless disabled?
               http_interaction = http_interaction_for(response)
               VCR.record_http_interaction(http_interaction)
             end

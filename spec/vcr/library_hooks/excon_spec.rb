@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Excon adapter" do
+describe "Excon hook" do
   it_behaves_like 'a hook into an HTTP library', 'excon', :status_message_not_exposed
 
   it_performs('version checking', 'Excon',

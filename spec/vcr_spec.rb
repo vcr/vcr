@@ -150,10 +150,10 @@ describe VCR do
     end
   end
 
-  describe '.http_stubbing_adapters' do
-    it 'always returns the same memoized HTTPStubbingAdapters instance' do
-      VCR.http_stubbing_adapters.should be_a(VCR::HTTPStubbingAdapters)
-      VCR.http_stubbing_adapters.should be(VCR.http_stubbing_adapters)
+  describe '.library_hooks' do
+    it 'always returns the same memoized LibraryHooks instance' do
+      VCR.library_hooks.should be_a(VCR::LibraryHooks)
+      VCR.library_hooks.should be(VCR.library_hooks)
     end
   end
 

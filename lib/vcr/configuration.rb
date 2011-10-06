@@ -8,7 +8,7 @@ module VCR
 
     define_hook :before_record
     define_hook :before_playback
-    define_hook :after_http_stubbing_adapters_loaded
+    define_hook :after_library_hooks_loaded
 
     def initialize
       @allow_http_connections_when_no_cassette = nil
@@ -29,9 +29,9 @@ module VCR
       @default_cassette_options.merge!(overrides)
     end
 
-    def stub_with(*adapters)
-      adapters.each { |a| load_stubbing_adapter(a) }
-      invoke_hook(:after_http_stubbing_adapters_loaded)
+    def hook_into(*hooks)
+      hooks.each { |a| load_library_hook(a) }
+      invoke_hook(:after_library_hooks_loaded)
     end
 
     def register_request_matcher(name, &block)
@@ -64,12 +64,12 @@ module VCR
 
   private
 
-    def load_stubbing_adapter(adapter)
-      file = "vcr/http_stubbing_adapters/#{adapter}"
+    def load_library_hook(hook)
+      file = "vcr/library_hooks/#{hook}"
       require file
     rescue LoadError => e
       raise e unless e.message.include?(file) # in case FakeWeb/WebMock/etc itself is not available
-      raise ArgumentError.new("#{adapter.inspect} is not a supported HTTP stubbing library.")
+      raise ArgumentError.new("#{hook.inspect} is not a supported VCR HTTP library hook.")
     end
   end
 end

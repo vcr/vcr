@@ -54,7 +54,7 @@ Feature: Playback repeats
       require 'vcr'
 
       VCR.configure do |c|
-        c.stub_with :fakeweb
+        c.hook_into :fakeweb
         c.cassette_library_dir = 'cassettes'
       end
 

@@ -15,7 +15,7 @@ Feature: Naming
 
       VCR.configure do |c|
         c.cassette_library_dir = 'cassettes'
-        c.stub_with :fakeweb
+        c.hook_into :fakeweb
       end
 
       VCR.use_cassette('Fee, Fi Fo Fum') do

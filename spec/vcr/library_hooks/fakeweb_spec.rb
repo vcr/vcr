@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "FakeWeb adapter", :with_monkey_patches => :fakeweb do
+describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
   it_behaves_like 'a hook into an HTTP library', 'net/http'
 
   it_performs('version checking', 'FakeWeb',
@@ -55,12 +55,12 @@ describe "FakeWeb adapter", :with_monkey_patches => :fakeweb do
     end
   end
 
-  describe "VCR.configuration.after_http_stubbing_adapters_loaded hook", :disable_warnings do
+  describe "VCR.configuration.after_library_hooks_loaded hook", :disable_warnings do
     before(:each) do
-      load "vcr/http_stubbing_adapters/fakeweb.rb" # to re-add the hook since it's cleared by each test
+      load "vcr/library_hooks/fakeweb.rb" # to re-add the hook since it's cleared by each test
     end
 
-    let(:run_hook) { VCR.configuration.invoke_hook(:after_http_stubbing_adapters_loaded) }
+    let(:run_hook) { VCR.configuration.invoke_hook(:after_library_hooks_loaded) }
 
     context 'when WebMock has been loaded' do
       before(:each) { defined?(WebMock).should be_true }

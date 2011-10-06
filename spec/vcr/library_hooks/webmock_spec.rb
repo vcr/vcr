@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "WebMock adapter", :with_monkey_patches => :webmock do
+describe "WebMock hook", :with_monkey_patches => :webmock do
   %w[net/http patron httpclient em-http-request curb typhoeus].each do |lib|
     it_behaves_like 'a hook into an HTTP library', lib
   end

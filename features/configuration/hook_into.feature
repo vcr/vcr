@@ -1,45 +1,45 @@
-Feature: stub_with
+Feature: hook_into
 
-  The `stub_with` configuration option determines which HTTP stubbing library
-  VCR will use.  There are currently 4 supported stubbing libraries which
-  support many different HTTP libraries:
+  The `hook_into` configuration option determines how VCR hooks into the
+  HTTP requests to record and replay them.  There are currently 4 valid
+  options which support many different HTTP libraries:
 
-    - FakeWeb can be used to stub Net::HTTP.
-    - WebMock can be used to stub:
+    - :fakeweb can be used to hook into Net::HTTP requests.
+    - :webmock can be used to hook into requests from:
       - Net::HTTP
       - HTTPClient
       - Patron
       - Curb (Curl::Easy, but not Curl::Multi)
       - EM HTTP Request
       - Typhoeus (Typhoeus::Hydra, but not Typhoeus::Easy or Typhoeus::Multi)
-    - Typhoeus can be used to stub itself (as long as you use Typhoeus::Hydra,
+    - :typhoeus can be used to hook into itself (as long as you use Typhoeus::Hydra,
       but not Typhoeus::Easy or Typhoeus::Multi).
-    - Excon can be used to stub itself.
+    - :excon can be used to hook into itself.
 
   In addition, you can use VCR with Faraday if you use the provided
   middleware in your Faraday connection stack.  When you use VCR with Faraday,
-  you do not need to configure `stub_with` (since the middleware is sufficient).
+  you do not need to configure `hook_into` (since the middleware is sufficient).
 
   There are some addiitonal trade offs to consider when deciding which
-  stubbing library to use:
+  option to use:
 
-    - FakeWeb is currently about 4 times faster than WebMock for stubbing
+    - FakeWeb is currently about 4 times faster than WebMock for hooking into
       Net::HTTP (see benchmarks/http_stubbing_libraries.rb for details).
-    - FakeWeb and WebMock both use extensive monkey patching to stub their
-      supported HTTP libraries.  No monkey patching is used for Typhoeus or
+    - FakeWeb and WebMock both use extensive monkey patching to hook into their
+      supported HTTP libraries.  No monkey patching is used for Typhoeus, Excon or
       Faraday.
     - FakeWeb and WebMock cannot both be used at the same time.
-    - Typhoeus and Excon can be used together, and with either FakeWeb or WebMock.
+    - Typhoeus, Excon, Faraday can be used together, and with either FakeWeb or WebMock.
 
   Regardless of which library you use, VCR takes care of all of the configuration
   for you.  You should not need to interact directly with FakeWeb, WebMock or the
   stubbing facilities of Typhoeus, Excon or Faraday.  If/when you decide to change stubbing
   libraries (i.e. if you initially use FakeWeb because it's faster but later need the
-  additional features of WebMock) you can change the `stub_with` configuration
+  additional features of WebMock) you can change the `hook_into` configuration
   option and it'll work with no other changes required.
 
-  Scenario Outline: Record and replay a request using each supported stubbing/http library combination
-    Given a file named "stubbing_http_lib_combo.rb" with:
+  Scenario Outline: Record and replay a request using each supported hook_into/http library combination
+    Given a file named "hook_into_http_lib_combo.rb" with:
       """ruby
       include_http_adapter_for("<http_lib>")
 
@@ -62,13 +62,13 @@ Feature: stub_with
         puts "The response for request 2 was: #{response_body_for(:get, "http://localhost:7777/")}"
       end
       """
-    When I run `ruby stubbing_http_lib_combo.rb 'Hello World'`
+    When I run `ruby hook_into_http_lib_combo.rb 'Hello World'`
     Then the output should contain each of the following:
       | The response for request 1 was: Hello World |
       | The response for request 2 was: Hello World |
      And the file "vcr_cassettes/example.yml" should contain "body: Hello World"
 
-    When I run `ruby stubbing_http_lib_combo.rb 'Goodbye World'`
+    When I run `ruby hook_into_http_lib_combo.rb 'Goodbye World'`
     Then the output should contain each of the following:
       | The response for request 1 was: Goodbye World |
       | The response for request 2 was: Hello World   |
@@ -76,21 +76,21 @@ Feature: stub_with
 
    Examples:
       | configuration         | http_lib              |
-      | c.stub_with :fakeweb  | net/http              |
-      | c.stub_with :webmock  | net/http              |
-      | c.stub_with :webmock  | httpclient            |
-      | c.stub_with :webmock  | curb                  |
-      | c.stub_with :webmock  | patron                |
-      | c.stub_with :webmock  | em-http-request       |
-      | c.stub_with :webmock  | typhoeus              |
-      | c.stub_with :typhoeus | typhoeus              |
-      | c.stub_with :excon    | excon                 |
+      | c.hook_into :fakeweb  | net/http              |
+      | c.hook_into :webmock  | net/http              |
+      | c.hook_into :webmock  | httpclient            |
+      | c.hook_into :webmock  | curb                  |
+      | c.hook_into :webmock  | patron                |
+      | c.hook_into :webmock  | em-http-request       |
+      | c.hook_into :webmock  | typhoeus              |
+      | c.hook_into :typhoeus | typhoeus              |
+      | c.hook_into :excon    | excon                 |
       |                       | faraday (w/ net_http) |
       |                       | faraday (w/ typhoeus) |
 
   @exclude-jruby
   Scenario Outline: Use Typhoeus, Excon and Faraday in combination with FakeWeb or WebMock
-    Given a file named "stub_with_multiple.rb" with:
+    Given a file named "hook_into_multiple.rb" with:
       """ruby
       require 'typhoeus'
       require 'excon'
@@ -128,7 +128,7 @@ Feature: stub_with
       puts "Faraday 1: #{faraday_response}"
 
       VCR.configure do |c|
-        c.stub_with <stub_with>, :typhoeus, :excon
+        c.hook_into <hook_into>, :typhoeus, :excon
         c.cassette_library_dir = 'vcr_cassettes'
         c.ignore_localhost = false
       end
@@ -140,7 +140,7 @@ Feature: stub_with
         puts "Faraday 2: #{faraday_response}"
       end
       """
-    When I run `ruby stub_with_multiple.rb 'Hello'`
+    When I run `ruby hook_into_multiple.rb 'Hello'`
     Then the output should contain each of the following:
       | Net::HTTP 1: Hello net_http |
       | Typhoeus 1: Hello typhoeus  |
@@ -156,7 +156,7 @@ Feature: stub_with
       | Hello excon    |
       | Hello faraday  |
 
-    When I run `ruby stub_with_multiple.rb 'Goodbye'`
+    When I run `ruby hook_into_multiple.rb 'Goodbye'`
     Then the output should contain each of the following:
       | Net::HTTP 1: Goodbye net_http |
       | Typhoeus 1: Goodbye typhoeus  |
@@ -168,7 +168,7 @@ Feature: stub_with
       | Faraday 2: Hello faraday      |
 
     Examples:
-      | stub_with | faraday_adapter |
+      | hook_into | faraday_adapter |
       | :fakeweb  | net_http        |
       | :webmock  | net_http        |
       | :fakeweb  | typhoeus        |

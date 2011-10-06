@@ -23,7 +23,7 @@ Feature: Net::HTTP
       require 'vcr_setup.rb'
 
       VCR.configure do |c|
-        c.stub_with <stub_with>
+        c.hook_into <hook_into>
         c.cassette_library_dir = 'cassettes'
       end
 
@@ -39,7 +39,7 @@ Feature: Net::HTTP
     Then the output should contain "VCR works with Net::HTTP posts!"
 
     Examples:
-      | stub_with |
+      | hook_into |
       | :fakeweb  |
       | :webmock  |
 
@@ -49,7 +49,7 @@ Feature: Net::HTTP
       require 'vcr_setup.rb'
 
       VCR.configure do |c|
-        c.stub_with <stub_with>
+        c.hook_into <hook_into>
         c.cassette_library_dir = 'cassettes'
       end
 
@@ -71,7 +71,7 @@ Feature: Net::HTTP
     Then the output should contain "VCR works with Net::HTTP gets!"
 
     Examples:
-      | stub_with |
+      | hook_into |
       | :fakeweb  |
       | :webmock  |
 
@@ -81,7 +81,7 @@ Feature: Net::HTTP
       require 'vcr_setup.rb'
 
       VCR.configure do |c|
-        c.stub_with <stub_with>
+        c.hook_into <hook_into>
         c.cassette_library_dir = 'cassettes'
       end
 
@@ -103,7 +103,7 @@ Feature: Net::HTTP
     Then the output should contain "VCR works with Net::HTTP gets!"
 
     Examples:
-      | stub_with |
+      | hook_into |
       | :fakeweb  |
       | :webmock  |
 
@@ -114,7 +114,7 @@ Feature: Net::HTTP
       require 'vcr_setup.rb'
 
       VCR.configure do |c|
-        c.stub_with <stub_with>
+        c.hook_into <hook_into>
         c.cassette_library_dir = 'cassettes'
       end
 
@@ -130,7 +130,7 @@ Feature: Net::HTTP
     Then the output should contain "VCR works with Net::HTTP gets!"
 
     Examples:
-      | stub_with |
+      | hook_into |
       | :fakeweb  |
       | :webmock  |
 
@@ -140,7 +140,7 @@ Feature: Net::HTTP
         require 'vcr'
 
         VCR.configure do |c|
-          c.stub_with <stub_with>
+          c.hook_into <hook_into>
           c.cassette_library_dir = 'cassettes'
         end
 
@@ -164,6 +164,6 @@ Feature: Net::HTTP
       Then the output should contain "HTTPS replaying works"
 
       Examples:
-        | stub_with |
+        | hook_into |
         | :fakeweb  |
         | :webmock  |

@@ -5,7 +5,7 @@ require 'webmock'
 VCR::VersionChecker.new('WebMock', WebMock.version, '1.7.0', '1.7').check_version!
 
 module VCR
-  class HTTPStubbingAdapters
+  class LibraryHooks
     module WebMock
       module Helpers
         def response_hash_for(response)
@@ -69,7 +69,7 @@ module VCR
       ::WebMock::StubRegistry.instance.register_request_stub(GLOBAL_VCR_HOOK)
 
       ::WebMock.after_request(:real_requests_only => true) do |request, response|
-        unless VCR.http_stubbing_adapters.disabled?(:webmock)
+        unless VCR.library_hooks.disabled?(:webmock)
           http_interaction = VCR::HTTPInteraction.new \
             vcr_request_from(request),
             vcr_response_from(response)
@@ -94,7 +94,7 @@ WebMock::StubRegistry.class_eval do
   # ensure our VCR hook is not removed when WebMock is reset
   undef reset!
   def reset!
-    self.request_stubs = [VCR::HTTPStubbingAdapters::WebMock::GLOBAL_VCR_HOOK]
+    self.request_stubs = [VCR::LibraryHooks::WebMock::GLOBAL_VCR_HOOK]
   end
 end
 

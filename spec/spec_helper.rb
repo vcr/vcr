@@ -16,11 +16,11 @@ require 'monkey_patches'
 module VCR
   SPEC_ROOT = File.dirname(__FILE__)
 
-  def reset!(stubbing_lib = :fakeweb)
+  def reset!(hook = :fakeweb)
     instance_variables.each do |ivar|
       instance_variable_set(ivar, nil)
     end
-    configuration.stub_with stubbing_lib if stubbing_lib
+    configuration.hook_into hook if hook
   end
 end
 
@@ -54,8 +54,3 @@ RSpec.configure do |config|
   config.alias_it_should_behave_like_to :it_performs, 'it performs'
 end
 
-http_stubbing_dir = File.join(File.dirname(__FILE__), '..', 'lib', 'vcr', 'http_stubbing_adapters')
-Dir[File.join(http_stubbing_dir, '*.rb')].each do |file|
-  next if RUBY_INTERPRETER != :mri && file =~ /(typhoeus)/
-  require "vcr/http_stubbing_adapters/#{File.basename(file)}"
-end

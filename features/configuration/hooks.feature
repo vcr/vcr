@@ -68,7 +68,7 @@ Feature: Hooks
       require 'vcr'
 
       VCR.configure do |c|
-        c.stub_with :fakeweb
+        c.hook_into :fakeweb
         c.cassette_library_dir = 'cassettes'
 
         c.before_record do |i|
@@ -95,7 +95,7 @@ Feature: Hooks
       require 'vcr'
 
       VCR.configure do |c|
-        c.stub_with :fakeweb
+        c.hook_into :fakeweb
         c.cassette_library_dir = 'cassettes'
         c.before_record { |i| i.ignore! }
       end
@@ -115,7 +115,7 @@ Feature: Hooks
       require 'vcr'
 
       VCR.configure do |c|
-        c.stub_with                :fakeweb
+        c.hook_into                :fakeweb
         c.cassette_library_dir     = 'cassettes'
 
         c.before_playback do |i|
@@ -162,7 +162,7 @@ Feature: Hooks
       require 'vcr'
 
       VCR.configure do |c|
-        c.stub_with                :fakeweb
+        c.hook_into                :fakeweb
         c.cassette_library_dir     = 'cassettes'
         c.before_playback { |i| i.ignore! }
       end
@@ -185,7 +185,7 @@ Feature: Hooks
       require 'vcr'
 
       VCR.configure do |c|
-        c.stub_with :fakeweb
+        c.hook_into :fakeweb
         c.cassette_library_dir = 'cassettes'
 
         c.before_record { puts "In before_record hook 1" }
@@ -224,7 +224,7 @@ Feature: Hooks
       require 'vcr'
 
       VCR.configure do |c|
-        c.stub_with :fakeweb
+        c.hook_into :fakeweb
         c.cassette_library_dir = 'cassettes'
 
         c.before_record(:tag_1)   { |i| puts "In before_record hook for tag_1 (#{i.response.body})" }

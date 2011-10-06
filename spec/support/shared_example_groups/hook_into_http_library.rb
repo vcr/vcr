@@ -170,8 +170,8 @@ shared_examples_for "a hook into an HTTP library" do |library, *other|
             interaction
           end
 
-          it 'does not record the request if the adapter is disabled' do
-            VCR.http_stubbing_adapters.exclusively_enabled :something_else do
+          it 'does not record the request if the hook is disabled' do
+            VCR.library_hooks.exclusively_enabled :something_else do
               VCR.should_not_receive(:record_http_interaction)
               make_http_request(:get, url)
             end

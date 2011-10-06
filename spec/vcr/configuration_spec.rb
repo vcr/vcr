@@ -56,23 +56,23 @@ describe VCR::Configuration do
     end
   end
 
-  describe '#stub_with' do
-    it 'requires the named adapters' do
-      subject.should_receive(:require).with("vcr/http_stubbing_adapters/fakeweb")
-      subject.should_receive(:require).with("vcr/http_stubbing_adapters/excon")
-      subject.stub_with :fakeweb, :excon
+  describe '#hook_into' do
+    it 'requires the named library hook' do
+      subject.should_receive(:require).with("vcr/library_hooks/fakeweb")
+      subject.should_receive(:require).with("vcr/library_hooks/excon")
+      subject.hook_into :fakeweb, :excon
     end
 
     it 'raises an error for unsupported stubbing libraries' do
       expect {
-        subject.stub_with :unsupported_library
-      }.to raise_error(ArgumentError, /unsupported_library is not a supported HTTP stubbing library/i)
+        subject.hook_into :unsupported_library
+      }.to raise_error(ArgumentError, /unsupported_library is not a supported VCR HTTP library hook/i)
     end
 
-    it 'invokes the after_http_stubbing_adapters_loaded hooks' do
+    it 'invokes the after_library_hooks_loaded hooks' do
       called = false
-      subject.after_http_stubbing_adapters_loaded { called = true }
-      subject.stub_with :fakeweb
+      subject.after_library_hooks_loaded { called = true }
+      subject.hook_into :fakeweb
       called.should be_true
     end
   end

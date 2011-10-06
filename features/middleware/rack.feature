@@ -51,7 +51,7 @@ Feature: Rack
 
       VCR.configure do |c|
         c.cassette_library_dir = 'cassettes'
-        c.stub_with :fakeweb
+        c.hook_into :fakeweb
         c.allow_http_connections_when_no_cassette = true
       end
       """
@@ -78,7 +78,7 @@ Feature: Rack
 
       VCR.configure do |c|
         c.cassette_library_dir = 'cassettes'
-        c.stub_with :fakeweb
+        c.hook_into :fakeweb
         c.allow_http_connections_when_no_cassette = true
       end
       """

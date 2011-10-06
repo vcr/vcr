@@ -67,7 +67,7 @@ Feature: Usage with RSpec
 
       VCR.configure do |c|
         c.cassette_library_dir     = 'spec/cassettes'
-        c.stub_with                :fakeweb
+        c.hook_into                :fakeweb
       end
 
       RSpec.configure do |c|
@@ -92,7 +92,7 @@ Feature: Usage with RSpec
 
       VCR.configure do |c|
         c.cassette_library_dir     = 'spec/cassettes'
-        c.stub_with                  :fakeweb
+        c.hook_into                  :fakeweb
       end
 
       Spec::Runner.configure do |c|

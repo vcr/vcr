@@ -20,7 +20,7 @@ module MonkeyPatches
     case scope
       when :fakeweb
         realias_net_http :with_fakeweb
-        enable!(:vcr) # fakeweb adapter relies upon VCR's Net::HTTP monkey patch
+        enable!(:vcr) # fakeweb hook relies upon VCR's Net::HTTP monkey patch
       when :webmock
         ::WebMock.reset!
         ::WebMock::HttpLibAdapters::NetHttpAdapter.enable!
@@ -117,7 +117,7 @@ if RUBY_INTERPRETER == :mri
   require 'em-http-request'
   require 'curb'
 
-  require 'vcr/http_stubbing_adapters/typhoeus'
+  require 'vcr/library_hooks/typhoeus'
   $original_typhoeus_hooks = Typhoeus::Hydra.global_hooks.dup
 
   # define an alias that we can re-alias to in the future
@@ -126,7 +126,7 @@ if RUBY_INTERPRETER == :mri
   end
 end
 
-require 'vcr/http_stubbing_adapters/fakeweb'
+require 'vcr/library_hooks/fakeweb'
 
 # All Net::HTTP monkey patches have now been loaded, so capture the
 # appropriate method definitions so we can disable them later.
@@ -136,7 +136,7 @@ MonkeyPatches.init
 # subclasses Net::HTTP and inherits them...
 MonkeyPatches.disable_all!
 
-require 'vcr/http_stubbing_adapters/webmock'
+require 'vcr/library_hooks/webmock'
 $original_webmock_callbacks = ::WebMock::CallbackRegistry.callbacks
 
 # disable all by default; we'll enable specific ones when we need them
@@ -149,3 +149,4 @@ RSpec.configure do |config|
   end
 end
 
+require 'vcr/library_hooks/excon'

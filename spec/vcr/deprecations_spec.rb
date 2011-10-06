@@ -59,11 +59,25 @@ describe VCR, 'deprecations', :disable_warnings do
     end
   end
 
+  describe "VCR.configure { |c| c.stub_with ... }" do
+    it 'delegates to #hook_into' do
+      VCR.configuration.should_receive(:hook_into).with(:fakeweb, :excon)
+      VCR.configure { |c| c.stub_with :fakeweb, :excon }
+    end
+
+    it 'prints a deprecation warning' do
+      VCR.configuration.should_receive(:warn).with \
+        "WARNING: `VCR.config { |c| c.stub_with ... }` is deprecated. Use `VCR.configure { |c| c.hook_into ... }` instead."
+
+      VCR.configure { |c| c.stub_with :fakeweb, :excon }
+    end
+  end
+
   describe "VCR.configure { |c| c.stub_with :faraday }" do
     it 'prints a descriptive warning' do
       Kernel.should_receive(:warn).with(/Just use `VCR::Middleware::Faraday` in your faraday stack/)
       # simulate the loading of the adapter (since it may have already been required)
-      load 'vcr/http_stubbing_adapters/faraday.rb'
+      load 'vcr/library_hooks/faraday.rb'
     end
   end
 

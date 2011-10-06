@@ -4,10 +4,10 @@ require 'vcr/util/yaml'
 require 'vcr/cassette'
 require 'vcr/configuration'
 require 'vcr/deprecations'
-require 'vcr/http_stubbing_adapters'
 require 'vcr/errors'
-require 'vcr/request_matcher_registry'
+require 'vcr/library_hooks'
 require 'vcr/request_ignorer'
+require 'vcr/request_matcher_registry'
 require 'vcr/version'
 
 require 'vcr/structs/http_interaction'
@@ -81,8 +81,8 @@ module VCR
     @request_ignorer ||= RequestIgnorer.new
   end
 
-  def http_stubbing_adapters
-    @http_stubbing_adapters ||= HTTPStubbingAdapters.new
+  def library_hooks
+    @library_hooks ||= LibraryHooks.new
   end
 
   def configuration

@@ -5,7 +5,7 @@ require 'typhoeus'
 VCR::VersionChecker.new('Typhoeus', Typhoeus::VERSION, '0.2.1', '0.2').check_version!
 
 module VCR
-  class HTTPStubbingAdapters
+  class LibraryHooks
     module Typhoeus
       module Helpers
         def vcr_request_from(request)
@@ -69,7 +69,7 @@ module VCR
 
       extend Helpers
       ::Typhoeus::Hydra.after_request_before_on_complete do |request|
-        unless VCR.http_stubbing_adapters.disabled?(:typhoeus) || request.response.mock?
+        unless VCR.library_hooks.disabled?(:typhoeus) || request.response.mock?
           http_interaction = VCR::HTTPInteraction.new(vcr_request_from(request), vcr_response_from(request.response))
           VCR.record_http_interaction(http_interaction)
         end
@@ -84,11 +84,11 @@ end
 Typhoeus::Hydra::Stubbing::SharedMethods.class_eval do
   undef find_stub_from_request
   def find_stub_from_request(request)
-    VCR::HTTPStubbingAdapters::Typhoeus::RequestHandler.new(request).handle
+    VCR::LibraryHooks::Typhoeus::RequestHandler.new(request).handle
   end
 end
 
-VCR.configuration.after_http_stubbing_adapters_loaded do
+VCR.configuration.after_library_hooks_loaded do
   # ensure WebMock's Typhoeus adapter does not conflict with us here
   # (i.e. to double record requests or whatever).
   if defined?(WebMock::HttpLibAdapters::TyphoeusAdapter)

@@ -57,7 +57,7 @@ Feature: URI without param(s)
       require 'vcr'
 
       VCR.configure do |c|
-        c.stub_with :fakeweb
+        c.hook_into :fakeweb
         c.cassette_library_dir = 'cassettes'
         c.default_cassette_options = {
           :match_requests_on => [:method, VCR.request_matchers.uri_without_param(:timestamp)]

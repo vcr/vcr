@@ -41,15 +41,15 @@ Feature: Error for HTTP request made when no cassette is in use
 
     Examples:
       | configuration         | http_lib              |
-      | c.stub_with :fakeweb  | net/http              |
-      | c.stub_with :webmock  | net/http              |
-      | c.stub_with :webmock  | httpclient            |
-      | c.stub_with :webmock  | curb                  |
-      | c.stub_with :webmock  | patron                |
-      | c.stub_with :webmock  | em-http-request       |
-      | c.stub_with :webmock  | typhoeus              |
-      | c.stub_with :typhoeus | typhoeus              |
-      | c.stub_with :excon    | excon                 |
+      | c.hook_into :fakeweb  | net/http              |
+      | c.hook_into :webmock  | net/http              |
+      | c.hook_into :webmock  | httpclient            |
+      | c.hook_into :webmock  | curb                  |
+      | c.hook_into :webmock  | patron                |
+      | c.hook_into :webmock  | em-http-request       |
+      | c.hook_into :webmock  | typhoeus              |
+      | c.hook_into :typhoeus | typhoeus              |
+      | c.hook_into :excon    | excon                 |
       |                       | faraday (w/ net_http) |
 
   Scenario: Temporarily turn VCR off to allow HTTP requests to procede as normal
@@ -62,7 +62,7 @@ Feature: Error for HTTP request made when no cassette is in use
       require 'vcr'
 
       VCR.configure do |c|
-        c.stub_with :fakeweb
+        c.hook_into :fakeweb
       end
 
       def make_request(context)
@@ -112,7 +112,7 @@ Feature: Error for HTTP request made when no cassette is in use
       require 'vcr'
 
       VCR.configure do |c|
-        c.stub_with :fakeweb
+        c.hook_into :fakeweb
       end
 
       VCR.turn_off!
@@ -132,7 +132,7 @@ Feature: Error for HTTP request made when no cassette is in use
 
       VCR.configure do |c|
         c.cassette_library_dir = 'cassettes'
-        c.stub_with :fakeweb
+        c.hook_into :fakeweb
       end
 
       VCR.turn_off!(:ignore_cassettes => true)

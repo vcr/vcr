@@ -7,7 +7,7 @@ require 'vcr/request_handler'
 VCR::VersionChecker.new('FakeWeb', FakeWeb::VERSION, '1.3.0', '1.3').check_version!
 
 module VCR
-  class HTTPStubbingAdapters
+  class LibraryHooks
     module FakeWeb
       class RequestHandler < ::VCR::RequestHandler
         attr_reader :net_http, :request, :request_body, :block
@@ -91,7 +91,7 @@ module Net
   class HTTP
     unless method_defined?(:request_with_vcr)
       def request_with_vcr(*args, &block)
-        VCR::HTTPStubbingAdapters::FakeWeb::RequestHandler.new(
+        VCR::LibraryHooks::FakeWeb::RequestHandler.new(
           self, *args, &block
         ).handle
       end
@@ -102,9 +102,9 @@ module Net
   end
 end
 
-VCR.configuration.after_http_stubbing_adapters_loaded do
+VCR.configuration.after_library_hooks_loaded do
   if defined?(WebMock)
-    raise ArgumentError.new("You have configured VCR to use both :fakeweb and :webmock. You cannot use both.")
+    raise ArgumentError.new("You have configured VCR to hook into both :fakeweb and :webmock. You cannot use both.")
   end
 end
 

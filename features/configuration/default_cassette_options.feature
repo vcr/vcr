@@ -18,7 +18,7 @@ Feature: default_cassette_options
         c.default_cassette_options = { :record => :new_episodes, :erb => true }
 
         # not important for this example, but must be set to something
-        c.stub_with :webmock
+        c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
       end
       """
@@ -59,7 +59,7 @@ Feature: default_cassette_options
 
       VCR.configure do |c|
         # not important for this example, but must be set to something
-        c.stub_with :webmock
+        c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
       end
 

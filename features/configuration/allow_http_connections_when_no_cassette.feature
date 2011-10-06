@@ -18,7 +18,7 @@ Feature: Allow HTTP connections when no cassette
 
       VCR.configure do |c|
         c.allow_http_connections_when_no_cassette = true
-        c.stub_with :fakeweb
+        c.hook_into :fakeweb
         c.cassette_library_dir = 'cassettes'
       end
       """

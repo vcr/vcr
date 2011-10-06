@@ -46,7 +46,7 @@ Feature: Update content_length header
 
       VCR.configure do |c|
         c.cassette_library_dir = 'cassettes'
-        c.stub_with :fakeweb
+        c.hook_into :fakeweb
       end
 
       def make_request_and_print_results

@@ -81,15 +81,15 @@ Feature: Register and use a custom matcher
 
     Examples:
       | configuration         | http_lib              |
-      | c.stub_with :fakeweb  | net/http              |
-      | c.stub_with :webmock  | net/http              |
-      | c.stub_with :webmock  | httpclient            |
-      | c.stub_with :webmock  | curb                  |
-      | c.stub_with :webmock  | patron                |
-      | c.stub_with :webmock  | em-http-request       |
-      | c.stub_with :webmock  | typhoeus              |
-      | c.stub_with :typhoeus | typhoeus              |
-      | c.stub_with :excon    | excon                 |
+      | c.hook_into :fakeweb  | net/http              |
+      | c.hook_into :webmock  | net/http              |
+      | c.hook_into :webmock  | httpclient            |
+      | c.hook_into :webmock  | curb                  |
+      | c.hook_into :webmock  | patron                |
+      | c.hook_into :webmock  | em-http-request       |
+      | c.hook_into :webmock  | typhoeus              |
+      | c.hook_into :typhoeus | typhoeus              |
+      | c.hook_into :excon    | excon                 |
       |                       | faraday (w/ net_http) |
       |                       | faraday (w/ typhoeus) |
 
@@ -101,7 +101,7 @@ Feature: Register and use a custom matcher
       require 'vcr'
 
       VCR.configure do |c|
-        c.stub_with :fakeweb
+        c.hook_into :fakeweb
         c.cassette_library_dir = 'cassettes'
         c.register_request_matcher :port do |request_1, request_2|
           URI(request_1.uri).port == URI(request_2.uri).port

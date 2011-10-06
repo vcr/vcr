@@ -1,7 +1,7 @@
 shared_examples_for "version checking" do |library, options|
-  file = options[:file] || "vcr/http_stubbing_adapters/#{library.downcase}.rb"
+  file = options[:file] || "vcr/library_hooks/#{library.downcase}.rb"
 
-  context 'when loading the adapter file', :disable_warnings => true do
+  context 'when loading the library hook file', :disable_warnings => true do
     options[:valid].each do |version|
       it "does nothing when #{library}'s version is #{version}" do
         stub_version(version)
