@@ -8,6 +8,7 @@
   - no_cassette.feature
   - dynamic_erb.feature
   - automatic_re_recording.feature
+  - exclusive.feature
   - update_content_length_header.feature
 - record_modes:
   - once.feature

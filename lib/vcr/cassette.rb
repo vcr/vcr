@@ -15,7 +15,7 @@ module VCR
       options = VCR.configuration.default_cassette_options.merge(options)
       invalid_options = options.keys - [
         :record, :erb, :match_requests_on, :re_record_interval, :tag,
-        :update_content_length_header, :allow_playback_repeats
+        :update_content_length_header, :allow_playback_repeats, :exclusive
       ]
 
       if invalid_options.size > 0
@@ -31,6 +31,7 @@ module VCR
       @record_mode                  = :all if should_re_record?
       @update_content_length_header = options[:update_content_length_header]
       @allow_playback_repeats       = options[:allow_playback_repeats]
+      @exclusive                    = options[:exclusive]
 
       raise_error_unless_valid_record_mode
 
@@ -114,7 +115,16 @@ module VCR
       end
 
       interactions = should_stub_requests? ? recorded_interactions : []
-      @http_interactions = HTTPInteractionList.new(interactions, match_requests_on, @allow_playback_repeats, VCR.http_interactions)
+
+      @http_interactions = HTTPInteractionList.new(
+        interactions,
+        match_requests_on,
+        @allow_playback_repeats,
+        parent_list)
+    end
+
+    def parent_list
+      @exclusive ? HTTPInteractionList::NullList.new : VCR.http_interactions
     end
 
     def raw_yaml_content

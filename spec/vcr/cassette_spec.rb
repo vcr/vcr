@@ -261,6 +261,20 @@ describe VCR::Cassette do
           end
         end
 
+        it "instantiates the http_interactions with parent_list set to a null list if given :exclusive => true" do
+          VCR.stub(:http_interactions => stub)
+          VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
+          cassette = VCR::Cassette.new('example', :record => record_mode, :exclusive => true)
+          cassette.http_interactions.parent_list.should be_a(VCR::Cassette::HTTPInteractionList::NullList)
+        end
+
+        it "instantiates the http_interactions with parent_list set to VCR.http_interactions if given :exclusive => false" do
+          VCR.stub(:http_interactions => stub)
+          VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
+          cassette = VCR::Cassette.new('example', :record => record_mode, :exclusive => false)
+          cassette.http_interactions.parent_list.should be(VCR.http_interactions)
+        end
+
         if stub_requests
           it 'invokes the appropriately tagged before_playback hooks' do
             VCR.configuration.should_receive(:invoke_hook).with(
