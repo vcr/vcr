@@ -1,12 +1,43 @@
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.11.3...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.beta1...master)
+
+## 2.0.0 Beta 1 (October 8, 2011)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.11.3...v2.0.0.beta1)
+
+### Changes
+
+* Previously, the last matching response in a cassette would
+  repeatedly playback if the same request kept being made. This is
+  no longer the case.
+* The Faraday middleware has been rewritten.
+  * You no longer need to configure `stub_with :faraday` to use it.
+  * It has been updated to work in parallel mode.
+  * It no longer accepts a block and uses that to determine the
+    cassette.  Instead, use `VCR.use_cassette` just like you would
+    with FakeWeb or WebMock.
+
+### Added
+
+* Allow any callable (an object that responds to #call, such as a
+  lambda) to be used as a request matcher. Thanks to [Avdi Grimm](https://github.com/avdi)
+  for the idea.
+* Add ability to register custom request matchers.
+* Add `VCR.request_matchers.uri_without_param(:some_param)` to generate
+  a request matcher that matches on URI but ignores the named parameter.
+* New `:allow_playback_repeats` cassette option preserves the old
+  playback repeat behavior. Thanks to [Avdi Grimm](https://github.com/avdi)
+  for the idea.
+* New `:exclusive` cassette option allows a cassette to be exclusively
+  used rather than keeping the existing one active as a fallback. Thanks
+  to [Avdi Grimm](https://github.com/avdi) for the idea.
 
 ### Removed
 
-* Support for Ruby 1.8.6 and 1.9.1.
-* Lots of old deprecated APIs.
-* Support for manually changing the URI in a cassette to a regex.
+* Removed support for Ruby 1.8.6 and 1.9.1.
+* Removed lots of old deprecated APIs.
+* Removed support for manually changing the URI in a cassette to a regex.
 
 ### Deprecated
 
@@ -14,11 +45,10 @@
 * Deprecated `VCR::Config` singleton module in favor of
   `VCR::Configuration` class.  The current configuration instance
   can be accessed via `VCR.configuration`.
-
-### Added
-* Add test coverage of using WebMock as the stubbing library and
-  Typhoeus as the HTTP library.
-* Add ability to register custom request matchers.
+* Deprecated `stub_with` in favor of `hook_into`.  The stubbing
+  adapters have been completely rewritten and are no longer an
+  implementation of the adapter design pattern. Instead they simply
+  use the named library to globally hook into every HTTP request.
 
 ## 1.11.3 (August 31, 2011)
 
