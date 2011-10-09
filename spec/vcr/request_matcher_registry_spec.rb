@@ -161,6 +161,27 @@ module VCR
             request_with(:uri => 'http://foo2.com/bar?baz=7')
           ).should be_false
         end
+
+        it 'does not consider the standard HTTP port' do
+          subject[:uri].matches?(
+            request_with(:uri => 'http://foo.com:80/bar?baz=7'),
+            request_with(:uri => 'http://foo.com/bar?baz=7')
+          ).should be_true
+        end
+
+        it 'does not consider the standard HTTPS port' do
+          subject[:uri].matches?(
+            request_with(:uri => 'https://foo.com/bar?baz=7'),
+            request_with(:uri => 'https://foo.com:443/bar?baz=7')
+          ).should be_true
+        end
+
+        it 'considers non-standard ports' do
+          subject[:uri].matches?(
+            request_with(:uri => 'http://foo.com:79/bar?baz=7'),
+            request_with(:uri => 'http://foo.com:78/bar?baz=7')
+          ).should be_false
+        end
       end
 
       describe ":host" do

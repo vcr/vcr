@@ -20,7 +20,7 @@ Feature: URI without param(s)
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :get
-          uri: http://example.com:80/search?q=foo&timestamp=1316920490
+          uri: http://example.com/search?q=foo&timestamp=1316920490
           body: 
           headers: 
         response: !ruby/struct:VCR::Response 
@@ -28,14 +28,14 @@ Feature: URI without param(s)
             code: 200
             message: OK
           headers: 
-            content-length: 
+            Content-Length: 
             - "12"
           body: foo response
           http_version: "1.1"
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :get
-          uri: http://example.com:80/search?q=bar&timestamp=1296723437
+          uri: http://example.com/search?q=bar&timestamp=1296723437
           body: 
           headers: 
         response: !ruby/struct:VCR::Response 
@@ -43,7 +43,7 @@ Feature: URI without param(s)
             code: 200
             message: OK
           headers: 
-            content-length: 
+            Content-Length: 
             - "12"
           body: bar response
           http_version: "1.1"
@@ -65,7 +65,7 @@ Feature: URI without param(s)
       end
 
       def search_uri(q)
-        "http://example.com:80/search?q=#{q}&timestamp=#{Time.now.to_i}"
+        "http://example.com/search?q=#{q}&timestamp=#{Time.now.to_i}"
       end
 
       VCR.use_cassette('example') do

@@ -14,7 +14,7 @@ Feature: Matching on Path
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :post
-          uri: http://host1.com:80/about?date=2011-09-01
+          uri: http://host1.com/about?date=2011-09-01
           body: 
           headers: 
         response: !ruby/struct:VCR::Response 
@@ -22,14 +22,14 @@ Feature: Matching on Path
             code: 200
             message: OK
           headers: 
-            content-length: 
+            Content-Length: 
             - "14"
           body: about response
           http_version: "1.1"
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :post
-          uri: http://host2.com:80/home?date=2011-09-01
+          uri: http://host2.com/home?date=2011-09-01
           body:
           headers: 
         response: !ruby/struct:VCR::Response 
@@ -37,7 +37,7 @@ Feature: Matching on Path
             code: 200
             message: OK
           headers: 
-            content-length: 
+            Content-Length: 
             - "15"
           body: home response
           http_version: "1.1"

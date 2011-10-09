@@ -54,9 +54,9 @@ Feature: Cassette format
             code: 200
             message: OK
           headers: 
-            content-type: 
+            Content-Type: 
             - text/html;charset=utf-8
-            content-length: 
+            Content-Length: 
             - "9"
           body: Hello foo
           http_version: "1.1"
@@ -71,9 +71,9 @@ Feature: Cassette format
             code: 200
             message: OK
           headers: 
-            content-type: 
+            Content-Type: 
             - text/html;charset=utf-8
-            content-length: 
+            Content-Length: 
             - "9"
           body: Hello bar
           http_version: "1.1"

@@ -101,7 +101,7 @@
       code: 200
       message: OK
     headers: 
-      set-cookie: 
+      Set-Cookie: 
       - bar=bazz
       - foo=bar
     body: this respons has two set-cookie headers

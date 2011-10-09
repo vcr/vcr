@@ -25,7 +25,7 @@ Feature: Automatic Re-recording
             code: 200
             message: OK
           headers: 
-            content-length: 
+            Content-Length: 
             - "12"
           body: Old Response
           http_version: "1.1"

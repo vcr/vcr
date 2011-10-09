@@ -2,7 +2,13 @@ require 'spec_helper'
 
 describe "WebMock hook", :with_monkey_patches => :webmock do
   %w[net/http patron httpclient em-http-request curb typhoeus].each do |lib|
-    it_behaves_like 'a hook into an HTTP library', lib
+    it_behaves_like 'a hook into an HTTP library', lib do
+      if lib == 'net/http'
+        def normalize_request_headers(headers)
+          headers.merge('Accept' => ['*/*'], 'User-Agent' => ['Ruby'])
+        end
+      end
+    end
   end
 
   it_performs('version checking', 'WebMock',

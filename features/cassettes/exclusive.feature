@@ -29,7 +29,7 @@ Feature: exclusive cassette
             code: 200
             message: OK
           headers: 
-            content-length: 
+            Content-Length: 
             - "18"
           body: Old outer response
           http_version: "1.1"
@@ -48,7 +48,7 @@ Feature: exclusive cassette
             code: 200
             message: OK
           headers: 
-            content-length: 
+            Content-Length: 
             - "18"
           body: Old inner response
           http_version: "1.1"

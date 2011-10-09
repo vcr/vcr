@@ -29,7 +29,7 @@ Feature: :new_episodes
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :get
-          uri: http://example.com:80/foo
+          uri: http://example.com/foo
           body: 
           headers: 
         response: !ruby/struct:VCR::Response 
@@ -37,9 +37,7 @@ Feature: :new_episodes
             code: 200
             message: OK
           headers: 
-            content-type: 
-            - text/html;charset=utf-8
-            content-length: 
+            Content-Length: 
             - "20"
           body: example.com response
           http_version: "1.1"

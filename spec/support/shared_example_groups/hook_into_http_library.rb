@@ -3,6 +3,8 @@ require 'cgi'
 NET_CONNECT_NOT_ALLOWED_ERROR = /You can use VCR to automatically record this request and replay it later/
 
 shared_examples_for "a hook into an HTTP library" do |library, *other|
+  include HeaderDowncaser
+
   unless adapter_module = HTTP_LIBRARY_ADAPTERS[library]
     raise ArgumentError.new("No http library adapter module could be found for #{library}")
   end
@@ -97,9 +99,16 @@ shared_examples_for "a hook into an HTTP library" do |library, *other|
       before(:each) { VCR.stub(:real_http_connections_allowed? => false) }
       let(:interactions) { VCR::YAML.load_file(File.join(VCR::SPEC_ROOT, 'fixtures', 'match_requests_on.yml')) }
 
+      let(:normalized_interactions) do
+        interactions.each do |i|
+          i.request.headers = normalize_request_headers(i.request.headers)
+        end
+        interactions
+      end
+
       def self.matching_on(attribute, valid, invalid, &block)
         describe ":#{attribute}" do
-          let(:perform_stubbing) { stub_requests(interactions, [attribute]) }
+          let(:perform_stubbing) { stub_requests(normalized_interactions, [attribute]) }
 
           before(:each) { perform_stubbing }
           module_eval(&block)
@@ -146,7 +155,7 @@ shared_examples_for "a hook into an HTTP library" do |library, *other|
         end
       end
 
-      matching_on :headers, {{ 'X-HTTP-HEADER1' => 'val1' } => 'val1 header response', { 'X-HTTP-HEADER1' => 'val2' } => 'val2 header response' }, { 'X-HTTP-HEADER1' => 'val3' } do
+      matching_on :headers, {{ 'X-Http-Header1' => 'val1' } => 'val1 header response', { 'X-Http-Header1' => 'val2' } => 'val2 header response' }, { 'X-Http-Header1' => 'val3' } do
         def make_http_request(headers)
           make_request(:get, "http://wrong-domain.com/wrong/path", nil, headers)
         end
@@ -166,7 +175,7 @@ shared_examples_for "a hook into an HTTP library" do |library, *other|
           let(:recorded_interaction) do
             interaction = nil
             VCR.should_receive(:record_http_interaction) { |i| interaction = i }
-            make_http_request(:get, url)
+            make_http_request(:post, url, "the body", { 'X-Http-Foo' => 'bar' })
             interaction
           end
 
@@ -182,15 +191,16 @@ shared_examples_for "a hook into an HTTP library" do |library, *other|
           end
 
           it 'records the request method' do
-            recorded_interaction.request.method.should eq(:get)
+            recorded_interaction.request.method.should eq(:post)
           end
 
           it 'records the request body' do
-            recorded_interaction.request.body.should be_nil
+            recorded_interaction.request.body.should eq("the body")
           end
 
           it 'records the request headers' do
-            recorded_interaction.request.headers.should be_nil
+            headers = downcase_headers(recorded_interaction.request.headers)
+            headers.should include('x-http-foo' => ['bar'])
           end
 
           it 'records the response status code' do
@@ -198,7 +208,7 @@ shared_examples_for "a hook into an HTTP library" do |library, *other|
           end
 
           it 'records the response status message' do
-            recorded_interaction.response.status.message.should eq('OK')
+            recorded_interaction.response.status.message.strip.should eq('OK')
           end unless other.include?(:status_message_not_exposed)
 
           it 'records the response body' do
@@ -206,7 +216,8 @@ shared_examples_for "a hook into an HTTP library" do |library, *other|
           end
 
           it 'records the response headers' do
-            recorded_interaction.response.headers['content-type'].should eq(["text/html;charset=utf-8"])
+            headers = downcase_headers(recorded_interaction.response.headers)
+            headers.should include('content-type' => ["text/html;charset=utf-8"])
           end
         end
       else

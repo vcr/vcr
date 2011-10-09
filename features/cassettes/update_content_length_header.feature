@@ -1,7 +1,7 @@
 Feature: Update content_length header
 
   When the `:update_content_length_header` option is set to a truthy value,
-  VCR will ensure that the `content-length` header will have the correct
+  VCR will ensure that the `Content-Length` header will have the correct
   value.  This is useful in several situations:
 
     - When you manually edit the cassette file and change the resonse body
@@ -12,10 +12,10 @@ Feature: Update content_length header
     - Syck, the default YAML engine for ruby 1.8 (and 1.9, unless you compile
       it to use Psych), has a bug where it sometimes will remove some
       whitespace strings when you serialize them.  This may cause the
-      `content-length` header to have the wrong value.
+      `Content-Length` header to have the wrong value.
 
   This is especially important when you use a client that checks the
-  `content-length` header.  Mechanize, for example, will raise an `EOFError`
+  `Content-Length` header.  Mechanize, for example, will raise an `EOFError`
   when the header value does not match the actual body length.
 
   Background:
@@ -25,7 +25,7 @@ Feature: Update content_length header
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :get
-          uri: http://example.com:80/
+          uri: http://example.com/
           body: 
           headers: 
         response: !ruby/struct:VCR::Response 
@@ -33,9 +33,9 @@ Feature: Update content_length header
             code: 200
             message: OK
           headers: 
-            content-type: 
+            Content-Type: 
             - text/html;charset=utf-8
-            content-length: 
+            Content-Length: 
             - "11"
           body: Hello <modified>
           http_version: "1.1"
@@ -52,7 +52,7 @@ Feature: Update content_length header
       def make_request_and_print_results
         response = Net::HTTP.get_response('example.com', '/')
         puts "Body length: #{response.body.length}"
-        puts "Header value: #{response['content-length']}"
+        puts "Header value: #{response['Content-Length']}"
       end
       """
 

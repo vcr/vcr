@@ -27,7 +27,7 @@ Feature: Register and use a custom matcher
             code: 200
             message: OK
           headers: 
-            content-length: 
+            Content-Length: 
             - "18"
           body: port 9000 response
           http_version: "1.1"
@@ -42,7 +42,7 @@ Feature: Register and use a custom matcher
             code: 200
             message: OK
           headers: 
-            content-length: 
+            Content-Length: 
             - "18"
           body: port 8000 response
           http_version: "1.1"

@@ -112,15 +112,9 @@ module VCR
           normalized = {}
           headers.each do |k, v|
             v = v.join(', ') if v.respond_to?(:join)
-            normalized[normalize_header_key(k)] = v
+            normalized[k] = v
           end
           normalized
-        end
-
-        def normalize_header_key(key)
-          key.split('-').               # 'user-agent' => %w(user agent)
-            each { |w| w.capitalize! }. # => %w(User Agent)
-            join('-')
         end
 
         ::Excon.stub({}) do |params|

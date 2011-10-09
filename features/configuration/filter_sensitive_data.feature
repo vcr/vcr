@@ -124,15 +124,15 @@ Feature: Filter sensitive data
         c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
         c.filter_sensitive_data('<PASSWORD>') do |interaction|
-          USER_PASSWORDS[interaction.request.headers['x-http-username'].first]
+          USER_PASSWORDS[interaction.request.headers['X-Http-Username'].first]
         end
       end
 
       VCR.use_cassette('example', :match_requests_on => [:method, :uri, :headers]) do
         puts "Response: " + response_body_for(
           :get, 'http://localhost:7777/', nil,
-          'X-HTTP-USERNAME' => 'john.doe',
-          'X-HTTP-PASSWORD' => USER_PASSWORDS['john.doe']
+          'X-Http-Username' => 'john.doe',
+          'X-Http-Password' => USER_PASSWORDS['john.doe']
         )
       end
       """
@@ -141,7 +141,7 @@ Feature: Filter sensitive data
     And the file "cassettes/example.yml" should contain "body: john.doe/<PASSWORD>"
     And the file "cassettes/example.yml" should contain a YAML fragment like:
       """
-      x-http-password:
+      X-Http-Password:
       - <PASSWORD>
       """
 

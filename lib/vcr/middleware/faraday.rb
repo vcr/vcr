@@ -45,7 +45,7 @@ module VCR
             VCR::ResponseStatus.new(response.status, nil),
             response.headers,
             response.body,
-            '1.1'
+            nil
           )
         end
 

@@ -6,7 +6,10 @@ module VCR
     include Normalizers::Body
 
     def update_content_length_header
-      headers['content-length'] &&= [body ? body.length.to_s : '0']
+      # TODO: should this be the bytesize?
+      value = body ? body.length.to_s : '0'
+      key = %w[ Content-Length content-length ].find { |k| headers.has_key?(k) }
+      headers[key] = [value] if key
     end
   end
 end

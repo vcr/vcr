@@ -71,12 +71,12 @@ Feature: EM HTTP Request
             code: 200
             message: OK
           headers: 
-            content-type: 
+            Content-Type: 
             - text/html;charset=utf-8
-            content-length: 
+            Content-Length: 
             - "9"
           body: Hello foo
-          http_version: "1.1"
+          http_version: 
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :get
@@ -88,12 +88,12 @@ Feature: EM HTTP Request
             code: 200
             message: OK
           headers: 
-            content-type: 
+            Content-Type: 
             - text/html;charset=utf-8
-            content-length: 
+            Content-Length: 
             - "9"
           body: Hello bar
-          http_version: "1.1"
+          http_version: 
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :get
@@ -105,12 +105,12 @@ Feature: EM HTTP Request
             code: 200
             message: OK
           headers: 
-            content-type: 
+            Content-Type: 
             - text/html;charset=utf-8
-            content-length: 
+            Content-Length: 
             - "10"
           body: Hello bazz
-          http_version: "1.1"
+          http_version: 
       """
 
     When I run `ruby make_requests.rb Goodbye`
@@ -164,12 +164,12 @@ Feature: EM HTTP Request
             code: 200
             message: OK
           headers: 
-            content-type: 
+            Content-Type: 
             - text/html;charset=utf-8
-            content-length: 
+            Content-Length: 
             - "9"
           body: Hello foo
-          http_version: "1.1"
+          http_version: 
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :get
@@ -181,12 +181,12 @@ Feature: EM HTTP Request
             code: 200
             message: OK
           headers: 
-            content-type: 
+            Content-Type: 
             - text/html;charset=utf-8
-            content-length: 
+            Content-Length: 
             - "9"
           body: Hello bar
-          http_version: "1.1"
+          http_version: 
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :get
@@ -198,12 +198,12 @@ Feature: EM HTTP Request
             code: 200
             message: OK
           headers: 
-            content-type: 
+            Content-Type: 
             - text/html;charset=utf-8
-            content-length: 
+            Content-Length: 
             - "10"
           body: Hello bazz
-          http_version: "1.1"
+          http_version: 
       """
 
     When I run `ruby make_requests.rb Goodbye`

@@ -19,7 +19,7 @@ Feature: Playback repeats
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :get
-          uri: http://example.com:80/foo
+          uri: http://example.com/foo
           body: 
           headers: 
         response: !ruby/struct:VCR::Response 
@@ -27,14 +27,14 @@ Feature: Playback repeats
             code: 200
             message: OK
           headers: 
-            content-length: 
+            Content-Length: 
             - "10"
           body: Response 1
           http_version: "1.1"
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :get
-          uri: http://example.com:80/foo
+          uri: http://example.com/foo
           body: 
           headers: 
         response: !ruby/struct:VCR::Response 
@@ -42,7 +42,7 @@ Feature: Playback repeats
             code: 200
             message: OK
           headers: 
-            content-length: 
+            Content-Length: 
             - "10"
           body: Response 2
           http_version: "1.1"

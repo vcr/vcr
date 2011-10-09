@@ -3,24 +3,45 @@ require 'vcr'
 module VCRHelpers
 
   def normalize_cassette_structs(content)
-    structs = YAML.load(content)
-
-    # Remove non-deterministic headers
-    structs.each do |s|
-      s.response.headers.reject! { |k, v| %w[ server date ].include?(k) }
+    YAML.load(content).tap do |http_interactions|
+      http_interactions.each { |i| normalize_http_interaction(i) }
     end
+  end
 
-    case @stubbing_lib_for_current_scenario
-      when /excon|faraday/
-        # Excon/Faraday do not expose the status message or http version,
-        # so we have no way to record these attributes.
-        structs.each do |s|
-          s.response.status.message = nil
-          s.response.http_version = nil
-        end
+  def normalize_headers(object)
+    object.headers = {} and return if object.headers.nil?
+    object.headers = {}.tap do |hash|
+      object.headers.each do |key, value|
+        hash[key.downcase] = value
+      end
     end
+  end
 
-    structs
+  def normalize_http_interaction(i)
+    normalize_headers(i.request)
+    normalize_headers(i.response)
+
+    i.request.body ||= ''
+    i.response.body ||= ''
+    i.response.status.message ||= ''
+
+    # Remove non-deterministic headers and headers
+    # that get added by a particular HTTP library (bu tnot by others)
+    i.response.headers.reject! { |k, v| %w[ server date connection ].include?(k) }
+    i.request.headers.reject! { |k, v| %w[ accept user-agent connection ].include?(k) }
+
+    # Some HTTP libraries include an extra space ("OK " instead of "OK")
+    i.response.status.message = i.response.status.message.strip
+
+    if @stubbing_lib_for_current_scenario =~ /excon|faraday/
+      # Excon/Faraday do not expose the status message or http version,
+      # so we have no way to record these attributes.
+      i.response.status.message = nil
+      i.response.http_version = nil
+    elsif @stubbing_lib_for_current_scenario.to_s.include?('webmock')
+      # WebMock does not expose the HTTP version so we have no way to record it
+      i.response.http_version = nil
+    end
   end
 
   def modify_file(file_name, orig_text, new_text)

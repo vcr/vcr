@@ -13,7 +13,7 @@ Feature: Matching on Host
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :post
-          uri: http://host1.com:80/some/long/path
+          uri: http://host1.com/some/long/path
           body: 
           headers: 
         response: !ruby/struct:VCR::Response 
@@ -21,14 +21,14 @@ Feature: Matching on Host
             code: 200
             message: OK
           headers: 
-            content-length: 
+            Content-Length: 
             - "14"
           body: host1 response
           http_version: "1.1"
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :post
-          uri: http://host2.com:80/some/other/long/path
+          uri: http://host2.com/some/other/long/path
           body:
           headers: 
         response: !ruby/struct:VCR::Response 
@@ -36,7 +36,7 @@ Feature: Matching on Host
             code: 200
             message: OK
           headers: 
-            content-length: 
+            Content-Length: 
             - "16"
           body: host2 response
           http_version: "1.1"

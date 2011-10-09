@@ -1,6 +1,18 @@
+module HeaderDowncaser
+  def downcase_headers(headers)
+    {}.tap do |downcased|
+      headers.each do |k, v|
+        downcased[k.downcase] = v
+      end
+    end
+  end
+end
+
 HTTP_LIBRARY_ADAPTERS = {}
 
 HTTP_LIBRARY_ADAPTERS['net/http'] = Module.new do
+  include HeaderDowncaser
+
   def self.http_library_name; 'Net::HTTP'; end
 
   def get_body_string(response); response.body; end
@@ -20,6 +32,11 @@ HTTP_LIBRARY_ADAPTERS['net/http'] = Module.new do
 
     http.send_request(method.to_s.upcase, uri.request_uri, body, headers)
   end
+
+  def normalize_request_headers(headers)
+    defined?(super) ? super :
+    downcase_headers(headers).merge("accept"=>["*/*"], "user-agent"=>["Ruby"])
+  end
 end
 
 HTTP_LIBRARY_ADAPTERS['patron'] = Module.new do
@@ -33,6 +50,10 @@ HTTP_LIBRARY_ADAPTERS['patron'] = Module.new do
 
   def make_http_request(method, url, body = nil, headers = {})
     Patron::Session.new.request(method, url, headers, :data => body || '')
+  end
+
+  def normalize_request_headers(headers)
+    headers.merge('Expect' => [''])
   end
 end
 
@@ -51,6 +72,10 @@ HTTP_LIBRARY_ADAPTERS['httpclient'] = Module.new do
 
   def make_http_request(method, url, body = nil, headers = {})
     HTTPClient.new.request(method, url, nil, body, headers)
+  end
+
+  def normalize_request_headers(headers)
+    headers
   end
 end
 
@@ -72,6 +97,10 @@ HTTP_LIBRARY_ADAPTERS['em-http-request'] = Module.new do
       http.callback { EventMachine.stop }
     end
     http
+  end
+
+  def normalize_request_headers(headers)
+    headers
   end
 end
 
@@ -102,6 +131,10 @@ HTTP_LIBRARY_ADAPTERS['curb'] = Module.new do
       end
     end
   end
+
+  def normalize_request_headers(headers)
+    headers
+  end
 end
 
 HTTP_LIBRARY_ADAPTERS['typhoeus'] = Module.new do
@@ -118,6 +151,10 @@ HTTP_LIBRARY_ADAPTERS['typhoeus'] = Module.new do
   def make_http_request(method, url, body = nil, headers = {})
     Typhoeus::Request.send(method, url, :body => body, :headers => headers)
   end
+
+  def normalize_request_headers(headers)
+    headers.merge("User-Agent" => ["Typhoeus - http://github.com/dbalatero/typhoeus/tree/master"])
+  end
 end
 
 HTTP_LIBRARY_ADAPTERS['excon'] = Module.new do
@@ -133,6 +170,10 @@ HTTP_LIBRARY_ADAPTERS['excon'] = Module.new do
 
   def make_http_request(method, url, body = nil, headers = {})
     Excon.send(method, url, :body => body, :headers => headers)
+  end
+
+  def normalize_request_headers(headers)
+    headers
   end
 end
 
@@ -178,6 +219,10 @@ end
         builder.use     VCR::Middleware::Faraday
         builder.adapter faraday_adapter
       end
+    end
+
+    def normalize_request_headers(headers)
+      headers
     end
   end
 end

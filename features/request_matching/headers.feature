@@ -9,34 +9,34 @@ Feature: Matching on Headers
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :post
-          uri: http://example.net:80/some/long/path
+          uri: http://example.net/some/long/path
           body: 
           headers: 
-            x-user-id: 
+            X-User-Id: 
             - "1"
         response: !ruby/struct:VCR::Response 
           status: !ruby/struct:VCR::ResponseStatus 
             code: 200
             message: OK
           headers: 
-            content-length: 
+            Content-Length: 
             - "15"
           body: user 1 response
           http_version: "1.1"
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :post
-          uri: http://example.net:80/some/long/path
+          uri: http://example.net/some/long/path
           body: 
           headers: 
-            x-user-id: 
+            X-User-Id: 
             - "2"
         response: !ruby/struct:VCR::Response 
           status: !ruby/struct:VCR::ResponseStatus 
             code: 200
             message: OK
           headers: 
-            content-length: 
+            Content-Length: 
             - "15"
           body: user 2 response
           http_version: "1.1"
@@ -71,14 +71,10 @@ Feature: Matching on Headers
 
     Examples:
       | configuration         | http_lib              |
-      | c.hook_into :fakeweb  | net/http              |
-      | c.hook_into :webmock  | net/http              |
       | c.hook_into :webmock  | httpclient            |
       | c.hook_into :webmock  | curb                  |
       | c.hook_into :webmock  | patron                |
       | c.hook_into :webmock  | em-http-request       |
-      | c.hook_into :webmock  | typhoeus              |
-      | c.hook_into :typhoeus | typhoeus              |
       | c.hook_into :excon    | excon                 |
       |                       | faraday (w/ net_http) |
       |                       | faraday (w/ typhoeus) |

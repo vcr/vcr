@@ -19,12 +19,6 @@ describe VCR::Request do
     end
   end
 
-  it_performs 'uri normalization' do
-    def instance(uri)
-      VCR::Request.new(:get, uri, '', {})
-    end
-  end
-
   it_performs 'header normalization' do
     def with_headers(headers)
       described_class.new(:get, 'http://example.com/', nil, headers)

@@ -18,6 +18,10 @@ module VCR
       "FOO!"
     end
 
+    post '/foo' do
+      "FOO!"
+    end
+
     get '/set-cookie-headers/1' do
       headers 'Set-Cookie' => 'foo'
       'header set'

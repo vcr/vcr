@@ -14,7 +14,7 @@ Feature: Matching on Method
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :post
-          uri: http://post-request.com:80/
+          uri: http://post-request.com/
           body: 
           headers: 
         response: !ruby/struct:VCR::Response 
@@ -22,14 +22,14 @@ Feature: Matching on Method
             code: 200
             message: OK
           headers: 
-            content-length: 
+            Content-Length: 
             - "13"
           body: post response
           http_version: "1.1"
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :get
-          uri: http://get-request.com:80/
+          uri: http://get-request.com/
           body:
           headers: 
         response: !ruby/struct:VCR::Response 
@@ -37,7 +37,7 @@ Feature: Matching on Method
             code: 200
             message: OK
           headers: 
-            content-length: 
+            Content-Length: 
             - "12"
           body: get response
           http_version: "1.1"

@@ -1,7 +1,6 @@
 module VCR
   class Request < Struct.new(:method, :uri, :body, :headers)
     include Normalizers::Header
-    include Normalizers::URI
     include Normalizers::Body
 
     @@object_method = Object.instance_method(:method)

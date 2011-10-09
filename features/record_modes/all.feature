@@ -38,9 +38,7 @@ Feature: :all
             code: 200
             message: OK
           headers: 
-            content-type: 
-            - text/html;charset=utf-8
-            content-length: 
+            Content-Length: 
             - "20"
           body: old response
           http_version: "1.1"

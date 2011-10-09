@@ -16,7 +16,7 @@ Feature: Dynamic ERB cassettes
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :get
-          uri: http://example.com:80/foo?a=<%= 'b' * 3 %>
+          uri: http://example.com/foo?a=<%= 'b' * 3 %>
           body: 
           headers: 
         response: !ruby/struct:VCR::Response 
@@ -24,9 +24,9 @@ Feature: Dynamic ERB cassettes
             code: 200
             message: OK
           headers: 
-            content-type: 
+            Content-Type: 
             - text/html;charset=utf-8
-            content-length: 
+            Content-Length: 
             - "9"
           body: Hello <%= 'bar'.next %>
           http_version: "1.1"
@@ -55,7 +55,7 @@ Feature: Dynamic ERB cassettes
       - !ruby/struct:VCR::HTTPInteraction 
         request: !ruby/struct:VCR::Request 
           method: :get
-          uri: http://example.com:80/foo?a=<%= arg1 %>
+          uri: http://example.com/foo?a=<%= arg1 %>
           body: 
           headers: 
         response: !ruby/struct:VCR::Response 
@@ -63,9 +63,9 @@ Feature: Dynamic ERB cassettes
             code: 200
             message: OK
           headers: 
-            content-type: 
+            Content-Type: 
             - text/html;charset=utf-8
-            content-length: 
+            Content-Length: 
             - "9"
           body: Hello <%= arg2 %>
           http_version: "1.1"

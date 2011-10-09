@@ -87,7 +87,7 @@ module VCR
 
     def normalize_uri(uri)
       # TODO: find a better, less-hacky way to do this.
-      if defined?(::WebMock)
+      uri = if defined?(::WebMock)
         ::WebMock::Util::URI.normalize_uri(uri).to_s
       elsif defined?(VCR::Middleware::Faraday)
         # Faraday normalizes URIs by replacing '+' with '%20'
@@ -95,6 +95,17 @@ module VCR
       else
         uri
       end
+
+      without_standard_port(uri)
+    end
+
+    def without_standard_port(uri)
+      URI(uri).tap { |u|
+        if u.scheme == 'http'  && u.port == 80 ||
+           u.scheme == 'https' && u.port == 443
+          u.port = nil
+        end
+      }.to_s
     end
   end
 end

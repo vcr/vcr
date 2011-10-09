@@ -29,7 +29,7 @@ module VCR
             VCR::ResponseStatus.new(response.status.first, response.status.last),
             response.headers,
             response.body,
-            '1.1'
+            nil
         end
       end
 
