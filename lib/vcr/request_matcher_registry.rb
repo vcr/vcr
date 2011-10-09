@@ -8,6 +8,27 @@ module VCR
       end
     end
 
+    class URIWithoutParamsMatcher < Struct.new(:params_to_ignore)
+      def partial_uri_from(request)
+        URI(request.uri).tap do |uri|
+          uri.query = uri.query.split('&').tap { |params|
+            params.map! do |p|
+              key, value = p.split('=')
+              key.gsub!(/\[\]\z/, '') # handle params like tag[]=
+              [key, value]
+            end
+
+            params.reject! { |p| params_to_ignore.include?(p.first) }
+            params.map!    { |p| p.join('=') }
+          }.join('&')
+        end
+      end
+
+      def call(request_1, request_2)
+        partial_uri_from(request_1) == partial_uri_from(request_2)
+      end
+    end
+
     def initialize
       @registry = {}
       register_built_ins
@@ -30,30 +51,18 @@ module VCR
     end
 
     def uri_without_params(*ignores)
-      ignores = ignores.map { |i| i.to_s }
-
-      lambda do |request_1, request_2|
-        uri_1, uri_2 = [request_1, request_2].map do |r|
-          URI(r.uri).tap do |uri|
-            uri.query = uri.query.split('&').tap { |params|
-              params.map! do |p|
-                key, value = p.split('=')
-                key.gsub!(/\[\]\z/, '') # handle params like tag[]=
-                [key, value]
-              end
-
-              params.reject! { |p| ignores.include?(p.first) }
-              params.map!    { |p| p.join('=') }
-            }.join('&')
-          end
-        end
-
-        uri_1 == uri_2
-      end
+      uri_without_param_matchers[ignores]
     end
     alias uri_without_param uri_without_params
 
   private
+
+    def uri_without_param_matchers
+      @uri_without_param_matchers ||= Hash.new do |hash, params|
+        params = params.map(&:to_s)
+        hash[params] = URIWithoutParamsMatcher.new(params)
+      end
+    end
 
     def raise_unregistered_matcher_error(name)
       raise Errors::UnregisteredMatcherError.new \
