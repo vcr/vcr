@@ -6,7 +6,7 @@
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.11.3...v2.0.0.beta1)
 
-### Changes
+### Changed
 
 * Previously, the last matching response in a cassette would
   repeatedly playback if the same request kept being made. This is
