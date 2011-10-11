@@ -70,6 +70,15 @@ module VCR
 
     [:uri_without_param, :uri_without_params].each do |meth|
       describe "##{meth}" do
+        it 'returns a matcher that can be registered for later use' do
+          matcher = subject.send(meth, :foo)
+          subject.register(:uri_without_foo, &matcher)
+          subject[:uri_without_foo].matches?(
+            request_with(:uri => 'http://example.com/search?foo=123'),
+            request_with(:uri => 'http://example.com/search?foo=123')
+          ).should be_true
+        end
+
         it 'matches two requests with URIs that are identical' do
           subject[subject.send(meth, :foo)].matches?(
             request_with(:uri => 'http://example.com/search?foo=123'),

@@ -29,6 +29,10 @@ module VCR
       def call(request_1, request_2)
         partial_uri_from(request_1) == partial_uri_from(request_2)
       end
+
+      def to_proc
+        lambda { |r1, r2| call(r1, r2) }
+      end
     end
 
     def initialize
