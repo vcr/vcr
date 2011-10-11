@@ -51,7 +51,7 @@ module VCR
       it 'raises an ArgumentError when no matcher has been registered for the given name' do
         expect {
           subject[:some_unregistered_matcher]
-        }.to raise_error(UnregisteredMatcherError)
+        }.to raise_error(VCR::Errors::UnregisteredMatcherError)
       end
 
       it 'returns an object that calls the named block when #matches? is called on it' do

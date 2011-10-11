@@ -1,3 +1,5 @@
+require 'vcr/errors'
+
 module VCR
   class RequestMatcherRegistry
     DEFAULT_MATCHERS = [:method, :uri]
