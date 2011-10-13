@@ -48,7 +48,7 @@ module VCRHelpers
     return content unless @scenario_parameters.to_s.include?('patron')
     interactions = YAML.load(content)
     interactions.each do |i|
-      i.request.headers.merge!('Expect' => [''])
+      i.request.headers = (i.request.headers || {}).merge!('Expect' => [''])
     end
     YAML.dump(interactions)
   end
