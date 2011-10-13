@@ -26,22 +26,31 @@ module VCRHelpers
     i.response.status.message ||= ''
 
     # Remove non-deterministic headers and headers
-    # that get added by a particular HTTP library (bu tnot by others)
+    # that get added by a particular HTTP library (but not by others)
     i.response.headers.reject! { |k, v| %w[ server date connection ].include?(k) }
-    i.request.headers.reject! { |k, v| %w[ accept user-agent connection ].include?(k) }
+    i.request.headers.reject! { |k, v| %w[ accept user-agent connection expect ].include?(k) }
 
     # Some HTTP libraries include an extra space ("OK " instead of "OK")
     i.response.status.message = i.response.status.message.strip
 
-    if @stubbing_lib_for_current_scenario =~ /excon|faraday/
+    if @scenario_parameters.to_s =~ /excon|faraday/
       # Excon/Faraday do not expose the status message or http version,
       # so we have no way to record these attributes.
       i.response.status.message = nil
       i.response.http_version = nil
-    elsif @stubbing_lib_for_current_scenario.to_s.include?('webmock')
+    elsif @scenario_parameters.to_s.include?('webmock')
       # WebMock does not expose the HTTP version so we have no way to record it
       i.response.http_version = nil
     end
+  end
+
+  def normalize_cassette_content(content)
+    return content unless @scenario_parameters.to_s.include?('patron')
+    interactions = YAML.load(content)
+    interactions.each do |i|
+      i.request.headers.merge!('Expect' => [''])
+    end
+    YAML.dump(interactions)
   end
 
   def modify_file(file_name, orig_text, new_text)
@@ -66,7 +75,7 @@ Given /^the directory "([^"]*)" does not exist$/ do |dir|
 end
 
 Given /^a previously recorded cassette file "([^"]*)" with:$/ do |file_name, content|
-  write_file(file_name, content)
+  write_file(file_name, normalize_cassette_content(content))
 end
 
 Given /^(\d+) days have passed since the cassette was recorded$/ do |day_count|

@@ -2,7 +2,7 @@ Feature: Matching on Headers
 
   Use the `:headers` request matcher to match requests on the request headers.
 
-  Background:
+  Scenario Outline: Replay interaction that matches the headers
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
       --- 
@@ -41,8 +41,6 @@ Feature: Matching on Headers
           body: user 2 response
           http_version: "1.1"
       """
-
-  Scenario Outline: Replay interaction that matches the headers
     And a file named "header_matching.rb" with:
       """ruby
       include_http_adapter_for("<http_lib>")

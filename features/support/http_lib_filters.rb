@@ -44,8 +44,8 @@ end
 # logic in our step definitions based on the http stubbing library.
 Before do |scenario|
   if scenario.respond_to?(:cell_values)
-    @stubbing_lib_for_current_scenario = scenario.cell_values.find { |v| v =~ /fakeweb|webmock|typhoeus|faraday|excon/ }
+    @scenario_parameters = scenario.cell_values
   else
-    @stubbing_lib_for_current_scenario = nil
+    @scenario_parameters = nil
   end
 end
