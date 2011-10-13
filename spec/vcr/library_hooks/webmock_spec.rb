@@ -5,7 +5,7 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
     it_behaves_like 'a hook into an HTTP library', lib do
       if lib == 'net/http'
         def normalize_request_headers(headers)
-          headers.merge('Accept' => ['*/*'], 'User-Agent' => ['Ruby'])
+          headers.merge(DEFAULT_REQUEST_HEADERS)
         end
       end
     end

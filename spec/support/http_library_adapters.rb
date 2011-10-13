@@ -33,9 +33,12 @@ HTTP_LIBRARY_ADAPTERS['net/http'] = Module.new do
     http.send_request(method.to_s.upcase, uri.request_uri, body, headers)
   end
 
+  DEFAULT_REQUEST_HEADERS = { "Accept"=>["*/*"] }
+  DEFAULT_REQUEST_HEADERS['User-Agent'] = ["Ruby"] if RUBY_VERSION =~ /1.9/
+
   def normalize_request_headers(headers)
     defined?(super) ? super :
-    downcase_headers(headers).merge("accept"=>["*/*"], "user-agent"=>["Ruby"])
+    downcase_headers(headers.merge(DEFAULT_REQUEST_HEADERS))
   end
 end
 
