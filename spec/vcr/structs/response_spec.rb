@@ -16,14 +16,14 @@ describe VCR::Response do
   describe '#update_content_length_header' do
     %w[ content-length Content-Length ].each do |header|
       context "for the #{header} header" do
-        define_method :instance do |body, content_length = nil|
+        define_method :instance do |body, content_length|
           headers = { 'content-type' => 'text' }
           headers.merge!(header => content_length) if content_length
           described_class.new(VCR::ResponseStatus.new, headers, body)
         end
 
         it 'does nothing when the response lacks a content_length header' do
-          inst = instance('the body')
+          inst = instance('the body', nil)
           expect {
             inst.update_content_length_header
           }.not_to change { inst.headers[header] }
