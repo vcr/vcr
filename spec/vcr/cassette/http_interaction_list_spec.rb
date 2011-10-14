@@ -1,6 +1,6 @@
 require 'vcr/cassette/http_interaction_list'
 require 'vcr/request_matcher_registry'
-require 'vcr/structs/http_interaction'
+require 'vcr/structs'
 require 'uri'
 
 module VCR

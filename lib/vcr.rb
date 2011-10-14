@@ -8,9 +8,9 @@ require 'vcr/errors'
 require 'vcr/library_hooks'
 require 'vcr/request_ignorer'
 require 'vcr/request_matcher_registry'
+require 'vcr/structs'
 require 'vcr/version'
 
-require 'vcr/structs/http_interaction'
 
 module VCR
   include VariableArgsBlockCaller

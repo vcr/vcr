@@ -1,4 +1,4 @@
-require 'vcr/structs/http_interaction'
+require 'vcr/structs'
 require 'vcr/request_ignorer'
 
 module VCR
