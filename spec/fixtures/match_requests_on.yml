@@ -1,185 +1,183 @@
 --- 
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :post
-    uri: http://example.com:80/method
-    body: 
+- request: 
+    method: post
+    uri: http://example.com/method
+    body: ""
     headers: {}
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+
+  response: 
+    status: 
       code: 200
       message: OK
     headers: 
-      ETag: 
+      Etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: post method response
     http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :get
-    uri: http://example.com:80/method
-    body: 
+- request: 
+    method: get
+    uri: http://example.com/method
+    body: ""
     headers: {}
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+
+  response: 
+    status: 
       code: 200
       message: OK
     headers: 
-      ETag: 
+      Etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: get method response
     http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :post
-    uri: http://example1.com:80/host
-    body: 
+- request: 
+    method: post
+    uri: http://example1.com/host
+    body: ""
     headers: {}
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+
+  response: 
+    status: 
       code: 200
       message: OK
     headers: 
-      ETag: 
+      Etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: example1.com host response
     http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :post
-    uri: http://example2.com:80/host
-    body: 
+- request: 
+    method: post
+    uri: http://example2.com/host
+    body: ""
     headers: {}
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+
+  response: 
+    status: 
       code: 200
       message: OK
     headers: 
-      ETag: 
+      Etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: example2.com host response
     http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :post
-    uri: http://example.com:80/path1
-    body: 
+- request: 
+    method: post
+    uri: http://example.com/path1
+    body: ""
     headers: {}
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+
+  response: 
+    status: 
       code: 200
       message: OK
     headers: 
-      ETag: 
+      Etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: path1 response
     http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :post
-    uri: http://example.com:80/path2
-    body: 
+- request: 
+    method: post
+    uri: http://example.com/path2
+    body: ""
     headers: {}
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+
+  response: 
+    status: 
       code: 200
       message: OK
     headers: 
-      ETag: 
+      Etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: path2 response
     http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :post
-    uri: http://example.com:80/uri1
-    body: 
+- request: 
+    method: post
+    uri: http://example.com/uri1
+    body: ""
     headers: {}
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+
+  response: 
+    status: 
       code: 200
       message: OK
     headers: 
-      ETag: 
+      Etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: uri1 response
     http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :post
-    uri: http://example.com:80/uri2
-    body: 
+- request: 
+    method: post
+    uri: http://example.com/uri2
+    body: ""
     headers: {}
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+
+  response: 
+    status: 
       code: 200
       message: OK
     headers: 
-      ETag: 
+      Etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: uri2 response
     http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :post
-    uri: http://example.com:80/
+- request: 
+    method: post
+    uri: http://example.com/
     body: param=val1
     headers: {}
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+
+  response: 
+    status: 
       code: 200
       message: OK
     headers: 
-      ETag: 
+      Etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: val1 body response
     http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :post
-    uri: http://example.com:80/
+- request: 
+    method: post
+    uri: http://example.com/
     body: param=val2
     headers: {}
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+
+  response: 
+    status: 
       code: 200
       message: OK
     headers: 
-      ETag: 
+      Etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: val2 body response
     http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :post
-    uri: http://example.com:80/
-    body: 
+- request: 
+    method: post
+    uri: http://example.com/
+    body: ""
     headers: 
       X-Http-Header1: 
       - val1
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: 
+    status: 
       code: 200
       message: OK
     headers: 
-      ETag: 
+      Etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: val1 header response
     http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :post
-    uri: http://example.com:80/
-    body: 
+- request: 
+    method: post
+    uri: http://example.com/
+    body: ""
     headers: 
       X-Http-Header1: 
       - val2
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: 
+    status: 
       code: 200
       message: OK
     headers: 
-      ETag: 
+      Etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
     body: val2 header response
     http_version: "1.1"

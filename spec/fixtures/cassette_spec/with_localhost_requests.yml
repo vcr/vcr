@@ -1,109 +1,109 @@
 --- 
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :get
-    uri: http://localhost:80/
-    body: 
-    headers: 
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+- request: 
+    method: get
+    uri: http://localhost/
+    body: ""
+    headers: {}
+
+  response: 
+    status: 
       code: 200
       message: OK
     headers: 
-      etag: 
-      - "\"24ec5-1b6-4059a80bfd280\""
-      last-modified: 
+      Last-Modified: 
       - Tue, 15 Nov 2005 13:24:10 GMT
-      connection: 
-      - Keep-Alive
-      content-type: 
-      - text/html; charset=UTF-8
-      date: 
+      Etag: 
+      - "\"24ec5-1b6-4059a80bfd280\""
+      Date: 
       - Thu, 25 Feb 2010 07:53:51 GMT
-      server: 
-      - Apache/2.2.3 (CentOS)
-      content-length: 
+      Content-Type: 
+      - text/html; charset=UTF-8
+      Content-Length: 
       - "438"
-      age: 
-      - "9260"
-      accept-ranges: 
+      Accept-Ranges: 
       - bytes
+      Server: 
+      - Apache/2.2.3 (CentOS)
+      Age: 
+      - "9260"
+      Connection: 
+      - Keep-Alive
     body: Localhost response
     http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :get
-    uri: http://127.0.0.1:80/
-    body: 
-    headers: 
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+- request: 
+    method: get
+    uri: http://127.0.0.1/
+    body: ""
+    headers: {}
+
+  response: 
+    status: 
       code: 404
       message: Not Found
     headers: 
-      content-type: 
-      - text/html; charset=iso-8859-1
-      connection: 
-      - close
-      server: 
-      - Apache/2.2.3 (CentOS)
-      date: 
+      Date: 
       - Thu, 25 Feb 2010 07:53:52 GMT
-      content-length: 
+      Content-Type: 
+      - text/html; charset=iso-8859-1
+      Content-Length: 
       - "277"
+      Server: 
+      - Apache/2.2.3 (CentOS)
+      Connection: 
+      - close
     body: 127.0.0.1 response
     http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :get
-    uri: http://0.0.0.0:80/
-    body: 
-    headers: 
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+- request: 
+    method: get
+    uri: http://0.0.0.0/
+    body: ""
+    headers: {}
+
+  response: 
+    status: 
       code: 404
       message: Not Found
     headers: 
-      content-type: 
-      - text/html; charset=iso-8859-1
-      connection: 
-      - close
-      server: 
-      - Apache/2.2.3 (CentOS)
-      date: 
+      Date: 
       - Thu, 25 Feb 2010 07:53:52 GMT
-      content-length: 
+      Content-Type: 
+      - text/html; charset=iso-8859-1
+      Content-Length: 
       - "277"
+      Server: 
+      - Apache/2.2.3 (CentOS)
+      Connection: 
+      - close
     body: 127.0.0.1 response
     http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :get
-    uri: http://example.com:80/
-    body: 
-    headers: 
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+- request: 
+    method: get
+    uri: http://example.com/
+    body: ""
+    headers: {}
+
+  response: 
+    status: 
       code: 200
       message: OK
     headers: 
-      etag: 
-      - "\"24ec5-1b6-4059a80bfd280\""
-      last-modified: 
+      Last-Modified: 
       - Tue, 15 Nov 2005 13:24:10 GMT
-      connection: 
-      - Keep-Alive
-      content-type: 
-      - text/html; charset=UTF-8
-      date: 
+      Etag: 
+      - "\"24ec5-1b6-4059a80bfd280\""
+      Date: 
       - Thu, 25 Feb 2010 07:53:51 GMT
-      server: 
-      - Apache/2.2.3 (CentOS)
-      content-length: 
+      Content-Type: 
+      - text/html; charset=UTF-8
+      Content-Length: 
       - "438"
-      age: 
-      - "9260"
-      accept-ranges: 
+      Accept-Ranges: 
       - bytes
+      Server: 
+      - Apache/2.2.3 (CentOS)
+      Age: 
+      - "9260"
+      Connection: 
+      - Keep-Alive
     body: example.com response
     http_version: "1.1"

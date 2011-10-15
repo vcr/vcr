@@ -1,6 +1,13 @@
 require 'spec_helper'
 
 describe VCR::Cassette do
+  def http_interaction
+    request = VCR::Request.new(:get)
+    response = VCR::Response.new
+    response.status = VCR::ResponseStatus.new
+    VCR::HTTPInteraction.new(request, response).tap { |i| yield i if block_given? }
+  end
+
   describe '#file' do
     it 'combines the cassette_library_dir with the cassette name' do
       cassette = VCR::Cassette.new('the_file')
@@ -155,14 +162,22 @@ describe VCR::Cassette do
       end
 
       context "when :#{record_mode} is passed as the record option" do
+        def stub_old_interactions(interactions)
+          hashes = interactions.map(&:to_hash)
+          VCR.cassette_serializers[:yaml].stub(:deserialize => hashes)
+          VCR::HTTPInteraction.stub(:from_hash) do |hash|
+            interactions[hashes.index(hash)]
+          end
+        end
+
         unless record_mode == :all
-          let(:interaction_1) { VCR::HTTPInteraction.new(VCR::Request.new(:get, 'http://example.com/'), VCR::Response.new(VCR::ResponseStatus.new)) }
-          let(:interaction_2) { VCR::HTTPInteraction.new(VCR::Request.new(:get, 'http://example.com/'), VCR::Response.new(VCR::ResponseStatus.new)) }
+          let(:interaction_1) { http_interaction { |i| i.request.uri = 'http://example.com/foo' } }
+          let(:interaction_2) { http_interaction { |i| i.request.uri = 'http://example.com/bar' } }
           let(:interactions)  { [interaction_1, interaction_2] }
           before(:each) { VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec" }
 
           it 'updates the content_length headers when given :update_content_length_header => true' do
-            VCR::YAML.stub(:load => interactions)
+            stub_old_interactions(interactions)
             interaction_1.response.should_receive(:update_content_length_header)
             interaction_2.response.should_receive(:update_content_length_header)
 
@@ -171,7 +186,7 @@ describe VCR::Cassette do
 
           [nil, false].each do |val|
             it "does not update the content_lenth headers when given :update_content_length_header => #{val.inspect}" do
-              VCR::YAML.stub(:load => interactions)
+              stub_old_interactions(interactions)
               interaction_1.response.should_not_receive(:update_content_length_header)
               interaction_2.response.should_not_receive(:update_content_length_header)
 
@@ -241,15 +256,15 @@ describe VCR::Cassette do
           i1, i2, i3 = *cassette.recorded_interactions
 
           i1.request.method.should eq(:get)
-          i1.request.uri.should eq('http://example.com:80/')
+          i1.request.uri.should eq('http://example.com/')
           i1.response.body.should =~ /You have reached this web page by typing.+example\.com/
 
           i2.request.method.should eq(:get)
-          i2.request.uri.should eq('http://example.com:80/foo')
+          i2.request.uri.should eq('http://example.com/foo')
           i2.response.body.should =~ /foo was not found on this server/
 
           i3.request.method.should eq(:get)
-          i3.request.uri.should eq('http://example.com:80/')
+          i3.request.uri.should eq('http://example.com/')
           i3.response.body.should =~ /Another example\.com response/
         end
 
@@ -319,9 +334,9 @@ describe VCR::Cassette do
   describe '#eject' do
     it "writes the recorded interactions to disk as yaml" do
       recorded_interactions = [
-        VCR::HTTPInteraction.new(:req_sig_1, :response_1),
-        VCR::HTTPInteraction.new(:req_sig_2, :response_2),
-        VCR::HTTPInteraction.new(:req_sig_3, :response_3)
+        http_interaction { |i| i.request.uri = 'http://foo.com/'; i.response.body = 'res 1' },
+        http_interaction { |i| i.request.uri = 'http://bar.com/'; i.response.body = 'res 2' },
+        http_interaction { |i| i.request.uri = 'http://goo.com/'; i.response.body = 'res 3' }
       ]
 
       cassette = VCR::Cassette.new(:eject_test)
@@ -329,13 +344,13 @@ describe VCR::Cassette do
 
       expect { cassette.eject }.to change { File.exist?(cassette.file) }.from(false).to(true)
       saved_recorded_interactions = VCR::YAML.load_file(cassette.file)
-      saved_recorded_interactions.should eq(recorded_interactions)
+      saved_recorded_interactions.should eq(recorded_interactions.map(&:to_hash))
     end
 
     it 'invokes the appropriately tagged before_record hooks' do
       interactions = [
-        VCR::HTTPInteraction.new(:req_sig_1, :response_1),
-        VCR::HTTPInteraction.new(:req_sig_2, :response_2)
+        http_interaction { |i| i.request.uri = 'http://foo.com/'; i.response.body = 'res 1' },
+        http_interaction { |i| i.request.uri = 'http://bar.com/'; i.response.body = 'res 2' }
       ]
 
       cassette = VCR::Cassette.new('example', :tag => :foo)
@@ -354,8 +369,8 @@ describe VCR::Cassette do
     end
 
     it 'does not record interactions that have been ignored' do
-      interaction_1 = VCR::HTTPInteraction.new(:request_1, :response_1)
-      interaction_2 = VCR::HTTPInteraction.new(:request_2, :response_2)
+      interaction_1 = http_interaction { |i| i.request.uri = 'http://foo.com/'; i.response.body = 'res 1' }
+      interaction_2 = http_interaction { |i| i.request.uri = 'http://bar.com/'; i.response.body = 'res 2' }
 
       interaction_1.ignore!
 
@@ -363,12 +378,12 @@ describe VCR::Cassette do
       cassette.stub!(:new_recorded_interactions).and_return([interaction_1, interaction_2])
       cassette.eject
 
-      saved_recorded_interactions = VCR::YAML.load_file(cassette.file)
-      saved_recorded_interactions.should eq([interaction_2])
+      saved_recorded_interactions = ::YAML.load_file(cassette.file)
+      saved_recorded_interactions.should eq([interaction_2.to_hash])
     end
 
     it 'does not write the cassette to disk if all interactions have been ignored' do
-      interaction_1 = VCR::HTTPInteraction.new(:request_1, :response_1)
+      interaction_1 = http_interaction { |i| i.request.uri = 'http://foo.com/'; i.response.body = 'res 1' }
       interaction_1.ignore!
 
       cassette = VCR::Cassette.new('test_cassette')
@@ -379,13 +394,13 @@ describe VCR::Cassette do
     end
 
     it "writes the recorded interactions to a subdirectory if the cassette name includes a directory" do
-      recorded_interactions = [VCR::HTTPInteraction.new(:the_request, :the_response)]
+      recorded_interactions = [http_interaction { |i| i.response.body = "subdirectory response" }]
       cassette = VCR::Cassette.new('subdirectory/test_cassette')
-      cassette.stub!(:new_recorded_interactions).and_return(recorded_interactions)
+      cassette.stub(:new_recorded_interactions => recorded_interactions)
 
       expect { cassette.eject }.to change { File.exist?(cassette.file) }.from(false).to(true)
       saved_recorded_interactions = VCR::YAML.load_file(cassette.file)
-      saved_recorded_interactions.should eq(recorded_interactions)
+      saved_recorded_interactions.should eq(recorded_interactions.map(&:to_hash))
     end
 
     [:all, :none, :new_episodes].each do |record_mode|
@@ -404,19 +419,20 @@ describe VCR::Cassette do
         end
 
         context 'when some new interactions have been recorded' do
-          def interaction(response, request_attributes)
-            request = VCR::Request.new
-            request_attributes.each do |key, value|
-              request.send("#{key}=", value)
+          def interaction(response_body, request_attributes)
+            http_interaction do |interaction|
+              interaction.response.body = response_body
+              request_attributes.each do |key, value|
+                interaction.request.send("#{key}=", value)
+              end
             end
-            VCR::HTTPInteraction.new(request, response)
           end
 
           let(:interaction_foo_1) { interaction("foo 1", :uri => 'http://foo.com/') }
           let(:interaction_foo_2) { interaction("foo 2", :uri => 'http://foo.com/') }
           let(:interaction_bar)   { interaction("bar", :uri => 'http://bar.com/') }
 
-          let(:saved_recorded_interactions) { VCR::YAML.load_file(subject.file) }
+          let(:saved_recorded_interactions) { YAML.load_file(subject.file).map { |h| VCR::HTTPInteraction.from_hash(h) } }
 
           before(:each) do
             subject.stub(:recorded_interactions => [interaction_foo_1])

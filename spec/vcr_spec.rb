@@ -157,6 +157,13 @@ describe VCR do
     end
   end
 
+  describe '.serializers' do
+    it 'always returns the same memoized cassette serializers instance' do
+      VCR.cassette_serializers.should be_a(VCR::Cassette::Serializers)
+      VCR.cassette_serializers.should be(VCR.cassette_serializers)
+    end
+  end
+
   describe '.configuration' do
     it 'returns the configuration object' do
       VCR.configuration.should be_a(VCR::Configuration)

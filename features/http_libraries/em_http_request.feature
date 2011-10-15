@@ -59,58 +59,55 @@ Feature: EM HTTP Request
       """
     And the file "cassettes/em_http.yml" should contain YAML like:
       """
-      --- 
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :get
+      ---
+      - request:
+          method: get
           uri: http://localhost:7777/foo
-          body: 
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Type: 
+          headers:
+            Content-Type:
             - text/html;charset=utf-8
-            Content-Length: 
-            - "9"
+            Content-Length:
+            - '9'
           body: Hello foo
-          http_version: 
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :get
+          http_version: !!null 
+      - request:
+          method: get
           uri: http://localhost:7777/bar
-          body: 
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Type: 
+          headers:
+            Content-Type:
             - text/html;charset=utf-8
-            Content-Length: 
-            - "9"
+            Content-Length:
+            - '9'
           body: Hello bar
-          http_version: 
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :get
+          http_version: !!null 
+      - request:
+          method: get
           uri: http://localhost:7777/bazz
-          body: 
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Type: 
+          headers:
+            Content-Type:
             - text/html;charset=utf-8
-            Content-Length: 
-            - "10"
+            Content-Length:
+            - '10'
           body: Hello bazz
-          http_version: 
+          http_version: !!null 
       """
 
     When I run `ruby make_requests.rb Goodbye`
@@ -152,58 +149,55 @@ Feature: EM HTTP Request
       """
     And the file "cassettes/em_http.yml" should contain YAML like:
       """
-      --- 
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :get
+      ---
+      - request:
+          method: get
           uri: http://localhost:7777/foo
-          body: 
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Type: 
+          headers:
+            Content-Type:
             - text/html;charset=utf-8
-            Content-Length: 
-            - "9"
+            Content-Length:
+            - '9'
           body: Hello foo
-          http_version: 
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :get
+          http_version: !!null 
+      - request:
+          method: get
           uri: http://localhost:7777/bar
-          body: 
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Type: 
+          headers:
+            Content-Type:
             - text/html;charset=utf-8
-            Content-Length: 
-            - "9"
+            Content-Length:
+            - '9'
           body: Hello bar
-          http_version: 
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :get
+          http_version: !!null 
+      - request:
+          method: get
           uri: http://localhost:7777/bazz
-          body: 
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Type: 
+          headers:
+            Content-Type:
             - text/html;charset=utf-8
-            Content-Length: 
-            - "10"
+            Content-Length:
+            - '10'
           body: Hello bazz
-          http_version: 
+          http_version: !!null 
       """
 
     When I run `ruby make_requests.rb Goodbye`

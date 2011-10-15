@@ -3,8 +3,8 @@ require 'vcr'
 module VCRHelpers
 
   def normalize_cassette_structs(content)
-    YAML.load(content).tap do |http_interactions|
-      http_interactions.each { |i| normalize_http_interaction(i) }
+    YAML.load(content).tap do |hashes|
+      hashes.map! { |h| normalize_http_interaction(h) }
     end
   end
 
@@ -17,7 +17,8 @@ module VCRHelpers
     end
   end
 
-  def normalize_http_interaction(i)
+  def normalize_http_interaction(hash)
+    i = VCR::HTTPInteraction.from_hash(hash)
     normalize_headers(i.request)
     normalize_headers(i.response)
 
@@ -133,7 +134,7 @@ Then /^the file "([^"]*)" should contain a YAML fragment like:$/ do |file_name, 
 end
 
 Then /^the cassette "([^"]*)" should have the following response bodies:$/ do |file, table|
-  interactions = in_current_dir { YAML.load_file(file) }
+  interactions = in_current_dir { YAML.load_file(file) }.map { |h| VCR::HTTPInteraction.from_hash(h) }
   actual_response_bodies = interactions.map { |i| i.response.body }
   expected_response_bodies = table.raw.flatten
   actual_response_bodies.should =~ expected_response_bodies

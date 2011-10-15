@@ -10,37 +10,35 @@ Feature: Matching on Method
   Background:
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
-      --- 
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :post
+      ---
+      - request:
+          method: post
           uri: http://post-request.com/
-          body: 
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Length: 
-            - "13"
+          headers:
+            Content-Length:
+            - '13'
           body: post response
-          http_version: "1.1"
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :get
+          http_version: '1.1'
+      - request:
+          method: get
           uri: http://get-request.com/
-          body:
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Length: 
-            - "12"
+          headers:
+            Content-Length:
+            - '12'
           body: get response
-          http_version: "1.1"
+          http_version: '1.1'
       """
 
   Scenario Outline: Replay interaction that matches the HTTP method

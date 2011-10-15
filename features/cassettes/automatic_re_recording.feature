@@ -13,22 +13,21 @@ Feature: Automatic Re-recording
   Background:
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
-      --- 
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :get
+      ---
+      - request:
+          method: get
           uri: http://localhost:7777/
-          body: 
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Length: 
-            - "12"
+          headers:
+            Content-Length:
+            - '12'
           body: Old Response
-          http_version: "1.1"
+          http_version: '1.1'
       """
     And a file named "re_record.rb" with:
       """ruby

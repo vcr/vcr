@@ -5,6 +5,11 @@ NET_CONNECT_NOT_ALLOWED_ERROR = /You can use VCR to automatically record this re
 shared_examples_for "a hook into an HTTP library" do |library, *other|
   include HeaderDowncaser
 
+  def interactions_from(file)
+    hashes = YAML.load_file(File.join(VCR::SPEC_ROOT, 'fixtures', file))
+    hashes.map { |h| VCR::HTTPInteraction.from_hash(h) }
+  end
+
   unless adapter_module = HTTP_LIBRARY_ADAPTERS[library]
     raise ArgumentError.new("No http library adapter module could be found for #{library}")
   end
@@ -97,7 +102,7 @@ shared_examples_for "a hook into an HTTP library" do |library, *other|
 
     describe '.stub_requests using specific match_attributes' do
       before(:each) { VCR.stub(:real_http_connections_allowed? => false) }
-      let(:interactions) { VCR::YAML.load_file(File.join(VCR::SPEC_ROOT, 'fixtures', 'match_requests_on.yml')) }
+      let(:interactions) { interactions_from('match_requests_on.yml') }
 
       let(:normalized_interactions) do
         interactions.each do |i|
@@ -255,9 +260,9 @@ shared_examples_for "a hook into an HTTP library" do |library, *other|
         end
 
         context 'when some requests are stubbed' do
+          let(:interactions) { interactions_from('fake_example.com_responses.yml') }
           before(:each) do
-            @recorded_interactions = VCR::YAML.load_file(File.join(VCR::SPEC_ROOT, 'fixtures', 'fake_example.com_responses.yml'))
-            stub_requests(@recorded_interactions, VCR::RequestMatcherRegistry::DEFAULT_MATCHERS)
+            stub_requests(interactions, VCR::RequestMatcherRegistry::DEFAULT_MATCHERS)
           end
 
           it 'gets the stubbed responses when requests are made to http://example.com/foo, and does not record them' do

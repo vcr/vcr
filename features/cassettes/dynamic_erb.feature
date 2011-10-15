@@ -12,24 +12,23 @@ Feature: Dynamic ERB cassettes
   Scenario: Enable dynamic ERB cassette evalutation using :erb => true
     Given a previously recorded cassette file "cassettes/dynamic.yml" with:
       """
-      --- 
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :get
+      ---
+      - request:
+          method: get
           uri: http://example.com/foo?a=<%= 'b' * 3 %>
-          body: 
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Type: 
+          headers:
+            Content-Type:
             - text/html;charset=utf-8
-            Content-Length: 
-            - "9"
+            Content-Length:
+            - '9'
           body: Hello <%= 'bar'.next %>
-          http_version: "1.1"
+          http_version: '1.1'
       """
     And a file named "dynamic_erb_example.rb" with:
       """ruby
@@ -51,24 +50,23 @@ Feature: Dynamic ERB cassettes
   Scenario: Pass arguments to the ERB using :erb => { ... }
     Given a previously recorded cassette file "cassettes/dynamic.yml" with:
       """
-      --- 
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :get
+      ---
+      - request:
+          method: get
           uri: http://example.com/foo?a=<%= arg1 %>
-          body: 
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Type: 
+          headers:
+            Content-Type:
             - text/html;charset=utf-8
-            Content-Length: 
-            - "9"
+            Content-Length:
+            - '9'
           body: Hello <%= arg2 %>
-          http_version: "1.1"
+          http_version: '1.1'
       """
     And a file named "dynamic_erb_example.rb" with:
       """ruby

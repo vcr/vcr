@@ -9,37 +9,35 @@ Feature: Matching on Host
   Background:
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
-      --- 
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :post
+      ---
+      - request:
+          method: post
           uri: http://host1.com/some/long/path
-          body: 
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Length: 
-            - "14"
+          headers:
+            Content-Length:
+            - '14'
           body: host1 response
-          http_version: "1.1"
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :post
+          http_version: '1.1'
+      - request:
+          method: post
           uri: http://host2.com/some/other/long/path
-          body:
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Length: 
-            - "16"
+          headers:
+            Content-Length:
+            - '16'
           body: host2 response
-          http_version: "1.1"
+          http_version: '1.1'
       """
 
   Scenario Outline: Replay interaction that matches the host

@@ -8,37 +8,35 @@ Feature: Identical requests are replayed in sequence
   Scenario Outline: identical requests are replayed in sequence
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
-      --- 
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :get
+      ---
+      - request:
+          method: get
           uri: http://example.com/foo
-          body: 
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Length: 
-            - "10"
+          headers:
+            Content-Length:
+            - '10'
           body: Response 1
-          http_version: "1.1"
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :get
+          http_version: '1.1'
+      - request:
+          method: get
           uri: http://example.com/foo
-          body: 
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Length: 
-            - "10"
+          headers:
+            Content-Length:
+            - '10'
           body: Response 2
-          http_version: "1.1"
+          http_version: '1.1'
       """
     And a file named "rotate_responses.rb" with:
       """ruby

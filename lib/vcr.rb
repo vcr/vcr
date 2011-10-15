@@ -2,6 +2,7 @@ require 'vcr/util/variable_args_block_caller'
 require 'vcr/util/yaml'
 
 require 'vcr/cassette'
+require 'vcr/cassette/serializers'
 require 'vcr/configuration'
 require 'vcr/deprecations'
 require 'vcr/errors'
@@ -83,6 +84,10 @@ module VCR
 
   def library_hooks
     @library_hooks ||= LibraryHooks.new
+  end
+
+  def cassette_serializers
+    @cassette_serializers ||= Cassette::Serializers.new
   end
 
   def configuration

@@ -5,37 +5,35 @@ Feature: Matching on Body
   Background:
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
-      --- 
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :post
+      ---
+      - request:
+          method: post
           uri: http://example.net/some/long/path
           body: body1
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Length: 
-            - "14"
+          headers:
+            Content-Length:
+            - '14'
           body: body1 response
-          http_version: "1.1"
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :post
+          http_version: '1.1'
+      - request:
+          method: post
           uri: http://example.net/some/long/path
           body: body2
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Length: 
-            - "14"
+          headers:
+            Content-Length:
+            - '14'
           body: body2 response
-          http_version: "1.1"
+          http_version: '1.1'
       """
 
   Scenario Outline: Replay interaction that matches the body

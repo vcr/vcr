@@ -2,8 +2,9 @@ require 'fileutils'
 require 'erb'
 require 'set'
 
-require 'vcr/cassette/reader'
 require 'vcr/cassette/http_interaction_list'
+require 'vcr/cassette/reader'
+require 'vcr/cassette/serializers'
 
 module VCR
   class Cassette
@@ -32,6 +33,7 @@ module VCR
       @update_content_length_header = options[:update_content_length_header]
       @allow_playback_repeats       = options[:allow_playback_repeats]
       @exclusive                    = options[:exclusive]
+      @serializer                   = VCR.cassette_serializers[:yaml]
 
       raise_error_unless_valid_record_mode
 
@@ -99,7 +101,7 @@ module VCR
 
     def load_recorded_interactions
       if file && File.size?(file)
-        interactions = VCR::YAML.load(raw_yaml_content)
+        interactions = @serializer.deserialize(raw_yaml_content).map { |h| HTTPInteraction.from_hash(h) }
 
         invoke_hook(:before_playback, interactions)
 
@@ -154,7 +156,7 @@ module VCR
 
       directory = File.dirname(file)
       FileUtils.mkdir_p directory unless File.exist?(directory)
-      File.open(file, 'w') { |f| f.write VCR::YAML.dump(interactions) }
+      File.open(file, 'w') { |f| f.write @serializer.serialize(interactions.map { |i| i.to_hash }) }
     end
 
     def invoke_hook(type, interactions)

@@ -5,41 +5,39 @@ Feature: Matching on Headers
   Scenario Outline: Replay interaction that matches the headers
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
-      --- 
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :post
+      ---
+      - request:
+          method: post
           uri: http://example.net/some/long/path
-          body: 
-          headers: 
-            X-User-Id: 
-            - "1"
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers:
+            X-User-Id:
+            - '1'
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Length: 
-            - "15"
+          headers:
+            Content-Length:
+            - '15'
           body: user 1 response
-          http_version: "1.1"
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :post
+          http_version: '1.1'
+      - request:
+          method: post
           uri: http://example.net/some/long/path
-          body: 
-          headers: 
-            X-User-Id: 
-            - "2"
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers:
+            X-User-Id:
+            - '2'
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Length: 
-            - "15"
+          headers:
+            Content-Length:
+            - '15'
           body: user 2 response
-          http_version: "1.1"
+          http_version: '1.1'
       """
     And a file named "header_matching.rb" with:
       """ruby

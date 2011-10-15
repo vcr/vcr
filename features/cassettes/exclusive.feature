@@ -17,41 +17,39 @@ Feature: exclusive cassette
   Background:
     Given a previously recorded cassette file "cassettes/outer.yml" with:
       """
-      --- 
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :get
+      ---
+      - request:
+          method: get
           uri: http://localhost:7777/outer
-          body: 
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Length: 
-            - "18"
+          headers:
+            Content-Length:
+            - '18'
           body: Old outer response
-          http_version: "1.1"
+          http_version: '1.1'
       """
     And a previously recorded cassette file "cassettes/inner.yml" with:
       """
-      --- 
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :get
+      ---
+      - request:
+          method: get
           uri: http://localhost:7777/inner
-          body: 
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Length: 
-            - "18"
+          headers:
+            Content-Length:
+            - '18'
           body: Old inner response
-          http_version: "1.1"
+          http_version: '1.1'
       """
     And a file named "setup.rb" with:
       """ruby

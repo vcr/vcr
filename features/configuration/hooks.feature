@@ -39,23 +39,22 @@ Feature: Hooks
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
       ---
-      - !ruby/struct:VCR::HTTPInteraction
-        request: !ruby/struct:VCR::Request
-          method: :get
+      - request:
+          method: get
           uri: http://example.com/foo
-          body:
-          headers:
-        response: !ruby/struct:VCR::Response
-          status: !ruby/struct:VCR::ResponseStatus
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
           headers:
             Content-Type:
             - text/html;charset=utf-8
             Content-Length:
-            - "20"
+            - '20'
           body: example.com response
-          http_version: "1.1"
+          http_version: '1.1'
       """
 
   Scenario: Replace sensitive data with before_record hook
@@ -135,23 +134,22 @@ Feature: Hooks
     Given a previously recorded cassette file "cassettes/localhost.yml" with:
       """
       ---
-      - !ruby/struct:VCR::HTTPInteraction
-        request: !ruby/struct:VCR::Request
-          method: :get
+      - request:
+          method: get
           uri: http://localhost:7777/
-          body:
-          headers:
-        response: !ruby/struct:VCR::Response
-          status: !ruby/struct:VCR::ResponseStatus
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
           headers:
             Content-Type:
             - text/html;charset=utf-8
             Content-Length:
-            - "20"
+            - '20'
           body: recorded response
-          http_version: "1.1"
+          http_version: '1.1'
       """
     And a file named "before_playback_ignore.rb" with:
       """ruby

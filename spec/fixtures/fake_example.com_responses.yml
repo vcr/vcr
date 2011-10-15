@@ -1,103 +1,103 @@
 --- 
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :get
-    uri: http://example.com:80/foo
-    body: 
-    headers: 
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+- request: 
+    method: get
+    uri: http://example.com/foo
+    body: ""
+    headers: {}
+
+  response: 
+    status: 
       code: 200
       message: OK
     headers: 
-      last-modified: 
+      Last-Modified: 
       - Tue, 15 Nov 2005 13:24:10 GMT
-      connection: 
-      - Keep-Alive
-      etag: 
+      Etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
-      content-type: 
-      - text/html; charset=UTF-8
-      date: 
+      Date: 
       - Wed, 31 Mar 2010 02:43:23 GMT
-      server: 
-      - Apache/2.2.3 (CentOS)
-      content-length: 
+      Content-Type: 
+      - text/html; charset=UTF-8
+      Content-Length: 
       - "438"
-      age: 
-      - "3285"
-      accept-ranges: 
+      Accept-Ranges: 
       - bytes
+      Server: 
+      - Apache/2.2.3 (CentOS)
+      Age: 
+      - "3285"
+      Connection: 
+      - Keep-Alive
     body: example.com get response 1 with path=foo
     http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :get
-    uri: http://example.com:80/foo
-    body: 
-    headers: 
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+- request: 
+    method: get
+    uri: http://example.com/foo
+    body: ""
+    headers: {}
+
+  response: 
+    status: 
       code: 200
       message: OK
     headers: 
-      last-modified: 
+      Last-Modified: 
       - Tue, 15 Nov 2005 13:24:10 GMT
-      connection: 
-      - Keep-Alive
-      etag: 
+      Etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
-      content-type: 
-      - text/html; charset=UTF-8
-      date: 
+      Date: 
       - Wed, 31 Mar 2010 02:43:23 GMT
-      server: 
-      - Apache/2.2.3 (CentOS)
-      content-length: 
+      Content-Type: 
+      - text/html; charset=UTF-8
+      Content-Length: 
       - "438"
-      age: 
-      - "3285"
-      accept-ranges: 
+      Accept-Ranges: 
       - bytes
+      Server: 
+      - Apache/2.2.3 (CentOS)
+      Age: 
+      - "3285"
+      Connection: 
+      - Keep-Alive
     body: example.com get response 2 with path=foo
     http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :post
-    uri: http://example.com:80/
-    body: 
-    headers: 
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+- request: 
+    method: post
+    uri: http://example.com/
+    body: ""
+    headers: {}
+
+  response: 
+    status: 
       code: 200
       message: OK
     headers: 
-      last-modified: 
+      Last-Modified: 
       - Tue, 15 Nov 2005 13:24:10 GMT
-      connection: 
-      - close
-      etag: 
+      Etag: 
       - "\"24ec5-1b6-4059a80bfd280\""
-      content-type: 
-      - text/html; charset=UTF-8
-      date: 
+      Date: 
       - Wed, 31 Mar 2010 02:43:26 GMT
-      server: 
-      - Apache/2.2.3 (CentOS)
-      content-length: 
+      Content-Type: 
+      - text/html; charset=UTF-8
+      Content-Length: 
       - "438"
-      accept-ranges: 
+      Accept-Ranges: 
       - bytes
+      Server: 
+      - Apache/2.2.3 (CentOS)
+      Connection: 
+      - close
     body: example.com post response with id=3
     http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :get
-    uri: http://example.com:80/two_set_cookie_headers
-    body: 
-    headers: 
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+- request: 
+    method: get
+    uri: http://example.com/two_set_cookie_headers
+    body: ""
+    headers: {}
+
+  response: 
+    status: 
       code: 200
       message: OK
     headers: 

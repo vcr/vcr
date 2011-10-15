@@ -10,37 +10,35 @@ Feature: Matching on Path
   Background:
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
-      --- 
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :post
+      ---
+      - request:
+          method: post
           uri: http://host1.com/about?date=2011-09-01
-          body: 
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Length: 
-            - "14"
+          headers:
+            Content-Length:
+            - '14'
           body: about response
-          http_version: "1.1"
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :post
+          http_version: '1.1'
+      - request:
+          method: post
           uri: http://host2.com/home?date=2011-09-01
-          body:
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Length: 
-            - "15"
+          headers:
+            Content-Length:
+            - '15'
           body: home response
-          http_version: "1.1"
+          http_version: '1.1'
       """
 
   Scenario Outline: Replay interaction that matches the path

@@ -15,37 +15,35 @@ Feature: Register and use a custom matcher
   Background:
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
-      --- 
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :get
+      ---
+      - request:
+          method: get
           uri: http://foo.com:9000/foo
-          body: 
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Length: 
-            - "18"
+          headers:
+            Content-Length:
+            - '18'
           body: port 9000 response
-          http_version: "1.1"
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :get
+          http_version: '1.1'
+      - request:
+          method: get
           uri: http://foo.com:8000/foo
-          body: 
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Length: 
-            - "18"
+          headers:
+            Content-Length:
+            - '18'
           body: port 8000 response
-          http_version: "1.1"
+          http_version: '1.1'
       """
 
   Scenario Outline: Use a callable as a custom request matcher

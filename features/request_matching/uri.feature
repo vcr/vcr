@@ -8,37 +8,35 @@ Feature: Matching on URI
   Background:
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
-      --- 
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :post
+      ---
+      - request:
+          method: post
           uri: http://example.com/foo
-          body: 
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Length: 
-            - "12"
+          headers:
+            Content-Length:
+            - '12'
           body: foo response
-          http_version: "1.1"
-      - !ruby/struct:VCR::HTTPInteraction 
-        request: !ruby/struct:VCR::Request 
-          method: :post
+          http_version: '1.1'
+      - request:
+          method: post
           uri: http://example.com/bar
-          body:
-          headers: 
-        response: !ruby/struct:VCR::Response 
-          status: !ruby/struct:VCR::ResponseStatus 
+          body: ''
+          headers: {}
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Length: 
-            - "12"
+          headers:
+            Content-Length:
+            - '12'
           body: bar response
-          http_version: "1.1"
+          http_version: '1.1'
       """
 
   Scenario Outline: Replay interaction that matches the request URI
