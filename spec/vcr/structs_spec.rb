@@ -68,6 +68,74 @@ module VCR
       YAML.dump(subject).should_not include('ignored')
     end
 
+    let(:status)      { ResponseStatus.new(200, "OK") }
+    let(:response)    { Response.new(status, { "foo" => ["bar"] }, "res body", "1.1") }
+    let(:request)     { Request.new(:get, "http://foo.com/", "req body", { "bar" => ["foo"] }) }
+    let(:interaction) { HTTPInteraction.new(request, response) }
+
+    describe ".from_hash" do
+      let(:hash) do
+        {
+          'request' => {
+            'method'  => 'get',
+            'uri'     => 'http://foo.com/',
+            'body'    => 'req body',
+            'headers' => { "bar" => ["foo"] }
+          },
+          'response' => {
+            'status'       => {
+              'code'       => 200,
+              'message'    => 'OK'
+            },
+            'headers'      => { "foo"     => ["bar"] },
+            'body'         => 'res body',
+            'http_version' => '1.1'
+          }
+        }
+      end
+
+      it 'constructs an HTTP interaction from the given hash' do
+        HTTPInteraction.from_hash(hash).should eq(interaction)
+      end
+
+      it 'uses a blank request when the hash lacks one' do
+        hash.delete('request')
+        i = HTTPInteraction.from_hash(hash)
+        i.request.should eq(Request.new)
+      end
+
+      it 'uses a blank response when the hash lacks one' do
+        hash.delete('response')
+        i = HTTPInteraction.from_hash(hash)
+        i.response.should eq(Response.new(ResponseStatus.new))
+      end
+    end
+
+    describe "#to_hash" do
+      let(:hash) { interaction.to_hash }
+
+      it 'returns a nested hash containing all of the pertinent details' do
+        hash.keys.should =~ %w[ request response ]
+
+        hash['request'].should eq({
+          'method'  => 'get',
+          'uri'     => 'http://foo.com/',
+          'body'    => 'req body',
+          'headers' => { "bar" => ["foo"] }
+        })
+
+        hash['response'].should eq({
+          'status'       => {
+            'code'       => 200,
+            'message'    => 'OK'
+          },
+          'headers'      => { "foo"     => ["bar"] },
+          'body'         => 'res body',
+          'http_version' => '1.1'
+        })
+      end
+    end
+
     describe '#filter!' do
       let(:response_status) { VCR::ResponseStatus.new(200, "OK foo") }
       let(:body) { "The body foo this is (foo-Foo)" }

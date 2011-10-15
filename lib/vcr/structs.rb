@@ -59,6 +59,24 @@ module VCR
     include Normalizers::Header
     include Normalizers::Body
 
+    def to_hash
+      {
+        'method'  => method.to_s,
+        'uri'     => uri,
+        'body'    => body,
+        'headers' => headers
+      }
+    end
+
+    def self.from_hash(hash)
+      method = hash['method']
+      method &&= method.to_sym
+      new method,
+          hash['uri'],
+          hash['body'],
+          hash['headers']
+    end
+
     @@object_method = Object.instance_method(:method)
     def method(*args)
       return super if args.empty?
@@ -69,6 +87,15 @@ module VCR
   class HTTPInteraction < Struct.new(:request, :response)
     extend ::Forwardable
     def_delegators :request, :uri, :method
+
+    def to_hash
+      { 'request' => request.to_hash, 'response' => response.to_hash }
+    end
+
+    def self.from_hash(hash)
+      new Request.from_hash(hash.fetch('request', {})),
+          Response.from_hash(hash.fetch('response', {}))
+    end
 
     def ignore!
       # we don't want to store any additional
@@ -119,6 +146,22 @@ module VCR
     include Normalizers::Header
     include Normalizers::Body
 
+    def to_hash
+      {
+        'status'       => status.to_hash,
+        'headers'      => headers,
+        'body'         => body,
+        'http_version' => http_version
+      }
+    end
+
+    def self.from_hash(hash)
+      new ResponseStatus.from_hash(hash.fetch('status', {})),
+          hash['headers'],
+          hash['body'],
+          hash['http_version']
+    end
+
     def update_content_length_header
       # TODO: should this be the bytesize?
       value = body ? body.length.to_s : '0'
@@ -127,5 +170,13 @@ module VCR
     end
   end
 
-  class ResponseStatus < Struct.new(:code, :message); end
+  class ResponseStatus < Struct.new(:code, :message)
+    def to_hash
+      { 'code' => code, 'message' => message }
+    end
+
+    def self.from_hash(hash)
+      new hash['code'], hash['message']
+    end
+  end
 end
