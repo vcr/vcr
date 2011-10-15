@@ -1,6 +1,7 @@
-require 'spec_helper'
+require 'yaml'
+require 'vcr/structs'
 
-shared_examples_for "header normalization" do
+shared_examples_for "a header normalizer" do
   let(:instance) do
     with_headers('Some_Header' => 'value1', 'aNother' => ['a', 'b'], 'third' => [], 'fourth' => nil)
   end
@@ -9,14 +10,14 @@ shared_examples_for "header normalization" do
     key = 'my-key'
     key.instance_variable_set(:@foo, 7)
     instance = with_headers(key => ['value1'])
-    VCR::YAML.dump(instance.headers).should eq(VCR::YAML.dump('my-key' => ['value1']))
+    YAML.dump(instance.headers).should eq(YAML.dump('my-key' => ['value1']))
   end
 
   it 'ensures header values are serialized to yaml as raw strings' do
     value = 'my-value'
     value.instance_variable_set(:@foo, 7)
     instance = with_headers('my-key' => [value])
-    VCR::YAML.dump(instance.headers).should eq(VCR::YAML.dump('my-key' => ['my-value']))
+    YAML.dump(instance.headers).should eq(YAML.dump('my-key' => ['my-value']))
   end
 
   it 'handles nested arrays' do
@@ -32,14 +33,13 @@ shared_examples_for "header normalization" do
   end
 end
 
-shared_examples_for "body normalization" do
+shared_examples_for "a body normalizer" do
   it "ensures the body is serialized to yaml as a raw string" do
     body = "My String"
     body.instance_variable_set(:@foo, 7)
-    VCR::YAML.dump(instance(body).body).should eq(VCR::YAML.dump("My String"))
+    YAML.dump(instance(body).body).should eq(YAML.dump("My String"))
   end
 end
-
 
 module VCR
   describe HTTPInteraction do
@@ -65,7 +65,7 @@ module VCR
 
     it 'does not include `@ignored` in the serialized output' do
       subject.ignore!
-      VCR::YAML.dump(subject).should_not include('ignored')
+      YAML.dump(subject).should_not include('ignored')
     end
 
     describe '#filter!' do
@@ -149,13 +149,13 @@ module VCR
       end
     end
 
-    it_performs 'header normalization' do
+    it_behaves_like 'a header normalizer' do
       def with_headers(headers)
         described_class.new(:get, 'http://example.com/', nil, headers)
       end
     end
 
-    it_performs 'body normalization' do
+    it_behaves_like 'a body normalizer' do
       def instance(body)
         described_class.new(:get, 'http://example.com/', body, {})
       end
@@ -163,13 +163,13 @@ module VCR
   end
 
   describe Response do
-    it_performs 'header normalization' do
+    it_behaves_like 'a header normalizer' do
       def with_headers(headers)
         described_class.new(:status, headers, nil, '1.1')
       end
     end
 
-    it_performs 'body normalization' do
+    it_behaves_like 'a body normalizer' do
       def instance(body)
         described_class.new(:status, {}, body, '1.1')
       end
