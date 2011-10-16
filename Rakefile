@@ -15,10 +15,6 @@ RSpec::Core::RakeTask.new(:spec) do |t|
   # we require spec_helper so we don't get an RSpec warning about
   # examples being defined before configuration.
   t.ruby_opts = "-w -I./spec -r./spec/capture_warnings -rspec_helper"
-
-  # I'm not sure why, but bundler seems to silence warnings...
-  t.skip_bundler = true
-
   t.rspec_opts = %w[--format progress] if (ENV['FULL_BUILD'] || !using_git)
 end
 
@@ -51,8 +47,6 @@ namespace :ci do
     # we require spec_helper so we don't get an RSpec warning about
     # examples being defined before configuration.
     t.ruby_opts = "-w -I./spec -r./spec/capture_warnings -rspec_helper"
-    # I'm not sure why, but bundler seems to silence warnings...
-    t.skip_bundler = true
     t.rspec_opts = %w[--format progress --backtrace]
   end
 

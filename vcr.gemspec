@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
     'bundler'         => '~> 1.0.7',
     'rake'            => '~> 0.9.2',
 
-    'rspec'           => '~> 2.6',
+    'rspec'           => '~> 2.7',
     'shoulda'         => '~> 2.9.2',
 
     'fakeweb'         => '~> 1.3.0',
