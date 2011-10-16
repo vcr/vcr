@@ -39,6 +39,10 @@ shared_examples_for "a body normalizer" do
     body.instance_variable_set(:@foo, 7)
     YAML.dump(instance(body).body).should eq(YAML.dump("My String"))
   end
+
+  it 'converts nil to a blank string' do
+    instance(nil).body.should eq("")
+  end
 end
 
 module VCR
@@ -133,6 +137,19 @@ module VCR
           'body'         => 'res body',
           'http_version' => '1.1'
         })
+      end
+
+      def assert_yielded_keys(hash, *keys)
+        yielded_keys = []
+        hash.each { |k, v| yielded_keys << k }
+        yielded_keys.should eq(keys)
+      end
+
+      it 'yields the entries in the expected order so the hash can be serialized in that order' do
+        assert_yielded_keys hash, 'request', 'response'
+        assert_yielded_keys hash['request'], 'method', 'uri', 'body', 'headers'
+        assert_yielded_keys hash['response'], 'status', 'headers', 'body', 'http_version'
+        assert_yielded_keys hash['response']['status'], 'code', 'message'
       end
     end
 

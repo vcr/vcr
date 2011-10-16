@@ -94,3 +94,35 @@ task :release => [:require_ruby_18, :prep_relish_release, :relish]
 # For gem-test: http://gem-testers.org/
 task :test => :spec
 
+load './lib/vcr/tasks/vcr.rake'
+
+desc "Migrate cucumber cassettes"
+task :migrate_cucumber_cassettes do
+  require 'vcr/cassette/migrator'
+  Dir["features/**/*.feature"].each do |feature_file|
+    puts " - Migrating #{feature_file}"
+    contents = File.read(feature_file)
+
+    # http://rubular.com/r/gjzkoaYX2O
+    contents.scan(/:\n^\s+"""\n([\s\S]+?)"""/).each do |captures|
+      capture = captures.first
+      indentation = capture[/^ +/]
+      cassette_yml = capture.gsub(/^#{indentation}/, '')
+      new_yml = nil
+
+      Dir.mktmpdir do |dir|
+        file_name = "#{dir}/cassette.yml"
+        File.open(file_name, 'w') { |f| f.write(cassette_yml) }
+        VCR::Cassette::Migrator.new(dir, StringIO.new).migrate!
+        new_yml = File.read(file_name)
+      end
+
+      new_yml.gsub!(/^/, indentation)
+      new_yml << indentation
+      contents.gsub!(capture, new_yml)
+    end
+
+    File.open(feature_file, 'w') { |f| f.write(contents) }
+  end
+end
+

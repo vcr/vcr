@@ -10,7 +10,7 @@ module VCR
         # or attributes, so that it is serialized to YAML as a raw string.
         # This is needed for rest-client.  See this ticket for more info:
         # http://github.com/myronmarston/vcr/issues/4
-        self.body = String.new(body) if body.is_a?(String)
+        self.body = String.new(body.to_s)
       end
     end
 
@@ -55,6 +55,24 @@ module VCR
     end
   end
 
+  module OrderedHashSerializer
+    def each
+      @ordered_keys.each do |key|
+        yield key, self[key]
+      end
+    end
+
+    if RUBY_VERSION =~ /1.9/
+      # 1.9 hashes are already ordered.
+      def self.apply_to(*args); end
+    else
+      def self.apply_to(hash, keys)
+        hash.instance_variable_set(:@ordered_keys, keys)
+        hash.extend self
+      end
+    end
+  end
+
   class Request < Struct.new(:method, :uri, :body, :headers)
     include Normalizers::Header
     include Normalizers::Body
@@ -65,7 +83,7 @@ module VCR
         'uri'     => uri,
         'body'    => body,
         'headers' => headers
-      }
+      }.tap { |h| OrderedHashSerializer.apply_to(h, members) }
     end
 
     def self.from_hash(hash)
@@ -89,7 +107,9 @@ module VCR
     def_delegators :request, :uri, :method
 
     def to_hash
-      { 'request' => request.to_hash, 'response' => response.to_hash }
+      { 'request' => request.to_hash, 'response' => response.to_hash }.tap do |hash|
+        OrderedHashSerializer.apply_to(hash, members)
+      end
     end
 
     def self.from_hash(hash)
@@ -152,7 +172,7 @@ module VCR
         'headers'      => headers,
         'body'         => body,
         'http_version' => http_version
-      }
+      }.tap { |h| OrderedHashSerializer.apply_to(h, members) }
     end
 
     def self.from_hash(hash)
@@ -172,7 +192,9 @@ module VCR
 
   class ResponseStatus < Struct.new(:code, :message)
     def to_hash
-      { 'code' => code, 'message' => message }
+      {
+        'code' => code, 'message' => message
+      }.tap { |h| OrderedHashSerializer.apply_to(h, members) }
     end
 
     def self.from_hash(hash)
