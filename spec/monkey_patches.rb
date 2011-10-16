@@ -1,4 +1,4 @@
-require 'typhoeus' if RUBY_INTERPRETER == :mri
+require 'typhoeus' unless RUBY_INTERPRETER == :jruby
 
 module MonkeyPatches
   extend self
@@ -14,7 +14,7 @@ module MonkeyPatches
 
   ALL_MONKEY_PATCHES = NET_HTTP_MONKEY_PATCHES.dup
 
-  ALL_MONKEY_PATCHES << [Typhoeus::Hydra::Stubbing::SharedMethods, :find_stub_from_request] if RUBY_INTERPRETER == :mri
+  ALL_MONKEY_PATCHES << [Typhoeus::Hydra::Stubbing::SharedMethods, :find_stub_from_request] if defined?(::Typhoeus)
 
   def enable!(scope)
     case scope
@@ -24,7 +24,7 @@ module MonkeyPatches
       when :webmock
         ::WebMock.reset!
         ::WebMock::HttpLibAdapters::NetHttpAdapter.enable!
-        ::WebMock::HttpLibAdapters::TyphoeusAdapter.enable! if RUBY_INTERPRETER == :mri
+        ::WebMock::HttpLibAdapters::TyphoeusAdapter.enable! if defined?(::Typhoeus)
         $original_webmock_callbacks.each do |cb|
           ::WebMock::CallbackRegistry.add_callback(cb[:options], cb[:block])
         end
@@ -42,7 +42,7 @@ module MonkeyPatches
 
     if defined?(::WebMock)
       ::WebMock::HttpLibAdapters::NetHttpAdapter.disable!
-      ::WebMock::HttpLibAdapters::TyphoeusAdapter.disable! unless RUBY_INTERPRETER == :jruby
+      ::WebMock::HttpLibAdapters::TyphoeusAdapter.disable! if defined?(::Typhoeus)
       ::WebMock::CallbackRegistry.reset
       ::WebMock::StubRegistry.instance.request_stubs = []
     end
@@ -112,7 +112,7 @@ end
 # for WebMock to work with them.
 require 'httpclient'
 
-if RUBY_INTERPRETER == :mri
+unless RUBY_INTERPRETER == :jruby
   require 'patron'
   require 'em-http-request'
   require 'curb'
