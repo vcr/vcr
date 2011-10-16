@@ -11,4 +11,5 @@ branches:
   only:
     - master
     - 1-x-stable
+    - travis-testing
 
