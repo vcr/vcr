@@ -5,9 +5,63 @@ rvm:
   - 1.8.7
   - 1.9.2
   - 1.9.3
+  - ruby-head
   - ree
   - jruby
+  - rbx
   - rbx-2.0
+env:
+  -
+  - JRUBY_OPTS="--1.8"
+  - JRUBY_OPTS="--1.9"
+matrix:
+  exclude:
+    # exclude 1.8.7
+    - rvm: 1.8.7
+      env: JRUBY_OPTS="--1.8"
+    - rvm: 1.8.7
+      env: JRUBY_OPTS="--1.9"
+
+    # exclude 1.9.2
+    - rvm: 1.9.2
+      env: JRUBY_OPTS="--1.8"
+    - rvm: 1.9.2
+      env: JRUBY_OPTS="--1.9"
+
+    # exclude 1.9.3
+    - rvm: 1.9.3
+      env: JRUBY_OPTS="--1.8"
+    - rvm: 1.9.3
+      env: JRUBY_OPTS="--1.9"
+
+    # exclude ruby-head
+    - rvm: ruby-head
+      env: JRUBY_OPTS="--1.8"
+    - rvm: ruby-head
+      env: JRUBY_OPTS="--1.9"
+
+    # exclude ree
+    - rvm: ree
+      env: JRUBY_OPTS="--1.8"
+    - rvm: ree
+      env: JRUBY_OPTS="--1.9"
+
+    # exclude jruby
+    - rvm: jruby
+      env:
+
+    # exclude rbx
+    - rvm: rbx
+      env: JRUBY_OPTS="--1.8"
+    - rvm: rbx
+      env: JRUBY_OPTS="--1.9"
+
+    # exclude rbx-2.0
+    - rvm: rbx-2.0
+      env: JRUBY_OPTS="--1.8"
+    - rvm: rbx-2.0
+      env: JRUBY_OPTS="--1.9"
+
 branches:
   only:
     - master
