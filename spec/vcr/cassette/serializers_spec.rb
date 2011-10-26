@@ -4,9 +4,16 @@ module VCR
   class Cassette
     describe Serializers do
 
-      shared_examples_for "a serializer" do |name, file_extension|
+      shared_examples_for "a serializer" do |name, file_extension, lazily_loaded|
         context "the #{name} serializer" do
           let(:serializer) { subject[name] }
+
+          it 'lazily loads the serializer' do
+            serializers = subject.instance_variable_get(:@serializers)
+            serializers.should_not have_key(name)
+            subject[name].should_not be_nil
+            serializers.should have_key(name)
+          end if lazily_loaded
 
           it "returns '#{file_extension}' as the file extension" do
             serializer.file_extension.should eq(file_extension)
@@ -22,7 +29,7 @@ module VCR
         end
       end
 
-      it_behaves_like "a serializer", :yaml, "yml"
+      it_behaves_like "a serializer", :yaml, "yml", :lazily_loaded
 
       context "a custom :ruby serializer" do
         let(:custom_serializer) do
@@ -45,7 +52,7 @@ module VCR
           subject[:ruby] = custom_serializer
         end
 
-        it_behaves_like "a serializer", :ruby, "rb"
+        it_behaves_like "a serializer", :ruby, "rb", false
       end
 
       describe "#[]=" do
@@ -66,6 +73,16 @@ module VCR
             )
             subject[:foo] = :new_serializer
           end
+        end
+      end
+
+      describe "#[]" do
+        it 'raises an error when given an unrecognized serializer name' do
+          expect { subject[:foo] }.to raise_error(ArgumentError)
+        end
+
+        it 'returns the named serializer' do
+          subject[:yaml].should be(VCR::Cassette::Serializers::YAML)
         end
       end
     end

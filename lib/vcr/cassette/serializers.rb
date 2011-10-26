@@ -1,15 +1,19 @@
-require 'yaml'
-
 module VCR
   class Cassette
     class Serializers
+      autoload :YAML, 'vcr/cassette/serializers/yaml'
+
       def initialize
         @serializers = {}
-        register_built_ins
       end
 
       def [](name)
-        @serializers[name]
+        @serializers.fetch(name) do |_|
+          @serializers[name] = case name
+            when :yaml then YAML
+            else raise ArgumentError.new("The requested VCR cassette serializer (#{name.inspect}) is not registered.")
+          end
+        end
       end
 
       def []=(name, value)
@@ -18,28 +22,6 @@ module VCR
         end
 
         @serializers[name] = value
-      end
-
-    private
-
-      def register_built_ins
-        self[:yaml] = YAML
-      end
-
-      module YAML
-        extend self
-
-        def file_extension
-          "yml"
-        end
-
-        def serialize(hash)
-          ::YAML.dump(hash)
-        end
-
-        def deserialize(string)
-          ::YAML.load(string)
-        end
       end
     end
   end
