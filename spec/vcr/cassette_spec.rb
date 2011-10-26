@@ -120,7 +120,7 @@ describe VCR::Cassette do
       it 'reads the appropriate file from disk using a VCR::Cassette::Reader' do
         VCR::Cassette::Reader.should_receive(:new).with(
           "#{VCR.configuration.cassette_library_dir}/foo.yml", anything
-        ).and_return(mock('reader', :read => VCR::YAML.dump([])))
+        ).and_return(mock('reader', :read => YAML.dump([])))
 
         VCR::Cassette.new('foo', :record => :new_episodes)
       end
@@ -132,7 +132,7 @@ describe VCR::Cassette do
 
           VCR::Cassette::Reader.should_receive(:new).with(
             anything, erb
-          ).and_return(mock('reader', :read => VCR::YAML.dump([])))
+          ).and_return(mock('reader', :read => YAML.dump([])))
 
           VCR::Cassette.new('foo', :record => :new_episodes, :erb => erb)
         end
@@ -142,7 +142,7 @@ describe VCR::Cassette do
 
           VCR::Cassette::Reader.should_receive(:new).with(
             anything, erb
-          ).and_return(mock('reader', :read => VCR::YAML.dump([])))
+          ).and_return(mock('reader', :read => YAML.dump([])))
 
           VCR::Cassette.new('foo', :record => :new_episodes)
         end
@@ -209,7 +209,7 @@ describe VCR::Cassette do
             context 'when the cassette file does exist' do
               before(:each) do
                 File.stub(:exist?).with(file_name).and_return(true)
-                File.stub(:read).with(file_name).and_return(VCR::YAML.dump([]))
+                File.stub(:read).with(file_name).and_return(YAML.dump([]))
               end
 
               context 'and the file was last modified less than 7 days ago' do
@@ -343,7 +343,7 @@ describe VCR::Cassette do
       cassette.stub!(:new_recorded_interactions).and_return(recorded_interactions)
 
       expect { cassette.eject }.to change { File.exist?(cassette.file) }.from(false).to(true)
-      saved_recorded_interactions = VCR::YAML.load_file(cassette.file)
+      saved_recorded_interactions = YAML.load_file(cassette.file)
       saved_recorded_interactions.should eq(recorded_interactions.map(&:to_hash))
     end
 
@@ -399,7 +399,7 @@ describe VCR::Cassette do
       cassette.stub(:new_recorded_interactions => recorded_interactions)
 
       expect { cassette.eject }.to change { File.exist?(cassette.file) }.from(false).to(true)
-      saved_recorded_interactions = VCR::YAML.load_file(cassette.file)
+      saved_recorded_interactions = YAML.load_file(cassette.file)
       saved_recorded_interactions.should eq(recorded_interactions.map(&:to_hash))
     end
 

@@ -1,5 +1,4 @@
 require 'vcr/util/variable_args_block_caller'
-require 'vcr/util/yaml'
 
 require 'vcr/cassette'
 require 'vcr/cassette/serializers'
