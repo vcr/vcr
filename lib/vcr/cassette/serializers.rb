@@ -1,7 +1,9 @@
 module VCR
   class Cassette
     class Serializers
-      autoload :YAML, 'vcr/cassette/serializers/yaml'
+      autoload :YAML,  'vcr/cassette/serializers/yaml'
+      autoload :Syck,  'vcr/cassette/serializers/syck'
+      autoload :Psych, 'vcr/cassette/serializers/psych'
 
       def initialize
         @serializers = {}
@@ -10,7 +12,9 @@ module VCR
       def [](name)
         @serializers.fetch(name) do |_|
           @serializers[name] = case name
-            when :yaml then YAML
+            when :yaml  then YAML
+            when :syck  then Syck
+            when :psych then Psych
             else raise ArgumentError.new("The requested VCR cassette serializer (#{name.inspect}) is not registered.")
           end
         end

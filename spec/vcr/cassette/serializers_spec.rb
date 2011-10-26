@@ -1,4 +1,8 @@
 require 'vcr/cassette/serializers'
+begin
+  require 'psych' # ensure psych is loaded for these tests if its available
+rescue LoadError
+end
 
 module VCR
   class Cassette
@@ -23,13 +27,16 @@ module VCR
             hash = { "a" => 7, "nested" => { "hash" => [1, 2, 3] }}
             serialized = serializer.serialize(hash)
             serialized.should_not eq(hash)
+            serialized.should be_a(String)
             deserialized = serializer.deserialize(serialized)
             deserialized.should eq(hash)
           end
         end
       end
 
-      it_behaves_like "a serializer", :yaml, "yml", :lazily_loaded
+      it_behaves_like "a serializer", :yaml,  "yml", :lazily_loaded
+      it_behaves_like "a serializer", :syck,  "yml", :lazily_loaded
+      it_behaves_like "a serializer", :psych, "yml", :lazily_loaded if RUBY_VERSION =~ /1.9/
 
       context "a custom :ruby serializer" do
         let(:custom_serializer) do
@@ -84,6 +91,26 @@ module VCR
         it 'returns the named serializer' do
           subject[:yaml].should be(VCR::Cassette::Serializers::YAML)
         end
+      end
+
+      psych_null_string = '!!null'
+
+      describe "psych serializer" do
+        it 'serializes things using pysch even if syck is configured as the default YAML engine' do
+          ::YAML::ENGINE.yamler = 'syck'
+          subject[:psych].serialize(nil).should include(psych_null_string)
+        end if defined?(::Psych)
+
+        it 'raises an error if psych cannot be loaded' do
+          expect { subject[:psych] }.to raise_error(LoadError)
+        end unless defined?(::Psych)
+      end
+
+      describe "syck serializer" do
+        it 'forcibly serializes things using syck even if psych is the currently configured YAML engine' do
+          ::YAML::ENGINE.yamler = 'psych'
+          subject[:syck].serialize(nil).should_not include(psych_null_string)
+        end if defined?(::Psych)
       end
     end
   end
