@@ -1,4 +1,5 @@
 require 'vcr'
+require 'multi_json'
 
 module VCRHelpers
 
@@ -109,6 +110,15 @@ end
 Then /^the file "([^"]*)" should contain YAML like:$/ do |file_name, expected_content|
   actual_content = in_current_dir { File.read(file_name) }
   normalize_cassette_structs(actual_content).should == normalize_cassette_structs(expected_content)
+end
+
+Then /^the file "([^"]*)" should contain JSON like:$/ do |file_name, expected_content|
+  actual_content = in_current_dir { File.read(file_name) }
+  actual = MultiJson.decode(actual_content)
+  expected = MultiJson.decode(expected_content)
+  actual.map! { |i| normalize_http_interaction(i) }
+  expected.map! { |i| normalize_http_interaction(i) }
+  actual.should == expected
 end
 
 Then /^the file "([^"]*)" should contain each of these:$/ do |file_name, table|

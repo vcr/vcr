@@ -14,6 +14,12 @@ describe VCR::Cassette do
       cassette.file.should eq(File.join(VCR.configuration.cassette_library_dir, 'the_file.yml'))
     end
 
+    it 'uses the file extension from the serializer' do
+      VCR.cassette_serializers[:custom] = stub(:file_extension => "custom")
+      cassette = VCR::Cassette.new('the_file', :serialize_with => :custom)
+      cassette.file.should =~ /\.custom$/
+    end
+
     it 'strips out disallowed characters so that it is a valid file name with no spaces' do
       cassette = VCR::Cassette.new("\nthis \t!  is-the_13212_file name")
       cassette.file.should =~ /#{Regexp.escape('_this_is-the_13212_file_name.yml')}$/

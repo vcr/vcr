@@ -16,7 +16,8 @@ module VCR
       options = VCR.configuration.default_cassette_options.merge(options)
       invalid_options = options.keys - [
         :record, :erb, :match_requests_on, :re_record_interval, :tag,
-        :update_content_length_header, :allow_playback_repeats, :exclusive
+        :update_content_length_header, :allow_playback_repeats, :exclusive,
+        :serialize_with
       ]
 
       if invalid_options.size > 0
@@ -29,11 +30,11 @@ module VCR
       @match_requests_on            = options[:match_requests_on]
       @re_record_interval           = options[:re_record_interval]
       @tag                          = options[:tag]
-      @record_mode                  = :all if should_re_record?
       @update_content_length_header = options[:update_content_length_header]
       @allow_playback_repeats       = options[:allow_playback_repeats]
       @exclusive                    = options[:exclusive]
-      @serializer                   = VCR.cassette_serializers[:yaml]
+      @serializer                   = VCR.cassette_serializers[options[:serialize_with]]
+      @record_mode                  = :all if should_re_record?
 
       raise_error_unless_valid_record_mode
 
@@ -57,7 +58,8 @@ module VCR
     end
 
     def file
-      File.join(VCR.configuration.cassette_library_dir, "#{sanitized_name}.yml") if VCR.configuration.cassette_library_dir
+      return nil unless VCR.configuration.cassette_library_dir
+      File.join(VCR.configuration.cassette_library_dir, "#{sanitized_name}.#{@serializer.file_extension}")
     end
 
     def update_content_length_header?

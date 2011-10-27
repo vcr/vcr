@@ -14,7 +14,8 @@ module VCR
       @allow_http_connections_when_no_cassette = nil
       @default_cassette_options = {
         :record            => :once,
-        :match_requests_on => RequestMatcherRegistry::DEFAULT_MATCHERS
+        :match_requests_on => RequestMatcherRegistry::DEFAULT_MATCHERS,
+        :serialize_with    => :yaml
       }
     end
 
