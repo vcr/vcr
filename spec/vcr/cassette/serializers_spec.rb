@@ -34,9 +34,10 @@ module VCR
         end
       end
 
-      it_behaves_like "a serializer", :yaml,  "yml", :lazily_loaded
-      it_behaves_like "a serializer", :syck,  "yml", :lazily_loaded
-      it_behaves_like "a serializer", :psych, "yml", :lazily_loaded if RUBY_VERSION =~ /1.9/
+      it_behaves_like "a serializer", :yaml,  "yml",  :lazily_loaded
+      it_behaves_like "a serializer", :syck,  "yml",  :lazily_loaded
+      it_behaves_like "a serializer", :psych, "yml",  :lazily_loaded if RUBY_VERSION =~ /1.9/
+      it_behaves_like "a serializer", :json,  "json", :lazily_loaded
 
       context "a custom :ruby serializer" do
         let(:custom_serializer) do
