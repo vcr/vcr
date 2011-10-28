@@ -117,6 +117,7 @@ Feature: Cassette format
       | c.hook_into :excon    | excon                 |
       |                       | faraday (w/ net_http) |
 
+  # TODO: test playback
   Scenario: Request/Response data can be saved as JSON
     Given a file named "cassette_json.rb" with:
       """ruby
