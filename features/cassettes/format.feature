@@ -24,14 +24,26 @@ Feature: Cassette format
 
   VCR supports the following serializers out of the box:
 
-    * `:yaml`--Uses ruby's standard library YAML. This may use psych or syck,
+    - `:yaml`--Uses ruby's standard library YAML. This may use psych or syck,
       depending on your ruby installation.
-    * `:syck`--Uses syck (the ruby 1.8 YAML engine). This is useful when using
+    - `:syck`--Uses syck (the ruby 1.8 YAML engine). This is useful when using
       VCR on a project that must run in environments where psych is not available
       (such as on ruby 1.8), to ensure that syck is always used.
-    * `:psych`--Uses psych (the new ruby 1.9 YAML engine). This is useful when
+    - `:psych`--Uses psych (the new ruby 1.9 YAML engine). This is useful when
       you want to ensure that psych is always used.
-    * `:json`--Uses [multi_json]() to serialize the cassette data as JSON.
+    - `:json`--Uses [multi_json]() to serialize the cassette data as JSON.
+
+  You can also register a custom serializer using:
+
+     VCR.configure do |config|
+       config.cassette_serializers[:my_custom_serializer] = my_serializer
+     end
+
+  Your serializer must implement the following methods:
+
+    - `file_extension`
+    - `serialize(hash)`
+    - `deserialize(string)`
 
   Scenario Outline: Request/Response data is saved to disk as YAML by default
     Given a file named "cassette_yaml.rb" with:
@@ -173,3 +185,64 @@ Feature: Cassette format
       ]
       """
 
+  Scenario: Request/Response data can be saved using a custom serializer
+    Given a file named "cassette_ruby.rb" with:
+      """ruby
+      include_http_adapter_for("net/http")
+
+      start_sinatra_app(:port => 7777) do
+        get('/:path') { ARGV[0] + ' ' + params[:path] }
+      end
+
+      require 'vcr'
+
+      # purely for demonstration purposes; obviously, don't actually
+      # use ruby #inspect / #eval for your serialization...
+      ruby_serializer = Object.new
+      class << ruby_serializer
+        def file_extension; "ruby"; end
+        def serialize(hash); hash.inspect; end
+        def deserialize(string); eval(string); end
+      end
+
+      VCR.configure do |c|
+        c.hook_into :webmock
+        c.cassette_library_dir = 'cassettes'
+        c.cassette_serializers[:ruby] = ruby_serializer
+      end
+
+      VCR.use_cassette('example', :serialize_with => :ruby) do
+        make_http_request(:get, "http://localhost:7777/foo")
+        make_http_request(:get, "http://localhost:7777/bar")
+      end
+      """
+    When I run `ruby cassette_ruby.rb 'Hello'`
+    Then the file "cassettes/example.ruby" should contain ruby like:
+      """
+      [{"request"=>
+         {"method"=>"get",
+          "uri"=>"http://localhost:7777/foo",
+          "body"=>"",
+          "headers"=>{"Accept"=>["*/*"], "User-Agent"=>["Ruby"]}},
+        "response"=>
+         {"status"=>{"code"=>200, "message"=>"OK "},
+          "headers"=>
+           {"Content-Type"=>["text/html;charset=utf-8"],
+            "Content-Length"=>["9"],
+            "Connection"=>["Keep-Alive"]},
+          "body"=>"Hello foo",
+          "http_version"=>nil}},
+       {"request"=>
+         {"method"=>"get",
+          "uri"=>"http://localhost:7777/bar",
+          "body"=>"",
+          "headers"=>{"Accept"=>["*/*"], "User-Agent"=>["Ruby"]}},
+        "response"=>
+         {"status"=>{"code"=>200, "message"=>"OK "},
+          "headers"=>
+           {"Content-Type"=>["text/html;charset=utf-8"],
+            "Content-Length"=>["9"],
+            "Connection"=>["Keep-Alive"]},
+          "body"=>"Hello bar",
+          "http_version"=>nil}}]
+      """

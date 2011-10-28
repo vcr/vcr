@@ -121,6 +121,15 @@ Then /^the file "([^"]*)" should contain JSON like:$/ do |file_name, expected_co
   actual.should == expected
 end
 
+Then /^the file "([^"]*)" should contain ruby like:$/ do |file_name, expected_content|
+  actual_content = in_current_dir { File.read(file_name) }
+  actual = eval(actual_content)
+  expected = eval(expected_content)
+  actual.map! { |i| normalize_http_interaction(i) }
+  expected.map! { |i| normalize_http_interaction(i) }
+  actual.should == expected
+end
+
 Then /^the file "([^"]*)" should contain each of these:$/ do |file_name, table|
   table.raw.flatten.each do |string|
     check_file_content(file_name, string, true)

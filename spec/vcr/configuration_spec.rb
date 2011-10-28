@@ -141,4 +141,13 @@ describe VCR::Configuration do
       yielded_interaction.should equal(interaction)
     end
   end
+
+  describe "#cassette_serializers" do
+    let(:custom_serializer) { stub }
+    it 'allows a custom serializer to be registered' do
+      expect { subject.cassette_serializers[:custom] }.to raise_error(ArgumentError)
+      subject.cassette_serializers[:custom] = custom_serializer
+      subject.cassette_serializers[:custom].should be(custom_serializer)
+    end
+  end
 end

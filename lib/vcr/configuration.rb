@@ -63,6 +63,10 @@ module VCR
       end
     end
 
+    def cassette_serializers
+      VCR.cassette_serializers
+    end
+
   private
 
     def load_library_hook(hook)
