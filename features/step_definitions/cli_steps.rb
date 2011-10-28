@@ -18,30 +18,31 @@ module VCRHelpers
   end
 
   def normalize_http_interaction(hash)
-    i = VCR::HTTPInteraction.from_hash(hash)
-    normalize_headers(i.request)
-    normalize_headers(i.response)
+    VCR::HTTPInteraction.from_hash(hash).tap do |i|
+      normalize_headers(i.request)
+      normalize_headers(i.response)
 
-    i.request.body ||= ''
-    i.response.body ||= ''
-    i.response.status.message ||= ''
+      i.request.body ||= ''
+      i.response.body ||= ''
+      i.response.status.message ||= ''
 
-    # Remove non-deterministic headers and headers
-    # that get added by a particular HTTP library (but not by others)
-    i.response.headers.reject! { |k, v| %w[ server date connection ].include?(k) }
-    i.request.headers.reject! { |k, v| %w[ accept user-agent connection expect ].include?(k) }
+      # Remove non-deterministic headers and headers
+      # that get added by a particular HTTP library (but not by others)
+      i.response.headers.reject! { |k, v| %w[ server date connection ].include?(k) }
+      i.request.headers.reject! { |k, v| %w[ accept user-agent connection expect ].include?(k) }
 
-    # Some HTTP libraries include an extra space ("OK " instead of "OK")
-    i.response.status.message = i.response.status.message.strip
+      # Some HTTP libraries include an extra space ("OK " instead of "OK")
+      i.response.status.message = i.response.status.message.strip
 
-    if @scenario_parameters.to_s =~ /excon|faraday/
-      # Excon/Faraday do not expose the status message or http version,
-      # so we have no way to record these attributes.
-      i.response.status.message = nil
-      i.response.http_version = nil
-    elsif @scenario_parameters.to_s.include?('webmock')
-      # WebMock does not expose the HTTP version so we have no way to record it
-      i.response.http_version = nil
+      if @scenario_parameters.to_s =~ /excon|faraday/
+        # Excon/Faraday do not expose the status message or http version,
+        # so we have no way to record these attributes.
+        i.response.status.message = nil
+        i.response.http_version = nil
+      elsif @scenario_parameters.to_s.include?('webmock')
+        # WebMock does not expose the HTTP version so we have no way to record it
+        i.response.http_version = nil
+      end
     end
   end
 
