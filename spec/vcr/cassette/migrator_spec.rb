@@ -90,11 +90,11 @@ EOF
   end
 
   # JRuby serializes YAML with some slightly different whitespace.
-  before(:each, :if => (RUBY_PLATFORM == 'java')) do
+  before(:each) do
     [original_contents, updated_contents].each do |contents|
       contents.gsub!(/^(\s+)-/, '\1  -')
     end
-  end
+  end if RUBY_PLATFORM == 'java'
 
   # Use syck on all rubies for consistent results...
   before(:each) do
