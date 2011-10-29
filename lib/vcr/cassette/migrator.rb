@@ -7,6 +7,7 @@ module VCR
     class Migrator
       def initialize(dir, out = $stdout)
         @dir, @out = dir, out
+        @yaml_load_errors = yaml_load_errors
       end
 
       def migrate!
@@ -44,7 +45,7 @@ module VCR
 
       def load_yaml(cassette)
         ::YAML.load_file(cassette)
-      rescue *yaml_load_errors
+      rescue *@yaml_load_errors
         return nil
       end
 
