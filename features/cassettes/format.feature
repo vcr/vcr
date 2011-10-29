@@ -50,8 +50,10 @@ Feature: Cassette format
       """ruby
       include_http_adapter_for("<http_lib>")
 
-      start_sinatra_app(:port => 7777) do
-        get('/:path') { ARGV[0] + ' ' + params[:path] }
+      if ARGV.any?
+        start_sinatra_app(:port => 7777) do
+          get('/:path') { ARGV[0] + ' ' + params[:path] }
+        end
       end
 
       require 'vcr'
@@ -117,7 +119,6 @@ Feature: Cassette format
       | c.hook_into :excon    | excon                 |
       |                       | faraday (w/ net_http) |
 
-  # TODO: test playback
   Scenario: Request/Response data can be saved as JSON
     Given a file named "cassette_json.rb" with:
       """ruby
@@ -135,8 +136,8 @@ Feature: Cassette format
       end
 
       VCR.use_cassette('example', :serialize_with => :json) do
-        make_http_request(:get, "http://localhost:7777/foo")
-        make_http_request(:get, "http://localhost:7777/bar")
+        puts response_body_for(:get, "http://localhost:7777/foo")
+        puts response_body_for(:get, "http://localhost:7777/bar")
       end
       """
     When I run `ruby cassette_json.rb 'Hello'`
@@ -185,6 +186,12 @@ Feature: Cassette format
         }
       ]
       """
+    When I run `ruby cassette_json.rb`
+    Then it should pass with:
+      """
+      Hello foo
+      Hello bar
+      """
 
   Scenario: Request/Response data can be saved using a custom serializer
     Given a file named "cassette_ruby.rb" with:
@@ -213,8 +220,8 @@ Feature: Cassette format
       end
 
       VCR.use_cassette('example', :serialize_with => :ruby) do
-        make_http_request(:get, "http://localhost:7777/foo")
-        make_http_request(:get, "http://localhost:7777/bar")
+        puts response_body_for(:get, "http://localhost:7777/foo")
+        puts response_body_for(:get, "http://localhost:7777/bar")
       end
       """
     When I run `ruby cassette_ruby.rb 'Hello'`
@@ -246,4 +253,10 @@ Feature: Cassette format
             "Connection"=>["Keep-Alive"]},
           "body"=>"Hello bar",
           "http_version"=>nil}}]
+      """
+    When I run `ruby cassette_ruby.rb`
+    Then it should pass with:
+      """
+      Hello foo
+      Hello bar
       """
