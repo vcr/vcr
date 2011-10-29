@@ -89,6 +89,13 @@ EOF
     end
   end
 
+  # JRuby serializes YAML with some slightly different whitespace.
+  before(:each, :if => (RUBY_PLATFORM == 'java')) do
+    [original_contents, updated_contents].each do |contents|
+      contents.gsub!(/^(\s+)-/, '\1  -')
+    end
+  end
+
   # Use syck on all rubies for consistent results...
   before(:each) do
     YAML::ENGINE.yamler = 'syck' if defined?(YAML::ENGINE)
