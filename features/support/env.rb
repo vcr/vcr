@@ -2,6 +2,8 @@ require 'rubygems'
 require 'bundler'
 Bundler.setup
 
+require 'ruby-debug' if !defined?(RUBY_ENGINE) && RUBY_VERSION != '1.9.3' && !ENV['CI']
+
 require 'aruba/cucumber'
 
 cucumer_helpers_file = '../../features/support/vcr_cucumber_helpers'
