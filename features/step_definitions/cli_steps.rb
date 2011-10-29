@@ -50,10 +50,12 @@ module VCRHelpers
   def normalize_cassette_content(content)
     return content unless @scenario_parameters.to_s.include?('patron')
     interactions = YAML.load(content)
-    interactions.each do |i|
-      i.request.headers = (i.request.headers || {}).merge!('Expect' => [''])
+    interactions.map! do |hash|
+      VCR::HTTPInteraction.from_hash(hash).tap do |i|
+        i.request.headers = (i.request.headers || {}).merge!('Expect' => [''])
+      end
     end
-    YAML.dump(interactions)
+    YAML.dump(interactions.map(&:to_hash))
   end
 
   def modify_file(file_name, orig_text, new_text)
