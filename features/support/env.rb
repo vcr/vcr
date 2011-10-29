@@ -26,6 +26,6 @@ else
 end
 
 Before do
-  @aruba_timeout_seconds = RUBY_PLATFORM == 'java' ? 60 : 10
+  @aruba_timeout_seconds = RUBY_PLATFORM == 'java' ? 60 : 20
 end
 
