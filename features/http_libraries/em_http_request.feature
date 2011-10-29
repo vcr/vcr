@@ -75,7 +75,7 @@ Feature: EM HTTP Request
             Content-Length:
             - '9'
           body: Hello foo
-          http_version: !!null 
+          http_version: 
       - request:
           method: get
           uri: http://localhost:7777/bar
@@ -91,7 +91,7 @@ Feature: EM HTTP Request
             Content-Length:
             - '9'
           body: Hello bar
-          http_version: !!null 
+          http_version: 
       - request:
           method: get
           uri: http://localhost:7777/bazz
@@ -107,7 +107,7 @@ Feature: EM HTTP Request
             Content-Length:
             - '10'
           body: Hello bazz
-          http_version: !!null 
+          http_version: 
       """
 
     When I run `ruby make_requests.rb Goodbye`
@@ -165,7 +165,7 @@ Feature: EM HTTP Request
             Content-Length:
             - '9'
           body: Hello foo
-          http_version: !!null 
+          http_version: 
       - request:
           method: get
           uri: http://localhost:7777/bar
@@ -181,7 +181,7 @@ Feature: EM HTTP Request
             Content-Length:
             - '9'
           body: Hello bar
-          http_version: !!null 
+          http_version: 
       - request:
           method: get
           uri: http://localhost:7777/bazz
@@ -197,7 +197,7 @@ Feature: EM HTTP Request
             Content-Length:
             - '10'
           body: Hello bazz
-          http_version: !!null 
+          http_version: 
       """
 
     When I run `ruby make_requests.rb Goodbye`
