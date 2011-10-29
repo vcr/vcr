@@ -94,12 +94,14 @@ module VCR
         end
       end
 
-      psych_null_string = '!!null'
+      # see https://gist.github.com/815769
+      problematic_syck_string = "1\n \n2"
 
       describe "psych serializer" do
         it 'serializes things using pysch even if syck is configured as the default YAML engine' do
           ::YAML::ENGINE.yamler = 'syck'
-          subject[:psych].serialize(nil).should include(psych_null_string)
+          serialized = subject[:psych].serialize(problematic_syck_string)
+          subject[:psych].deserialize(serialized).should eq(problematic_syck_string)
         end if defined?(::Psych)
 
         it 'raises an error if psych cannot be loaded' do
@@ -110,7 +112,8 @@ module VCR
       describe "syck serializer" do
         it 'forcibly serializes things using syck even if psych is the currently configured YAML engine' do
           ::YAML::ENGINE.yamler = 'psych'
-          subject[:syck].serialize(nil).should_not include(psych_null_string)
+          serialized = subject[:syck].serialize(problematic_syck_string)
+          subject[:syck].deserialize(serialized).should_not eq(problematic_syck_string)
         end if defined?(::Psych)
       end
     end
