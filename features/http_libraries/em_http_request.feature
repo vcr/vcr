@@ -60,6 +60,7 @@ Feature: EM HTTP Request
     And the file "cassettes/em_http.yml" should contain YAML like:
       """
       ---
+      http_interactions:
       - request:
           method: get
           uri: http://localhost:7777/foo
@@ -108,6 +109,7 @@ Feature: EM HTTP Request
             - '10'
           body: Hello bazz
           http_version: 
+      recorded_with: VCR 2.0.0
       """
 
     When I run `ruby make_requests.rb Goodbye`
@@ -150,6 +152,7 @@ Feature: EM HTTP Request
     And the file "cassettes/em_http.yml" should contain YAML like:
       """
       ---
+      http_interactions:
       - request:
           method: get
           uri: http://localhost:7777/foo
@@ -198,6 +201,7 @@ Feature: EM HTTP Request
             - '10'
           body: Hello bazz
           http_version: 
+      recorded_with: VCR 2.0.0
       """
 
     When I run `ruby make_requests.rb Goodbye`

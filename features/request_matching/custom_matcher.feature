@@ -16,6 +16,7 @@ Feature: Register and use a custom matcher
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
       ---
+      http_interactions:
       - request:
           method: get
           uri: http://foo.com:9000/foo
@@ -44,6 +45,7 @@ Feature: Register and use a custom matcher
             - '18'
           body: port 8000 response
           http_version: '1.1'
+      recorded_with: VCR 2.0.0
       """
 
   Scenario Outline: Use a callable as a custom request matcher

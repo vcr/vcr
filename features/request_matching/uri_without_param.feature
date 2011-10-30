@@ -17,6 +17,7 @@ Feature: URI without param(s)
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
       ---
+      http_interactions:
       - request:
           method: get
           uri: http://example.com/search?q=foo&timestamp=1316920490
@@ -45,6 +46,7 @@ Feature: URI without param(s)
             - '12'
           body: bar response
           http_version: '1.1'
+      recorded_with: VCR 2.0.0
       """
 
   Scenario: Match the URI on all but the timestamp query parameter

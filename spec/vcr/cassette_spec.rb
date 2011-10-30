@@ -48,6 +48,27 @@ describe VCR::Cassette do
     end
   end
 
+  describe "#serializable_hash" do
+    subject { VCR::Cassette.new("foo") }
+    let(:interactions) { [stub(:to_hash => { "i" => 1 }, :ignored? => false), stub(:to_hash => { "i" => 2 }, :ignored? => false)] }
+
+    before(:each) do
+      interactions.each do |i|
+        subject.record_http_interaction(i)
+      end
+    end
+
+    let(:metadata) { subject.serializable_hash.reject { |k,v| k == "http_interactions" } }
+
+    it 'includes the hash form of all recorded interactions' do
+      subject.serializable_hash.should include('http_interactions' => [{ "i" => 1 }, { "i" => 2 }])
+    end
+
+    it 'includes additional metadata about the cassette' do
+      metadata.should eq("recorded_with" => "VCR #{VCR.version}")
+    end
+  end
+
   describe "#recording?" do
     [:all, :new_episodes].each do |mode|
       it "returns true when the record mode is :#{mode}" do
@@ -123,10 +144,12 @@ describe VCR::Cassette do
         File.stub(:size? => true)
       end
 
+      let(:empty_cassette_yaml) { YAML.dump("http_interactions" => []) }
+
       it 'reads the appropriate file from disk using a VCR::Cassette::Reader' do
         VCR::Cassette::Reader.should_receive(:new).with(
           "#{VCR.configuration.cassette_library_dir}/foo.yml", anything
-        ).and_return(mock('reader', :read => YAML.dump([])))
+        ).and_return(mock('reader', :read => empty_cassette_yaml))
 
         VCR::Cassette.new('foo', :record => :new_episodes)
       end
@@ -138,7 +161,7 @@ describe VCR::Cassette do
 
           VCR::Cassette::Reader.should_receive(:new).with(
             anything, erb
-          ).and_return(mock('reader', :read => YAML.dump([])))
+          ).and_return(mock('reader', :read => empty_cassette_yaml))
 
           VCR::Cassette.new('foo', :record => :new_episodes, :erb => erb)
         end
@@ -148,7 +171,7 @@ describe VCR::Cassette do
 
           VCR::Cassette::Reader.should_receive(:new).with(
             anything, erb
-          ).and_return(mock('reader', :read => YAML.dump([])))
+          ).and_return(mock('reader', :read => empty_cassette_yaml))
 
           VCR::Cassette.new('foo', :record => :new_episodes)
         end
@@ -170,7 +193,7 @@ describe VCR::Cassette do
       context "when :#{record_mode} is passed as the record option" do
         def stub_old_interactions(interactions)
           hashes = interactions.map(&:to_hash)
-          VCR.cassette_serializers[:yaml].stub(:deserialize => hashes)
+          VCR.cassette_serializers[:yaml].stub(:deserialize => { 'http_interactions' => hashes })
           VCR::HTTPInteraction.stub(:from_hash) do |hash|
             interactions[hashes.index(hash)]
           end
@@ -338,19 +361,15 @@ describe VCR::Cassette do
   end
 
   describe '#eject' do
-    it "writes the recorded interactions to disk as yaml" do
-      recorded_interactions = [
-        http_interaction { |i| i.request.uri = 'http://foo.com/'; i.response.body = 'res 1' },
-        http_interaction { |i| i.request.uri = 'http://bar.com/'; i.response.body = 'res 2' },
-        http_interaction { |i| i.request.uri = 'http://goo.com/'; i.response.body = 'res 3' }
-      ]
-
+    it "writes the serializable_hash to disk as yaml" do
       cassette = VCR::Cassette.new(:eject_test)
-      cassette.stub!(:new_recorded_interactions).and_return(recorded_interactions)
+      cassette.record_http_interaction http_interaction # so it has one
+      cassette.should respond_to(:serializable_hash)
+      cassette.stub(:serializable_hash => { "http_interactions" => [1, 3, 5] })
 
       expect { cassette.eject }.to change { File.exist?(cassette.file) }.from(false).to(true)
-      saved_recorded_interactions = YAML.load_file(cassette.file)
-      saved_recorded_interactions.should eq(recorded_interactions.map(&:to_hash))
+      saved_stuff = YAML.load_file(cassette.file)
+      saved_stuff.should eq("http_interactions" => [1, 3, 5])
     end
 
     it 'invokes the appropriately tagged before_record hooks' do
@@ -385,7 +404,7 @@ describe VCR::Cassette do
       cassette.eject
 
       saved_recorded_interactions = ::YAML.load_file(cassette.file)
-      saved_recorded_interactions.should eq([interaction_2.to_hash])
+      saved_recorded_interactions["http_interactions"].should eq([interaction_2.to_hash])
     end
 
     it 'does not write the cassette to disk if all interactions have been ignored' do
@@ -406,7 +425,7 @@ describe VCR::Cassette do
 
       expect { cassette.eject }.to change { File.exist?(cassette.file) }.from(false).to(true)
       saved_recorded_interactions = YAML.load_file(cassette.file)
-      saved_recorded_interactions.should eq(recorded_interactions.map(&:to_hash))
+      saved_recorded_interactions["http_interactions"].should eq(recorded_interactions.map(&:to_hash))
     end
 
     [:all, :none, :new_episodes].each do |record_mode|
@@ -438,7 +457,7 @@ describe VCR::Cassette do
           let(:interaction_foo_2) { interaction("foo 2", :uri => 'http://foo.com/') }
           let(:interaction_bar)   { interaction("bar", :uri => 'http://bar.com/') }
 
-          let(:saved_recorded_interactions) { YAML.load_file(subject.file).map { |h| VCR::HTTPInteraction.from_hash(h) } }
+          let(:saved_recorded_interactions) { YAML.load_file(subject.file)['http_interactions'].map { |h| VCR::HTTPInteraction.from_hash(h) } }
 
           before(:each) do
             subject.stub(:recorded_interactions => [interaction_foo_1])

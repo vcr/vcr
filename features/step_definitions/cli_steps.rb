@@ -3,10 +3,10 @@ require 'multi_json'
 
 module VCRHelpers
 
-  def normalize_cassette_structs(content)
-    YAML.load(content).tap do |hashes|
-      hashes.map! { |h| normalize_http_interaction(h) }
-    end
+  def normalize_cassette_hash(cassette_hash)
+    cassette_hash['recorded_with'] = "VCR #{VCR.version}"
+    cassette_hash['http_interactions'].map! { |h| normalize_http_interaction(h) }
+    cassette_hash
   end
 
   def normalize_headers(object)
@@ -49,13 +49,13 @@ module VCRHelpers
 
   def normalize_cassette_content(content)
     return content unless @scenario_parameters.to_s.include?('patron')
-    interactions = YAML.load(content)
-    interactions.map! do |hash|
+    cassette_hash = YAML.load(content)
+    cassette_hash['http_interactions'].map! do |hash|
       VCR::HTTPInteraction.from_hash(hash).tap do |i|
         i.request.headers = (i.request.headers || {}).merge!('Expect' => [''])
-      end
+      end.to_hash
     end
-    YAML.dump(interactions.map(&:to_hash))
+    YAML.dump(cassette_hash)
   end
 
   def modify_file(file_name, orig_text, new_text)
@@ -111,25 +111,21 @@ end
 
 Then /^the file "([^"]*)" should contain YAML like:$/ do |file_name, expected_content|
   actual_content = in_current_dir { File.read(file_name) }
-  normalize_cassette_structs(actual_content).should == normalize_cassette_structs(expected_content)
+  normalize_cassette_hash(YAML.load(actual_content)).should == normalize_cassette_hash(YAML.load(expected_content))
 end
 
 Then /^the file "([^"]*)" should contain JSON like:$/ do |file_name, expected_content|
   actual_content = in_current_dir { File.read(file_name) }
   actual = MultiJson.decode(actual_content)
   expected = MultiJson.decode(expected_content)
-  actual.map! { |i| normalize_http_interaction(i) }
-  expected.map! { |i| normalize_http_interaction(i) }
-  actual.should == expected
+  normalize_cassette_hash(actual).should == normalize_cassette_hash(expected)
 end
 
 Then /^the file "([^"]*)" should contain ruby like:$/ do |file_name, expected_content|
   actual_content = in_current_dir { File.read(file_name) }
   actual = eval(actual_content)
   expected = eval(expected_content)
-  actual.map! { |i| normalize_http_interaction(i) }
-  expected.map! { |i| normalize_http_interaction(i) }
-  actual.should == expected
+  normalize_cassette_hash(actual).should == normalize_cassette_hash(expected)
 end
 
 Then /^the file "([^"]*)" should contain each of these:$/ do |file_name, table|
@@ -156,7 +152,7 @@ Then /^the file "([^"]*)" should contain a YAML fragment like:$/ do |file_name, 
 end
 
 Then /^the cassette "([^"]*)" should have the following response bodies:$/ do |file, table|
-  interactions = in_current_dir { YAML.load_file(file) }.map { |h| VCR::HTTPInteraction.from_hash(h) }
+  interactions = in_current_dir { YAML.load_file(file) }['http_interactions'].map { |h| VCR::HTTPInteraction.from_hash(h) }
   actual_response_bodies = interactions.map { |i| i.response.body }
   expected_response_bodies = table.raw.flatten
   actual_response_bodies.should =~ expected_response_bodies

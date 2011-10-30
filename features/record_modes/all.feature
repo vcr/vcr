@@ -27,6 +27,7 @@ Feature: :all
     And a previously recorded cassette file "cassettes/example.yml" with:
       """
       ---
+      http_interactions:
       - request:
           method: get
           uri: http://localhost:7777/
@@ -41,6 +42,7 @@ Feature: :all
             - '20'
           body: old response
           http_version: '1.1'
+      recorded_with: VCR 2.0.0
       """
 
   Scenario: Re-record previously recorded response

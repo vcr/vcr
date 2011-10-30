@@ -14,6 +14,7 @@ Feature: Automatic Re-recording
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
       ---
+      http_interactions:
       - request:
           method: get
           uri: http://localhost:7777/
@@ -28,6 +29,7 @@ Feature: Automatic Re-recording
             - '12'
           body: Old Response
           http_version: '1.1'
+      recorded_with: VCR 2.0.0
       """
     And a file named "re_record.rb" with:
       """ruby

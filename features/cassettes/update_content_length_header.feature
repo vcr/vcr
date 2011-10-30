@@ -22,6 +22,7 @@ Feature: Update content_length header
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
       ---
+      http_interactions:
       - request:
           method: get
           uri: http://example.com/
@@ -38,6 +39,7 @@ Feature: Update content_length header
             - '11'
           body: Hello <modified>
           http_version: '1.1'
+      recorded_with: VCR 2.0.0
       """
     And a file named "common_stuff.rb" with:
       """ruby

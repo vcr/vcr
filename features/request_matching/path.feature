@@ -11,6 +11,7 @@ Feature: Matching on Path
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
       ---
+      http_interactions:
       - request:
           method: post
           uri: http://host1.com/about?date=2011-09-01
@@ -39,6 +40,7 @@ Feature: Matching on Path
             - '15'
           body: home response
           http_version: '1.1'
+      recorded_with: VCR 2.0.0
       """
 
   Scenario Outline: Replay interaction that matches the path

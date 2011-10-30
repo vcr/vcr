@@ -6,6 +6,7 @@ Feature: Matching on Body
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
       ---
+      http_interactions:
       - request:
           method: post
           uri: http://example.net/some/long/path
@@ -34,6 +35,7 @@ Feature: Matching on Body
             - '14'
           body: body2 response
           http_version: '1.1'
+      recorded_with: VCR 2.0.0
       """
 
   Scenario Outline: Replay interaction that matches the body

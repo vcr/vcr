@@ -9,6 +9,7 @@ Feature: Matching on URI
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
       ---
+      http_interactions:
       - request:
           method: post
           uri: http://example.com/foo
@@ -37,6 +38,7 @@ Feature: Matching on URI
             - '12'
           body: bar response
           http_version: '1.1'
+      recorded_with: VCR 2.0.0
       """
 
   Scenario Outline: Replay interaction that matches the request URI

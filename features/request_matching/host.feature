@@ -10,6 +10,7 @@ Feature: Matching on Host
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
       ---
+      http_interactions:
       - request:
           method: post
           uri: http://host1.com/some/long/path
@@ -38,6 +39,7 @@ Feature: Matching on Host
             - '16'
           body: host2 response
           http_version: '1.1'
+      recorded_with: VCR 2.0.0
       """
 
   Scenario Outline: Replay interaction that matches the host

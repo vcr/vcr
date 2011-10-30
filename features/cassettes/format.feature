@@ -73,6 +73,7 @@ Feature: Cassette format
     Then the file "cassettes/example.yml" should contain YAML like:
       """
       ---
+      http_interactions:
       - request:
           method: get
           uri: http://localhost:7777/foo
@@ -105,6 +106,7 @@ Feature: Cassette format
             - '9'
           body: Hello bar
           http_version: '1.1'
+      recorded_with: VCR 2.0.0
       """
 
     Examples:
@@ -144,48 +146,51 @@ Feature: Cassette format
     When I run `ruby cassette_json.rb 'Hello'`
     Then the file "cassettes/example.json" should contain JSON like:
       """json
-      [
-        {
-          "response": {
-            "body": "Hello foo",
-            "http_version": null,
-            "status": { "code": 200, "message": "OK" },
-            "headers": {
-              "Date": [ "Thu, 27 Oct 2011 06:16:31 GMT" ],
-              "Content-Type": [ "text/html;charset=utf-8" ],
-              "Content-Length": [ "9" ],
-              "Server": [ "WEBrick/1.3.1 (Ruby/1.8.7/2011-06-30)" ],
-              "Connection": [ "Keep-Alive" ]
+      {
+        "http_interactions": [
+          {
+            "response": {
+              "body": "Hello foo",
+              "http_version": null,
+              "status": { "code": 200, "message": "OK" },
+              "headers": {
+                "Date": [ "Thu, 27 Oct 2011 06:16:31 GMT" ],
+                "Content-Type": [ "text/html;charset=utf-8" ],
+                "Content-Length": [ "9" ],
+                "Server": [ "WEBrick/1.3.1 (Ruby/1.8.7/2011-06-30)" ],
+                "Connection": [ "Keep-Alive" ]
+              }
+            },
+            "request": {
+              "uri": "http://localhost:7777/foo",
+              "body": "",
+              "method": "get",
+              "headers": { }
             }
           },
-          "request": {
-            "uri": "http://localhost:7777/foo",
-            "body": "",
-            "method": "get",
-            "headers": { }
-          }
-        },
-        {
-          "response": {
-            "body": "Hello bar",
-            "http_version": null,
-            "status": { "code": 200, "message": "OK" },
-            "headers": {
-              "Date": [ "Thu, 27 Oct 2011 06:16:31 GMT" ],
-              "Content-Type": [ "text/html;charset=utf-8" ],
-              "Content-Length": [ "9" ],
-              "Server": [ "WEBrick/1.3.1 (Ruby/1.8.7/2011-06-30)" ],
-              "Connection": [ "Keep-Alive" ]
+          {
+            "response": {
+              "body": "Hello bar",
+              "http_version": null,
+              "status": { "code": 200, "message": "OK" },
+              "headers": {
+                "Date": [ "Thu, 27 Oct 2011 06:16:31 GMT" ],
+                "Content-Type": [ "text/html;charset=utf-8" ],
+                "Content-Length": [ "9" ],
+                "Server": [ "WEBrick/1.3.1 (Ruby/1.8.7/2011-06-30)" ],
+                "Connection": [ "Keep-Alive" ]
+              }
+            },
+            "request": {
+              "uri": "http://localhost:7777/bar",
+              "body": "",
+              "method": "get",
+              "headers": { }
             }
-          },
-          "request": {
-            "uri": "http://localhost:7777/bar",
-            "body": "",
-            "method": "get",
-            "headers": { }
           }
-        }
-      ]
+        ],
+        "recorded_with": "VCR 2.0.0"
+      }
       """
     When I run `ruby cassette_json.rb`
     Then it should pass with:
@@ -228,32 +233,34 @@ Feature: Cassette format
     When I run `ruby cassette_ruby.rb 'Hello'`
     Then the file "cassettes/example.ruby" should contain ruby like:
       """
-      [{"request"=>
-         {"method"=>"get",
-          "uri"=>"http://localhost:7777/foo",
-          "body"=>"",
-          "headers"=>{"Accept"=>["*/*"], "User-Agent"=>["Ruby"]}},
-        "response"=>
-         {"status"=>{"code"=>200, "message"=>"OK "},
-          "headers"=>
-           {"Content-Type"=>["text/html;charset=utf-8"],
-            "Content-Length"=>["9"],
-            "Connection"=>["Keep-Alive"]},
-          "body"=>"Hello foo",
-          "http_version"=>nil}},
-       {"request"=>
-         {"method"=>"get",
-          "uri"=>"http://localhost:7777/bar",
-          "body"=>"",
-          "headers"=>{"Accept"=>["*/*"], "User-Agent"=>["Ruby"]}},
-        "response"=>
-         {"status"=>{"code"=>200, "message"=>"OK "},
-          "headers"=>
-           {"Content-Type"=>["text/html;charset=utf-8"],
-            "Content-Length"=>["9"],
-            "Connection"=>["Keep-Alive"]},
-          "body"=>"Hello bar",
-          "http_version"=>nil}}]
+      {"http_interactions"=>
+        [{"request"=>
+           {"method"=>"get",
+            "uri"=>"http://localhost:7777/foo",
+            "body"=>"",
+            "headers"=>{"Accept"=>["*/*"], "User-Agent"=>["Ruby"]}},
+          "response"=>
+           {"status"=>{"code"=>200, "message"=>"OK "},
+            "headers"=>
+             {"Content-Type"=>["text/html;charset=utf-8"],
+              "Content-Length"=>["9"],
+              "Connection"=>["Keep-Alive"]},
+            "body"=>"Hello foo",
+            "http_version"=>nil}},
+         {"request"=>
+           {"method"=>"get",
+            "uri"=>"http://localhost:7777/bar",
+            "body"=>"",
+            "headers"=>{"Accept"=>["*/*"], "User-Agent"=>["Ruby"]}},
+          "response"=>
+           {"status"=>{"code"=>200, "message"=>"OK "},
+            "headers"=>
+             {"Content-Type"=>["text/html;charset=utf-8"],
+              "Content-Length"=>["9"],
+              "Connection"=>["Keep-Alive"]},
+            "body"=>"Hello bar",
+            "http_version"=>nil}}],
+       "recorded_with"=>"VCR 2.0.0"}
       """
     When I run `ruby cassette_ruby.rb`
     Then it should pass with:

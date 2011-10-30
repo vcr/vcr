@@ -39,6 +39,7 @@ Feature: Hooks
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
       ---
+      http_interactions:
       - request:
           method: get
           uri: http://example.com/foo
@@ -55,6 +56,7 @@ Feature: Hooks
             - '20'
           body: example.com response
           http_version: '1.1'
+      recorded_with: VCR 2.0.0
       """
 
   Scenario: Replace sensitive data with before_record hook
@@ -134,6 +136,7 @@ Feature: Hooks
     Given a previously recorded cassette file "cassettes/localhost.yml" with:
       """
       ---
+      http_interactions:
       - request:
           method: get
           uri: http://localhost:7777/
@@ -150,6 +153,7 @@ Feature: Hooks
             - '20'
           body: recorded response
           http_version: '1.1'
+      recorded_with: VCR 2.0.0
       """
     And a file named "before_playback_ignore.rb" with:
       """ruby

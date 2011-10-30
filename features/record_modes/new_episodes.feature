@@ -26,6 +26,7 @@ Feature: :new_episodes
     And a previously recorded cassette file "cassettes/example.yml" with:
       """
       ---
+      http_interactions:
       - request:
           method: get
           uri: http://example.com/foo
@@ -40,6 +41,7 @@ Feature: :new_episodes
             - '20'
           body: example.com response
           http_version: '1.1'
+      recorded_with: VCR 2.0.0
       """
 
   Scenario: Previously recorded responses are replayed

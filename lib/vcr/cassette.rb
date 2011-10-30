@@ -74,6 +74,13 @@ module VCR
       end
     end
 
+    def serializable_hash
+      {
+        "http_interactions" => interactions_to_record.map(&:to_hash),
+        "recorded_with"     => "VCR #{VCR.version}"
+      }
+    end
+
   private
 
     def sanitized_name
@@ -103,7 +110,7 @@ module VCR
 
     def load_recorded_interactions
       if file && File.size?(file)
-        interactions = @serializer.deserialize(raw_yaml_content).map { |h| HTTPInteraction.from_hash(h) }
+        interactions = @serializer.deserialize(raw_yaml_content)['http_interactions'].map { |h| HTTPInteraction.from_hash(h) }
 
         invoke_hook(:before_playback, interactions)
 
@@ -148,17 +155,21 @@ module VCR
       old_interactions + new_recorded_interactions
     end
 
+    def interactions_to_record
+      merged_interactions.tap do |interactions|
+        invoke_hook(:before_record, interactions)
+      end
+    end
+
     def write_recorded_interactions_to_disk
       return unless VCR.configuration.cassette_library_dir
-      return if new_recorded_interactions.empty?
-
-      interactions = merged_interactions
-      invoke_hook(:before_record, interactions)
-      return if interactions.empty?
+      return if new_recorded_interactions.none?
+      hash = serializable_hash
+      return if hash["http_interactions"].none?
 
       directory = File.dirname(file)
       FileUtils.mkdir_p directory unless File.exist?(directory)
-      File.open(file, 'w') { |f| f.write @serializer.serialize(interactions.map { |i| i.to_hash }) }
+      File.open(file, 'w') { |f| f.write @serializer.serialize(hash) }
     end
 
     def invoke_hook(type, interactions)

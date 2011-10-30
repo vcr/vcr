@@ -6,6 +6,7 @@ Feature: Matching on Headers
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
       ---
+      http_interactions:
       - request:
           method: post
           uri: http://example.net/some/long/path
@@ -38,6 +39,7 @@ Feature: Matching on Headers
             - '15'
           body: user 2 response
           http_version: '1.1'
+      recorded_with: VCR 2.0.0
       """
     And a file named "header_matching.rb" with:
       """ruby

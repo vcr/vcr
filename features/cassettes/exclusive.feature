@@ -18,6 +18,7 @@ Feature: exclusive cassette
     Given a previously recorded cassette file "cassettes/outer.yml" with:
       """
       ---
+      http_interactions:
       - request:
           method: get
           uri: http://localhost:7777/outer
@@ -32,10 +33,12 @@ Feature: exclusive cassette
             - '18'
           body: Old outer response
           http_version: '1.1'
+      recorded_with: VCR 2.0.0
       """
     And a previously recorded cassette file "cassettes/inner.yml" with:
       """
       ---
+      http_interactions:
       - request:
           method: get
           uri: http://localhost:7777/inner
@@ -50,6 +53,7 @@ Feature: exclusive cassette
             - '18'
           body: Old inner response
           http_version: '1.1'
+      recorded_with: VCR 2.0.0
       """
     And a file named "setup.rb" with:
       """ruby

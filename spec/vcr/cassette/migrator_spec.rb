@@ -43,6 +43,7 @@ EOF
 
   let(:updated_contents) { <<-EOF
 --- 
+http_interactions: 
 - request: 
     method: get
     uri: http://example.com/foo
@@ -77,6 +78,7 @@ EOF
       - "9"
     body: Hello bar
     http_version: "1.1"
+recorded_with: VCR 1.11.3
 EOF
   }
 

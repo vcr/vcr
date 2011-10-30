@@ -6,7 +6,7 @@ shared_examples_for "a hook into an HTTP library" do |library, *other|
   include HeaderDowncaser
 
   def interactions_from(file)
-    hashes = YAML.load_file(File.join(VCR::SPEC_ROOT, 'fixtures', file))
+    hashes = YAML.load_file(File.join(VCR::SPEC_ROOT, 'fixtures', file))['http_interactions']
     hashes.map { |h| VCR::HTTPInteraction.from_hash(h) }
   end
 

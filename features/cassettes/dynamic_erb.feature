@@ -13,6 +13,7 @@ Feature: Dynamic ERB cassettes
     Given a previously recorded cassette file "cassettes/dynamic.yml" with:
       """
       ---
+      http_interactions:
       - request:
           method: get
           uri: http://example.com/foo?a=<%= 'b' * 3 %>
@@ -29,6 +30,7 @@ Feature: Dynamic ERB cassettes
             - '9'
           body: Hello <%= 'bar'.next %>
           http_version: '1.1'
+      recorded_with: VCR 2.0.0
       """
     And a file named "dynamic_erb_example.rb" with:
       """ruby
@@ -51,6 +53,7 @@ Feature: Dynamic ERB cassettes
     Given a previously recorded cassette file "cassettes/dynamic.yml" with:
       """
       ---
+      http_interactions:
       - request:
           method: get
           uri: http://example.com/foo?a=<%= arg1 %>
@@ -67,6 +70,7 @@ Feature: Dynamic ERB cassettes
             - '9'
           body: Hello <%= arg2 %>
           http_version: '1.1'
+      recorded_with: VCR 2.0.0
       """
     And a file named "dynamic_erb_example.rb" with:
       """ruby
