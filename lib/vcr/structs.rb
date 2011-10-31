@@ -106,6 +106,11 @@ module VCR
     extend ::Forwardable
     def_delegators :request, :uri, :method
 
+    def initialize(*args)
+      @ignored = false
+      super
+    end
+
     def to_hash
       { 'request' => request.to_hash, 'response' => response.to_hash }.tap do |hash|
         OrderedHashSerializer.apply_to(hash, members)
@@ -118,18 +123,11 @@ module VCR
     end
 
     def ignore!
-      # we don't want to store any additional
-      # ivars on this object because that would get
-      # serialized with the object...so we redefine
-      # `ignored?` instead.
-      (class << self; self; end).class_eval do
-        undef ignored?
-        def ignored?; true; end
-      end
+      @ignored = true
     end
 
     def ignored?
-      false
+      !!@ignored
     end
 
     def filter!(text, replacement_text)

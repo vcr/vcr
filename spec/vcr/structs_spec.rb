@@ -67,11 +67,6 @@ module VCR
       end
     end
 
-    it 'does not include `@ignored` in the serialized output' do
-      subject.ignore!
-      YAML.dump(subject).should_not include('ignored')
-    end
-
     let(:status)      { ResponseStatus.new(200, "OK") }
     let(:response)    { Response.new(status, { "foo" => ["bar"] }, "res body", "1.1") }
     let(:request)     { Request.new(:get, "http://foo.com/", "req body", { "bar" => ["foo"] }) }
