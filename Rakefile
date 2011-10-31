@@ -95,6 +95,15 @@ task :release => [:require_ruby_18, :prep_relish_release, :relish]
 task :test => :spec
 
 load './lib/vcr/tasks/vcr.rake'
+namespace :vcr do
+  task :reset_spec_cassettes do
+    ENV['DIR'] = 'spec/fixtures'
+    def VCR.version; "2.0.0"; end
+    sh "git checkout v2.0.0.beta1 -- spec/fixtures"
+  end
+
+  task :migrate_cassettes => :reset_spec_cassettes
+end
 
 desc "Migrate cucumber cassettes"
 task :migrate_cucumber_cassettes do
