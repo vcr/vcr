@@ -96,6 +96,7 @@ EOF
     [original_contents, updated_contents].each do |contents|
       contents.gsub!(/^(\s+)-/, '\1  -')
     end
+    updated_contents.gsub!(/^(- |  )/, '  \1')
   end if RUBY_PLATFORM == 'java'
 
   # Use syck on all rubies for consistent results...
