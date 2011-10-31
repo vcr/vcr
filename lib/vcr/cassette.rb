@@ -115,10 +115,16 @@ module VCR
     end
 
     def should_re_record?
-      @re_record_interval &&
-      File.exist?(file) &&
-      File.stat(file).mtime + @re_record_interval < Time.now &&
-      InternetConnection.available?
+      return false unless @re_record_interval
+      return false unless earliest_interaction_recorded_at
+      return false unless File.exist?(file)
+      return false unless InternetConnection.available?
+
+      earliest_interaction_recorded_at + @re_record_interval < Time.now
+    end
+
+    def earliest_interaction_recorded_at
+      previously_recorded_interactions.map(&:recorded_at).min
     end
 
     def should_stub_requests?

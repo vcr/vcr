@@ -67,10 +67,20 @@ module VCR
       end
     end
 
+    describe "#recorded_at" do
+      let(:now) { Time.now }
+
+      it 'is initialized to the current time' do
+        Time.stub(:now => now)
+        VCR::HTTPInteraction.new.recorded_at.should eq(now)
+      end
+    end
+
     let(:status)      { ResponseStatus.new(200, "OK") }
     let(:response)    { Response.new(status, { "foo" => ["bar"] }, "res body", "1.1") }
     let(:request)     { Request.new(:get, "http://foo.com/", "req body", { "bar" => ["foo"] }) }
-    let(:interaction) { HTTPInteraction.new(request, response) }
+    let(:recorded_at) { Time.utc(2011, 5, 4, 12, 30) }
+    let(:interaction) { HTTPInteraction.new(request, response, recorded_at) }
 
     describe ".from_hash" do
       let(:hash) do
@@ -89,12 +99,17 @@ module VCR
             'headers'      => { "foo"     => ["bar"] },
             'body'         => 'res body',
             'http_version' => '1.1'
-          }
+          },
+          'recorded_at' => "Wed, 04 May 2011 12:30:00 GMT"
         }
       end
 
       it 'constructs an HTTP interaction from the given hash' do
         HTTPInteraction.from_hash(hash).should eq(interaction)
+      end
+
+      it 'initializes the recorded_at timestamp from the hash' do
+        HTTPInteraction.from_hash(hash).recorded_at.should eq(recorded_at)
       end
 
       it 'uses a blank request when the hash lacks one' do
@@ -114,7 +129,9 @@ module VCR
       let(:hash) { interaction.to_hash }
 
       it 'returns a nested hash containing all of the pertinent details' do
-        hash.keys.should =~ %w[ request response ]
+        hash.keys.should =~ %w[ request response recorded_at ]
+
+        hash['recorded_at'].should eq(interaction.recorded_at.httpdate)
 
         hash['request'].should eq({
           'method'  => 'get',
@@ -141,7 +158,7 @@ module VCR
       end
 
       it 'yields the entries in the expected order so the hash can be serialized in that order' do
-        assert_yielded_keys hash, 'request', 'response'
+        assert_yielded_keys hash, 'request', 'response', 'recorded_at'
         assert_yielded_keys hash['request'], 'method', 'uri', 'body', 'headers'
         assert_yielded_keys hash['response'], 'status', 'headers', 'body', 'http_version'
         assert_yielded_keys hash['response']['status'], 'code', 'message'

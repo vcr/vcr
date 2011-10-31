@@ -1,3 +1,5 @@
+require 'date'
+
 # This file gets symlinked into the tmp/aruba directory before
 # each scenario so that it is available to be required in them.
 $LOAD_PATH << '../../spec' unless $LOAD_PATH.include?('../../spec')
@@ -15,9 +17,9 @@ if running_under_aruba
   end
 end
 
-if ENV['DAYS_PASSED']
+if ENV['DATE_STRING']
   require 'timecop'
-  Timecop.travel(Time.now + ENV['DAYS_PASSED'].to_i.days)
+  Timecop.travel(Date.parse(ENV['DATE_STRING']))
 end
 
 def include_http_adapter_for(lib)

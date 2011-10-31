@@ -31,6 +31,7 @@ Feature: Playback repeats
             - '10'
           body: Response 1
           http_version: '1.1'
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       - request:
           method: get
           uri: http://example.com/foo
@@ -45,6 +46,7 @@ Feature: Playback repeats
             - '10'
           body: Response 2
           http_version: '1.1'
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0
       """
     And a file named "playback_repeats.rb" with:

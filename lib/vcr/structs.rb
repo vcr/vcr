@@ -1,3 +1,4 @@
+require 'time'
 require 'forwardable'
 
 module VCR
@@ -102,24 +103,30 @@ module VCR
     end
   end
 
-  class HTTPInteraction < Struct.new(:request, :response)
+  class HTTPInteraction < Struct.new(:request, :response, :recorded_at)
     extend ::Forwardable
     def_delegators :request, :uri, :method
 
     def initialize(*args)
       @ignored = false
       super
+      self.recorded_at ||= Time.now
     end
 
     def to_hash
-      { 'request' => request.to_hash, 'response' => response.to_hash }.tap do |hash|
+      {
+        'request'     => request.to_hash,
+        'response'    => response.to_hash,
+        'recorded_at' => recorded_at.httpdate
+      }.tap do |hash|
         OrderedHashSerializer.apply_to(hash, members)
       end
     end
 
     def self.from_hash(hash)
       new Request.from_hash(hash.fetch('request', {})),
-          Response.from_hash(hash.fetch('response', {}))
+          Response.from_hash(hash.fetch('response', {})),
+          Time.httpdate(hash.fetch('recorded_at'))
     end
 
     def ignore!

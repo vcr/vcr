@@ -61,6 +61,7 @@ http_interactions:
       - "9"
     body: Hello foo
     http_version: "1.1"
+  recorded_at: Wed, 04 May 2011 12:30:00 GMT
 - request: 
     method: get
     uri: http://localhost:7777/bar
@@ -78,6 +79,7 @@ http_interactions:
       - "9"
     body: Hello bar
     http_version: "1.1"
+  recorded_at: Wed, 04 May 2011 12:30:00 GMT
 recorded_with: VCR 1.11.3
 EOF
   }
@@ -108,11 +110,16 @@ EOF
     YAML::ENGINE.yamler = 'psych' if defined?(YAML::ENGINE)
   end
 
+  let(:filemtime) { Time.utc(2011, 5, 4, 12, 30) }
   let(:out_io)    { StringIO.new }
   let(:file_name) { File.join(dir, "example.yml") }
   let(:output)    { out_io.rewind; out_io.read }
 
   subject { described_class.new(dir, out_io) }
+
+  before(:each) do
+    File.stub(:mtime).with(file_name).and_return(filemtime)
+  end
 
   it 'migrates a cassette from the 1.x to 2.x format' do
     File.open(file_name, 'w') { |f| f.write(original_contents) }

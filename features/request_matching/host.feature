@@ -25,6 +25,7 @@ Feature: Matching on Host
             - '14'
           body: host1 response
           http_version: '1.1'
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       - request:
           method: post
           uri: http://host2.com/some/other/long/path
@@ -39,6 +40,7 @@ Feature: Matching on Host
             - '16'
           body: host2 response
           http_version: '1.1'
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0
       """
 

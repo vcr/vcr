@@ -26,6 +26,7 @@ Feature: Matching on Path
             - '14'
           body: about response
           http_version: '1.1'
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       - request:
           method: post
           uri: http://host2.com/home?date=2011-09-01
@@ -40,6 +41,7 @@ Feature: Matching on Path
             - '15'
           body: home response
           http_version: '1.1'
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0
       """
 

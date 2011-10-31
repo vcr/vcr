@@ -6,9 +6,9 @@ Feature: Automatic Re-recording
 
   The value provided should be an interval (expressed in seconds) that
   determines how often VCR will re-record the cassette.  When a cassette
-  is used, VCR checks the file modification time; if more time than the
-  interval has passed, VCR will use the `:all` record mode to cause it be
-  re-recorded.
+  is used, VCR checks the earliest `recorded_at` timestamp in the cassette;
+  if more time than the interval has passed since that timestamp,
+  VCR will use the `:all` record mode to cause it be re-recorded.
 
   Background:
     Given a previously recorded cassette file "cassettes/example.yml" with:
@@ -29,6 +29,7 @@ Feature: Automatic Re-recording
             - '12'
           body: Old Response
           http_version: '1.1'
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0
       """
     And a file named "re_record.rb" with:
@@ -50,7 +51,7 @@ Feature: Automatic Re-recording
       """
 
   Scenario: Cassette is not re-recorded when not enough time has passed
-    Given 6 days have passed since the cassette was recorded
+    Given it is Tue, 07 Nov 2011
     When I run `ruby re_record.rb`
     Then the output should contain "Old Response"
     But the output should not contain "New Response"
@@ -58,7 +59,7 @@ Feature: Automatic Re-recording
     But the file "cassettes/example.yml" should not contain "body: New Response"
 
   Scenario: Cassette is re-recorded when enough time has passed
-    Given 8 days have passed since the cassette was recorded
+    Given it is Tue, 09 Nov 2011
     When I run `ruby re_record.rb`
     Then the output should contain "New Response"
     But the output should not contain "Old Response"

@@ -90,6 +90,7 @@ Feature: Cassette format
             - '9'
           body: Hello foo
           http_version: '1.1'
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       - request:
           method: get
           uri: http://localhost:7777/bar
@@ -106,6 +107,7 @@ Feature: Cassette format
             - '9'
           body: Hello bar
           http_version: '1.1'
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0
       """
 
@@ -166,7 +168,8 @@ Feature: Cassette format
               "body": "",
               "method": "get",
               "headers": { }
-            }
+            },
+            "recorded_at": "Tue, 01 Nov 2011 04:58:44 GMT"
           },
           {
             "response": {
@@ -186,7 +189,8 @@ Feature: Cassette format
               "body": "",
               "method": "get",
               "headers": { }
-            }
+            },
+            "recorded_at": "Tue, 01 Nov 2011 04:58:44 GMT"
           }
         ],
         "recorded_with": "VCR 2.0.0"
@@ -246,7 +250,8 @@ Feature: Cassette format
               "Content-Length"=>["9"],
               "Connection"=>["Keep-Alive"]},
             "body"=>"Hello foo",
-            "http_version"=>nil}},
+            "http_version"=>nil},
+          "recorded_at"=>"Tue, 01 Nov 2011 04:58:44 GMT"},
          {"request"=>
            {"method"=>"get",
             "uri"=>"http://localhost:7777/bar",
@@ -259,7 +264,8 @@ Feature: Cassette format
               "Content-Length"=>["9"],
               "Connection"=>["Keep-Alive"]},
             "body"=>"Hello bar",
-            "http_version"=>nil}}],
+            "http_version"=>nil},
+          "recorded_at"=>"Tue, 01 Nov 2011 04:58:44 GMT"}],
        "recorded_with"=>"VCR 2.0.0"}
       """
     When I run `ruby cassette_ruby.rb`

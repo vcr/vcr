@@ -1,110 +1,110 @@
---- 
-recorded_with: VCR 2.0.0
-http_interactions: 
-- request: 
+---
+http_interactions:
+- request:
     method: get
     uri: http://example.com/foo
-    body: ""
+    body: ''
     headers: {}
-
-  response: 
-    status: 
+  response:
+    status:
       code: 200
       message: OK
-    headers: 
-      Last-Modified: 
+    headers:
+      Last-Modified:
       - Tue, 15 Nov 2005 13:24:10 GMT
-      Etag: 
-      - "\"24ec5-1b6-4059a80bfd280\""
-      Date: 
-      - Wed, 31 Mar 2010 02:43:23 GMT
-      Content-Type: 
-      - text/html; charset=UTF-8
-      Content-Length: 
-      - "438"
-      Accept-Ranges: 
-      - bytes
-      Server: 
-      - Apache/2.2.3 (CentOS)
-      Age: 
-      - "3285"
-      Connection: 
+      Connection:
       - Keep-Alive
+      Etag:
+      - ! '"24ec5-1b6-4059a80bfd280"'
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Wed, 31 Mar 2010 02:43:23 GMT
+      Server:
+      - Apache/2.2.3 (CentOS)
+      Content-Length:
+      - '438'
+      Age:
+      - '3285'
+      Accept-Ranges:
+      - bytes
     body: example.com get response 1 with path=foo
-    http_version: "1.1"
-- request: 
+    http_version: '1.1'
+  recorded_at: Tue, 01 Nov 2011 04:49:54 GMT
+- request:
     method: get
     uri: http://example.com/foo
-    body: ""
+    body: ''
     headers: {}
-
-  response: 
-    status: 
+  response:
+    status:
       code: 200
       message: OK
-    headers: 
-      Last-Modified: 
+    headers:
+      Last-Modified:
       - Tue, 15 Nov 2005 13:24:10 GMT
-      Etag: 
-      - "\"24ec5-1b6-4059a80bfd280\""
-      Date: 
-      - Wed, 31 Mar 2010 02:43:23 GMT
-      Content-Type: 
-      - text/html; charset=UTF-8
-      Content-Length: 
-      - "438"
-      Accept-Ranges: 
-      - bytes
-      Server: 
-      - Apache/2.2.3 (CentOS)
-      Age: 
-      - "3285"
-      Connection: 
+      Connection:
       - Keep-Alive
+      Etag:
+      - ! '"24ec5-1b6-4059a80bfd280"'
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Wed, 31 Mar 2010 02:43:23 GMT
+      Server:
+      - Apache/2.2.3 (CentOS)
+      Content-Length:
+      - '438'
+      Age:
+      - '3285'
+      Accept-Ranges:
+      - bytes
     body: example.com get response 2 with path=foo
-    http_version: "1.1"
-- request: 
+    http_version: '1.1'
+  recorded_at: Tue, 01 Nov 2011 04:49:54 GMT
+- request:
     method: post
     uri: http://example.com/
-    body: ""
+    body: ''
     headers: {}
-
-  response: 
-    status: 
+  response:
+    status:
       code: 200
       message: OK
-    headers: 
-      Last-Modified: 
+    headers:
+      Last-Modified:
       - Tue, 15 Nov 2005 13:24:10 GMT
-      Etag: 
-      - "\"24ec5-1b6-4059a80bfd280\""
-      Date: 
-      - Wed, 31 Mar 2010 02:43:26 GMT
-      Content-Type: 
-      - text/html; charset=UTF-8
-      Content-Length: 
-      - "438"
-      Accept-Ranges: 
-      - bytes
-      Server: 
-      - Apache/2.2.3 (CentOS)
-      Connection: 
+      Connection:
       - close
+      Etag:
+      - ! '"24ec5-1b6-4059a80bfd280"'
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Wed, 31 Mar 2010 02:43:26 GMT
+      Server:
+      - Apache/2.2.3 (CentOS)
+      Content-Length:
+      - '438'
+      Accept-Ranges:
+      - bytes
     body: example.com post response with id=3
-    http_version: "1.1"
-- request: 
+    http_version: '1.1'
+  recorded_at: Tue, 01 Nov 2011 04:49:54 GMT
+- request:
     method: get
     uri: http://example.com/two_set_cookie_headers
-    body: ""
+    body: ''
     headers: {}
-
-  response: 
-    status: 
+  response:
+    status:
       code: 200
       message: OK
-    headers: 
-      Set-Cookie: 
+    headers:
+      Set-Cookie:
       - bar=bazz
       - foo=bar
     body: this respons has two set-cookie headers
-    http_version: "1.1"
+    http_version: '1.1'
+  recorded_at: Tue, 01 Nov 2011 04:49:54 GMT
+recorded_with: VCR 1.11.3

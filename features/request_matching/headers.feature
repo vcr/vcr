@@ -23,6 +23,7 @@ Feature: Matching on Headers
             - '15'
           body: user 1 response
           http_version: '1.1'
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       - request:
           method: post
           uri: http://example.net/some/long/path
@@ -39,6 +40,7 @@ Feature: Matching on Headers
             - '15'
           body: user 2 response
           http_version: '1.1'
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0
       """
     And a file named "header_matching.rb" with:

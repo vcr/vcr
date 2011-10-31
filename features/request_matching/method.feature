@@ -26,6 +26,7 @@ Feature: Matching on Method
             - '13'
           body: post response
           http_version: '1.1'
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       - request:
           method: get
           uri: http://get-request.com/
@@ -40,6 +41,7 @@ Feature: Matching on Method
             - '12'
           body: get response
           http_version: '1.1'
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0
       """
 

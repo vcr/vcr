@@ -77,6 +77,7 @@ Feature: EM HTTP Request
             - '9'
           body: Hello foo
           http_version: 
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       - request:
           method: get
           uri: http://localhost:7777/bar
@@ -93,6 +94,7 @@ Feature: EM HTTP Request
             - '9'
           body: Hello bar
           http_version: 
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       - request:
           method: get
           uri: http://localhost:7777/bazz
@@ -109,6 +111,7 @@ Feature: EM HTTP Request
             - '10'
           body: Hello bazz
           http_version: 
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0
       """
 
@@ -169,6 +172,7 @@ Feature: EM HTTP Request
             - '9'
           body: Hello foo
           http_version: 
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       - request:
           method: get
           uri: http://localhost:7777/bar
@@ -185,6 +189,7 @@ Feature: EM HTTP Request
             - '9'
           body: Hello bar
           http_version: 
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       - request:
           method: get
           uri: http://localhost:7777/bazz
@@ -201,6 +206,7 @@ Feature: EM HTTP Request
             - '10'
           body: Hello bazz
           http_version: 
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0
       """
 

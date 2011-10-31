@@ -21,6 +21,7 @@ Feature: Matching on Body
             - '14'
           body: body1 response
           http_version: '1.1'
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       - request:
           method: post
           uri: http://example.net/some/long/path
@@ -35,6 +36,7 @@ Feature: Matching on Body
             - '14'
           body: body2 response
           http_version: '1.1'
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0
       """
 

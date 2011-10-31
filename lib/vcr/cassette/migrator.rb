@@ -31,6 +31,7 @@ module VCR
         end
 
         http_interactions.map! do |interaction|
+          interaction.recorded_at = File.mtime(cassette)
           remove_unnecessary_standard_port(interaction)
           denormalize_http_header_keys(interaction.request)
           denormalize_http_header_keys(interaction.response)

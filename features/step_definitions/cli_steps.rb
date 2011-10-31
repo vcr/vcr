@@ -18,11 +18,16 @@ module VCRHelpers
     end
   end
 
+  def static_timestamp
+    @static_timestamp ||= Time.now
+  end
+
   def normalize_http_interaction(hash)
     VCR::HTTPInteraction.from_hash(hash).tap do |i|
       normalize_headers(i.request)
       normalize_headers(i.response)
 
+      i.recorded_at &&= static_timestamp
       i.request.body ||= ''
       i.response.body ||= ''
       i.response.status.message ||= ''
@@ -83,8 +88,8 @@ Given /^a previously recorded cassette file "([^"]*)" with:$/ do |file_name, con
   write_file(file_name, normalize_cassette_content(content))
 end
 
-Given /^(\d+) days have passed since the cassette was recorded$/ do |day_count|
-  set_env('DAYS_PASSED', day_count)
+Given /^it is (.*)$/ do |date_string|
+  set_env('DATE_STRING', date_string)
 end
 
 When /^I modify the file "([^"]*)" to replace "([^"]*)" with "([^"]*)"$/ do |file_name, orig_text, new_text|

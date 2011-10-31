@@ -1,112 +1,111 @@
---- 
-recorded_with: VCR 2.0.0
-http_interactions: 
-- request: 
+---
+http_interactions:
+- request:
     method: get
     uri: http://example.com/
-    body: ""
+    body: ''
     headers: {}
-
-  response: 
-    status: 
+  response:
+    status:
       code: 200
       message: OK
-    headers: 
-      Last-Modified: 
+    headers:
+      Last-Modified:
       - Tue, 15 Nov 2005 13:24:10 GMT
-      Etag: 
-      - "\"24ec5-1b6-4059a80bfd280\""
-      Date: 
-      - Thu, 25 Feb 2010 07:52:38 GMT
-      Content-Type: 
-      - text/html; charset=UTF-8
-      Content-Length: 
-      - "438"
-      Accept-Ranges: 
-      - bytes
-      Server: 
-      - Apache/2.2.3 (CentOS)
-      Age: 
-      - "3009"
-      Connection: 
+      Connection:
       - Keep-Alive
-    body: |
-      <HTML>
-      <HEAD>
-        <TITLE>Example Web Page</TITLE>
-      </HEAD> 
-      <body>  
-      <p>You have reached this web page by typing &quot;example.com&quot;,
-      &quot;example.net&quot;,
-        or &quot;example.org&quot; into your web browser.</p>
-      <p>These domain names are reserved for use in documentation and are not available 
-        for registration. See <a href="http://www.rfc-editor.org/rfc/rfc2606.txt">RFC 
-        2606</a>, Section 3.</p>
-      </BODY>
-      </HTML>
-
-    http_version: "1.1"
-- request: 
+      Date:
+      - Thu, 25 Feb 2010 07:52:38 GMT
+      Content-Type:
+      - text/html; charset=UTF-8
+      Etag:
+      - ! '"24ec5-1b6-4059a80bfd280"'
+      Server:
+      - Apache/2.2.3 (CentOS)
+      Content-Length:
+      - '438'
+      Age:
+      - '3009'
+      Accept-Ranges:
+      - bytes
+    body: ! "<HTML>\n<HEAD>\n  <TITLE>Example Web Page</TITLE>\n</HEAD> \n<body>  \n<p>You
+      have reached this web page by typing &quot;example.com&quot;,\n&quot;example.net&quot;,\n
+      \ or &quot;example.org&quot; into your web browser.</p>\n<p>These domain names
+      are reserved for use in documentation and are not available \n  for registration.
+      See <a href=\"http://www.rfc-editor.org/rfc/rfc2606.txt\">RFC \n  2606</a>,
+      Section 3.</p>\n</BODY>\n</HTML>\n"
+    http_version: '1.1'
+  recorded_at: Tue, 01 Nov 2011 04:49:54 GMT
+- request:
     method: get
     uri: http://example.com/foo
-    body: ""
+    body: ''
     headers: {}
-
-  response: 
-    status: 
+  response:
+    status:
       code: 404
       message: Not Found
-    headers: 
-      Date: 
-      - Thu, 25 Feb 2010 07:52:38 GMT
-      Content-Type: 
-      - text/html; charset=iso-8859-1
-      Content-Length: 
-      - "277"
-      Server: 
-      - Apache/2.2.3 (CentOS)
-      Connection: 
+    headers:
+      Connection:
       - close
-    body: |
-      <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+      Content-Type:
+      - text/html; charset=iso-8859-1
+      Date:
+      - Thu, 25 Feb 2010 07:52:38 GMT
+      Server:
+      - Apache/2.2.3 (CentOS)
+      Content-Length:
+      - '277'
+    body: ! '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+
       <html><head>
+
       <title>404 Not Found</title>
+
       </head><body>
+
       <h1>Not Found</h1>
+
       <p>The requested URL /foo was not found on this server.</p>
+
       <hr>
+
       <address>Apache/2.2.3 (CentOS) Server at example.com Port 80</address>
+
       </body></html>
 
-    http_version: "1.1"
-- request: 
+'
+    http_version: '1.1'
+  recorded_at: Tue, 01 Nov 2011 04:49:54 GMT
+- request:
     method: get
     uri: http://example.com/
-    body: ""
+    body: ''
     headers: {}
-
-  response: 
-    status: 
+  response:
+    status:
       code: 200
       message: OK
-    headers: 
-      Last-Modified: 
+    headers:
+      Last-Modified:
       - Tue, 15 Nov 2005 13:24:10 GMT
-      Etag: 
-      - "\"24ec5-1b6-4059a80bfd280\""
-      Date: 
-      - Thu, 25 Feb 2010 07:52:38 GMT
-      Content-Type: 
-      - text/html; charset=UTF-8
-      Content-Length: 
-      - "438"
-      Accept-Ranges: 
-      - bytes
-      Server: 
-      - Apache/2.2.3 (CentOS)
-      Age: 
-      - "3009"
-      Connection: 
+      Connection:
       - Keep-Alive
+      Date:
+      - Thu, 25 Feb 2010 07:52:38 GMT
+      Content-Type:
+      - text/html; charset=UTF-8
+      Etag:
+      - ! '"24ec5-1b6-4059a80bfd280"'
+      Server:
+      - Apache/2.2.3 (CentOS)
+      Content-Length:
+      - '438'
+      Age:
+      - '3009'
+      Accept-Ranges:
+      - bytes
     body: Another example.com response
-    http_version: "1.1"
+    http_version: '1.1'
+  recorded_at: Tue, 01 Nov 2011 04:49:54 GMT
+recorded_with: VCR 1.11.3

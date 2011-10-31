@@ -237,20 +237,34 @@ describe VCR::Cassette do
 
             context 'when the cassette file does exist' do
               before(:each) do
+                interactions = timestamps.map do |ts|
+                  http_interaction { |i| i.recorded_at = ts }.to_hash
+                end
+                yaml = YAML.dump("http_interactions" => interactions)
+
                 File.stub(:exist?).with(file_name).and_return(true)
-                File.stub(:read).with(file_name).and_return(YAML.dump([]))
+                File.stub(:size?).with(file_name).and_return(true)
+                File.stub(:read).with(file_name).and_return(yaml)
               end
 
-              context 'and the file was last modified less than 7 days ago' do
-                before(:each) { File.stub(:stat).with(file_name).and_return(stub(:mtime => Time.now - 7.days + 60)) }
+              context 'and the earliest recorded interaction was recorded less than 7 days ago' do
+                let(:timestamps) do [
+                  Time.now - 6.days + 60,
+                  Time.now - 7.days + 60,
+                  Time.now - 5.days + 60
+                ] end
 
                 it "has :#{record_mode} for the record mode" do
                   subject.record_mode.should eq(record_mode)
                 end
               end
 
-              context 'and the file was last modified more than 7 days ago' do
-                before(:each) { File.stub(:stat).with(file_name).and_return(stub(:mtime => Time.now - 7.days - 60)) }
+              context 'and the earliest recorded interaction was recorded more than 7 days ago' do
+                let(:timestamps) do [
+                  Time.now - 6.days - 60,
+                  Time.now - 7.days - 60,
+                  Time.now - 5.days - 60
+                ] end
 
                 it "has :all for the record mode when there is an internet connection available" do
                   VCR::InternetConnection.stub(:available? => true)
@@ -458,8 +472,10 @@ describe VCR::Cassette do
           let(:interaction_bar)   { interaction("bar", :uri => 'http://bar.com/') }
 
           let(:saved_recorded_interactions) { YAML.load_file(subject.file)['http_interactions'].map { |h| VCR::HTTPInteraction.from_hash(h) } }
+          let(:now) { Time.utc(2011, 6, 11, 12, 30) }
 
           before(:each) do
+            Time.stub(:now => now)
             subject.stub(:previously_recorded_interactions => [interaction_foo_1])
             subject.record_http_interaction(interaction_foo_2)
             subject.record_http_interaction(interaction_bar)
