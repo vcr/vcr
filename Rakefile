@@ -107,6 +107,7 @@ end
 
 desc "Migrate cucumber cassettes"
 task :migrate_cucumber_cassettes do
+  sh "git checkout cb3559d6ffcb36cb823ae96a677e380e5b86ed80 -- features"
   require 'vcr/cassette/migrator'
   Dir["features/**/*.feature"].each do |feature_file|
     puts " - Migrating #{feature_file}"
