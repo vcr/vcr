@@ -86,7 +86,7 @@ module VCR
           ).should be_true
         end
 
-        it 'does not matches two requests with different path parts' do
+        it 'does not match two requests with different path parts' do
           subject[subject.send(meth, :foo)].matches?(
             request_with(:uri => 'http://example.com/search?foo=123'),
             request_with(:uri => 'http://example.com/find?foo=123')
