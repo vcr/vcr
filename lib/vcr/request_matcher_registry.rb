@@ -13,6 +13,8 @@ module VCR
     class URIWithoutParamsMatcher < Struct.new(:params_to_ignore)
       def partial_uri_from(request)
         URI(request.uri).tap do |uri|
+          next unless uri.query # ignore uris without params, e.g. "http://example.com/"
+
           uri.query = uri.query.split('&').tap { |params|
             params.map! do |p|
               key, value = p.split('=')
