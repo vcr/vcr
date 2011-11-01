@@ -143,8 +143,8 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Justin Smestad](https://github.com/jsmestad)
 * [Karl Baum](https://github.com/kbaum)
 * [Nathaniel Bibler](https://github.com/nbibler)
-* [sfsekaran](https://github.com/sfsekaran)
 * [Oliver Searle-Barnes](https://github.com/opsb)
+* [Sathya Sekaran](https://github.com/sfsekaran)
 * [Wesley Beary](https://github.com/geemus)
 
 ## Copyright

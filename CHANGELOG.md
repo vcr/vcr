@@ -7,7 +7,7 @@
 * Update to (and require) Typhoeus 0.3.2.
 * Fix a bug with `VCR.request_matchers.uri_without_param(:some_param)`
   so that it properly handles URIs that have no parameters. Thanks to
-  [sfsekaran](https://github.com/sfsekaran) for this fix.
+  [Sathya Sekaran](https://github.com/sfsekaran) for this fix.
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.11.3...v2.0.0.beta1)
 
