@@ -135,6 +135,7 @@ If you find VCR useful, please recommend me on [working with rails](http://worki
 Thanks also to the following people who have contributed patches or helpful suggestions:
 
 * [Aaron Brethorst](http://github.com/aaronbrethorst)
+* [Avdi Grimm](https://github.com/avdi)
 * [Bartosz Blimke](http://github.com/bblimke)
 * [Ben Hutton](http://github.com/benhutton)
 * [Bradley Isotope](https://github.com/bradleyisotope)
@@ -142,9 +143,9 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Justin Smestad](https://github.com/jsmestad)
 * [Karl Baum](https://github.com/kbaum)
 * [Nathaniel Bibler](https://github.com/nbibler)
+* [sfsekaran](https://github.com/sfsekaran)
 * [Oliver Searle-Barnes](https://github.com/opsb)
 * [Wesley Beary](https://github.com/geemus)
-* [Avdi Grimm](https://github.com/avdi)
 
 ## Copyright
 
