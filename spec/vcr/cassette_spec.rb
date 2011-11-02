@@ -123,6 +123,45 @@ describe VCR::Cassette do
     end
   end
 
+  describe "reading the file from disk" do
+    before(:each) do
+      File.stub(:size? => true)
+    end
+
+    let(:empty_cassette_yaml) { YAML.dump("http_interactions" => []) }
+
+    it 'reads the appropriate file from disk using a VCR::Cassette::Reader' do
+      VCR::Cassette::Reader.should_receive(:new).with(
+        "#{VCR.configuration.cassette_library_dir}/foo.yml", anything
+      ).and_return(mock('reader', :read => empty_cassette_yaml))
+
+      VCR::Cassette.new('foo', :record => :new_episodes).http_interactions
+    end
+
+    [true, false, nil, { }].each do |erb|
+      it "passes #{erb.inspect} to the VCR::Cassette::Reader when given as the :erb option" do
+        # test that it overrides the default
+        VCR.configuration.default_cassette_options = { :erb => true }
+
+        VCR::Cassette::Reader.should_receive(:new).with(
+          anything, erb
+        ).and_return(mock('reader', :read => empty_cassette_yaml))
+
+        VCR::Cassette.new('foo', :record => :new_episodes, :erb => erb).http_interactions
+      end
+
+      it "passes #{erb.inspect} to the VCR::Cassette::Reader when it is the default :erb option and none is given" do
+        VCR.configuration.default_cassette_options = { :erb => erb }
+
+        VCR::Cassette::Reader.should_receive(:new).with(
+          anything, erb
+        ).and_return(mock('reader', :read => empty_cassette_yaml))
+
+        VCR::Cassette.new('foo', :record => :new_episodes).http_interactions
+      end
+    end
+  end
+
   describe '.new' do
     it "raises an error if given an invalid record mode" do
       expect { VCR::Cassette.new(:test, :record => :not_a_record_mode) }.to raise_error(ArgumentError)
@@ -137,45 +176,6 @@ describe VCR::Cassette do
     it 'does not raise an error in the case of an empty file' do
       VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
       VCR::Cassette.new('empty', :record => :none).previously_recorded_interactions.should eq([])
-    end
-
-    describe "reading the file from disk" do
-      before(:each) do
-        File.stub(:size? => true)
-      end
-
-      let(:empty_cassette_yaml) { YAML.dump("http_interactions" => []) }
-
-      it 'reads the appropriate file from disk using a VCR::Cassette::Reader' do
-        VCR::Cassette::Reader.should_receive(:new).with(
-          "#{VCR.configuration.cassette_library_dir}/foo.yml", anything
-        ).and_return(mock('reader', :read => empty_cassette_yaml))
-
-        VCR::Cassette.new('foo', :record => :new_episodes)
-      end
-
-      [true, false, nil, { }].each do |erb|
-        it "passes #{erb.inspect} to the VCR::Cassette::Reader when given as the :erb option" do
-          # test that it overrides the default
-          VCR.configuration.default_cassette_options = { :erb => true }
-
-          VCR::Cassette::Reader.should_receive(:new).with(
-            anything, erb
-          ).and_return(mock('reader', :read => empty_cassette_yaml))
-
-          VCR::Cassette.new('foo', :record => :new_episodes, :erb => erb)
-        end
-
-        it "passes #{erb.inspect} to the VCR::Cassette::Reader when it is the default :erb option and none is given" do
-          VCR.configuration.default_cassette_options = { :erb => erb }
-
-          VCR::Cassette::Reader.should_receive(:new).with(
-            anything, erb
-          ).and_return(mock('reader', :read => empty_cassette_yaml))
-
-          VCR::Cassette.new('foo', :record => :new_episodes)
-        end
-      end
     end
 
     VCR::Cassette::VALID_RECORD_MODES.each do |record_mode|
@@ -210,7 +210,7 @@ describe VCR::Cassette do
             interaction_1.response.should_receive(:update_content_length_header)
             interaction_2.response.should_receive(:update_content_length_header)
 
-            VCR::Cassette.new('example', :record => record_mode, :update_content_length_header => true)
+            VCR::Cassette.new('example', :record => record_mode, :update_content_length_header => true).http_interactions
           end
 
           [nil, false].each do |val|
@@ -219,7 +219,7 @@ describe VCR::Cassette do
               interaction_1.response.should_not_receive(:update_content_length_header)
               interaction_2.response.should_not_receive(:update_content_length_header)
 
-              VCR::Cassette.new('example', :record => record_mode, :update_content_length_header => val)
+              VCR::Cassette.new('example', :record => record_mode, :update_content_length_header => val).http_interactions
             end
           end
 

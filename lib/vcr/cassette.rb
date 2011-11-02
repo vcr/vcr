@@ -10,7 +10,7 @@ module VCR
   class Cassette
     VALID_RECORD_MODES = [:all, :none, :new_episodes, :once]
 
-    attr_reader :name, :record_mode, :match_requests_on, :erb, :re_record_interval, :tag, :http_interactions
+    attr_reader :name, :record_mode, :match_requests_on, :erb, :re_record_interval, :tag
 
     def initialize(name, options = {})
       options = VCR.configuration.default_cassette_options.merge(options)
@@ -35,10 +35,9 @@ module VCR
       @exclusive                    = options[:exclusive]
       @serializer                   = VCR.cassette_serializers[options[:serialize_with]]
       @record_mode                  = :all if should_re_record?
+      @parent_list                  = @exclusive ? HTTPInteractionList::NullList.new : VCR.http_interactions
 
       raise_error_unless_valid_record_mode
-
-      load_previously_recorded_interactions
     end
 
     def eject
@@ -61,6 +60,14 @@ module VCR
       else
         []
       end
+    end
+
+    def http_interactions
+      @http_interactions ||= HTTPInteractionList.new \
+        should_stub_requests? ? previously_recorded_interactions : [],
+        match_requests_on,
+        @allow_playback_repeats,
+        @parent_list
     end
 
     def record_http_interaction(interaction)
@@ -120,20 +127,6 @@ module VCR
 
     def should_remove_matching_existing_interactions?
       record_mode == :all
-    end
-
-    def load_previously_recorded_interactions
-      interactions = should_stub_requests? ? previously_recorded_interactions : []
-
-      @http_interactions = HTTPInteractionList.new(
-        interactions,
-        match_requests_on,
-        @allow_playback_repeats,
-        parent_list)
-    end
-
-    def parent_list
-      @exclusive ? HTTPInteractionList::NullList.new : VCR.http_interactions
     end
 
     def raw_yaml_content
