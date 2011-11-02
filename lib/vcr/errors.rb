@@ -6,7 +6,7 @@ module VCR
     class MissingERBVariableError   < Error; end
     class LibraryVersionTooLowError < Error; end
     class UnregisteredMatcherError  < Error; end
-
+    class InvalidCassetteFormatError < Error; end
 
     class HTTPConnectionNotAllowedError < Error
       def initialize(request)

@@ -160,6 +160,13 @@ describe VCR::Cassette do
         VCR::Cassette.new('foo', :record => :new_episodes).http_interactions
       end
     end
+
+    it 'raises a friendly error when the cassette file is in the old VCR 1.x format' do
+      VCR.configuration.cassette_library_dir = 'spec/fixtures/cassette_spec'
+      expect {
+        VCR::Cassette.new('1_x_cassette').http_interactions
+      }.to raise_error(VCR::Errors::InvalidCassetteFormatError)
+    end
   end
 
   describe '.new' do

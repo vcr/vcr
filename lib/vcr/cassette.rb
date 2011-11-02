@@ -46,7 +46,7 @@ module VCR
 
     def previously_recorded_interactions
       @previously_recorded_interactions ||= if file && File.size?(file)
-        @serializer.deserialize(raw_yaml_content)['http_interactions'].map { |h| HTTPInteraction.from_hash(h) }.tap do |interactions|
+        deserialized_hash['http_interactions'].map { |h| HTTPInteraction.from_hash(h) }.tap do |interactions|
           invoke_hook(:before_playback, interactions)
 
           interactions.reject! do |i|
@@ -173,6 +173,19 @@ module VCR
       interactions.delete_if do |i|
         VCR.configuration.invoke_hook(type, tag, i, self)
         i.ignored?
+      end
+    end
+
+    def deserialized_hash
+      @deserialized_hash ||= @serializer.deserialize(raw_yaml_content).tap do |hash|
+        unless hash.is_a?(Hash) && hash['http_interactions'].is_a?(Array)
+          raise Errors::InvalidCassetteFormatError.new \
+            "#{file} does not appear to be a valid VCR 2.0 cassette. " +
+            "VCR 1.x cassettes are not valid with VCR 2.0. When upgrading from " +
+            "VCR 1.x, it is recommended that you delete all your existing cassettes and " +
+            "re-record them, or use the provided vcr:migrate_cassettes rake task to migrate " +
+            "them. For more info, see the VCR documentation."
+        end
       end
     end
   end

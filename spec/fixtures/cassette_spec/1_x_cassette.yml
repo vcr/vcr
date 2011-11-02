@@ -1,0 +1,110 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://example.com:80/
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      last-modified: 
+      - Tue, 15 Nov 2005 13:24:10 GMT
+      connection: 
+      - Keep-Alive
+      date: 
+      - Thu, 25 Feb 2010 07:52:38 GMT
+      content-type: 
+      - text/html; charset=UTF-8
+      etag: 
+      - "\"24ec5-1b6-4059a80bfd280\""
+      server: 
+      - Apache/2.2.3 (CentOS)
+      content-length: 
+      - "438"
+      age: 
+      - "3009"
+      accept-ranges: 
+      - bytes
+    body: |
+      <HTML>
+      <HEAD>
+        <TITLE>Example Web Page</TITLE>
+      </HEAD> 
+      <body>  
+      <p>You have reached this web page by typing &quot;example.com&quot;,
+      &quot;example.net&quot;,
+        or &quot;example.org&quot; into your web browser.</p>
+      <p>These domain names are reserved for use in documentation and are not available 
+        for registration. See <a href="http://www.rfc-editor.org/rfc/rfc2606.txt">RFC 
+        2606</a>, Section 3.</p>
+      </BODY>
+      </HTML>
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://example.com:80/foo
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      connection: 
+      - close
+      content-type: 
+      - text/html; charset=iso-8859-1
+      date: 
+      - Thu, 25 Feb 2010 07:52:38 GMT
+      server: 
+      - Apache/2.2.3 (CentOS)
+      content-length: 
+      - "277"
+    body: |
+      <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+      <html><head>
+      <title>404 Not Found</title>
+      </head><body>
+      <h1>Not Found</h1>
+      <p>The requested URL /foo was not found on this server.</p>
+      <hr>
+      <address>Apache/2.2.3 (CentOS) Server at example.com Port 80</address>
+      </body></html>
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://example.com:80/
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      last-modified: 
+      - Tue, 15 Nov 2005 13:24:10 GMT
+      connection: 
+      - Keep-Alive
+      date: 
+      - Thu, 25 Feb 2010 07:52:38 GMT
+      content-type: 
+      - text/html; charset=UTF-8
+      etag: 
+      - "\"24ec5-1b6-4059a80bfd280\""
+      server: 
+      - Apache/2.2.3 (CentOS)
+      content-length: 
+      - "438"
+      age: 
+      - "3009"
+      accept-ranges: 
+      - bytes
+    body: Another example.com response
+    http_version: "1.1"
