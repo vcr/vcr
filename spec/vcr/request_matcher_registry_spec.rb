@@ -188,6 +188,11 @@ module VCR
             request_with(:uri => 'http://foo.com:79/bar?baz=7'),
             request_with(:uri => 'http://foo.com:78/bar?baz=7')
           ).should be_false
+
+          subject[:uri].matches?(
+            request_with(:uri => 'https://foo.com:442/bar?baz=7'),
+            request_with(:uri => 'https://foo.com:441/bar?baz=7')
+          ).should be_false
         end
       end
 
