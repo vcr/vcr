@@ -41,7 +41,7 @@ module VCR
       end
     end
 
-    describe "#for" do
+    describe "#[]" do
       it 'returns a previously registered matcher' do
         matcher = lambda { }
         subject.register(:my_matcher, &matcher)
