@@ -46,7 +46,21 @@ module VCR
     end
 
     def previously_recorded_interactions
-      @previously_recorded_interactions ||= []
+      @previously_recorded_interactions ||= if file && File.size?(file)
+        @serializer.deserialize(raw_yaml_content)['http_interactions'].map { |h| HTTPInteraction.from_hash(h) }.tap do |interactions|
+          invoke_hook(:before_playback, interactions)
+
+          interactions.reject! do |i|
+            i.request.uri.is_a?(String) && VCR.request_ignorer.ignore?(i.request)
+          end
+
+          if update_content_length_header?
+            interactions.each { |i| i.response.update_content_length_header }
+          end
+        end
+      else
+        []
+      end
     end
 
     def record_http_interaction(interaction)
@@ -109,22 +123,6 @@ module VCR
     end
 
     def load_previously_recorded_interactions
-      if file && File.size?(file)
-        interactions = @serializer.deserialize(raw_yaml_content)['http_interactions'].map { |h| HTTPInteraction.from_hash(h) }
-
-        invoke_hook(:before_playback, interactions)
-
-        interactions.reject! do |i|
-          i.request.uri.is_a?(String) && VCR.request_ignorer.ignore?(i.request)
-        end
-
-        if update_content_length_header?
-          interactions.each { |i| i.response.update_content_length_header }
-        end
-
-        previously_recorded_interactions.replace(interactions)
-      end
-
       interactions = should_stub_requests? ? previously_recorded_interactions : []
 
       @http_interactions = HTTPInteractionList.new(
