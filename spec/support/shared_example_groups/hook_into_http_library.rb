@@ -61,6 +61,26 @@ shared_examples_for "a hook into an HTTP library" do |library, *other|
       end
     end
 
+    def self.test_record_and_playback(description, query)
+      describe "a request to a URL #{description}" do
+        define_method :get_body do
+          VCR.use_cassette('record_and_playback', :record => :once) do
+            get_body_string make_http_request(:get, "http://localhost:#{VCR::SinatraApp.port}/record-and-playback?#{query}")
+          end
+        end
+
+        it "properly records and playsback a request with a URL #{description}" do
+          recorded_body = get_body
+          played_back_body = get_body
+          played_back_body.should eq(recorded_body)
+        end
+      end
+    end
+
+    test_record_and_playback "with spaces encoded as +",           "q=a+b"
+    test_record_and_playback "with spaces encoded as %20",         "q=a%20b"
+    test_record_and_playback "with a complex escaped query param", "q=#{CGI.escape("A&(! 234k !@ kasdj232\#$ kjw35")}"
+
     describe 'making an HTTP request' do
       let(:status)        { VCR::ResponseStatus.new(200, 'OK') }
       let(:interaction)   { VCR::HTTPInteraction.new(request, response) }
@@ -79,7 +99,7 @@ shared_examples_for "a hook into an HTTP library" do |library, *other|
         end
       end
 
-      def self.test_url(description, url)
+      def self.test_playback(description, url)
         context "when a URL #{description} has been stubbed" do
           let(:request)     { VCR::Request.new(:get, url) }
           let(:response)    { VCR::Response.new(status, nil, response_body, '1.1') }
@@ -90,14 +110,11 @@ shared_examples_for "a hook into an HTTP library" do |library, *other|
         end
       end
 
-      test_url "using https and no explicit port", "https://example.com/foo"
-      test_url "using https and port 443", "https://example.com:443/foo"
-      test_url "using https and some other port", "https://example.com:5190/foo"
-      test_url "that has query params",      "http://example.com/search?q=param"
-      test_url "with spaces encoded as +",   "http://example.com/search?q=a+b"
-      test_url "with spaces encoded as %20", "http://example.com/search?q=a%20b"
-      test_url "with an encoded ampersand",  "http://example.com:80/search?q=#{CGI.escape("Q&A")}"
-      test_url "with a complex escaped query param", "http://example.com:80/search?q=#{CGI.escape("A&(! 234k !@ kasdj232\#$ kjw35")}"
+      test_playback "using https and no explicit port", "https://example.com/foo"
+      test_playback "using https and port 443",         "https://example.com:443/foo"
+      test_playback "using https and some other port",  "https://example.com:5190/foo"
+      test_playback "that has query params",            "http://example.com/search?q=param"
+      test_playback "with an encoded ampersand",        "http://example.com:80/search?q=#{CGI.escape("Q&A")}"
     end
 
     describe '.stub_requests using specific match_attributes' do

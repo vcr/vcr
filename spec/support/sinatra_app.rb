@@ -32,6 +32,14 @@ module VCR
       'header set'
     end
 
+    # we use a global counter so that every response is different;
+    # this ensures that the test demonstrates that the response
+    # is being played back (and not running a 2nd real request)
+    $record_and_playback_response_count ||= 0
+    get '/record-and-playback' do
+      "Response #{$record_and_playback_response_count += 1}"
+    end
+
     def self.port
       server.port
     end

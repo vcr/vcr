@@ -80,27 +80,14 @@ module VCR
 
     def register_built_ins
       register(:method)  { |r1, r2| r1.method == r2.method }
-      register(:uri)     { |r1, r2| normalize_uri(r1.uri) == normalize_uri(r2.uri) }
+      register(:uri)     { |r1, r2| without_standard_port(r1.uri) == without_standard_port(r2.uri) }
       register(:host)    { |r1, r2| URI(r1.uri).host == URI(r2.uri).host }
       register(:path)    { |r1, r2| URI(r1.uri).path == URI(r2.uri).path }
       register(:body)    { |r1, r2| r1.body == r2.body }
       register(:headers) { |r1, r2| r1.headers == r2.headers }
     end
 
-    def normalize_uri(uri)
-      # TODO: find a better, less-hacky way to do this.
-      uri = if defined?(::WebMock)
-        ::WebMock::Util::URI.normalize_uri(uri).to_s
-      elsif defined?(VCR::Middleware::Faraday)
-        # Faraday normalizes URIs by replacing '+' with '%20'
-        uri.gsub('+', '%20')
-      else
-        uri
-      end
-
-      without_standard_port(uri)
-    end
-
+    # TODO: can we take care of this in the request handlers instead?
     def without_standard_port(uri)
       URI(uri).tap { |u|
         if u.scheme == 'http'  && u.port == 80 ||
