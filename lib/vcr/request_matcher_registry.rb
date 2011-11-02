@@ -87,14 +87,12 @@ module VCR
       register(:headers) { |r1, r2| r1.headers == r2.headers }
     end
 
-    # TODO: can we take care of this in the request handlers instead?
     def without_standard_port(uri)
-      URI(uri).tap { |u|
-        if u.scheme == 'http'  && u.port == 80 ||
-           u.scheme == 'https' && u.port == 443
+      URI(uri).tap do |u|
+        if [['http', 80], ['https', 443]].include?([u.scheme, u.port])
           u.port = nil
         end
-      }.to_s
+      end
     end
   end
 end
