@@ -136,7 +136,7 @@ describe VCR::Cassette do
 
     it 'does not raise an error in the case of an empty file' do
       VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
-      VCR::Cassette.new('empty', :record => :none).recorded_interactions.should eq([])
+      VCR::Cassette.new('empty', :record => :none).previously_recorded_interactions.should eq([])
     end
 
     describe "reading the file from disk" do
@@ -273,16 +273,16 @@ describe VCR::Cassette do
 
           VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
           cassette = VCR::Cassette.new('with_localhost_requests', :record => record_mode)
-          cassette.recorded_interactions.map { |i| URI.parse(i.uri).host }.should eq(%w[example.com])
+          cassette.previously_recorded_interactions.map { |i| URI.parse(i.uri).host }.should eq(%w[example.com])
         end
 
         it "loads the recorded interactions from the library yml file" do
           VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
           cassette = VCR::Cassette.new('example', :record => record_mode)
 
-          cassette.should have(3).recorded_interactions
+          cassette.should have(3).previously_recorded_interactions
 
-          i1, i2, i3 = *cassette.recorded_interactions
+          i1, i2, i3 = *cassette.previously_recorded_interactions
 
           i1.request.method.should eq(:get)
           i1.request.uri.should eq('http://example.com/')
@@ -329,7 +329,7 @@ describe VCR::Cassette do
             ).exactly(3).times
 
             cassette = VCR::Cassette.new('example', :record => record_mode, :tag => :foo)
-            cassette.should have(3).recorded_interactions
+            cassette.should have(3).previously_recorded_interactions
           end
 
           it 'does not playback any interactions that are ignored in a before_playback hook' do
@@ -339,7 +339,7 @@ describe VCR::Cassette do
 
             VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
             cassette = VCR::Cassette.new('example', :record => record_mode)
-            cassette.should have(2).recorded_interactions
+            cassette.should have(2).previously_recorded_interactions
           end
 
           it 'instantiates the http_interactions with the loaded interactions and the request matchers' do
@@ -460,7 +460,7 @@ describe VCR::Cassette do
           let(:saved_recorded_interactions) { YAML.load_file(subject.file)['http_interactions'].map { |h| VCR::HTTPInteraction.from_hash(h) } }
 
           before(:each) do
-            subject.stub(:recorded_interactions => [interaction_foo_1])
+            subject.stub(:previously_recorded_interactions => [interaction_foo_1])
             subject.record_http_interaction(interaction_foo_2)
             subject.record_http_interaction(interaction_bar)
             subject.eject

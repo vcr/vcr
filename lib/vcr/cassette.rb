@@ -38,15 +38,15 @@ module VCR
 
       raise_error_unless_valid_record_mode
 
-      load_recorded_interactions
+      load_previously_recorded_interactions
     end
 
     def eject
       write_recorded_interactions_to_disk
     end
 
-    def recorded_interactions
-      @recorded_interactions ||= []
+    def previously_recorded_interactions
+      @previously_recorded_interactions ||= []
     end
 
     def record_http_interaction(interaction)
@@ -108,7 +108,7 @@ module VCR
       record_mode == :all
     end
 
-    def load_recorded_interactions
+    def load_previously_recorded_interactions
       if file && File.size?(file)
         interactions = @serializer.deserialize(raw_yaml_content)['http_interactions'].map { |h| HTTPInteraction.from_hash(h) }
 
@@ -122,10 +122,10 @@ module VCR
           interactions.each { |i| i.response.update_content_length_header }
         end
 
-        recorded_interactions.replace(interactions)
+        previously_recorded_interactions.replace(interactions)
       end
 
-      interactions = should_stub_requests? ? recorded_interactions : []
+      interactions = should_stub_requests? ? previously_recorded_interactions : []
 
       @http_interactions = HTTPInteractionList.new(
         interactions,
@@ -143,7 +143,7 @@ module VCR
     end
 
     def merged_interactions
-      old_interactions = recorded_interactions
+      old_interactions = previously_recorded_interactions
 
       if should_remove_matching_existing_interactions?
         new_interaction_list = HTTPInteractionList.new(new_recorded_interactions, match_requests_on)
