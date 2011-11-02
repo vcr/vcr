@@ -1,6 +1,5 @@
 require 'fileutils'
 require 'erb'
-require 'set'
 
 require 'vcr/cassette/http_interaction_list'
 require 'vcr/cassette/reader'
