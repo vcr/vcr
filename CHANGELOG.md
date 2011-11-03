@@ -2,12 +2,38 @@
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.beta1...master)
 
-## 2.0.0 Beta 1 (October 8, 2011)
-
 * Update to (and require) Typhoeus 0.3.2.
 * Fix a bug with `VCR.request_matchers.uri_without_param(:some_param)`
   so that it properly handles URIs that have no parameters. Thanks to
   [Sathya Sekaran](https://github.com/sfsekaran) for this fix.
+* The cassette format has changed significantly:
+  * The HTTPInteractions are no longer normalized in a lossy fashion.
+    VCR 1.x converted all HTTP header keys to lowercase.  VCR 2.0 no
+    longer does this because it is impossible to know what the original
+    casing was (i.e. given `etag`, was it originally `etag`, `ETag` or
+    `Etag`?). Also, some HTTP libraries add particular request headers
+    to every request, and these used to be ignored. The aren't anymore.
+  * The ruby struct objects are not directly serialized anymore.
+    Instead, only primitives (hashes, arrays, strings, integers) are
+    serialized. This allows swappable serializers and will allow other
+    tools to read and use a VCR cassette.
+  * Add new serializer API.  VCR ships with YAML, Syck, Psych and JSON
+    serializers, and it is very simple to implement your own. The
+    serializer can be configured on a per-cassette basis.
+  * New `vcr:migrate_cassettes DIR=path/to/cassettes` rake task assists
+    with upgrading from VCR 1.x to 2.0.
+  * Cassettes now contain a `recorded_with` attribute. This should
+    allow the cassette structure to be updated more easily in the future
+    as the version number provides a means for easily migrating
+    cassettes.
+  * Add `recorded_at` to data serialized with an HTTPInteraction.  This
+    allows the `:re_record_interval` cassette option to work more
+    accurately and no longer rely on the file modification time.
+
+Note that VCR 1.x cassettes cannot be used with VCR 2.0.  See the
+upgrade notes for more info.
+
+## 2.0.0 Beta 1 (October 8, 2011)
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v1.11.3...v2.0.0.beta1)
 
