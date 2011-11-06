@@ -6,7 +6,7 @@ group :development do
   platforms :ruby do
     gem 'patron',           '~> 0.4.15'
     gem 'em-http-request',  '~> 0.3.0'
-    gem 'curb',             '~> 0.7.15'
+    gem 'curb',             '0.7.15'
     gem 'typhoeus',         '~> 0.3.2'
   end
 
