@@ -147,6 +147,14 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Sathya Sekaran](https://github.com/sfsekaran)
 * [Wesley Beary](https://github.com/geemus)
 
+## Similar Libraries
+
+* [Betamax](https://github.com/robfletcher/betamax) (Groovy)
+* [Ephemeral Response](https://github.com/sandro/ephemeral_response) (Ruby)
+* [Mimic](https://github.com/acoulton/mimic) (PHP/Kohana)
+* [NetRecorder](https://github.com/chrisyoung/netrecorder) (Ruby)
+* [Stale Fish](https://github.com/jsmestad/stale_fish) (Ruby)
+
 ## Copyright
 
 Copyright (c) 2010-2011 Myron Marston. See LICENSE for details.
