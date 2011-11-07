@@ -1,6 +1,10 @@
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.beta1...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.beta2...master)
+
+## 2.0.0 Beta 2 (November 6, 2011)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.beta1...v2.0.0.beta2)
 
 * Update to (and require) Typhoeus 0.3.2.
 * Fix a bug with `VCR.request_matchers.uri_without_param(:some_param)`
