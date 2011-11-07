@@ -40,20 +40,24 @@ module VCR
       "Response #{$record_and_playback_response_count += 1}"
     end
 
-    def self.port
-      server.port
-    end
-
     @_boot_failed = false
 
-    def self.server
-      raise "Sinatra app failed to boot." if @_boot_failed
-      @server ||= begin
-        VCR::LocalhostServer.new(new)
-      rescue
-        @_boot_failed = true
-        raise
+    class << self
+      def port
+        server.port
       end
+
+      def server
+        raise "Sinatra app failed to boot." if @_boot_failed
+        @server ||= begin
+          VCR::LocalhostServer.new(new)
+        rescue
+          @_boot_failed = true
+          raise
+        end
+      end
+
+      alias boot server
     end
   end
 end
