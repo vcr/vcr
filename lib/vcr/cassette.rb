@@ -183,7 +183,7 @@ module VCR
             "VCR 1.x cassettes are not valid with VCR 2.0. When upgrading from " +
             "VCR 1.x, it is recommended that you delete all your existing cassettes and " +
             "re-record them, or use the provided vcr:migrate_cassettes rake task to migrate " +
-            "them. For more info, see the VCR documentation."
+            "them. For more info, see the VCR upgrade guide."
         end
       end
     end
