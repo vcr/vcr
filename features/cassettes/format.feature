@@ -122,7 +122,7 @@ Feature: Cassette format
       | c.hook_into :webmock  | typhoeus              |
       | c.hook_into :typhoeus | typhoeus              |
       | c.hook_into :excon    | excon                 |
-      |                       | faraday (w/ net_http) |
+      | c.hook_into :faraday  | faraday (w/ net_http) |
 
   Scenario: Request/Response data can be saved as JSON
     Given a file named "cassette_json.rb" with:

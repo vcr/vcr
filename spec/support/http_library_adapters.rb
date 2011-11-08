@@ -219,7 +219,6 @@ end
 
     def faraday_connection(url_root)
       Faraday::Connection.new(:url => url_root) do |builder|
-        builder.use     VCR::Middleware::Faraday
         builder.adapter faraday_adapter
       end
     end

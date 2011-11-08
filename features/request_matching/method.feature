@@ -83,6 +83,6 @@ Feature: Matching on Method
       | c.hook_into :webmock  | typhoeus              |
       | c.hook_into :typhoeus | typhoeus              |
       | c.hook_into :excon    | excon                 |
-      |                       | faraday (w/ net_http) |
-      |                       | faraday (w/ typhoeus) |
+      | c.hook_into :faraday  | faraday (w/ net_http) |
+      | c.hook_into :faraday  | faraday (w/ typhoeus) |
 

@@ -50,7 +50,7 @@ Feature: Error for HTTP request made when no cassette is in use
       | c.hook_into :webmock  | typhoeus              |
       | c.hook_into :typhoeus | typhoeus              |
       | c.hook_into :excon    | excon                 |
-      |                       | faraday (w/ net_http) |
+      | c.hook_into :faraday  | faraday (w/ net_http) |
 
   Scenario: Temporarily turn VCR off to allow HTTP requests to procede as normal
     Given a file named "turn_off_vcr.rb" with:

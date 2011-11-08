@@ -76,6 +76,6 @@ Feature: Matching on Headers
       | c.hook_into :webmock  | patron                |
       | c.hook_into :webmock  | em-http-request       |
       | c.hook_into :excon    | excon                 |
-      |                       | faraday (w/ net_http) |
-      |                       | faraday (w/ typhoeus) |
+      | c.hook_into :faraday  | faraday (w/ net_http) |
+      | c.hook_into :faraday  | faraday (w/ typhoeus) |
 

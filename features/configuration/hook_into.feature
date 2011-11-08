@@ -15,10 +15,7 @@ Feature: hook_into
     - :typhoeus can be used to hook into itself (as long as you use Typhoeus::Hydra,
       but not Typhoeus::Easy or Typhoeus::Multi).
     - :excon can be used to hook into itself.
-
-  In addition, you can use VCR with Faraday if you use the provided
-  middleware in your Faraday connection stack.  When you use VCR with Faraday,
-  you do not need to configure `hook_into` (since the middleware is sufficient).
+    - :faraday can be used to hook into itself.
 
   There are some addiitonal trade offs to consider when deciding which
   option to use:
@@ -85,8 +82,8 @@ Feature: hook_into
       | c.hook_into :webmock  | typhoeus              |
       | c.hook_into :typhoeus | typhoeus              |
       | c.hook_into :excon    | excon                 |
-      |                       | faraday (w/ net_http) |
-      |                       | faraday (w/ typhoeus) |
+      | c.hook_into :faraday  | faraday (w/ net_http) |
+      | c.hook_into :faraday  | faraday (w/ typhoeus) |
 
   @exclude-jruby
   Scenario Outline: Use Typhoeus, Excon and Faraday in combination with FakeWeb or WebMock
@@ -117,7 +114,6 @@ Feature: hook_into
 
       def faraday_response
         Faraday::Connection.new(:url => 'http://localhost:7777') do |builder|
-          builder.use VCR::Middleware::Faraday
           builder.adapter :<faraday_adapter>
         end.get('/faraday').body
       end
@@ -128,7 +124,7 @@ Feature: hook_into
       puts "Faraday 1: #{faraday_response}"
 
       VCR.configure do |c|
-        c.hook_into <hook_into>, :typhoeus, :excon
+        c.hook_into <hook_into>, :typhoeus, :excon, :faraday
         c.cassette_library_dir = 'vcr_cassettes'
         c.ignore_localhost = false
       end

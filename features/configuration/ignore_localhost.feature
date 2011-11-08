@@ -52,7 +52,7 @@ Feature: ignore_localhost
       | c.hook_into :webmock  | typhoeus              |
       | c.hook_into :typhoeus | typhoeus              |
       | c.hook_into :excon    | excon                 |
-      |                       | faraday (w/ net_http) |
+      | c.hook_into :faraday  | faraday (w/ net_http) |
 
   Scenario Outline: localhost requests are allowed and not recorded when ignore_localhost = true
     Given a file named "ignore_localhost_true.rb" with:
@@ -93,5 +93,5 @@ Feature: ignore_localhost
       | c.hook_into :webmock  | typhoeus              |
       | c.hook_into :typhoeus | typhoeus              |
       | c.hook_into :excon    | excon                 |
-      |                       | faraday (w/ net_http) |
+      | c.hook_into :faraday  | faraday (w/ net_http) |
 

@@ -3,9 +3,13 @@ Feature: Faraday middleware
   VCR provides middleware that can be used with Faraday.  You can use this as
   an alternative to Faraday's built-in test adapter.
 
-  To use VCR with Faraday, simply add the VCR middleware to the Faraday
-  connection stack.  The middleware should come before the Faraday
-  HTTP adapter.
+  VCR will automatically insert this middleware in the Faraday stack
+  when you configure `hook_into :faraday`. However, if you want to control
+  where the middleware goes in the faraday stack, you can use it yourself.
+  The middleware should come before the Faraday HTTP adapter.
+
+  Note that when you use the middleware directly, you don't need to configure
+  `hook_into :faraday`.
 
   Scenario Outline: Use Faraday middleware
     Given a file named "faraday_example.rb" with:

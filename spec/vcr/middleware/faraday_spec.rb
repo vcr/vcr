@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'vcr/library_hooks/faraday'
 
 describe VCR::Middleware::Faraday do
   %w[ typhoeus net_http patron ].each do |lib|
