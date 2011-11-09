@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'yaml'
 require 'vcr/structs'
 
@@ -300,6 +302,13 @@ module VCR
             expect {
               inst.update_content_length_header
             }.to change { inst.headers[header] }.from(['3']).to(['0'])
+          end
+
+          it 'sets the header according to RFC 2616 based on the number of bytes (not the number of characters)' do
+            inst = instance('aؼ', '2') # the second char is a double byte char
+            expect {
+              inst.update_content_length_header
+            }.to change { inst.headers[header] }.from(['2']).to(['3'])
           end
         end
       end

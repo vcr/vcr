@@ -188,8 +188,7 @@ module VCR
     end
 
     def update_content_length_header
-      # TODO: should this be the bytesize?
-      value = body ? body.length.to_s : '0'
+      value = body ? body.bytesize.to_s : '0'
       key = %w[ Content-Length content-length ].find { |k| headers.has_key?(k) }
       headers[key] = [value] if key
     end
