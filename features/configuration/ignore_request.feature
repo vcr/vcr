@@ -65,7 +65,7 @@ Feature: Ignore Request
     When I run `ruby ignore_request.rb`
     Then it should fail with:
       """
-      An HTTP request has been made that VCR does not know how to handle: (VCR::Errors::UnhandledHTTPRequestError)
+      An HTTP request has been made that VCR does not know how to handle:
         GET http://localhost:8888/
       """
      And the output should contain:

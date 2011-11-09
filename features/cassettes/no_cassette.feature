@@ -65,7 +65,7 @@ Feature: Error for HTTP request made when no cassette is in use
         puts context
         puts Net::HTTP.get_response('localhost', '/', 7777).body
       rescue => e
-        puts "Error: #{e.message}"
+        puts "Error: #{e.class}"
       end
 
       VCR.turned_off do
@@ -89,7 +89,7 @@ Feature: Error for HTTP request made when no cassette is in use
     And the output should contain:
       """
       Outside of VCR.turned_off block
-      Error: An HTTP request has been made that VCR does not know how to handle
+      Error: VCR::Errors::UnhandledHTTPRequestError
       """
     And the output should contain:
       """
@@ -99,7 +99,7 @@ Feature: Error for HTTP request made when no cassette is in use
     And the output should contain:
       """
       After calling VCR.turn_on!
-      Error: An HTTP request has been made that VCR does not know how to handle
+      Error: VCR::Errors::UnhandledHTTPRequestError
       """
 
   Scenario: Turning VCR off prevents cassettes from being inserted

@@ -126,6 +126,46 @@ module VCR
         end
       end
 
+      describe "#has_used_interaction_matching?" do
+        it 'returns false when no interactions have been used' do
+          list.should_not have_used_interaction_matching(request_with(:method => :put))
+        end
+
+        it 'returns true when there is a matching used interaction (even if there is also an unused one that matches)' do
+          list.response_for(request_with(:method => :post))
+          list.should have_used_interaction_matching(request_with(:method => :post))
+        end
+
+        it 'returns false when none of the used interactions match' do
+          list.response_for(request_with(:method => :put))
+          list.should_not have_used_interaction_matching(request_with(:method => :post))
+        end
+      end
+
+      describe "#remaining_unused_interaction_count" do
+        it 'returns the number of unused interactions' do
+          list.remaining_unused_interaction_count.should eq(3)
+
+          list.response_for(request_with(:method => :get))
+          list.remaining_unused_interaction_count.should eq(3)
+
+          list.response_for(request_with(:method => :put))
+          list.remaining_unused_interaction_count.should eq(2)
+
+          list.response_for(request_with(:method => :put))
+          list.remaining_unused_interaction_count.should eq(2)
+
+          list.response_for(request_with(:method => :post))
+          list.remaining_unused_interaction_count.should eq(1)
+
+          list.response_for(request_with(:method => :post))
+          list.remaining_unused_interaction_count.should eq(0)
+
+          list.response_for(request_with(:method => :post))
+          list.remaining_unused_interaction_count.should eq(0)
+        end
+      end
+
       describe "#response_for" do
         it_behaves_like "an HTTP interaction finding method", :response_for do
           def respond_with(value)

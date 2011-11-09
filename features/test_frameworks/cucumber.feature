@@ -92,9 +92,9 @@ Feature: Usage with Cucumber
     Then it should fail with "3 scenarios (2 failed, 1 passed)"
     And the output should contain each of the following:
       | An HTTP request has been made that VCR does not know how to handle:               |
-      |   GET http://localhost:7777/disallowed_1 (VCR::Errors::UnhandledHTTPRequestError) |
+      |   GET http://localhost:7777/disallowed_1                                          |
       | An HTTP request has been made that VCR does not know how to handle:               |
-      |   GET http://localhost:7777/disallowed_2 (VCR::Errors::UnhandledHTTPRequestError) |
+      |   GET http://localhost:7777/disallowed_2                                          |
     And the file "features/cassettes/cucumber_tags/localhost_request.yml" should contain "body: Hello localhost_request_1"
     And the file "features/cassettes/cucumber_tags/localhost_request.yml" should contain "body: Hello localhost_request_2"
     And the file "features/cassettes/nested_cassette.yml" should contain "body: Hello nested_cassette"
@@ -106,9 +106,9 @@ Feature: Usage with Cucumber
     Then it should fail with "3 scenarios (2 failed, 1 passed)"
     And the output should contain each of the following:
       | An HTTP request has been made that VCR does not know how to handle:               |
-      |   GET http://localhost:7777/disallowed_1 (VCR::Errors::UnhandledHTTPRequestError) |
+      |   GET http://localhost:7777/disallowed_1                                          |
       | An HTTP request has been made that VCR does not know how to handle:               |
-      |   GET http://localhost:7777/disallowed_2 (VCR::Errors::UnhandledHTTPRequestError) |
+      |   GET http://localhost:7777/disallowed_2                                          |
     And the file "features/cassettes/cucumber_tags/localhost_request.yml" should contain "body: Hello localhost_request_1"
     And the file "features/cassettes/cucumber_tags/localhost_request.yml" should contain "body: Hello localhost_request_2"
     And the file "features/cassettes/nested_cassette.yml" should contain "body: Hello nested_cassette"
