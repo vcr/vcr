@@ -65,7 +65,7 @@ module VCR
 
   def http_interactions
     return current_cassette.http_interactions if current_cassette
-    VCR::Cassette::HTTPInteractionList::NullList.new
+    VCR::Cassette::HTTPInteractionList::NullList
   end
 
   def real_http_connections_allowed?

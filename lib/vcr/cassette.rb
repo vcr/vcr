@@ -34,7 +34,7 @@ module VCR
       @exclusive                    = options[:exclusive]
       @serializer                   = VCR.cassette_serializers[options[:serialize_with]]
       @record_mode                  = :all if should_re_record?
-      @parent_list                  = @exclusive ? HTTPInteractionList::NullList.new : VCR.http_interactions
+      @parent_list                  = @exclusive ? HTTPInteractionList::NullList : VCR.http_interactions
 
       raise_error_unless_valid_record_mode
     end

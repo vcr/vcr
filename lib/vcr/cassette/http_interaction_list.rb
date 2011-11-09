@@ -1,14 +1,15 @@
 module VCR
   class Cassette
     class HTTPInteractionList
-      class NullList
+      module NullList
+        extend self
         def response_for(*a); nil; end
         def has_interaction_matching?(*a); false; end
       end
 
       attr_reader :interactions, :request_matchers, :allow_playback_repeats, :parent_list
 
-      def initialize(interactions, request_matchers, allow_playback_repeats = false, parent_list = NullList.new)
+      def initialize(interactions, request_matchers, allow_playback_repeats = false, parent_list = NullList)
         @interactions           = interactions.dup
         @request_matchers       = request_matchers
         @allow_playback_repeats = allow_playback_repeats

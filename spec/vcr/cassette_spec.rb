@@ -330,7 +330,7 @@ describe VCR::Cassette do
           VCR.stub(:http_interactions => stub)
           VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
           cassette = VCR::Cassette.new('example', :record => record_mode, :exclusive => true)
-          cassette.http_interactions.parent_list.should be_a(VCR::Cassette::HTTPInteractionList::NullList)
+          cassette.http_interactions.parent_list.should be(VCR::Cassette::HTTPInteractionList::NullList)
         end
 
         it "instantiates the http_interactions with parent_list set to VCR.http_interactions if given :exclusive => false" do

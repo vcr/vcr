@@ -94,7 +94,7 @@ describe VCR do
 
     it 'returns a null list when there is no current cassette' do
       VCR.current_cassette.should be_nil
-      VCR.http_interactions.should be_a(VCR::Cassette::HTTPInteractionList::NullList)
+      VCR.http_interactions.should be(VCR::Cassette::HTTPInteractionList::NullList)
     end
   end
 
