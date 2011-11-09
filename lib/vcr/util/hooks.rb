@@ -1,3 +1,5 @@
+require 'vcr/util/variable_args_block_caller'
+
 module VCR
   module Hooks
     include VariableArgsBlockCaller
@@ -7,7 +9,7 @@ module VCR
     end
 
     def invoke_hook(hook, tag=nil, *args)
-      hooks_for(hook, tag).each do |callback|
+      hooks_for(hook, tag).map do |callback|
         call_block(callback, *args)
       end
     end

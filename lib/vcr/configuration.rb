@@ -48,6 +48,10 @@ module VCR
       VCR.request_ignorer.ignore_localhost = value
     end
 
+    def ignore_request(&block)
+      VCR.request_ignorer.ignore_request(&block)
+    end
+
     attr_writer :allow_http_connections_when_no_cassette
     def allow_http_connections_when_no_cassette?
       !!@allow_http_connections_when_no_cassette

@@ -23,6 +23,12 @@ describe VCR::Hooks do
   end
 
   describe '#invoke_hook(:before_foo)' do
+    it 'maps the return value of each callback' do
+      subject.before_foo { 17 }
+      subject.before_foo { 12 }
+      subject.invoke_hook(:before_foo).should eq([17, 12])
+    end
+
     context 'with a tag argument' do
       it 'invokes each of the :before_foo callbacks with a matching tag' do
         subject.before_foo(:green) { invocations << :callback_1 }

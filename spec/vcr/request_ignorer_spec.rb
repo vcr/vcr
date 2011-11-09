@@ -49,6 +49,22 @@ module VCR
         it_behaves_like "#ignore?", "http://#{host}/foo", false
       end
     end
+
+    context 'when a custom ignore_request hook has been set' do
+      before(:each) do
+        subject.ignore_request do |request|
+          URI(request.uri).port == 5
+        end
+      end
+
+      it 'ignores requests for which the block returns true' do
+        subject.ignore?(request('http://foo.com:5/bar')).should be_true
+      end
+
+      it 'does not ignore requests for which the block returns false' do
+        subject.ignore?(request('http://foo.com:6/bar')).should be_false
+      end
+    end
   end
 end
 

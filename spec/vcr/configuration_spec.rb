@@ -92,6 +92,15 @@ describe VCR::Configuration do
     end
   end
 
+  describe '#ignore_request' do
+    it 'registers the given block with the request ignorer' do
+      block_called = false
+      subject.ignore_request { |r| block_called = true }
+      VCR.request_ignorer.ignore?(stub(:uri => 'http://foo.com/'))
+      block_called.should be_true
+    end
+  end
+
   describe '#allow_http_connections_when_no_cassette=' do
     [true, false].each do |val|
       it "sets the allow_http_connections_when_no_cassette to #{val} when set to #{val}" do

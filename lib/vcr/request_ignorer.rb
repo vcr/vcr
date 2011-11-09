@@ -1,9 +1,20 @@
 require 'uri'
 require 'set'
+require 'vcr/util/hooks'
 
 module VCR
   class RequestIgnorer
+    include VCR::Hooks
+
+    define_hook :ignore_request
+
     LOCALHOST_ALIASES = %w( localhost 127.0.0.1 0.0.0.0 )
+
+    def initialize
+      ignore_request do |request|
+        ignored_hosts.include?(URI(request.uri).host)
+      end
+    end
 
     def ignore_localhost=(value)
       if value
@@ -18,7 +29,8 @@ module VCR
     end
 
     def ignore?(request)
-      ignored_hosts.include?(URI(request.uri).host)
+      tag = nil # we don't use tags here...
+      invoke_hook(:ignore_request, tag, request).any?
     end
 
   private
