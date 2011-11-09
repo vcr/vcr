@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
 
   s.version = VCR.version
   s.platform = Gem::Platform::RUBY
-  s.required_ruby_version = '>= 1.8.6'
+  s.required_ruby_version = '>= 1.8.7'
   s.required_rubygems_version = '>= 1.3.5'
 
   {
