@@ -367,14 +367,14 @@ describe VCR::Cassette do
             VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
             cassette = VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:body, :headers])
             cassette.http_interactions.interactions.should have(3).interactions
-            cassette.http_interactions.request_matchers.should == [:body, :headers]
+            cassette.http_interactions.request_matchers.should eq([:body, :headers].map { |m| VCR.request_matchers[m] })
           end
         else
           it 'instantiates the http_interactions with the no interactions and the request matchers' do
             VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
             cassette = VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:body, :headers])
             cassette.http_interactions.interactions.should have(0).interactions
-            cassette.http_interactions.request_matchers.should == [:body, :headers]
+            cassette.http_interactions.request_matchers.should eq([:body, :headers].map { |m| VCR.request_matchers[m] })
           end
         end
       end

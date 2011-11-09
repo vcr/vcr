@@ -11,7 +11,7 @@ module VCR
 
       def initialize(interactions, request_matchers, allow_playback_repeats = false, parent_list = NullList)
         @interactions           = interactions.dup
-        @request_matchers       = request_matchers
+        @request_matchers       = request_matchers.map { |m| VCR.request_matchers[m] }
         @allow_playback_repeats = allow_playback_repeats
         @parent_list            = parent_list
         @used_interactions      = []
@@ -48,7 +48,7 @@ module VCR
 
       def interaction_matches_request?(request, interaction)
         @request_matchers.all? do |matcher|
-          VCR.request_matchers[matcher].matches?(request, interaction.request)
+          matcher.matches?(request, interaction.request)
         end
       end
     end
