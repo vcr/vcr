@@ -2,6 +2,12 @@
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.beta2...master)
 
+* Add Faraday hook that automatically inserts the VCR middleware so that
+  you can use VCR with Faraday without needing to insert the middleware
+  yourself.  Use `VCR.configure { |c| c.hook_into :faraday }`.
+* Add `ignore_request` config option. Pass it a block that returns
+  true if the given request shoul be ignored.
+
 ## 2.0.0 Beta 2 (November 6, 2011)
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.beta1...v2.0.0.beta2)
