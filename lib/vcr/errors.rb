@@ -8,13 +8,18 @@ module VCR
     class UnregisteredMatcherError  < Error; end
     class InvalidCassetteFormatError < Error; end
 
-    class HTTPConnectionNotAllowedError < Error
+    class UnhandledHTTPRequestError < Error
+      attr_reader :request
+
       def initialize(request)
-        super \
-          "Real HTTP connections are disabled. " +
-          "Request: #{request.method.to_s.upcase} #{request.uri}. " +
-          "You can use VCR to automatically record this request and replay it later. " +
-          "For more details, visit the VCR documentation at: http://relishapp.com/myronmarston/vcr/v/#{VCR.version.gsub('.', '-')}"
+        @request = request
+        super construct_message
+      end
+    private
+
+      def construct_message
+        "An HTTP request has been made that VCR does not know how to handle:\n" +
+        "  #{request.method.to_s.upcase} #{request.uri}"
       end
     end
   end

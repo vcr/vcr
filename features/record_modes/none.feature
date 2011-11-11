@@ -64,4 +64,4 @@ Feature: :none
       end
       """
     When I run `ruby prevent_new_request.rb`
-    Then it should fail with "Real HTTP connections are disabled. Request: GET http://example.com:80/bar"
+    Then it should fail with "An HTTP request has been made that VCR does not know how to handle"

@@ -37,7 +37,7 @@ module VCR
     end
 
     def on_connection_not_allowed
-      raise VCR::HTTPConnectionNotAllowedError.new(vcr_request)
+      raise VCR::Errors::UnhandledHTTPRequestError.new(vcr_request)
     end
   end
 end

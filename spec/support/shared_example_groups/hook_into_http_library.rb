@@ -1,6 +1,6 @@
 require 'cgi'
 
-NET_CONNECT_NOT_ALLOWED_ERROR = /You can use VCR to automatically record this request and replay it later/
+NET_CONNECT_NOT_ALLOWED_ERROR = /An HTTP request has been made that VCR does not know how to handle/
 
 shared_examples_for "a hook into an HTTP library" do |library, *other|
   include HeaderDowncaser

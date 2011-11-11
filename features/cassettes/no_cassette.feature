@@ -33,10 +33,7 @@ Feature: Error for HTTP request made when no cassette is in use
       response_body_for(:get, 'http://example.com/')
       """
     When I run `ruby no_cassette_error.rb`
-    Then it should fail with "Real HTTP connections are disabled"
-    And the output should contain each of the following:
-      | You can use VCR to automatically record this request and replay it later. |
-      | no_cassette_error.rb:10                                                   |
+    Then it should fail with "An HTTP request has been made that VCR does not know how to handle"
 
     Examples:
       | configuration         | http_lib              |
@@ -92,7 +89,7 @@ Feature: Error for HTTP request made when no cassette is in use
     And the output should contain:
       """
       Outside of VCR.turned_off block
-      Error: Real HTTP connections are disabled.
+      Error: An HTTP request has been made that VCR does not know how to handle
       """
     And the output should contain:
       """
@@ -102,7 +99,7 @@ Feature: Error for HTTP request made when no cassette is in use
     And the output should contain:
       """
       After calling VCR.turn_on!
-      Error: Real HTTP connections are disabled.
+      Error: An HTTP request has been made that VCR does not know how to handle
       """
 
   Scenario: Turning VCR off prevents cassettes from being inserted

@@ -75,7 +75,7 @@ Feature: Playback repeats
       end
       """
     When I run `ruby playback_repeats.rb`
-    Then it should fail with "Real HTTP connections are disabled"
+    Then it should fail with "An HTTP request has been made that VCR does not know how to handle"
      And the output should contain:
       """
       == With :allow_playback_repeats ==

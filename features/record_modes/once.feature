@@ -72,7 +72,7 @@ Feature: :once
       end
       """
     When I run `ruby error_for_new_requests_when_cassette_exists.rb`
-    Then it should fail with "Real HTTP connections are disabled"
+    Then it should fail with "An HTTP request has been made that VCR does not know how to handle"
 
   Scenario: New requests get recorded when there is no cassette file
     Given a file named "record_new_requests.rb" with:

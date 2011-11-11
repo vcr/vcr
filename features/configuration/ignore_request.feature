@@ -63,7 +63,11 @@ Feature: Ignore Request
       puts response_body_for(:get, "http://localhost:8888/")
       """
     When I run `ruby ignore_request.rb`
-    Then it should fail with "Real HTTP connections are disabled. Request: GET http://localhost:8888/"
+    Then it should fail with:
+      """
+      An HTTP request has been made that VCR does not know how to handle: (VCR::Errors::UnhandledHTTPRequestError)
+        GET http://localhost:8888/
+      """
      And the output should contain:
       """
       Port 8888 Response 1
@@ -78,7 +82,6 @@ Feature: Ignore Request
       | c.hook_into :fakeweb  | net/http              |
       | c.hook_into :webmock  | net/http              |
       | c.hook_into :typhoeus | typhoeus              |
-      | c.hook_into :excon    | excon                 |
       | c.hook_into :faraday  | faraday (w/ net_http) |
 
   Scenario Outline: ignored host requests are not recorded and are always allowed
@@ -137,7 +140,7 @@ Feature: Ignore Request
       response_body_for(:get, "http://localhost:7777/")
       """
     When I run `ruby localhost_not_ignored.rb`
-    Then it should fail with "Real HTTP connections are disabled"
+    Then it should fail with "An HTTP request has been made that VCR does not know how to handle"
      And the file "cassettes/localhost.yml" should contain "body: Port 7777 Response 1"
 
     Examples:
