@@ -1,9 +1,9 @@
 Feature: Allow HTTP connections when no cassette
 
-  Usually, HTTP requests made when no cassette is inserted will result
-  in an error (see cassettes/no_cassette.feature).  You can set the
-  `allow_http_connections_when_no_cassette` configuration option to
-  true to allow requests, if you do not want to use VCR for everything.
+  Usually, HTTP requests made when no cassette is inserted will [result in an
+  error](../cassettes/error-for-http-request-made-when-no-cassette-is-in-use).
+  You can set the `allow_http_connections_when_no_cassette` configuration option
+  to true to allow requests, if you do not want to use VCR for everything.
 
   Background:
     Given a file named "vcr_setup.rb" with:
