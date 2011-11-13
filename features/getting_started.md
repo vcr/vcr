@@ -9,10 +9,9 @@ Create a file named `vcr_setup.rb` with content like:
 
     require 'vcr'
 
-    VCR.config do |c|
+    VCR.configure do |c|
       c.cassette_library_dir = 'vcr_cassettes'
-      c.stub_with :fakeweb
-      c.default_cassette_options = { :record => :once }
+      c.hook_into :fakeweb
     end
 
 Ensure this file is required by your test suite before any
@@ -41,23 +40,25 @@ Run this test.  It will record the HTTP request to disk as a cassette (a
 test fixture), with content like:
 
     --- 
-    - !ruby/struct:VCR::HTTPInteraction 
-      request: !ruby/struct:VCR::Request 
-        method: :get
-        uri: http://example.com:80/
-        body: 
-        headers: 
-      response: !ruby/struct:VCR::Response 
-        status: !ruby/struct:VCR::ResponseStatus 
+    http_interactions:
+    - request:
+        method: get
+        uri: http://example.com/
+        body: ''
+        headers: {}
+      response:
+        status:
           code: 200
           message: OK
-        headers: 
-          content-type: 
+        headers:
+          Content-Type:
           - text/html;charset=utf-8
-          content-length: 
-          - "26"
-        body: This is the response body.
-        http_version: "1.1"
+          Content-Length:
+          - '26'
+        body: This is the response body
+        http_version: '1.1'
+      recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
+    recorded_with: VCR 2.0.0
 
 Disconnect your computer from the internet.  Run the test again.
 It should pass since VCR is automatically replaying the recorded
