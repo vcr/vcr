@@ -133,20 +133,27 @@ module VCR
         ]
       }
 
+      def suggestion_for(key)
+        bullet_point_lines, url = ALL_SUGGESTIONS[key]
+        bullet_point_lines = bullet_point_lines.map(&:dup)
+        url = url.dup
+        [bullet_point_lines, url]
+      end
+
       def suggestions
         return no_cassette_suggestions unless cassette = VCR.current_cassette
 
         [:use_new_episodes, :ignore_request].tap do |suggestions|
           suggestions.push(*record_mode_suggestion)
           suggestions << :allow_playback_repeats if cassette.http_interactions.has_used_interaction_matching?(request)
-          suggestions.map! { |k| ALL_SUGGESTIONS[k] }
+          suggestions.map! { |k| suggestion_for(k) }
           suggestions.push(*match_requests_on_suggestion)
         end
       end
 
       def no_cassette_suggestions
         [:use_a_cassette, :allow_http_connections_when_no_cassette, :ignore_request].map do |key|
-          ALL_SUGGESTIONS[key]
+          suggestion_for(key)
         end
       end
 
@@ -168,8 +175,7 @@ module VCR
           "#{num_remaining_interactions} HTTP interactions that have"
         end
 
-        description_lines, link = ALL_SUGGESTIONS[:match_requests_on]
-        description_lines = description_lines.dup
+        description_lines, link = suggestion_for(:match_requests_on)
         description_lines[0] = description_lines[0] % interaction_description
         [[description_lines, link]]
       end

@@ -38,6 +38,10 @@ module VCR
         it 'mentions that the request can be ignored' do
           message.should include('set an `ignore_request` callback')
         end
+
+        it 'does not double-insert the asterisks for the bullet points' do
+          message.should_not match(/\s+\*\s+\*/)
+        end
       end
 
       context 'when there is a current cassette' do
