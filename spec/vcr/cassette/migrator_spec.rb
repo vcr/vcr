@@ -84,13 +84,12 @@ recorded_with: VCR 1.11.3
 EOF
   }
 
-  attr_accessor :dir
+  let(:dir) { './tmp/migrator' }
 
-  around(:each) do |example|
-    Dir.mktmpdir do |dir|
-      self.dir = dir
-      example.run
-    end
+  before(:each) do
+    # ensure the directory is empty
+    FileUtils.rm_rf dir
+    FileUtils.mkdir_p dir
   end
 
   # JRuby serializes YAML with some slightly different whitespace.
