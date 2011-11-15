@@ -22,10 +22,26 @@ of the tests are run.
 Run your tests.  Any tests that make HTTP requests using Net::HTTP will
 raise errors like:
 
-    FakeWeb::NetConnectNotAllowedError: Real HTTP connections are disabled.
-    Unregistered request: GET http://example.com/.
-    You can use VCR to automatically record this request and replay it later.
-    For more details, visit the VCR documentation at: http://relishapp.com/myronmarston/vcr
+    ================================================================================
+    An HTTP request has been made that VCR does not know how to handle:
+      GET http://example.com/
+
+    There is currently no cassette in use. There are a few ways
+    you can configure VCR to handle this request:
+
+      * If you want VCR to record this request and play it back during future test
+        runs, you should wrap your test (or this portion of your test) in a
+        `VCR.use_cassette` block [1].
+      * If you only want VCR to handle requests made while a cassette is in use,
+        configure `allow_http_connections_when_no_cassette = true`. VCR will
+        ignore this request since it is made when there is no cassette [2].
+      * If you want VCR to ignore this request (and others like it), you can
+        set an `ignore_request` callback [3].
+
+    [1] https://www.relishapp.com/myronmarston/vcr/v/2-0-0/docs/getting-started
+    [2] https://www.relishapp.com/myronmarston/vcr/v/2-0-0/docs/configuration/allow-http-connections-when-no-cassette
+    [3] https://www.relishapp.com/myronmarston/vcr/v/2-0-0/docs/configuration/ignore-request
+    ================================================================================
 
 Find one of these tests (preferably one that uses the same HTTP method and
 request URL every time--if not, you'll have to configure the request matcher).
