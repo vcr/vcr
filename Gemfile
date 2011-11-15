@@ -28,7 +28,7 @@ group :extras do
     gem 'rb-fsevent'
   end
 
-  platforms :mri_18 do
+  platforms :mri_18, :jruby do
     gem 'ruby-debug'
   end
 
