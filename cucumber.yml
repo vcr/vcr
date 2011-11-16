@@ -9,6 +9,6 @@ else
 end
 %>
 default: <%= std_opts %><%= interp_opts %> features
-wip: --tags @wip:30 --wip features<%= interp_opts %>
+wip: --tags @wip features<%= interp_opts %>
 rerun: <%= rerun_opts %> --format rerun --out rerun.txt --strict --tags ~@wip<%= interp_opts %>
 
