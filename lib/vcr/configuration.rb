@@ -9,6 +9,7 @@ module VCR
     define_hook :before_record
     define_hook :before_playback
     define_hook :after_library_hooks_loaded
+    define_hook :before_http_request
 
     def initialize
       @allow_http_connections_when_no_cassette = nil

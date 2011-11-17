@@ -117,6 +117,46 @@ shared_examples_for "a hook into an HTTP library" do |library, *other|
       test_playback "with an encoded ampersand",        "http://example.com:80/search?q=#{CGI.escape("Q&A")}"
     end
 
+    context 'when there is a before_http_request hook' do
+      let(:string_in_cassette) { 'example.com get response 1 with path=foo' }
+
+      it 'plays back the cassette when a request is made' do
+        VCR.configure do |c|
+          c.cassette_library_dir = File.join(VCR::SPEC_ROOT, 'fixtures')
+          c.before_http_request do |request|
+            VCR.insert_cassette('fake_example_responses', :record => :none)
+          end
+        end
+        get_body_string(make_http_request(:get, 'http://example.com/foo')).should eq(string_in_cassette)
+      end
+
+      it 'yields the request to the hook' do
+        request = nil
+        VCR.configure do |c|
+          c.ignore_request { |r| true }
+          c.before_http_request { |r| request = r }
+        end
+        url = "http://localhost:#{VCR::SinatraApp.port}/foo"
+        make_http_request(:get, url)
+        request.method.should be(:get)
+        request.uri.should eq(url)
+      end
+
+      it 'does not get invoked if the library hook is disabled' do
+        VCR.library_hooks.should respond_to(:disabled?)
+        VCR.library_hooks.stub(:disabled? => true)
+
+        hook_called = false
+        VCR.configure do |c|
+          c.ignore_request { |r| true }
+          c.before_http_request { |r| hook_called = true }
+        end
+
+        make_http_request(:get, "http://localhost:#{VCR::SinatraApp.port}/foo")
+        hook_called.should be_false
+      end
+    end
+
     describe '.stub_requests using specific match_attributes' do
       before(:each) { VCR.stub(:real_http_connections_allowed? => false) }
       let(:interactions) { interactions_from('match_requests_on.yml') }
