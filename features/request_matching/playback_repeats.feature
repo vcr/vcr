@@ -12,6 +12,7 @@ Feature: Playback repeats
 
       :allow_playback_repeats => true
 
+  @exclude-jruby
   Scenario: Responses do not repeat by default
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """

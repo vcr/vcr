@@ -18,6 +18,7 @@ Feature: Error for HTTP request made when no cassette is in use
     - `VCR.turned_off { ... }` => turn VCR off for the duration of the
       provided block.
 
+  @exclude-jruby
   Scenario Outline: Error for request when no cassette is in use
     Given a file named "no_cassette_error.rb" with:
       """ruby

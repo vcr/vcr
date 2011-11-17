@@ -54,6 +54,7 @@ Feature: :none
     When I run `ruby replay_recorded_response.rb`
     Then it should pass with "Response: Hello"
 
+  @exclude-jruby
   Scenario: New requests are prevented
     Given a file named "prevent_new_request.rb" with:
       """ruby

@@ -29,6 +29,7 @@ Feature: Ignore Request
       end
       """
 
+  @exclude-jruby
   Scenario Outline: ignore requests to a specific port
     Given a file named "ignore_request.rb" with:
       """ruby
@@ -120,6 +121,7 @@ Feature: Ignore Request
       | c.hook_into :excon    | excon                 |
       | c.hook_into :faraday  | faraday (w/ net_http) |
 
+  @exclude-jruby
   Scenario Outline: localhost requests are not treated differently by default
     Given a file named "localhost_not_ignored.rb" with:
       """ruby

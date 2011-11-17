@@ -61,6 +61,7 @@ Feature: :once
     When I run `ruby replay_recorded_response.rb`
     Then it should pass with "Response: example.com response"
 
+  @exclude-jruby
   Scenario: New requests result in an error when the cassette file exists
     Given a file named "error_for_new_requests_when_cassette_exists.rb" with:
       """ruby

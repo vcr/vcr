@@ -23,6 +23,7 @@ Feature: Usage with Cucumber
   be used, or you can override specific options by passing a hash as the
   last argument to `#tag` or `#tags`.
 
+  @exclude-jruby
   Scenario: Record HTTP interactions in a scenario by tagging it
     Given a file named "lib/server.rb" with:
       """ruby
