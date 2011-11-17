@@ -277,7 +277,7 @@ shared_examples_for "a hook into an HTTP library" do |library, *other|
         end
 
         context 'when some requests are stubbed' do
-          let(:interactions) { interactions_from('fake_example.com_responses.yml') }
+          let(:interactions) { interactions_from('fake_example_responses.yml') }
           before(:each) do
             stub_requests(interactions, VCR::RequestMatcherRegistry::DEFAULT_MATCHERS)
           end
