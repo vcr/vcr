@@ -28,7 +28,17 @@ module VCR
           @app, @env = app, env
         end
 
+        def handle
+          super
+        ensure
+          invoke_after_request_hook(response_for(env)) unless running_in_parallel?
+        end
+
       private
+
+        def running_in_parallel?
+          !!env[:parallel_manager]
+        end
 
         def vcr_request
           @vcr_request ||= VCR::Request.new \
@@ -40,6 +50,7 @@ module VCR
 
         def response_for(env)
           response = env[:response]
+          return nil unless response
 
           VCR::Response.new(
             VCR::ResponseStatus.new(response.status, nil),
@@ -66,6 +77,7 @@ module VCR
         def on_recordable_request
           app.call(env).on_complete do |env|
             VCR.record_http_interaction(VCR::HTTPInteraction.new(vcr_request, response_for(env)))
+            invoke_after_request_hook(response_for(env)) if running_in_parallel?
           end
         end
       end

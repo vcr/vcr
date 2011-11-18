@@ -54,9 +54,11 @@ describe "Excon hook" do
   end
 
   context 'when Excon raises an error due to an unexpected response status' do
-    it 'still records properly' do
+    before(:each) do
       VCR.stub(:real_http_connections_allowed? => true)
+    end
 
+    it 'still records properly' do
       VCR.should_receive(:record_http_interaction) do |interaction|
         interaction.response.status.code.should eq(404)
       end
@@ -64,6 +66,15 @@ describe "Excon hook" do
       expect {
         Excon.get("http://localhost:#{VCR::SinatraApp.port}/not_found", :expects => 200)
       }.to raise_error(Excon::Errors::Error)
+    end
+
+    it_behaves_like "after_http_request hook" do
+      undef make_request
+      def make_request(disabled = false)
+        expect {
+          Excon.get(request_url, :expects => 404)
+        }.to raise_error(Excon::Errors::Error)
+      end
     end
   end
 end

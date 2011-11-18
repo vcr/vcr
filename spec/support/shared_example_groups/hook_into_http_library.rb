@@ -157,6 +157,67 @@ shared_examples_for "a hook into an HTTP library" do |library, *other|
       end
     end
 
+    context 'when there is an after_http_request hook' do
+      context 'when the request is ignored' do
+        before(:each) do
+          VCR.configuration.ignore_request { |r| true }
+        end
+
+        it_behaves_like "after_http_request hook"
+      end
+
+      context 'when the request is recorded' do
+        let!(:inserted_cassette) { VCR.insert_cassette('new_cassette') }
+
+        it_behaves_like "after_http_request hook" do
+          it 'can be used to eject a cassette after the request is recorded' do
+            VCR.configuration.after_http_request do |request|
+              VCR.eject_cassette
+            end
+
+            VCR.should_receive(:record_http_interaction) do |interaction|
+              VCR.current_cassette.should be(inserted_cassette)
+            end
+
+            make_http_request(:get, request_url)
+            VCR.current_cassette.should be_nil
+          end
+        end
+      end
+
+      context 'when the request is played back' do
+        it_behaves_like "after_http_request hook" do
+          let(:request)       { VCR::Request.new(:get, request_url) }
+          let(:response_body) { "FOO!" }
+          let(:response)      { VCR::Response.new(status, nil, response_body, '1.1') }
+          let(:status)        { VCR::ResponseStatus.new(200, 'OK') }
+          let(:interaction)   { VCR::HTTPInteraction.new(request, response) }
+
+          before(:each) do
+            stub_requests([interaction], [:method, :uri])
+          end
+        end
+      end
+
+      context 'when the request is not allowed' do
+        it_behaves_like "after_http_request hook" do
+          undef assert_expected_response
+          def assert_expected_response(response)
+            response.should be_nil
+          end
+
+          undef make_request
+          def make_request(disabled = false)
+            if disabled
+              make_http_request(:get, request_url)
+            else
+              expect { make_http_request(:get, request_url) }.to raise_error(NET_CONNECT_NOT_ALLOWED_ERROR)
+            end
+          end
+        end
+      end
+    end
+
     describe '.stub_requests using specific match_attributes' do
       before(:each) { VCR.stub(:real_http_connections_allowed? => false) }
       let(:interactions) { interactions_from('match_requests_on.yml') }

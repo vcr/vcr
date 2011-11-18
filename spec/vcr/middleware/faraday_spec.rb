@@ -23,4 +23,34 @@ describe VCR::Middleware::Faraday do
       ::Faraday::VERSION = version
     end
   end
+
+  context 'when making parallel requests' do
+    let(:parallel_manager)   { ::Faraday::Adapter::Typhoeus.setup_parallel_manager }
+    let(:connection)         { ::Faraday.new { |b| b.adapter :typhoeus } }
+    let!(:inserted_cassette) { VCR.insert_cassette('new_cassette') }
+
+    it_behaves_like "after_http_request hook" do
+      undef make_request
+      def make_request(disabled = false)
+        response = nil
+        connection.in_parallel(parallel_manager) do
+          response = connection.get(request_url)
+        end
+        response
+      end
+
+      it 'can be used to eject a cassette after the request is recorded' do
+        VCR.configuration.after_http_request do |request|
+          VCR.eject_cassette
+        end
+
+        VCR.should_receive(:record_http_interaction) do |interaction|
+          VCR.current_cassette.should be(inserted_cassette)
+        end
+
+        make_request
+        VCR.current_cassette.should be_nil
+      end
+    end
+  end if defined?(::Typhoeus)
 end

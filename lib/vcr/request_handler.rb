@@ -15,6 +15,11 @@ module VCR
       VCR.configuration.invoke_hook(:before_http_request, tag = nil, vcr_request)
     end
 
+    def invoke_after_request_hook(vcr_response)
+      return if disabled?
+      VCR.configuration.invoke_hook(:after_http_request, tag = nil, vcr_request, vcr_response)
+    end
+
     def should_ignore?
       disabled? || VCR.request_ignorer.ignore?(vcr_request)
     end

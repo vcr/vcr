@@ -10,12 +10,20 @@ module VCR
       class RequestHandler < ::VCR::RequestHandler
         attr_reader :params
         def initialize(params)
+          @vcr_response = nil
           @params = params
+        end
+
+        def handle
+          super
+        ensure
+          invoke_after_request_hook(@vcr_response)
         end
 
       private
 
         def on_stubbed_request
+          @vcr_response = stubbed_response
           {
             :body     => stubbed_response.body,
             :headers  => normalized_headers(stubbed_response.headers || {}),
@@ -38,16 +46,15 @@ module VCR
         end
 
         def perform_real_request
-          connection = ::Excon.new(uri)
-
-          response = begin
-            connection.request(params.merge(:mock => false))
-          rescue ::Excon::Errors::Error => e
-            yield response_from_excon_error(e) if block_given?
-            raise e
+          begin
+            response = ::Excon.new(uri).request(params.merge(:mock => false))
+          rescue ::Excon::Errors::Error => excon_error
+            response = response_from_excon_error(excon_error)
           end
 
+          @vcr_response = vcr_response_from(response)
           yield response if block_given?
+          raise excon_error if excon_error
 
           response.attributes
         end
@@ -87,7 +94,7 @@ module VCR
         def http_interaction_for(response)
           VCR::HTTPInteraction.new \
             vcr_request,
-            vcr_response(response)
+            vcr_response_from(response)
         end
 
         def vcr_request
@@ -103,7 +110,7 @@ module VCR
           end
         end
 
-        def vcr_response(response)
+        def vcr_response_from(response)
           VCR::Response.new \
             VCR::ResponseStatus.new(response.status, nil),
             response.headers,

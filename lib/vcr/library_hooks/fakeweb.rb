@@ -14,42 +14,58 @@ module VCR
         def initialize(net_http, request, request_body = nil, &response_block)
           @net_http, @request, @request_body, @response_block =
            net_http,  request,  request_body,  response_block
+          @vcr_response, @recursing = nil, false
+        end
+
+        def handle
+          super
+        ensure
+          invoke_after_request_hook(@vcr_response) unless @recursing
         end
 
       private
+
         def on_recordable_request
-          perform_and_record_request
+          perform_request(net_http.started?, :record_interaction)
         end
 
         def on_stubbed_request
-          perform_stubbed_request
+          with_exclusive_fakeweb_stub(stubbed_response) do
+            # force it to be considered started since it doesn't
+            # recurse in this case like the others.
+            perform_request(:started)
+          end
         end
 
         def on_ignored_request
-          perform_request(&response_block)
+          perform_request(net_http.started?)
         end
 
-        def perform_and_record_request
+        # overriden to prevent it from invoking the after_http_request hook,
+        # since we invoke the hook in an ensure block above.
+        def on_connection_not_allowed
+          raise VCR::Errors::UnhandledHTTPRequestError.new(vcr_request)
+        end
+
+        def perform_request(started, record_interaction = false)
           # Net::HTTP calls #request recursively in certain circumstances.
           # We only want to record the request when the request is started, as
           # that is the final time through #request.
-          return perform_request(&response_block) unless net_http.started?
+          unless started
+            @recursing = true
+            return net_http.request_without_vcr(request, request_body, &response_block)
+          end
 
-          perform_request do |response|
-            VCR.record_http_interaction VCR::HTTPInteraction.new(vcr_request, vcr_response_from(response))
+          net_http.request_without_vcr(request, request_body) do |response|
+            @vcr_response = vcr_response_from(response)
+
+            if record_interaction
+              VCR.record_http_interaction VCR::HTTPInteraction.new(vcr_request, @vcr_response)
+            end
+
             response.extend VCR::Net::HTTPResponse # "unwind" the response
             response_block.call(response) if response_block
           end
-        end
-
-        def perform_stubbed_request
-          with_exclusive_fakeweb_stub(stubbed_response) do
-            perform_request(&response_block)
-          end
-        end
-
-        def perform_request(&block)
-          net_http.request_without_vcr(request, request_body, &block)
         end
 
         def uri

@@ -101,4 +101,25 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
       end
     end
   end
+
+  describe "when a SocketError occurs" do
+    before(:each) do
+      VCR.configuration.ignore_request { |r| true }
+    end
+
+    it_behaves_like "after_http_request hook" do
+      undef assert_expected_response
+      def assert_expected_response(response)
+        response.should be_nil
+      end
+
+      undef make_request
+      def make_request(disabled = false)
+        ::Net::HTTP.any_instance.stub(:request_without_vcr).and_raise(SocketError)
+        expect {
+          ::Net::HTTP.get_response(URI(request_url))
+        }.to raise_error(SocketError)
+      end
+    end
+  end
 end

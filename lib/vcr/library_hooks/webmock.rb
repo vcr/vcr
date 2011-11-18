@@ -39,6 +39,11 @@ module VCR
           @vcr_request ||= vcr_request_from(request)
         end
 
+        def on_connection_not_allowed
+          invoke_after_request_hook(nil)
+          super
+        end
+
         def on_stubbed_request
           {
             :body    => stubbed_response.body,
@@ -59,6 +64,12 @@ module VCR
             vcr_response_from(response)
 
           VCR.record_http_interaction(http_interaction)
+        end
+      end
+
+      ::WebMock.after_request do |request, response|
+        unless VCR.library_hooks.disabled?(:webmock)
+          VCR.configuration.invoke_hook(:after_http_request, tag = nil, vcr_request_from(request), vcr_response_from(response))
         end
       end
     end
