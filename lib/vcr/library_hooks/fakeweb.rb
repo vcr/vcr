@@ -31,7 +31,7 @@ module VCR
 
         def perform_and_record_request
           # Net::HTTP calls #request recursively in certain circumstances.
-          # We only want to record hte request when the request is started, as
+          # We only want to record the request when the request is started, as
           # that is the final time through #request.
           return perform_request(&response_block) unless net_http.started?
 
