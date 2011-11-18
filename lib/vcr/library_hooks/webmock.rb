@@ -8,14 +8,6 @@ module VCR
   class LibraryHooks
     module WebMock
       module Helpers
-        def response_hash_for(response)
-          {
-            :body    => response.body,
-            :status  => [response.status.code.to_i, response.status.message],
-            :headers => response.headers
-          }
-        end
-
         def vcr_request_from(webmock_request)
           VCR::Request.new \
             webmock_request.method,
@@ -43,30 +35,22 @@ module VCR
 
       private
 
-        def stubbed_response
-          VCR.http_interactions.has_interaction_matching?(vcr_request)
-        end
-
         def vcr_request
           @vcr_request ||= vcr_request_from(request)
         end
 
-        def on_ignored_request;    false; end
-        def on_stubbed_request;    true;  end
-        def on_recordable_request; false; end
+        def on_stubbed_request
+          {
+            :body    => stubbed_response.body,
+            :status  => [stubbed_response.status.code.to_i, stubbed_response.status.message],
+            :headers => stubbed_response.headers
+          }
+        end
       end
 
       extend Helpers
 
-      GLOBAL_VCR_HOOK = ::WebMock::RequestStub.new(:any, /.*/).tap do |stub|
-        stub.with { |request|
-          RequestHandler.new(request).handle
-        }.to_return(lambda { |request|
-          response_hash_for VCR.http_interactions.response_for(vcr_request_from(request))
-        })
-      end
-
-      ::WebMock::StubRegistry.instance.register_request_stub(GLOBAL_VCR_HOOK)
+      ::WebMock.globally_stub_request { |req| RequestHandler.new(req).handle }
 
       ::WebMock.after_request(:real_requests_only => true) do |request, response|
         unless VCR.library_hooks.disabled?(:webmock)
@@ -87,14 +71,6 @@ class << WebMock
   undef net_connect_allowed?
   def net_connect_allowed?(*args)
     true
-  end
-end
-
-WebMock::StubRegistry.class_eval do
-  # ensure our VCR hook is not removed when WebMock is reset
-  undef reset!
-  def reset!
-    self.request_stubs = [VCR::LibraryHooks::WebMock::GLOBAL_VCR_HOOK]
   end
 end
 

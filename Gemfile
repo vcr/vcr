@@ -15,6 +15,8 @@ group :development do
   end
 end
 
+gem 'webmock', :git => 'git://github.com/bblimke/webmock.git', :ref => '2fe6808216dcd2343c42a4440b3084d6579b44f3'
+
 # Additional gems that are useful, but not required for development.
 group :extras do
   gem 'guard-rspec'

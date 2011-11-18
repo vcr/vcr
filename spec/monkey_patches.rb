@@ -40,7 +40,7 @@ module MonkeyPatches
   def disable_all!
     realias_all :without_monkeypatches
 
-    if defined?(::WebMock)
+    if defined?(::WebMock::HttpLibAdapters)
       ::WebMock::HttpLibAdapters::NetHttpAdapter.disable!
       ::WebMock::HttpLibAdapters::TyphoeusAdapter.disable! if defined?(::Typhoeus)
       ::WebMock::CallbackRegistry.reset
