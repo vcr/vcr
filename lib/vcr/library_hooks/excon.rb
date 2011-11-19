@@ -23,6 +23,10 @@ module VCR
           }
         end
 
+        def on_ignored_request
+          perform_real_request
+        end
+
         def response_from_excon_error(error)
           if error.respond_to?(:response)
             error.response
@@ -47,7 +51,6 @@ module VCR
 
           response.attributes
         end
-        alias on_ignored_request perform_real_request
 
         def on_recordable_request
           perform_real_request do |response|

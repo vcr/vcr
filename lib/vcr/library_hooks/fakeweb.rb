@@ -17,6 +17,17 @@ module VCR
         end
 
       private
+        def on_recordable_request
+          perform_and_record_request
+        end
+
+        def on_stubbed_request
+          perform_stubbed_request
+        end
+
+        def on_ignored_request
+          perform_request(&block)
+        end
 
         def perform_and_record_request
           # Net::HTTP calls #request recursively in certain circumstances.
@@ -30,19 +41,16 @@ module VCR
             block.call(response) if block
           end
         end
-        alias on_recordable_request perform_and_record_request
 
         def perform_stubbed_request
           with_exclusive_fakeweb_stub(stubbed_response) do
             perform_request
           end
         end
-        alias on_stubbed_request perform_stubbed_request
 
-        def perform_request(&record_block)
-          net_http.request_without_vcr(request, request_body, &(record_block || block))
+        def perform_request(&block)
+          net_http.request_without_vcr(request, request_body, &block)
         end
-        alias on_ignored_request perform_request
 
         def uri
           @uri ||= ::FakeWeb::Utility.request_uri_as_string(net_http, request)
