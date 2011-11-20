@@ -12,12 +12,12 @@ module VCR
 
     def invoke_before_request_hook
       return if disabled?
-      VCR.configuration.invoke_hook(:before_http_request, tag = nil, vcr_request)
+      VCR.configuration.invoke_hook(:before_http_request, nil, vcr_request)
     end
 
     def invoke_after_request_hook(vcr_response)
       return if disabled?
-      VCR.configuration.invoke_hook(:after_http_request, tag = nil, vcr_request, vcr_response)
+      VCR.configuration.invoke_hook(:after_http_request, nil, vcr_request, vcr_response)
     end
 
     def should_ignore?

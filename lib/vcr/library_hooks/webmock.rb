@@ -69,7 +69,7 @@ module VCR
 
       ::WebMock.after_request do |request, response|
         unless VCR.library_hooks.disabled?(:webmock)
-          VCR.configuration.invoke_hook(:after_http_request, tag = nil, vcr_request_from(request), vcr_response_from(response))
+          VCR.configuration.invoke_hook(:after_http_request, nil, vcr_request_from(request), vcr_response_from(response))
         end
       end
     end
