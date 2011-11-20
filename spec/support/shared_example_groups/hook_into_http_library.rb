@@ -2,7 +2,7 @@ require 'cgi'
 
 NET_CONNECT_NOT_ALLOWED_ERROR = /An HTTP request has been made that VCR does not know how to handle/
 
-shared_examples_for "a hook into an HTTP library" do |library, *other|
+shared_examples_for "a hook into an HTTP library" do |library_hook_name, library, *other|
   include HeaderDowncaser
 
   def interactions_from(file)
@@ -117,90 +117,61 @@ shared_examples_for "a hook into an HTTP library" do |library, *other|
       test_playback "with an encoded ampersand",        "http://example.com:80/search?q=#{CGI.escape("Q&A")}"
     end
 
-    context 'when there is a before_http_request hook' do
-      let(:string_in_cassette) { 'example.com get response 1 with path=foo' }
-
-      it 'plays back the cassette when a request is made' do
-        VCR.configure do |c|
-          c.cassette_library_dir = File.join(VCR::SPEC_ROOT, 'fixtures')
-          c.before_http_request do |request|
-            VCR.insert_cassette('fake_example_responses', :record => :none)
-          end
-        end
-        get_body_string(make_http_request(:get, 'http://example.com/foo')).should eq(string_in_cassette)
-      end
-
-      it 'yields the request to the hook' do
-        request = nil
-        VCR.configure do |c|
-          c.ignore_request { |r| true }
-          c.before_http_request { |r| request = r }
-        end
-        url = "http://localhost:#{VCR::SinatraApp.port}/foo"
-        make_http_request(:get, url)
-        request.method.should be(:get)
-        request.uri.should eq(url)
-      end
-
-      it 'does not get invoked if the library hook is disabled' do
-        VCR.library_hooks.should respond_to(:disabled?)
-        VCR.library_hooks.stub(:disabled? => true)
-
-        hook_called = false
-        VCR.configure do |c|
-          c.ignore_request { |r| true }
-          c.before_http_request { |r| hook_called = true }
-        end
-
-        make_http_request(:get, "http://localhost:#{VCR::SinatraApp.port}/foo")
-        hook_called.should be_false
-      end
-    end
-
-    context 'when there is an after_http_request hook' do
-      context 'when the request is ignored' do
+    describe "request hooks" do
+      context "when the request is ignored" do
         before(:each) do
           VCR.configuration.ignore_request { |r| true }
         end
 
-        it_behaves_like "after_http_request hook"
+        it_behaves_like "request hooks", library_hook_name
       end
 
       context 'when the request is recorded' do
         let!(:inserted_cassette) { VCR.insert_cassette('new_cassette') }
 
-        it_behaves_like "after_http_request hook" do
-          it 'can be used to eject a cassette after the request is recorded' do
-            VCR.configuration.after_http_request do |request|
-              VCR.eject_cassette
+        it_behaves_like "request hooks", library_hook_name do
+          let(:string_in_cassette) { 'example.com get response 1 with path=foo' }
+
+          it 'plays back the cassette when a request is made' do
+            VCR.eject_cassette
+            VCR.configure do |c|
+              c.cassette_library_dir = File.join(VCR::SPEC_ROOT, 'fixtures')
+              c.before_http_request do |request|
+                VCR.insert_cassette('fake_example_responses', :record => :none)
+              end
             end
+            get_body_string(make_http_request(:get, 'http://example.com/foo')).should eq(string_in_cassette)
+          end
+
+          specify 'the after_http_request hook can be used to eject a cassette after the request is recorded' do
+            VCR.configuration.after_http_request { |request| VCR.eject_cassette }
 
             VCR.should_receive(:record_http_interaction) do |interaction|
               VCR.current_cassette.should be(inserted_cassette)
             end
 
-            make_http_request(:get, request_url)
+            make_request
             VCR.current_cassette.should be_nil
           end
         end
       end
 
-      context 'when the request is played back' do
-        it_behaves_like "after_http_request hook" do
-          let(:request)       { VCR::Request.new(:get, request_url) }
-          let(:response_body) { "FOO!" }
-          let(:response)      { VCR::Response.new(status, nil, response_body, '1.1') }
-          let(:status)        { VCR::ResponseStatus.new(200, 'OK') }
-          let(:interaction)   { VCR::HTTPInteraction.new(request, response) }
+      context 'when a stubbed response is played back for the request' do
+        let(:request)       { VCR::Request.new(:get, request_url) }
+        let(:response_body) { "FOO!" }
+        let(:response)      { VCR::Response.new(status, nil, response_body, '1.1') }
+        let(:status)        { VCR::ResponseStatus.new(200, 'OK') }
+        let(:interaction)   { VCR::HTTPInteraction.new(request, response) }
 
-          before(:each) do
-            stub_requests([interaction], [:method, :uri])
-          end
+        before(:each) do
+          stub_requests([interaction], [:method, :uri])
         end
+
+        it_behaves_like "request hooks", library_hook_name
       end
 
       context 'when the request is not allowed' do
-        it_behaves_like "after_http_request hook" do
+        it_behaves_like "request hooks", library_hook_name do
           undef assert_expected_response
           def assert_expected_response(response)
             response.should be_nil

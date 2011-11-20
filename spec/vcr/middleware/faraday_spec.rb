@@ -3,7 +3,7 @@ require 'vcr/library_hooks/faraday'
 
 describe VCR::Middleware::Faraday do
   %w[ typhoeus net_http patron ].each do |lib|
-    it_behaves_like 'a hook into an HTTP library', "faraday (w/ #{lib})",
+    it_behaves_like 'a hook into an HTTP library', :faraday, "faraday (w/ #{lib})",
       :status_message_not_exposed,
       :does_not_support_rotating_responses,
       :not_disableable
@@ -29,7 +29,7 @@ describe VCR::Middleware::Faraday do
     let(:connection)         { ::Faraday.new { |b| b.adapter :typhoeus } }
     let!(:inserted_cassette) { VCR.insert_cassette('new_cassette') }
 
-    it_behaves_like "after_http_request hook" do
+    it_behaves_like "request hooks", :faraday do
       undef make_request
       def make_request(disabled = false)
         response = nil
@@ -40,9 +40,7 @@ describe VCR::Middleware::Faraday do
       end
 
       it 'can be used to eject a cassette after the request is recorded' do
-        VCR.configuration.after_http_request do |request|
-          VCR.eject_cassette
-        end
+        VCR.configuration.after_http_request { |request| VCR.eject_cassette }
 
         VCR.should_receive(:record_http_interaction) do |interaction|
           VCR.current_cassette.should be(inserted_cassette)

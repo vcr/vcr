@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "WebMock hook", :with_monkey_patches => :webmock do
   %w[net/http patron httpclient em-http-request curb typhoeus].each do |lib|
-    it_behaves_like 'a hook into an HTTP library', lib do
+    it_behaves_like 'a hook into an HTTP library', :webmock, lib do
       if lib == 'net/http'
         def normalize_request_headers(headers)
           headers.merge(DEFAULT_REQUEST_HEADERS)
@@ -19,6 +19,7 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
 
     def stub_callback_registration
       ::WebMock.stub(:after_request)
+      ::WebMock.stub(:globally_stub_request)
     end
 
     def stub_version(version)

@@ -1,7 +1,16 @@
 require 'spec_helper'
 
 describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
-  it_behaves_like 'a hook into an HTTP library', 'net/http'
+  it_behaves_like 'a hook into an HTTP library', :fakeweb, 'net/http' do
+    before(:each) do
+      VCR::LibraryHooks::FakeWeb::RequestHandler.already_seen_requests.clear
+    end
+
+    after(:each) do
+      # assert that we are cleaning up the global state after every request
+      VCR::LibraryHooks::FakeWeb::RequestHandler.already_seen_requests.to_a.should eq([])
+    end
+  end
 
   it_performs('version checking', 'FakeWeb',
     :valid    => %w[ 1.3.0 1.3.1 1.3.99 ],
@@ -107,7 +116,7 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
       VCR.configuration.ignore_request { |r| true }
     end
 
-    it_behaves_like "after_http_request hook" do
+    it_behaves_like "request hooks", :fakeweb do
       undef assert_expected_response
       def assert_expected_response(response)
         response.should be_nil

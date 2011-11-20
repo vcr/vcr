@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Typhoeus hook", :with_monkey_patches => :typhoeus do
-  it_behaves_like 'a hook into an HTTP library', 'typhoeus'
+  it_behaves_like 'a hook into an HTTP library', :typhoeus, 'typhoeus'
 
   def stub_callback_registration
     # stub the callback registration methods so we don't get a second

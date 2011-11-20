@@ -3,6 +3,7 @@ require 'fakeweb'
 require 'net/http'
 require 'vcr/extensions/net_http_response'
 require 'vcr/request_handler'
+require 'set'
 
 VCR::VersionChecker.new('FakeWeb', FakeWeb::VERSION, '1.3.0', '1.3').check_version!
 
@@ -23,7 +24,28 @@ module VCR
           invoke_after_request_hook(@vcr_response) unless @recursing
         end
 
+        class << self
+          def already_seen_requests
+            @already_seen_requests ||= Set.new
+          end
+        end
+
       private
+
+        def invoke_before_request_hook
+          unless self.class.already_seen_requests.include?(request.object_id)
+            super
+            # we use the object_id so that if there is bug that causes
+            # us not to fully cleanup, we'll only be leaking the memory
+            # of one integer, not the whole request object.
+            self.class.already_seen_requests << request.object_id
+          end
+        end
+
+        def invoke_after_request_hook(vcr_response)
+          self.class.already_seen_requests.delete(request.object_id)
+          super
+        end
 
         def on_recordable_request
           perform_request(net_http.started?, :record_interaction)
