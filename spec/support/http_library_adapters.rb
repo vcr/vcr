@@ -156,7 +156,7 @@ HTTP_LIBRARY_ADAPTERS['typhoeus'] = Module.new do
   end
 
   def normalize_request_headers(headers)
-    headers.merge("User-Agent" => ["Typhoeus - http://github.com/dbalatero/typhoeus/tree/master"])
+    headers
   end
 end
 
