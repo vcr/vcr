@@ -40,6 +40,10 @@ module VCR
       "Response #{$record_and_playback_response_count += 1}"
     end
 
+    post '/record-and-playback' do
+      "Response #{$record_and_playback_response_count += 1}"
+    end
+
     @_boot_failed = false
 
     class << self

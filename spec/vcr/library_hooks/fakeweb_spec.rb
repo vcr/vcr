@@ -46,12 +46,33 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
 
     it 'records the interaction when Net::HTTP#request is called with a block with a return statement' do
       VCR.should_receive(:record_http_interaction).once
-      perform_get_with_returning_block
+      perform_get_with_returning_block.body.should eq("GET to root")
+    end
+
+    def make_post_request
+      Net::HTTP.new('localhost', VCR::SinatraApp.port).post('/record-and-playback', '')
     end
 
     it 'records the interaction only once, even when Net::HTTP internally recursively calls #request' do
       VCR.should_receive(:record_http_interaction).once
-      Net::HTTP.new('localhost', VCR::SinatraApp.port).post('/', nil)
+      make_post_request
+    end
+
+    it 'properly returns the response body for a post request when recording, stubbing or ignoring the request' do
+      recorded_body = nil
+      VCR.use_cassette("new_cassette", :record => :once) do
+        recorded_body = make_post_request.body
+        recorded_body.should match(/Response \d+/)
+      end
+
+      VCR.use_cassette("new_cassette", :record => :once) do
+        make_post_request.body.should eq(recorded_body)
+      end
+
+      VCR.configuration.ignore_request { |r| true }
+      ignored_body = make_post_request.body
+      ignored_body.should_not eq(recorded_body)
+      ignored_body.should match(/Response \d+/)
     end
   end
 

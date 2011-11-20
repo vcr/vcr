@@ -10,10 +10,10 @@ module VCR
   class LibraryHooks
     module FakeWeb
       class RequestHandler < ::VCR::RequestHandler
-        attr_reader :net_http, :request, :request_body, :block
-        def initialize(net_http, request, request_body = nil, &block)
-          @net_http, @request, @request_body, @block =
-           net_http,  request,  request_body,  block
+        attr_reader :net_http, :request, :request_body, :response_block
+        def initialize(net_http, request, request_body = nil, &response_block)
+          @net_http, @request, @request_body, @response_block =
+           net_http,  request,  request_body,  response_block
         end
 
       private
@@ -26,25 +26,25 @@ module VCR
         end
 
         def on_ignored_request
-          perform_request(&block)
+          perform_request(&response_block)
         end
 
         def perform_and_record_request
           # Net::HTTP calls #request recursively in certain circumstances.
           # We only want to record hte request when the request is started, as
           # that is the final time through #request.
-          return perform_request unless net_http.started?
+          return perform_request(&response_block) unless net_http.started?
 
           perform_request do |response|
             VCR.record_http_interaction VCR::HTTPInteraction.new(vcr_request, vcr_response_from(response))
             response.extend VCR::Net::HTTPResponse # "unwind" the response
-            block.call(response) if block
+            response_block.call(response) if response_block
           end
         end
 
         def perform_stubbed_request
           with_exclusive_fakeweb_stub(stubbed_response) do
-            perform_request
+            perform_request(&response_block)
           end
         end
 
