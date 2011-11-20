@@ -118,6 +118,82 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
     end
 
     describe "request hooks" do
+      context 'when there is an around_http_request hook' do
+        before(:each) do
+          # ensure that all the other library hooks are disabled so that we don't
+          # get double-hookage (such as for WebMock and Typhoeus both invoking the
+          # hooks for a typhoeus request)
+          VCR.library_hooks.stub(:disabled?) { |lib_name| lib_name != library_hook_name }
+        end
+
+        let(:request_url) { "http://localhost:#{VCR::SinatraApp.port}/foo" }
+
+        it 'yields the request to the block' do
+          yielded_request = nil
+          VCR.configuration.around_http_request do |request|
+            yielded_request = request
+            request.proceed
+          end
+
+          VCR.use_cassette('new_cassette') do
+            make_http_request(:get, request_url)
+          end
+
+          yielded_request.method.should eq(:get)
+          yielded_request.uri.should eq(request_url)
+        end
+
+        it 'can be used to use a cassette for a request' do
+          VCR.configuration.around_http_request do |request|
+            VCR.use_cassette('new_cassette', &request)
+          end
+
+          VCR.should_receive(:record_http_interaction) do
+            VCR.current_cassette.name.should eq('new_cassette')
+          end
+
+          VCR.current_cassette.should be_nil
+          make_http_request(:get, request_url)
+          VCR.current_cassette.should be_nil
+        end
+
+        it 'nests them inside each other, making the first declared hook the outermost' do
+          order = []
+
+          VCR.configure do |c|
+            c.ignore_request { |r| true }
+            c.around_http_request do |request|
+              order << :before_1
+              request.proceed
+              order << :after_1
+            end
+
+            c.around_http_request do |request|
+              order << :before_2
+              request.proceed
+              order << :after_2
+            end
+          end
+
+          make_http_request(:get, request_url)
+
+          order.should eq([:before_1, :before_2, :after_2, :after_1])
+        end
+
+        it 'raises an appropriate error if the hook does not call request.proceed' do
+          VCR.configuration.ignore_request { |r| true }
+          hook_declaration = "#{__FILE__}:#{__LINE__ + 1}"
+          VCR.configuration.around_http_request { |r| }
+
+          expect {
+            make_http_request(:get, request_url)
+          }.to raise_error { |error|
+            error.message.should include('must call #proceed on the yielded request')
+            error.message.should include(hook_declaration)
+          }
+        end
+      end if RUBY_VERSION >= '1.9'
+
       context "when the request is ignored" do
         before(:each) do
           VCR.configuration.ignore_request { |r| true }

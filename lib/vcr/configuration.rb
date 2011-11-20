@@ -10,7 +10,7 @@ module VCR
     define_hook :before_playback
     define_hook :after_library_hooks_loaded
     define_hook :before_http_request
-    define_hook :after_http_request
+    define_hook :after_http_request, :prepend
 
     def initialize
       @allow_http_connections_when_no_cassette = nil
@@ -73,6 +73,19 @@ module VCR
       VCR.cassette_serializers
     end
 
+    def around_http_request(&block)
+      require 'fiber'
+    rescue LoadError
+      raise Errors::NotSupportedError.new \
+        "VCR::Configuration#around_http_request requires fibers, " +
+        "which are not available on your ruby intepreter."
+    else
+      hook_decaration = caller.first
+      fiber = Fiber.new(&block)
+      before_http_request { |request| fiber.resume(request.fiber_aware) }
+      after_http_request  { |request| resume_fiber(fiber, hook_decaration) }
+    end
+
   private
 
     def load_library_hook(hook)
@@ -81,6 +94,14 @@ module VCR
     rescue LoadError => e
       raise e unless e.message.include?(file) # in case FakeWeb/WebMock/etc itself is not available
       raise ArgumentError.new("#{hook.inspect} is not a supported VCR HTTP library hook.")
+    end
+
+    def resume_fiber(fiber, hook_declaration)
+      fiber.resume
+    rescue FiberError
+      raise Errors::AroundHTTPRequestHookError.new \
+        "Your around_http_request hook declared at #{hook_declaration}" +
+        " must call #proceed on the yielded request but did not."
     end
   end
 end

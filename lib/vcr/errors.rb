@@ -7,6 +7,8 @@ module VCR
     class LibraryVersionTooLowError < Error; end
     class UnregisteredMatcherError  < Error; end
     class InvalidCassetteFormatError < Error; end
+    class AroundHTTPRequestHookError < Error; end
+    class NotSupportedError          < Error; end
 
     class UnhandledHTTPRequestError < Error
       attr_reader :request

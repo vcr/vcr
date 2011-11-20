@@ -40,7 +40,9 @@ module VCR
     end
 
     module ClassMethods
-      def define_hook(hook)
+      def define_hook(hook, prepend = false)
+        placement_method = prepend ? :unshift : :<<
+
         # We use splat args here because 1.8.7 doesn't allow default
         # values for block arguments, so we have to fake it.
         define_method hook do |*args, &block|
@@ -49,7 +51,7 @@ module VCR
           end
 
           tag = args.first
-          hooks[hook][tag] << block
+          hooks[hook][tag].send(placement_method, block)
         end
       end
     end

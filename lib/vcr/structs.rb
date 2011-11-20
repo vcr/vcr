@@ -101,6 +101,21 @@ module VCR
       return super if args.empty?
       @@object_method.bind(self).call(*args)
     end
+
+    # transforms the request into a fiber aware one
+    def fiber_aware
+      extend FiberAware
+    end
+
+    module FiberAware
+      def proceed
+        Fiber.yield
+      end
+
+      def to_proc
+        lambda { proceed }
+      end
+    end
   end
 
   class HTTPInteraction < Struct.new(:request, :response, :recorded_at)

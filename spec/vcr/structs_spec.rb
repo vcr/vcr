@@ -248,6 +248,28 @@ module VCR
       end
     end
 
+    describe "#fiber_aware" do
+      it 'adds a #proceed method that yields in a fiber' do
+        fiber = Fiber.new do |request|
+          request.proceed
+          :done
+        end
+
+        fiber.resume(subject.fiber_aware).should be_nil
+        fiber.resume.should eq(:done)
+      end
+
+      it 'can be cast to a proc' do
+        request = subject.fiber_aware
+        request.should_receive(:proceed)
+        lambda(&request).call
+      end
+
+      it 'returns the request' do
+        subject.fiber_aware.should be(subject)
+      end
+    end if RUBY_VERSION > '1.9'
+
     it_behaves_like 'a header normalizer' do
       def with_headers(headers)
         described_class.new(:get, 'http://example.com/', nil, headers)
