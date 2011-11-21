@@ -170,7 +170,7 @@ module VCR
 
     def invoke_hook(type, interactions)
       interactions.delete_if do |i|
-        VCR.configuration.invoke_hook(type, tag, i, self)
+        VCR.configuration.invoke_tagged_hook(type, tag, i, self)
         i.ignored?
       end
     end

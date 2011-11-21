@@ -72,7 +72,7 @@ module VCR
             VCR.record_http_interaction(http_interaction)
           end
 
-          VCR.configuration.invoke_hook(:after_http_request, nil, vcr_request, vcr_response)
+          VCR.configuration.invoke_hook(:after_http_request, vcr_request, vcr_response)
         end
       end
 

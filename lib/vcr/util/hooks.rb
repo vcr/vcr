@@ -8,7 +8,11 @@ module VCR
       klass.extend(ClassMethods)
     end
 
-    def invoke_hook(hook, tag=nil, *args)
+    def invoke_hook(hook, *args)
+      invoke_tagged_hook(hook, nil, *args)
+    end
+
+    def invoke_tagged_hook(hook, tag, *args)
       hooks_for(hook, tag).map do |callback|
         call_block(callback, *args)
       end

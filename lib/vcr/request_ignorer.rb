@@ -29,8 +29,7 @@ module VCR
     end
 
     def ignore?(request)
-      tag = nil # we don't use tags here...
-      invoke_hook(:ignore_request, tag, request).any?
+      invoke_hook(:ignore_request, request).any?
     end
 
   private
