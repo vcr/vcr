@@ -117,6 +117,8 @@ VCR has been tested on the following ruby interpreters:
 * Report issues on [GitHub Issues](http://github.com/myronmarston/vcr/issues).
 * Pull requests are very welcome! Please include spec and/or feature coverage for every patch,
   and create a topic branch for every separate change you make.
+* See the [Contributing](https://github.com/myronmarston/vcr/wiki/Contributing)
+  wiki page for instructions on running the specs and features.
 
 If you find VCR useful, please recommend me on [working with rails](http://workingwithrails.com/person/16590-myron-marston).
 
