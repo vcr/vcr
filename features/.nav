@@ -3,6 +3,7 @@
 - CHANGELOG.md (Changelog)
 - about_these_examples.md (About These Examples)
 - LICENSE.md (License)
+- CONTRIBUTING.md (Contributing)
 - cassettes:
   - format.feature
   - naming.feature
