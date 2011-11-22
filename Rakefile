@@ -72,7 +72,7 @@ end
 
 desc "Push cukes to relishapp using the relish-client-gem"
 task :relish do
-  %w[ README.md CHANGELOG.md Upgrade.md LICENSE ].each do |file|
+  %w[ README.md CHANGELOG.md Upgrade.md LICENSE CONTRIBUTING.md].each do |file|
     ensure_relish_doc_symlinked(file)
   end
 
