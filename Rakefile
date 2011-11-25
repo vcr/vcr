@@ -136,3 +136,14 @@ task :migrate_cucumber_cassettes do
   end
 end
 
+desc "Run the last cuke directly"
+task :run_last_cuke do
+  command = ENV.fetch('CMD') do
+    raise "Must pass CMD"
+  end
+
+  Dir.chdir("tmp/aruba") do
+    sh "RUBYOPT='-I.:../../lib -r../../features/support/vcr_cucumber_helpers' ruby #{command}"
+  end
+end
+
