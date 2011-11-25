@@ -192,6 +192,14 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
             error.message.should include(hook_declaration)
           }
         end
+
+        it 'does not get a dead fiber error when multiple requests are made' do
+          VCR.configuration.around_http_request do |request|
+            VCR.use_cassette('new_cassette', &request)
+          end
+
+          3.times { make_http_request(:get, request_url) }
+        end
       end if RUBY_VERSION >= '1.9'
 
       context "when the request is ignored" do

@@ -80,9 +80,8 @@ module VCR
         "VCR::Configuration#around_http_request requires fibers, " +
         "which are not available on your ruby intepreter."
     else
-      hook_decaration = caller.first
-      fiber = Fiber.new(&block)
-      before_http_request { |request| fiber.resume(request.fiber_aware) }
+      fiber, hook_decaration = nil, caller.first
+      before_http_request { |request| fiber = start_new_fiber_for(request, block) }
       after_http_request  { |request| resume_fiber(fiber, hook_decaration) }
     end
 
@@ -102,6 +101,12 @@ module VCR
       raise Errors::AroundHTTPRequestHookError.new \
         "Your around_http_request hook declared at #{hook_declaration}" +
         " must call #proceed on the yielded request but did not."
+    end
+
+    def start_new_fiber_for(request, block)
+      Fiber.new(&block).tap do |fiber|
+        fiber.resume(request.fiber_aware)
+      end
     end
   end
 end
