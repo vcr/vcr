@@ -147,6 +147,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Karl Baum](https://github.com/kbaum)
 * [Nathaniel Bibler](https://github.com/nbibler)
 * [Oliver Searle-Barnes](https://github.com/opsb)
+* [Paco Guzmán](https://github.com/pacoguzman)
 * [Ryan Bates](https://github.com/ryanb)
 * [Sathya Sekaran](https://github.com/sfsekaran)
 * [Wesley Beary](https://github.com/geemus)
