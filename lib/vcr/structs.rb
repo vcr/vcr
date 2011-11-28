@@ -80,7 +80,7 @@ module VCR
 
     def initialize(*args)
       super
-      self.method = self.method.to_s.downcase.to_sym
+      self.method = self.method.to_s.downcase.to_sym if self.method
       self.uri = without_standard_port(self.uri)
     end
 
