@@ -78,6 +78,11 @@ module VCR
     include Normalizers::Header
     include Normalizers::Body
 
+    def initialize(*args)
+      super
+      self.method = self.method.to_s.downcase.to_sym
+    end
+
     def to_hash
       {
         'method'  => method.to_s,

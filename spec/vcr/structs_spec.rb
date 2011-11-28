@@ -246,6 +246,13 @@ module VCR
           m.call.should eq(described_class)
         end
       end
+
+      it 'gets normalized to a lowercase symbol' do
+        VCR::Request.new("GET").method.should eq(:get)
+        VCR::Request.new(:GET).method.should eq(:get)
+        VCR::Request.new(:get).method.should eq(:get)
+        VCR::Request.new("get").method.should eq(:get)
+      end
     end
 
     describe "#fiber_aware" do
