@@ -70,6 +70,8 @@ module VCR
           @uri ||= "#{params[:scheme]}://#{params[:host]}:#{params[:port]}#{params[:path]}#{query}"
         end
 
+        # based on:
+        # https://github.com/geemus/excon/blob/v0.7.8/lib/excon/connection.rb#L117-132
         def query
           @query ||= case params[:query]
             when String
