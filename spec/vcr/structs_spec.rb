@@ -224,7 +224,7 @@ module VCR
       end
 
       it 'replaces sensitive text in the request URI' do
-        subject.request.uri.should eq('http://example-AAA.com:80/AAA/')
+        subject.request.uri.should eq('http://example-AAA.com/AAA/')
       end
     end
   end
@@ -252,6 +252,28 @@ module VCR
         VCR::Request.new(:GET).method.should eq(:get)
         VCR::Request.new(:get).method.should eq(:get)
         VCR::Request.new("get").method.should eq(:get)
+      end
+    end
+
+    describe "#uri" do
+      def uri_for(uri)
+        VCR::Request.new(:get, uri).uri
+      end
+
+      it 'removes the default http port' do
+        uri_for("http://foo.com:80/bar").should eq("http://foo.com/bar")
+      end
+
+      it 'removes the default https port' do
+        uri_for("https://foo.com:443/bar").should eq("https://foo.com/bar")
+      end
+
+      it 'does not remove a non-standard http port' do
+        uri_for("http://foo.com:81/bar").should eq("http://foo.com:81/bar")
+      end
+
+      it 'does not remove a non-standard https port' do
+        uri_for("https://foo.com:442/bar").should eq("https://foo.com:442/bar")
       end
     end
 

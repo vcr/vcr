@@ -81,6 +81,7 @@ module VCR
     def initialize(*args)
       super
       self.method = self.method.to_s.downcase.to_sym
+      self.uri = without_standard_port(self.uri)
     end
 
     def to_hash
@@ -120,6 +121,16 @@ module VCR
       def to_proc
         lambda { proceed }
       end
+    end
+
+  private
+
+    def without_standard_port(uri)
+      return uri if uri.nil?
+      u = URI(uri)
+      return uri unless [['http', 80], ['https', 443]].include?([u.scheme, u.port])
+      u.port = nil
+      u.to_s
     end
   end
 

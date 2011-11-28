@@ -80,19 +80,11 @@ module VCR
 
     def register_built_ins
       register(:method)  { |r1, r2| r1.method == r2.method }
-      register(:uri)     { |r1, r2| without_standard_port(r1.uri) == without_standard_port(r2.uri) }
+      register(:uri)     { |r1, r2| r1.uri == r2.uri }
       register(:host)    { |r1, r2| URI(r1.uri).host == URI(r2.uri).host }
       register(:path)    { |r1, r2| URI(r1.uri).path == URI(r2.uri).path }
       register(:body)    { |r1, r2| r1.body == r2.body }
       register(:headers) { |r1, r2| r1.headers == r2.headers }
-    end
-
-    def without_standard_port(uri)
-      URI(uri).tap do |u|
-        if [['http', 80], ['https', 443]].include?([u.scheme, u.port])
-          u.port = nil
-        end
-      end
     end
   end
 end
