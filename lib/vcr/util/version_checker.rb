@@ -42,8 +42,10 @@ module VCR
       case
         when @major < @min_major then :too_low
         when @major > @max_major then :too_high
+        when @major > @min_major then :ok
         when @minor < @min_minor then :too_low
         when @minor > @max_minor then :too_high
+        when @minor > @min_minor then :ok
         when @patch < @min_patch then :too_low
       end
     end
