@@ -68,6 +68,7 @@ module VCR
         interaction.filter!(placeholder, call_block(block, interaction))
       end
     end
+    alias define_cassette_placeholder filter_sensitive_data
 
     def cassette_serializers
       VCR.cassette_serializers

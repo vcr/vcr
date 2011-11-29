@@ -1,5 +1,8 @@
 Feature: Filter sensitive data
 
+  Note: this config option is also available as `define_cassette_placeholder`
+  to reflect the fact that it is useful for more than just sensitive data.
+
   The `filter_sensitive_data` configuration option can be used to prevent
   sensitive data from being written to your cassette files.  This may be
   important if you commit your cassettes files to source control and do

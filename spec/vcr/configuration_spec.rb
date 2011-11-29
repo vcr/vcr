@@ -110,44 +110,46 @@ describe VCR::Configuration do
     end
   end
 
-  describe '#filter_sensitive_data' do
-    let(:interaction) { mock('interaction') }
-    before(:each) { interaction.stub(:filter!) }
+  %w[ filter_sensitive_data define_cassette_placeholder ].each do |method|
+    describe "##{method}" do
+      let(:interaction) { mock('interaction') }
+      before(:each) { interaction.stub(:filter!) }
 
-    it 'adds a before_record hook that replaces the string returned by the block with the given string' do
-      subject.filter_sensitive_data('foo', &lambda { 'bar' })
-      interaction.should_receive(:filter!).with('bar', 'foo')
-      subject.invoke_hook(:before_record, interaction)
-    end
+      it 'adds a before_record hook that replaces the string returned by the block with the given string' do
+        subject.send(method, 'foo', &lambda { 'bar' })
+        interaction.should_receive(:filter!).with('bar', 'foo')
+        subject.invoke_hook(:before_record, interaction)
+      end
 
-    it 'adds a before_playback hook that replaces the given string with the string returned by the block' do
-      subject.filter_sensitive_data('foo', &lambda { 'bar' })
-      interaction.should_receive(:filter!).with('foo', 'bar')
-      subject.invoke_hook(:before_playback, interaction)
-    end
+      it 'adds a before_playback hook that replaces the given string with the string returned by the block' do
+        subject.send(method, 'foo', &lambda { 'bar' })
+        interaction.should_receive(:filter!).with('foo', 'bar')
+        subject.invoke_hook(:before_playback, interaction)
+      end
 
-    it 'tags the before_record hook when given a tag' do
-      subject.should_receive(:before_record).with(:my_tag)
-      subject.filter_sensitive_data('foo', :my_tag) { 'bar' }
-    end
+      it 'tags the before_record hook when given a tag' do
+        subject.should_receive(:before_record).with(:my_tag)
+        subject.send(method, 'foo', :my_tag) { 'bar' }
+      end
 
-    it 'tags the before_playback hook when given a tag' do
-      subject.should_receive(:before_playback).with(:my_tag)
-      subject.filter_sensitive_data('foo', :my_tag) { 'bar' }
-    end
+      it 'tags the before_playback hook when given a tag' do
+        subject.should_receive(:before_playback).with(:my_tag)
+        subject.send(method, 'foo', :my_tag) { 'bar' }
+      end
 
-    it 'yields the interaction to the block for the before_record hook' do
-      yielded_interaction = nil
-      subject.filter_sensitive_data('foo', &lambda { |i| yielded_interaction = i; 'bar' })
-      subject.invoke_hook(:before_record, interaction)
-      yielded_interaction.should equal(interaction)
-    end
+      it 'yields the interaction to the block for the before_record hook' do
+        yielded_interaction = nil
+        subject.send(method, 'foo', &lambda { |i| yielded_interaction = i; 'bar' })
+        subject.invoke_hook(:before_record, interaction)
+        yielded_interaction.should equal(interaction)
+      end
 
-    it 'yields the interaction to the block for the before_playback hook' do
-      yielded_interaction = nil
-      subject.filter_sensitive_data('foo', &lambda { |i| yielded_interaction = i; 'bar' })
-      subject.invoke_hook(:before_playback, interaction)
-      yielded_interaction.should equal(interaction)
+      it 'yields the interaction to the block for the before_playback hook' do
+        yielded_interaction = nil
+        subject.send(method, 'foo', &lambda { |i| yielded_interaction = i; 'bar' })
+        subject.invoke_hook(:before_playback, interaction)
+        yielded_interaction.should equal(interaction)
+      end
     end
   end
 
