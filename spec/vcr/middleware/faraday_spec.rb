@@ -25,11 +25,65 @@ describe VCR::Middleware::Faraday do
   end
 
   context 'when making parallel requests' do
+    include VCRStubHelpers
     let(:parallel_manager)   { ::Faraday::Adapter::Typhoeus.setup_parallel_manager }
     let(:connection)         { ::Faraday.new { |b| b.adapter :typhoeus } }
-    let!(:inserted_cassette) { VCR.insert_cassette('new_cassette') }
+
+    shared_examples_for "exclusive library hook" do
+      let(:request_url) { "http://localhost:#{VCR::SinatraApp.port}/" }
+
+      def make_request
+        connection.in_parallel(parallel_manager) { connection.get(request_url) }
+      end
+
+      it 'makes the faraday middleware exclusively enabled for the duration of the request' do
+        VCR.library_hooks.should_not be_disabled(:fakeweb)
+
+        hook_called = false
+        VCR.configuration.after_http_request do
+          hook_called = true
+          VCR.library_hooks.should be_disabled(:fakeweb)
+        end
+
+        make_request
+        VCR.library_hooks.should_not be_disabled(:fakeweb)
+        hook_called.should be_true
+      end
+    end
+
+    context 'for an ignored request' do
+      before(:each) { VCR.configuration.ignore_request { true } }
+      it_behaves_like "exclusive library hook"
+    end
+
+    context 'for a stubbed request' do
+      it_behaves_like "exclusive library hook" do
+        before(:each) do
+          stub_requests([http_interaction(request_url)], [:method, :uri])
+        end
+      end
+    end
+
+    context 'for a recorded request' do
+      let!(:inserted_cassette) { VCR.insert_cassette('new_cassette') }
+      before(:each) { VCR.should_receive(:record_http_interaction) }
+      it_behaves_like "exclusive library hook"
+    end
+
+    context 'for a disallowed request' do
+      it_behaves_like "exclusive library hook" do
+        undef make_request
+        def make_request
+          expect {
+            connection.in_parallel(parallel_manager) { connection.get(request_url) }
+          }.to raise_error(VCR::Errors::UnhandledHTTPRequestError)
+        end
+      end
+    end
 
     it_behaves_like "request hooks", :faraday do
+      let!(:inserted_cassette) { VCR.insert_cassette('new_cassette') }
+
       undef make_request
       def make_request(disabled = false)
         response = nil

@@ -15,29 +15,29 @@ module VCR
       end
 
       def call(env)
-        # Faraday must be exlusive here in case another library hook is being used.
-        # We don't want double recording/double playback.
-        VCR.library_hooks.exclusively_enabled(:faraday) do
-          RequestHandler.new(@app, env).handle
-        end
+        RequestHandler.new(@app, env).handle
       end
 
       class RequestHandler < ::VCR::RequestHandler
         attr_reader :app, :env
         def initialize(app, env)
           @app, @env = app, env
+          @has_on_complete_hook = false
         end
 
         def handle
+          # Faraday must be exlusive here in case another library hook is being used.
+          # We don't want double recording/double playback.
+          VCR.library_hooks.exclusive_hook = :faraday
           super
         ensure
-          invoke_after_request_hook(response_for(env)) unless running_in_parallel?
+          invoke_after_request_hook(response_for(env)) unless delay_finishing?
         end
 
       private
 
-        def running_in_parallel?
-          !!env[:parallel_manager]
+        def delay_finishing?
+          !!env[:parallel_manager] && @has_on_complete_hook
         end
 
         def vcr_request
@@ -75,10 +75,16 @@ module VCR
         end
 
         def on_recordable_request
+          @has_on_complete_hook = true
           app.call(env).on_complete do |env|
             VCR.record_http_interaction(VCR::HTTPInteraction.new(vcr_request, response_for(env)))
-            invoke_after_request_hook(response_for(env)) if running_in_parallel?
+            invoke_after_request_hook(response_for(env)) if delay_finishing?
           end
+        end
+
+        def invoke_after_request_hook(response)
+          super
+          VCR.library_hooks.exclusive_hook = nil
         end
       end
     end

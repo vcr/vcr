@@ -1,18 +1,16 @@
 module VCR
   class LibraryHooks
-    def initialize
-      @exclusive_hook = nil
-    end
+    attr_accessor :exclusive_hook
 
     def disabled?(hook)
-      ![nil, hook].include?(@exclusive_hook)
+      ![nil, hook].include?(exclusive_hook)
     end
 
     def exclusively_enabled(hook)
-      @exclusive_hook = hook
+      self.exclusive_hook = hook
       yield
     ensure
-      @exclusive_hook = nil
+      self.exclusive_hook = nil
     end
   end
 end
