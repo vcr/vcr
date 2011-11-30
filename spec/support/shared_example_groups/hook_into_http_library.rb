@@ -4,11 +4,7 @@ NET_CONNECT_NOT_ALLOWED_ERROR = /An HTTP request has been made that VCR does not
 
 shared_examples_for "a hook into an HTTP library" do |library_hook_name, library, *other|
   include HeaderDowncaser
-
-  def interactions_from(file)
-    hashes = YAML.load_file(File.join(VCR::SPEC_ROOT, 'fixtures', file))['http_interactions']
-    hashes.map { |h| VCR::HTTPInteraction.from_hash(h) }
-  end
+  include VCRStubHelpers
 
   unless adapter_module = HTTP_LIBRARY_ADAPTERS[library]
     raise ArgumentError.new("No http library adapter module could be found for #{library}")
@@ -18,10 +14,6 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
 
   describe "using #{adapter_module.http_library_name}", :unless => http_lib_unsupported do
     include adapter_module
-
-    def stub_requests(*args)
-      VCR.stub(:http_interactions => VCR::Cassette::HTTPInteractionList.new(*args))
-    end
 
     # Necessary for ruby 1.9.2.  On 1.9.2 we get an error when we use super,
     # so this gives us another alias we can use for the original method.
@@ -241,14 +233,8 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
       end
 
       context 'when a stubbed response is played back for the request' do
-        let(:request)       { VCR::Request.new(:get, request_url) }
-        let(:response_body) { "FOO!" }
-        let(:response)      { VCR::Response.new(status, nil, response_body, '1.1') }
-        let(:status)        { VCR::ResponseStatus.new(200, 'OK') }
-        let(:interaction)   { VCR::HTTPInteraction.new(request, response) }
-
         before(:each) do
-          stub_requests([interaction], [:method, :uri])
+          stub_requests([http_interaction(request_url)], [:method, :uri])
         end
 
         it_behaves_like "request hooks", library_hook_name
