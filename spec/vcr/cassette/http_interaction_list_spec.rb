@@ -85,47 +85,6 @@ module VCR
       let(:allow_playback_repeats) { false } # the default
       let(:list) { HTTPInteractionList.new(original_list_array, [:method], allow_playback_repeats) }
 
-      describe "#has_interaction_matching?" do
-        it_behaves_like "an HTTP interaction finding method", :has_interaction_matching? do
-          def respond_with(value)
-            ::RSpec::Matchers::Matcher.new :respond_with, value do |expected|
-              match { |a| expected ? a : !a }
-            end
-          end
-        end
-
-        it 'does not consume the first matching interaction' do
-          10.times do
-            list.has_interaction_matching?(request_with(:method => :post)).should be_true
-          end
-          list.response_for(request_with(:method => :post)).body.should eq("post response 1")
-        end
-
-        context 'when allow_playback_repeats is set to false' do
-          let(:allow_playback_repeats) { false }
-
-          it 'returns false when there is a used (but no unused) matching interactions' do
-            list.response_for(request_with(:method => :put))
-
-            10.times.map {
-              list.has_interaction_matching?(request_with(:method => :put))
-            }.should eq([false] * 10)
-          end
-        end
-
-        context 'when allow_playback_repeats is set to true' do
-          let(:allow_playback_repeats) { true }
-
-          it 'returns true when there is a used (but no unused) matching interactions' do
-            list.response_for(request_with(:method => :put))
-
-            10.times.map {
-              list.has_interaction_matching?(request_with(:method => :put))
-            }.should eq([true] * 10)
-          end
-        end
-      end
-
       describe "#has_used_interaction_matching?" do
         it 'returns false when no interactions have been used' do
           list.should_not have_used_interaction_matching(request_with(:method => :put))

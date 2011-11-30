@@ -144,7 +144,7 @@ module VCR
       if should_remove_matching_existing_interactions?
         new_interaction_list = HTTPInteractionList.new(new_recorded_interactions, match_requests_on)
         old_interactions = old_interactions.reject do |i|
-          new_interaction_list.has_interaction_matching?(i.request)
+          new_interaction_list.response_for(i.request)
         end
       end
 
