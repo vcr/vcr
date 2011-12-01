@@ -1,5 +1,37 @@
 require 'spec_helper'
 
+RSpec.configure do |config|
+  config.before(:suite) do
+    VCR.configuration.configure_rspec_metadata!
+  end
+end
+
+describe VCR::RSpec::Metadata, :skip_vcr_reset do
+  before(:all) { VCR.reset! }
+  after(:each) { VCR.reset! }
+
+  context 'an example group', :vcr do
+    context 'with a nested example group' do
+      it 'uses a cassette for any examples' do
+        VCR.current_cassette.name.split('/').should eq([
+          'VCR::RSpec::Metadata',
+          'an example group',
+          'with a nested example group',
+          'uses a cassette for any examples'
+        ])
+      end
+    end
+  end
+
+  it 'allows the cassette name to be overriden', :vcr => { :cassette_name => 'foo' } do
+    VCR.current_cassette.name.should eq('foo')
+  end
+
+  it 'allows the cassette options to be set', :vcr => { :match_requests_on => [:method] } do
+    VCR.current_cassette.match_requests_on.should eq([:method])
+  end
+end
+
 describe VCR::RSpec::Macros do
   extend described_class
 

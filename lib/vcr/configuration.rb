@@ -86,6 +86,10 @@ module VCR
       after_http_request  { |request| resume_fiber(fiber, hook_decaration) }
     end
 
+    def configure_rspec_metadata!
+      VCR::RSpec::Metadata.configure!
+    end
+
   private
 
     def load_library_hook(hook)

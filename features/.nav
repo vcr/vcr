@@ -44,6 +44,7 @@
 - test_frameworks:
   - test_unit.feature
   - shoulda.feature
+  - rspec_metadata.feature
   - rspec_macro.feature
   - cucumber.feature
 - middleware:
