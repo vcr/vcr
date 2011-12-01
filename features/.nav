@@ -21,11 +21,15 @@
   - cassette_library_dir.feature
   - hook_into.feature
   - default_cassette_options.feature
-  - ignore_hosts.feature
-  - ignore_localhost.feature
-  - hooks.feature
+  - ignore_request.feature
   - filter_sensitive_data.feature
   - allow_http_connections_when_no_cassette.feature
+- hooks:
+  - before_record.feature
+  - before_playback.feature
+  - before_http_request.feature
+  - after_http_request.feature
+  - around_http_request.feature
 - request_matching:
   - method.feature
   - uri.feature
