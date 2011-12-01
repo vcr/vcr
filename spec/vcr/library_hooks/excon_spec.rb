@@ -4,9 +4,9 @@ describe "Excon hook" do
   it_behaves_like 'a hook into an HTTP library', :excon, 'excon', :status_message_not_exposed
 
   it_performs('version checking', 'Excon',
-    :valid    => %w[ 0.6.5 0.6.99 ],
+    :valid    => %w[ 0.6.5 0.7.9 ],
     :too_low  => %w[ 0.5.99 0.6.4 ],
-    :too_high => %w[ 0.7.0 1.0.0 ]
+    :too_high => %w[ 0.8.0 1.0.0 ]
   ) do
     before(:each) { @orig_version = Excon::VERSION }
     after(:each)  { Excon::VERSION = @orig_version }
