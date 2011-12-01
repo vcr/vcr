@@ -1,4 +1,4 @@
-Feature: Usage with RSpec
+Feature: Usage with RSpec macro
 
   VCR provides a macro that makes it easy to use a VCR cassette for an RSpec
   example group.  To use it, simply add `config.extend VCR::RSpec::Macros`
