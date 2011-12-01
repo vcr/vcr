@@ -79,11 +79,11 @@ Feature: Usage with RSpec
      And the file "spec/cassettes/VCR-RSpec_integration/without_an_explicit_cassette_name.yml" should contain "body: Hello"
      And the file "spec/cassettes/net_http_example.yml" should contain "body: Hello"
 
+  @rspec-1
   Scenario: Use `use_vcr_cassette` macro with RSpec 1
     Given a file named "spec/spec_helper.rb" with:
       """ruby
       require 'sinatra_app'
-      $LOAD_PATH.unshift(File.join(%w[ .. .. vendor rspec-1 lib ]))
 
       require 'spec'
       require 'spec/autorun'
@@ -99,7 +99,7 @@ Feature: Usage with RSpec
         c.extend VCR::RSpec::Macros
       end
       """
-    When I run `ruby -Ispec spec/vcr_example_spec.rb`
+    When I run `spec spec/vcr_example_spec.rb`
     Then the output should contain "2 examples, 0 failures"
      And the file "spec/cassettes/VCR-RSpec_integration/without_an_explicit_cassette_name.yml" should contain "body: Hello"
      And the file "spec/cassettes/net_http_example.yml" should contain "body: Hello"
