@@ -141,6 +141,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Bartosz Blimke](http://github.com/bblimke)
 * [Ben Hutton](http://github.com/benhutton)
 * [Bradley Isotope](https://github.com/bradleyisotope)
+* [Carlos Kirkconnell](https://github.com/kirkconnell)
 * [Eric Allam](http://github.com/rubymaverick)
 * [Flaviu Simihaian](https://github.com/closedbracket)
 * [Justin Smestad](https://github.com/jsmestad)
