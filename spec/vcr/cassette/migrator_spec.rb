@@ -80,7 +80,7 @@ http_interactions:
     body: Hello bar
     http_version: "1.1"
   recorded_at: Wed, 04 May 2011 12:30:00 GMT
-recorded_with: VCR 1.11.3
+recorded_with: VCR #{VCR.version}
 EOF
   }
 

@@ -42,7 +42,7 @@ module VCR
 
         hash = {
           "http_interactions" => http_interactions,
-          "recorded_with"     => "VCR 1.11.3" # assume the last 1.x release
+          "recorded_with"     => "VCR #{VCR.version}"
         }
 
         def hash.each
