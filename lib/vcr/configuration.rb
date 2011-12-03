@@ -25,6 +25,7 @@ module VCR
     def cassette_library_dir=(cassette_library_dir)
       @cassette_library_dir = cassette_library_dir
       FileUtils.mkdir_p(cassette_library_dir) if cassette_library_dir
+      VCR.cassette_cache.prefetch_from(cassette_library_dir)
     end
 
     attr_reader :default_cassette_options
