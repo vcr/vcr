@@ -157,7 +157,7 @@ describe VCR do
     end
   end
 
-  describe '.serializers' do
+  describe '.cassette_serializers' do
     it 'always returns the same memoized cassette serializers instance' do
       VCR.cassette_serializers.should be_a(VCR::Cassette::Serializers)
       VCR.cassette_serializers.should be(VCR.cassette_serializers)
