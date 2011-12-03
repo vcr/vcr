@@ -1,6 +1,7 @@
 require 'vcr/util/variable_args_block_caller'
 
 require 'vcr/cassette'
+require 'vcr/cassette/cache'
 require 'vcr/cassette/serializers'
 require 'vcr/configuration'
 require 'vcr/deprecations'
@@ -87,6 +88,10 @@ module VCR
 
   def cassette_serializers
     @cassette_serializers ||= Cassette::Serializers.new
+  end
+
+  def cassette_cache
+    @cassette_cache ||= Cassette::Cache.new
   end
 
   def configuration

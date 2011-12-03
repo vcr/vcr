@@ -33,7 +33,7 @@ module VCR
       end
 
       def file_content
-        @file_content ||= File.read(@file_name)
+        @file_content ||= VCR.cassette_cache[@file_name]
       end
 
       def template

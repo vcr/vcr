@@ -44,7 +44,7 @@ module VCR
     end
 
     def previously_recorded_interactions
-      @previously_recorded_interactions ||= if file && File.size?(file)
+      @previously_recorded_interactions ||= if file && VCR.cassette_cache.exists_with_content?(file)
         deserialized_hash['http_interactions'].map { |h| HTTPInteraction.from_hash(h) }.tap do |interactions|
           invoke_hook(:before_playback, interactions)
 
@@ -89,7 +89,7 @@ module VCR
     def recording?
       case record_mode
         when :none; false
-        when :once; file.nil? || !File.size?(file)
+        when :once; file.nil? || !VCR.cassette_cache.exists_with_content?(file)
         else true
       end
     end
@@ -116,7 +116,6 @@ module VCR
     def should_re_record?
       return false unless @re_record_interval
       return false unless earliest_interaction_recorded_at
-      return false unless File.exist?(file)
       return false unless InternetConnection.available?
 
       earliest_interaction_recorded_at + @re_record_interval < Time.now
@@ -163,9 +162,7 @@ module VCR
       hash = serializable_hash
       return if hash["http_interactions"].none?
 
-      directory = File.dirname(file)
-      FileUtils.mkdir_p directory unless File.exist?(directory)
-      File.open(file, 'w') { |f| f.write @serializer.serialize(hash) }
+      VCR.cassette_cache[file] = @serializer.serialize(hash)
     end
 
     def invoke_hook(type, interactions)

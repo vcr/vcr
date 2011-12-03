@@ -164,6 +164,13 @@ describe VCR do
     end
   end
 
+  describe '.cassette_cache' do
+    it 'always returns the same memoized cassette cache instance' do
+      VCR.cassette_cache.should be_a(VCR::Cassette::Cache)
+      VCR.cassette_cache.should be(VCR.cassette_cache)
+    end
+  end
+
   describe '.configuration' do
     it 'returns the configuration object' do
       VCR.configuration.should be_a(VCR::Configuration)
