@@ -86,7 +86,7 @@ module VCR
 
         :delete_cassette_for_once => [
           ["The current record mode (:once) does not allow new requests to be recorded",
-           "to a previously recorded cassete. You can delete the cassette file and re-run",
+           "to a previously recorded cassette. You can delete the cassette file and re-run",
            "your tests to allow the cassette to be recorded with this request"],
            "https://www.relishapp.com/myronmarston/vcr/v/%s/docs/record-modes/once"
         ],
