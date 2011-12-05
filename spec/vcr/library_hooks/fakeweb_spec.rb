@@ -1,6 +1,23 @@
 require 'spec_helper'
 
 describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
+  after(:each) do
+    ::FakeWeb.clean_registry
+  end
+
+  def disable_real_connections
+    ::FakeWeb.allow_net_connect = false
+    ::FakeWeb::NetConnectNotAllowedError
+  end
+
+  def enable_real_connections
+    ::FakeWeb.allow_net_connect = true
+  end
+
+  def directly_stub_request(method, url, response_body)
+    ::FakeWeb.register_uri(method, url, :body => response_body)
+  end
+
   it_behaves_like 'a hook into an HTTP library', :fakeweb, 'net/http' do
     before(:each) do
       VCR::LibraryHooks::FakeWeb::RequestHandler.already_seen_requests.clear

@@ -137,9 +137,13 @@ module Net
   class HTTP
     unless method_defined?(:request_with_vcr)
       def request_with_vcr(*args, &block)
-        VCR::LibraryHooks::FakeWeb::RequestHandler.new(
-          self, *args, &block
-        ).handle
+        if VCR.turned_on?
+          VCR::LibraryHooks::FakeWeb::RequestHandler.new(
+            self, *args, &block
+          ).handle
+        else
+          request_without_vcr(*args, &block)
+        end
       end
 
       alias request_without_vcr request
@@ -147,6 +151,17 @@ module Net
     end
   end
 end
+
+class << FakeWeb
+  # ensure HTTP requests are always allowed; VCR takes care of disallowing
+  # them at the appropriate times in its hook
+  def allow_net_connect_with_vcr?(*args)
+    VCR.turned_on? ? true : allow_net_connect_without_vcr?
+  end
+
+  alias allow_net_connect_without_vcr? allow_net_connect?
+  alias allow_net_connect? allow_net_connect_with_vcr?
+end unless FakeWeb.respond_to?(:allow_net_connect_with_vcr?)
 
 VCR.configuration.after_library_hooks_loaded do
   if defined?(WebMock)

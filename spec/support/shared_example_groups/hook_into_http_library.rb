@@ -109,6 +109,46 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
       test_playback "with an encoded ampersand",        "http://example.com:80/search?q=#{CGI.escape("Q&A")}"
     end
 
+    describe "using the library's stubbing/disconnection APIs" do
+      let!(:request_url) { "http://localhost:#{VCR::SinatraApp.port}/foo" }
+
+      if method_defined?(:disable_real_connections)
+        it 'can make a real request when VCR is turned off' do
+          enable_real_connections
+          VCR.turn_off!
+          get_body_string(make_http_request(:get, request_url)).should eq("FOO!")
+        end
+
+        it 'does not mess with VCR when real connections are disabled' do
+          VCR.insert_cassette('example')
+          disable_real_connections
+
+          VCR.should_receive(:record_http_interaction) do |interaction|
+            interaction.request.uri.should eq(request_url)
+          end
+
+          make_http_request(:get, request_url)
+        end
+
+        it 'can disable real connections when VCR is turned off' do
+          VCR.turn_off!
+          expected_error = disable_real_connections
+
+          expect {
+            make_http_request(:get, request_url)
+          }.to raise_error(expected_error)
+        end
+      end
+
+      if method_defined?(:directly_stub_request)
+        it 'can directly stub the request when VCR is turned off' do
+          VCR.turn_off!
+          directly_stub_request(:get, request_url, "stubbed response")
+          get_body_string(make_http_request(:get, request_url)).should eq("stubbed response")
+        end
+      end
+    end
+
     describe "request hooks" do
       context 'when there is an around_http_request hook' do
         before(:each) do
