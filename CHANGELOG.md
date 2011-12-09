@@ -1,6 +1,10 @@
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.beta2...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.rc1...master)
+
+## 2.0.0 RC 1 (December 8, 2011)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.beta2...v2.0.0.rc1)
 
 * Add Faraday hook that automatically inserts the VCR middleware so that
   you can use VCR with Faraday without needing to insert the middleware
