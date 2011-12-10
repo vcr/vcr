@@ -1,15 +1,22 @@
 module VCR
   class Cassette
+    # Keeps track of the cassette serializers in a hash-like object.
     class Serializers
       autoload :YAML,  'vcr/cassette/serializers/yaml'
       autoload :Syck,  'vcr/cassette/serializers/syck'
       autoload :Psych, 'vcr/cassette/serializers/psych'
       autoload :JSON,  'vcr/cassette/serializers/json'
 
+      # @private
       def initialize
         @serializers = {}
       end
 
+      # Gets the named serializer.
+      #
+      # @param name [Symbol] the name of the serializer
+      # @return the named serializer
+      # @raise [ArgumentError] if there is not a serializer for the given name
       def [](name)
         @serializers.fetch(name) do |_|
           @serializers[name] = case name
@@ -22,6 +29,11 @@ module VCR
         end
       end
 
+      # Registers a serializer.
+      #
+      # @param name [Symbol] the name of the serializer
+      # @param value [#file_extension, #serialize, #deserialize] the serializer object. It must implement
+      #  +file_extension()+, +serialize(Hash)+ and +deserialize(String)+.
       def []=(name, value)
         if @serializers.has_key?(name)
           warn "WARNING: There is already a VCR cassette serializer registered for #{name.inspect}. Overriding it."

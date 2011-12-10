@@ -9,6 +9,7 @@ module VCR
     require 'timeout'
     require "socket"
 
+    # @private
     module Ping
       def pingecho(host, timeout=5, service="echo")
         begin
@@ -27,6 +28,7 @@ module VCR
     end
   end
 
+  # @private
   module InternetConnection
     extend self
 

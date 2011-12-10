@@ -9,6 +9,7 @@ VCR::VersionChecker.new('FakeWeb', FakeWeb::VERSION, '1.3.0', '1.3').check_versi
 
 module VCR
   class LibraryHooks
+    # @private
     module FakeWeb
       class RequestHandler < ::VCR::RequestHandler
         attr_reader :net_http, :request, :request_body, :response_block

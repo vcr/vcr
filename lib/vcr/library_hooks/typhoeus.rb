@@ -6,6 +6,7 @@ VCR::VersionChecker.new('Typhoeus', Typhoeus::VERSION, '0.3.2', '0.3').check_ver
 
 module VCR
   class LibraryHooks
+    # @private
     module Typhoeus
       module Helpers
         def vcr_request_from(request)

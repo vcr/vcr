@@ -6,6 +6,7 @@ VCR::VersionChecker.new('WebMock', WebMock.version, '1.7.8', '1.7').check_versio
 
 module VCR
   class LibraryHooks
+    # @private
     module WebMock
       module Helpers
         def vcr_request_from(webmock_request)

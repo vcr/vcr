@@ -1,6 +1,7 @@
 require 'vcr/util/variable_args_block_caller'
 
 module VCR
+  # @private
   module Hooks
     include VariableArgsBlockCaller
 

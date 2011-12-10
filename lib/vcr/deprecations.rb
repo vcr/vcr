@@ -1,15 +1,19 @@
 module VCR
+  # @deprecated Use #configure instead.
+  # @see #configure
   def config
     warn "WARNING: `VCR.config` is deprecated.  Use VCR.configure instead."
     configure { |c| yield c }
   end
 
+  # @private
   def self.const_missing(const)
     return super unless const == :Config
     warn "WARNING: `VCR::Config` is deprecated.  Use VCR.configuration instead."
     configuration
   end
 
+  # @private
   def Cassette.const_missing(const)
     return super unless const == :MissingERBVariableError
     warn "WARNING: `VCR::Cassette::MissingERBVariableError` is deprecated.  Use `VCR::Errors::MissingERBVariableError` instead."
@@ -17,12 +21,15 @@ module VCR
   end
 
   class Configuration
+    # @deprecated Use #hook_into instead.
+    # @see #hook_into
     def stub_with(*adapters)
       warn "WARNING: `VCR.config { |c| c.stub_with ... }` is deprecated. Use `VCR.configure { |c| c.hook_into ... }` instead."
       hook_into(*adapters)
     end
   end
 
+  # @private
   module Deprecations
     module Middleware
       module Faraday

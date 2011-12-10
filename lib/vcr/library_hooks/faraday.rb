@@ -2,6 +2,7 @@ require 'faraday'
 
 module VCR
   class LibraryHooks
+    # @private
     module Faraday
       module BuilderClassExtension
         def new(*args)

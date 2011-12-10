@@ -1,4 +1,5 @@
 module VCR
+  # @private
   class VersionChecker
     def initialize(library_name, library_version, min_patch_level, max_minor_version)
       @library_name, @library_version = library_name, library_version

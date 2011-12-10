@@ -6,6 +6,7 @@ VCR::VersionChecker.new('Excon', Excon::VERSION, '0.6.5', '0.7').check_version!
 
 module VCR
   class LibraryHooks
+    # @private
     module Excon
       class RequestHandler < ::VCR::RequestHandler
         attr_reader :params

@@ -1,4 +1,5 @@
 module VCR
+  # @private
   module VariableArgsBlockCaller
     def call_block(block, *args)
       if block.arity >= 0
