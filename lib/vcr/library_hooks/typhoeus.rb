@@ -83,16 +83,18 @@ module VCR
   end
 end
 
-class << Typhoeus::Hydra
-  # ensure HTTP requests are always allowed; VCR takes care of disallowing
-  # them at the appropriate times in its hook
-  def allow_net_connect_with_vcr?(*args)
-    VCR.turned_on? ? true : allow_net_connect_without_vcr?
-  end
+module Typhoeus
+  class << Hydra
+    # ensure HTTP requests are always allowed; VCR takes care of disallowing
+    # them at the appropriate times in its hook
+    def allow_net_connect_with_vcr?(*args)
+      VCR.turned_on? ? true : allow_net_connect_without_vcr?
+    end
 
-  alias allow_net_connect_without_vcr? allow_net_connect?
-  alias allow_net_connect? allow_net_connect_with_vcr?
-end unless Typhoeus::Hydra.respond_to?(:allow_net_connect_with_vcr?)
+    alias allow_net_connect_without_vcr? allow_net_connect?
+    alias allow_net_connect? allow_net_connect_with_vcr?
+  end unless Hydra.respond_to?(:allow_net_connect_with_vcr?)
+end
 
 VCR.configuration.after_library_hooks_loaded do
   # ensure WebMock's Typhoeus adapter does not conflict with us here
