@@ -175,6 +175,19 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
           yielded_request.uri.should eq(request_url)
         end
 
+        it 'returns the response from request.proceed' do
+          response = nil
+          VCR.configuration.around_http_request do |request|
+            response = request.proceed
+          end
+
+          VCR.use_cassette('new_cassette') do
+            make_http_request(:get, request_url)
+          end
+
+          response.body.should eq("FOO!")
+        end
+
         it 'can be used to use a cassette for a request' do
           VCR.configuration.around_http_request do |request|
             VCR.use_cassette('new_cassette', &request)

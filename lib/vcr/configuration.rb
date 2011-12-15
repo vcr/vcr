@@ -83,7 +83,7 @@ module VCR
     else
       fiber, hook_decaration = nil, caller.first
       before_http_request { |request| fiber = start_new_fiber_for(request, block) }
-      after_http_request  { |request| resume_fiber(fiber, hook_decaration) }
+      after_http_request  { |request, response| resume_fiber(fiber, response, hook_decaration) }
     end
 
     def configure_rspec_metadata!
@@ -100,8 +100,8 @@ module VCR
       raise ArgumentError.new("#{hook.inspect} is not a supported VCR HTTP library hook.")
     end
 
-    def resume_fiber(fiber, hook_declaration)
-      fiber.resume
+    def resume_fiber(fiber, response, hook_declaration)
+      fiber.resume(response)
     rescue FiberError
       raise Errors::AroundHTTPRequestHookError.new \
         "Your around_http_request hook declared at #{hook_declaration}" +
