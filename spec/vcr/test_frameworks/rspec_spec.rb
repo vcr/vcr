@@ -23,6 +23,16 @@ describe VCR::RSpec::Metadata, :skip_vcr_reset do
     end
   end
 
+  context 'with the cassette name overridden at the example group level', :vcr => { :cassette_name => 'foo' } do
+    it 'overrides the cassette name for an example' do
+      VCR.current_cassette.name.should eq('foo')
+    end
+
+    it 'overrides the cassette name for another example' do
+      VCR.current_cassette.name.should eq('foo')
+    end
+  end
+
   it 'allows the cassette name to be overriden', :vcr => { :cassette_name => 'foo' } do
     VCR.current_cassette.name.should eq('foo')
   end

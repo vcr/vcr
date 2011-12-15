@@ -50,7 +50,7 @@ module VCR
 
           config.around(:each, :vcr => lambda { |v| !!v }) do |example|
             options = example.metadata[:vcr]
-            options = {} unless options.is_a?(Hash) # in case it's just :vcr => true
+            options = options.is_a?(Hash) ? options.dup : {} # in case it's just :vcr => true
 
             cassette_name = options.delete(:cassette_name) ||
                             vcr_cassette_name_for[example.metadata]
