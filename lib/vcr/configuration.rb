@@ -125,6 +125,9 @@ module VCR
     #
     # @param hooks [Array<Symbol>] List of libraries. Valid values are
     #  +:fakeweb+, +:webmock+, +:typhoeus+, +:excon+ and +:faraday+.
+    # @raise [ArgumentError] when given an unsupported library name.
+    # @raise [VCR::Errors::LibraryVersionTooLowError] when the version
+    #  of a library you are using is too low for VCR to support.
     # @note +:fakeweb+ and +:webmock+ cannot both be used since they both monkey patch
     #  +Net::HTTP+. Otherwise, you can use any combination of these.
     def hook_into(*hooks)

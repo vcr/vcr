@@ -1,16 +1,52 @@
 module VCR
+  # Namespace for VCR errors.
   module Errors
+    # Base class for all VCR errors.
     class Error                     < StandardError; end
+
+    # Error raised when VCR is turned off while a cassette is in use.
+    # @see VCR#turn_off!
+    # @see VCR#turned_off
     class CassetteInUseError        < Error; end
+
+    # Error raised when a VCR cassette is inserted while VCR is turned off.
+    # @see VCR#insert_cassette
+    # @see VCR#use_cassette
     class TurnedOffError            < Error; end
+
+    # Error raised when an cassette ERB template is rendered and a
+    # variable is missing.
+    # @see VCR#insert_cassette
+    # @see VCR#use_cassette
     class MissingERBVariableError   < Error; end
+
+    # Error raised when the version of one of the libraries that VCR hooks into
+    # is too low for VCR to support.
+    # @see VCR::Configuration#hook_into
     class LibraryVersionTooLowError < Error; end
+
+    # Error raised when a request matcher is requested that is not registered.
     class UnregisteredMatcherError  < Error; end
+
+    # Error raised when a VCR 1.x cassette is used with VCR 2.
     class InvalidCassetteFormatError < Error; end
+
+    # Error raised when an +around_http_request+ hook is used improperly.
+    # @see VCR::Configuration#around_http_request
     class AroundHTTPRequestHookError < Error; end
+
+    # Error raised when you attempt to use a VCR feature that is not
+    # supported on your ruby interpreter.
+    # @see VCR::Configuration#around_http_request
     class NotSupportedError          < Error; end
 
+    # Error raised when an HTTP request is made that VCR is unable to handle.
+    # @note VCR will raise this to force you to do something about the
+    #  HTTP request. The idea is that you want to handle _every_ HTTP
+    #  request in your test suite. The error message will give you
+    #  suggestions for how to deal with the request.
     class UnhandledHTTPRequestError < Error
+      # The HTTP request.
       attr_reader :request
 
       def initialize(request)

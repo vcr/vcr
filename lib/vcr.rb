@@ -85,6 +85,8 @@ module VCR
   # @raise [ArgumentError] when the given cassette is already being used.
   # @raise [VCR::Errors::TurnedOffError] when VCR has been turned off
   #  without using the :ignore_cassettes option.
+  # @raise [VCR::Errors::MissingERBVariableError] when the +:erb+ option
+  #  is used and the ERB template requires variables that you did not provide.
   #
   # @note If you use this method you _must_ call eject_cassette when you
   #  are done. It is generally recommended that you use {#use_cassette}
@@ -221,6 +223,7 @@ module VCR
   # Turns VCR off for the duration of a block.
   #
   # @param (see #turn_off!)
+  # @raise (see #turn_off!)
   # @see #turn_off!
   # @see #turn_on!
   # @see #turned_on?
