@@ -145,6 +145,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Aaron Brethorst](http://github.com/aaronbrethorst)
 * [Avdi Grimm](https://github.com/avdi)
 * [Bartosz Blimke](http://github.com/bblimke)
+* [Benjamin Oakes](https://github.com/benjaminoakes)
 * [Ben Hutton](http://github.com/benhutton)
 * [Bradley Isotope](https://github.com/bradleyisotope)
 * [Carlos Kirkconnell](https://github.com/kirkconnell)
