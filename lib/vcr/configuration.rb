@@ -232,7 +232,7 @@ module VCR
       !!@allow_http_connections_when_no_cassette
     end
 
-    # Sets up a +before_record+ and a +before_playback+ hook that will
+    # Sets up a {#before_record} and a {#before_playback} hook that will
     # insert a placeholder string in the cassette in place of another string.
     # You can use this as a generic way to interpolate a variable into the
     # cassette for a unique string. It's particularly useful for unique
