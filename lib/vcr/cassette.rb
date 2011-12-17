@@ -5,8 +5,6 @@ require 'vcr/cassette/http_interaction_list'
 require 'vcr/cassette/reader'
 require 'vcr/cassette/serializers'
 
-    # @param name [#to_s] The name of the cassette. Determines what file will be used.
-    # @param options
 module VCR
   # The media VCR uses to store HTTP interactions for later re-use.
   class Cassette
