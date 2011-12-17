@@ -182,7 +182,7 @@ describe VCR::Cassette do
 
     it 'does not raise an error in the case of an empty file' do
       VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
-      VCR::Cassette.new('empty', :record => :none).previously_recorded_interactions.should eq([])
+      VCR::Cassette.new('empty', :record => :none).send(:previously_recorded_interactions).should eq([])
     end
 
     VCR::Cassette::VALID_RECORD_MODES.each do |record_mode|
@@ -294,7 +294,7 @@ describe VCR::Cassette do
 
           VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
           cassette = VCR::Cassette.new('with_localhost_requests', :record => record_mode)
-          cassette.previously_recorded_interactions.map { |i| URI.parse(i.uri).host }.should eq(%w[example.com])
+          cassette.send(:previously_recorded_interactions).map { |i| URI.parse(i.uri).host }.should eq(%w[example.com])
         end
 
         it "loads the recorded interactions from the library yml file" do
@@ -303,7 +303,7 @@ describe VCR::Cassette do
 
           cassette.should have(3).previously_recorded_interactions
 
-          i1, i2, i3 = *cassette.previously_recorded_interactions
+          i1, i2, i3 = *cassette.send(:previously_recorded_interactions)
 
           i1.request.method.should eq(:get)
           i1.request.uri.should eq('http://example.com/')

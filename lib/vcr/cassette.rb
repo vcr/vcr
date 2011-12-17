@@ -5,12 +5,46 @@ require 'vcr/cassette/http_interaction_list'
 require 'vcr/cassette/reader'
 require 'vcr/cassette/serializers'
 
+    # @param name [#to_s] The name of the cassette. Determines what file will be used.
+    # @param options
 module VCR
+  # The media VCR uses to store HTTP interactions for later re-use.
   class Cassette
+
+    # The supported record modes.
+    #   * :all -- Record every HTTP interactions; do not play any back.
+    #   * :none -- Do not record any HTTP interactions; play them back.
+    #   * :new_episodes -- Playback previously recorded HTTP interactions and record new ones.
+    #   * :once -- Record the HTTP interactions if the cassette has not already been recorded;
+    #              otherwise, playback the HTTP interactions.
     VALID_RECORD_MODES = [:all, :none, :new_episodes, :once]
 
-    attr_reader :name, :record_mode, :match_requests_on, :erb, :re_record_interval, :tag
+    # @return [#to_s] The name of the cassette. Used to determine the cassette's file name.
+    # @see #file
+    attr_reader :name
 
+    # @return [Symbol] The record mode. Determines whether the cassette records HTTP interactions,
+    #  plays them back, or does both.
+    attr_reader :record_mode
+
+    # @return [Array<Symbol, #call>] List of request matchers. Used to find a response from an
+    #  existing HTTP interaction to play back.
+    attr_reader :match_requests_on
+
+    # @return [Boolean, Hash] The cassette's ERB option. The file will be treated as an
+    #  ERB template if this has a truthy value. A hash, if provided, will be used as local
+    #  variables for the ERB template.
+    attr_reader :erb
+
+    # @return [Integer, nil] How frequently (in seconds) the cassette should be re-recorded.
+    attr_reader :re_record_interval
+
+    # @return [Symbol, nil] If set, {VCR::Configuration#before_record} and
+    #  {VCR::Configuration#before_playback} hooks with the corresponding tag will apply.
+    attr_reader :tag
+
+    # @param (see VCR#insert_cassette)
+    # @see VCR#insert_cassette
     def initialize(name, options = {})
       options = VCR.configuration.default_cassette_options.merge(options)
       invalid_options = options.keys - [
@@ -39,8 +73,60 @@ module VCR
       raise_error_unless_valid_record_mode
     end
 
+    # Ejects the current cassette. The cassette will no longer be used.
+    # In addition, any newly recorded HTTP interactions will be written to
+    # disk.
     def eject
       write_recorded_interactions_to_disk
+    end
+
+    # @private
+    def http_interactions
+      @http_interactions ||= HTTPInteractionList.new \
+        should_stub_requests? ? previously_recorded_interactions : [],
+        match_requests_on,
+        @allow_playback_repeats,
+        @parent_list
+    end
+
+    # @private
+    def record_http_interaction(interaction)
+      new_recorded_interactions << interaction
+    end
+
+    # @private
+    def new_recorded_interactions
+      @new_recorded_interactions ||= []
+    end
+
+    # @return [String] The file for this cassette.
+    # @note VCR will take care of sanitizing the cassette name to make it valid file name.
+    def file
+      return nil unless VCR.configuration.cassette_library_dir
+      File.join(VCR.configuration.cassette_library_dir, "#{sanitized_name}.#{@serializer.file_extension}")
+    end
+
+    # @return [Boolean] Whether or not the cassette is recording.
+    def recording?
+      case record_mode
+        when :none; false
+        when :once; file.nil? || !File.size?(file)
+        else true
+      end
+    end
+
+    # @return [Hash] The hash that will be serialized when the cassette is written to disk.
+    def serializable_hash
+      {
+        "http_interactions" => interactions_to_record.map(&:to_hash),
+        "recorded_with"     => "VCR #{VCR.version}"
+      }
+    end
+
+  private
+
+    def update_content_length_header?
+      @update_content_length_header
     end
 
     def previously_recorded_interactions
@@ -60,48 +146,6 @@ module VCR
         []
       end
     end
-
-    def http_interactions
-      @http_interactions ||= HTTPInteractionList.new \
-        should_stub_requests? ? previously_recorded_interactions : [],
-        match_requests_on,
-        @allow_playback_repeats,
-        @parent_list
-    end
-
-    def record_http_interaction(interaction)
-      new_recorded_interactions << interaction
-    end
-
-    def new_recorded_interactions
-      @new_recorded_interactions ||= []
-    end
-
-    def file
-      return nil unless VCR.configuration.cassette_library_dir
-      File.join(VCR.configuration.cassette_library_dir, "#{sanitized_name}.#{@serializer.file_extension}")
-    end
-
-    def update_content_length_header?
-      @update_content_length_header
-    end
-
-    def recording?
-      case record_mode
-        when :none; false
-        when :once; file.nil? || !File.size?(file)
-        else true
-      end
-    end
-
-    def serializable_hash
-      {
-        "http_interactions" => interactions_to_record.map(&:to_hash),
-        "recorded_with"     => "VCR #{VCR.version}"
-      }
-    end
-
-  private
 
     def sanitized_name
       name.to_s.gsub(/[^\w\-\/]+/, '_')
