@@ -102,15 +102,33 @@ module VCR
       }
     end
 
-    # The directory to write cassettes to and read them from.
+    # The directory to read cassettes from and write cassettes to.
+    #
+    # @overload cassette_library_dir
+    #   @return [String] the directory to read cassettes from and write cassettes to
+    # @overload cassette_library_dir=(dir)
+    #   @param dir [String] the directory to read cassettes from and write cassettes to
+    # @example
+    #   VCR.configure do |c|
+    #     c.cassette_library_dir = 'spec/cassettes'
+    #   end
     attr_reader :cassette_library_dir
-
-    # Sets the directory to write cassettes to and read them from.
     def cassette_library_dir=(cassette_library_dir)
       @cassette_library_dir = cassette_library_dir
       FileUtils.mkdir_p(cassette_library_dir) if cassette_library_dir
     end
 
+    # Default options to apply to every cassette.
+    #
+    # @overload default_cassette_options
+    #   @return [Hash] default options to apply to every cassette
+    # @overload default_cassette_options=
+    #   @param options [Hash] default options to apply to every cassette
+    # @example
+    #   VCR.configure do |c|
+    #     c.default_cassette_options = { :record => :new_episodes }
+    #   end
+    # @note {VCR#insert_cassette} for the list of valid options.
     attr_reader :default_cassette_options
     def default_cassette_options=(overrides)
       @default_cassette_options.merge!(overrides)
@@ -195,12 +213,49 @@ module VCR
       VCR.request_ignorer.ignore_request(&block)
     end
 
+    # Determines how VCR treats HTTP requests that are made when
+    # no VCR cassette is in use. When set to +true+, requests made
+    # when there is no VCR cassette in use will be allowed. When set
+    # to +false+ (the default), an {VCR::Errors::UnhandledHTTPRequestError}
+    # will be raised for any HTTP request made when there is no
+    # cassette in use.
+    #
+    # @overload allow_http_connections_when_no_cassette?
+    #   @return [Boolean] whether or not HTTP connections are allowed
+    #    when there is no cassette.
+    # @overload allow_http_connections_when_no_cassette=
+    #   @param value [Boolean] sets whether or not to allow HTTP
+    #    connections when there is no cassette.
     attr_writer :allow_http_connections_when_no_cassette
+    # @private (documented above)
     def allow_http_connections_when_no_cassette?
       !!@allow_http_connections_when_no_cassette
     end
 
-    def filter_sensitive_data(placeholder, tag = nil, &block)
+    # Sets up a +before_record+ and a +before_playback+ hook that will
+    # insert a placeholder string in the cassette in place of another string.
+    # You can use this as a generic way to interpolate a variable into the
+    # cassette for a unique string. It's particularly useful for unique
+    # sensitive strings like API keys and passwords.
+    #
+    # @example
+    #   VCR.configure do |c|
+    #     # Put "<GITHUB_API_KEY>" in place of the actual API key in
+    #     # our cassettes so we don't have to commit to source control.
+    #     c.filter_sensitive_data('<GITHUB_API_KEY>') { GithubClient.api_key }
+    #
+    #     # Put a "<USER_ID>" placeholder variable in our cassettes tagged with
+    #     # :user_cassette since it can be different for different test runs.
+    #     c.define_cassette_placeholder('<USER_ID>', :user_cassette) { User.last.id }
+    #   end
+    #
+    # @param placeholder [String] The placeholder string.
+    # @param tag [Symbol] Set this apply this to only to cassettes
+    #  with a matching tag; otherwise it will apply to every cassette.
+    # @yield block that determines what string to replace
+    # @yieldparam interaction [(optional) VCR::HTTPInteraction] the HTTP interaction
+    # @yieldreturn the string to replace
+    def define_cassette_placeholder(placeholder, tag = nil, &block)
       before_record(tag) do |interaction|
         interaction.filter!(call_block(block, interaction), placeholder)
       end
@@ -209,7 +264,7 @@ module VCR
         interaction.filter!(placeholder, call_block(block, interaction))
       end
     end
-    alias define_cassette_placeholder filter_sensitive_data
+    alias filter_sensitive_data define_cassette_placeholder
 
     # Gets the registry of cassette serializers. Use it to register a custom serializer.
     #
