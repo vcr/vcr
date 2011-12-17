@@ -3,6 +3,7 @@ require 'set'
 require 'vcr/util/hooks'
 
 module VCR
+  # @private
   class RequestIgnorer
     include VCR::Hooks
 

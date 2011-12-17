@@ -1,4 +1,5 @@
 module VCR
+  # @private
   class LibraryHooks
     attr_accessor :exclusive_hook
 

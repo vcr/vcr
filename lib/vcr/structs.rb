@@ -2,6 +2,7 @@ require 'time'
 require 'forwardable'
 
 module VCR
+  # @private
   module Normalizers
     module Body
       def initialize(*args)

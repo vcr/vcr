@@ -1,4 +1,5 @@
 module VCR
+  # @private
   class RequestHandler
     def handle
       invoke_before_request_hook

@@ -4,12 +4,14 @@ module VCR
   class RequestMatcherRegistry
     DEFAULT_MATCHERS = [:method, :uri]
 
+    # @private
     class Matcher < Struct.new(:callable)
       def matches?(request_1, request_2)
         callable.call(request_1, request_2)
       end
     end
 
+    # @private
     class URIWithoutParamsMatcher < Struct.new(:params_to_ignore)
       def partial_uri_from(request)
         URI(request.uri).tap do |uri|
