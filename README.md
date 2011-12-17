@@ -157,6 +157,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Flaviu Simihaian](https://github.com/closedbracket)
 * [Justin Smestad](https://github.com/jsmestad)
 * [Karl Baum](https://github.com/kbaum)
+* [Michael Lavrisha](https://github.com/vrish88)
 * [Nathaniel Bibler](https://github.com/nbibler)
 * [Oliver Searle-Barnes](https://github.com/opsb)
 * [Paco Guzmán](https://github.com/pacoguzman)
