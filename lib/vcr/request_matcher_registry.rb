@@ -1,7 +1,11 @@
 require 'vcr/errors'
 
 module VCR
+  # Keeps track of the different request matchers.
   class RequestMatcherRegistry
+
+    # The default request matchers used for any cassette that does not
+    # specify request matchers.
     DEFAULT_MATCHERS = [:method, :uri]
 
     # @private
@@ -39,11 +43,13 @@ module VCR
       end
     end
 
+    # @private
     def initialize
       @registry = {}
       register_built_ins
     end
 
+    # @private
     def register(name, &block)
       if @registry.has_key?(name)
         warn "WARNING: There is already a VCR request matcher registered for #{name.inspect}. Overriding it."
@@ -52,6 +58,7 @@ module VCR
       @registry[name] = Matcher.new(block)
     end
 
+    # @private
     def [](matcher)
       @registry.fetch(matcher) do
         matcher.respond_to?(:call) ?
@@ -60,6 +67,25 @@ module VCR
       end
     end
 
+    # Builds a dynamic request matcher that matches on a URI while ignoring the
+    # named query parameters. This is useful for dealing with non-deterministic
+    # URIs (i.e. that have a timestamp or request signature parameter).
+    #
+    # @example
+    #   without_timestamp = VCR.request_matchers.uri_without_param(:timestamp)
+    #
+    #   # use it directly...
+    #   VCR.use_cassette('example', :match_requests_on => [:method, without_timestamp]) { }
+    #
+    #   # ...or register it as a named matcher
+    #   VCR.configure do |c|
+    #     c.register_request_matcher(:uri_without_timestamp, &without_timestamp)
+    #   end
+    #
+    #   VCR.use_cassette('example', :match_requests_on => [:method, :uri_without_timestamp]) { }
+    #
+    # @param ignores [Array<#to_s>] The names of the query parameters to ignore
+    # @return [#call] the request matcher
     def uri_without_params(*ignores)
       uri_without_param_matchers[ignores]
     end
