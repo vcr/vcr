@@ -136,9 +136,6 @@ module VCR
   end
 
   class HTTPInteraction < Struct.new(:request, :response, :recorded_at)
-    extend ::Forwardable
-    def_delegators :request, :uri, :method
-
     def initialize(*args)
       @ignored = false
       super

@@ -49,15 +49,6 @@ end
 
 module VCR
   describe HTTPInteraction do
-    %w( uri method ).each do |attr|
-      it "delegates :#{attr} to the request" do
-        sig = mock('request')
-        sig.should_receive(attr).and_return(:the_value)
-        instance = described_class.new(sig, nil)
-        instance.send(attr).should eq(:the_value)
-      end
-    end
-
     describe '#ignored?' do
       it 'returns false by default' do
         should_not be_ignored

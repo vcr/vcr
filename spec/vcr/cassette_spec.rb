@@ -294,7 +294,7 @@ describe VCR::Cassette do
 
           VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
           cassette = VCR::Cassette.new('with_localhost_requests', :record => record_mode)
-          cassette.send(:previously_recorded_interactions).map { |i| URI.parse(i.uri).host }.should eq(%w[example.com])
+          cassette.send(:previously_recorded_interactions).map { |i| URI.parse(i.request.uri).host }.should eq(%w[example.com])
         end
 
         it "loads the recorded interactions from the library yml file" do
