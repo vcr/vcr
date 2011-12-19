@@ -157,7 +157,7 @@ module VCR
     configuration.allow_http_connections_when_no_cassette? || @turned_off
   end
 
-  # @private
+  # @return [RequestMatcherRegistry] the request matcher registry
   def request_matchers
     @request_matchers ||= RequestMatcherRegistry.new
   end
