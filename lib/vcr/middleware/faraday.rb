@@ -6,18 +6,30 @@ VCR::VersionChecker.new('Faraday', Faraday::VERSION, '0.7.0', '0.7').check_versi
 
 module VCR
   module Middleware
+    # Faraday middleware that VCR uses to record and replay HTTP requests made through
+    # Faraday.
+    #
+    # @note You can either insert this middleware into the Faraday middleware stack
+    #  yourself or configure {VCR::Configuration#hook_into} to hook into +:faraday+.
     class Faraday
       include VCR::Deprecations::Middleware::Faraday
 
+      # Constructs a new instance of the Faraday middleware.
+      #
+      # @param [#call] the faraday app
       def initialize(app)
         super
         @app = app
       end
 
+      # Handles the HTTP request being made through Faraday
+      #
+      # @param [Hash] env the Faraday request env hash
       def call(env)
         RequestHandler.new(@app, env).handle
       end
 
+      # @private
       class RequestHandler < ::VCR::RequestHandler
         attr_reader :app, :env
         def initialize(app, env)

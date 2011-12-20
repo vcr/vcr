@@ -32,6 +32,7 @@ module VCR
   # @private
   module Deprecations
     module Middleware
+      # @private
       module Faraday
         def initialize(*args)
           if block_given?
