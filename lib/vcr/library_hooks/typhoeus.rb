@@ -84,6 +84,7 @@ module VCR
   end
 end
 
+# @private
 module Typhoeus
   class << Hydra
     # ensure HTTP requests are always allowed; VCR takes care of disallowing

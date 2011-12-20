@@ -77,14 +77,17 @@ module VCR
   end
 end
 
-class << WebMock
-  # ensure HTTP requests are always allowed; VCR takes care of disallowing
-  # them at the appropriate times in its hook
-  def net_connect_allowed_with_vcr?(*args)
-    VCR.turned_on? ? true : net_connect_allowed_without_vcr?
-  end
+# @private
+module WebMock
+  class << self
+    # ensure HTTP requests are always allowed; VCR takes care of disallowing
+    # them at the appropriate times in its hook
+    def net_connect_allowed_with_vcr?(*args)
+      VCR.turned_on? ? true : net_connect_allowed_without_vcr?
+    end
 
-  alias net_connect_allowed_without_vcr? net_connect_allowed?
-  alias net_connect_allowed? net_connect_allowed_with_vcr?
-end unless WebMock.respond_to?(:net_connect_allowed_with_vcr?)
+    alias net_connect_allowed_without_vcr? net_connect_allowed?
+    alias net_connect_allowed? net_connect_allowed_with_vcr?
+  end unless respond_to?(:net_connect_allowed_with_vcr?)
+end
 
