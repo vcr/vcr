@@ -49,6 +49,9 @@ module VCR
       # The HTTP request.
       attr_reader :request
 
+      # Constructs the error.
+      #
+      # @param [VCR::Request] request the unhandled request.
       def initialize(request)
         @request = request
         super construct_message
@@ -113,6 +116,7 @@ module VCR
         "[#{index + 1}] #{url % relish_version_slug}"
       end
 
+      # List of suggestions for how to configure VCR to handle the request.
       ALL_SUGGESTIONS = {
         :use_new_episodes => [
           ["You can use the :new_episodes record mode to allow VCR to",

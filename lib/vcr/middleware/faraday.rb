@@ -5,6 +5,7 @@ require 'vcr/request_handler'
 VCR::VersionChecker.new('Faraday', Faraday::VERSION, '0.7.0', '0.7').check_version!
 
 module VCR
+  # Contains middlewares for use with different libraries.
   module Middleware
     # Faraday middleware that VCR uses to record and replay HTTP requests made through
     # Faraday.

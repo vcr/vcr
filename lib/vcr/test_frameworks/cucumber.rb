@@ -1,4 +1,5 @@
 module VCR
+  # Provides integration with Cucumber using tags.
   class CucumberTags
     class << self
       # @private
