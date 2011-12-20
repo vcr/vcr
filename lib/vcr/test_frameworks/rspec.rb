@@ -1,6 +1,30 @@
 module VCR
+  # Integrates VCR with RSpec.
   module RSpec
+
+    # Contains macro methods to assist with VCR usage. These methods are
+    # intended to be used directly in an RSpec example group. To make these
+    # available in your RSpec example groups, extend the module in an individual
+    # example group, or configure RSpec to extend the module in all example groups.
+    #
+    # @example
+    #   RSpec.configure do |c|
+    #     c.extend VCR::RSpec::Macros
+    #   end
+    #
     module Macros
+
+      # Sets up a +before+ and +after+ hook that will insert and eject a
+      # cassette, respectively.
+      #
+      # @example
+      #   describe "Some API Client" do
+      #     use_vcr_cassette "some_api", :record => :new_episodes
+      #   end
+      #
+      # @param [(optional) String] name the cassette name; it will be inferred by the example
+      #  group descriptions if not given.
+      # @param [(optional) Hash] options the cassette options
       def use_vcr_cassette(*args)
         options = args.last.is_a?(Hash) ? args.pop : {}
         name    = args.first || infer_cassette_name
@@ -33,6 +57,7 @@ module VCR
       end
     end
 
+    # @private
     module Metadata
       extend self
 

@@ -1,20 +1,29 @@
 module VCR
   class CucumberTags
     class << self
+      # @private
       def tags
         @tags.dup
       end
 
+      # @private
       def add_tag(tag)
         @tags << tag
       end
     end
 
     @tags = []
+
+    # @private
     def initialize(main_object)
       @main_object = main_object
     end
 
+    # Adds +Before+ and +After+ cucumber hooks for the named tags that
+    # will cause a VCR cassette to be used for scenarios with matching tags.
+    #
+    # @param [Array<String>] tag_names the cucumber scenario tags
+    # @param [(optional) Hash] options the cassette options
     def tags(*tag_names)
       options = tag_names.last.is_a?(::Hash) ? tag_names.pop : {}
       tag_names.each do |tag_name|
