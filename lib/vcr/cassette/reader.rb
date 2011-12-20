@@ -1,5 +1,6 @@
 module VCR
   class Cassette
+    # @private
     class Reader
       def initialize(file_name, erb)
         @file_name, @erb = file_name, erb

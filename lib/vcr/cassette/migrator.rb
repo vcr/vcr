@@ -4,6 +4,7 @@ require 'uri'
 
 module VCR
   class Cassette
+    # @private
     class Migrator
       def initialize(dir, out = $stdout)
         @dir, @out = dir, out

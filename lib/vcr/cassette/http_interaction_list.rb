@@ -1,5 +1,6 @@
 module VCR
   class Cassette
+    # @private
     class HTTPInteractionList
       module NullList
         extend self
