@@ -52,17 +52,19 @@ maintenance) and accurate (the response will contain the same headers and body y
   * [Faraday](https://github.com/technoweenie/faraday)
   * And of course any library built on Net::HTTP, such as [Mechanize](http://github.com/tenderlove/mechanize),
     [HTTParty](http://github.com/jnunemaker/httparty) or [Rest Client](http://github.com/archiloque/rest-client).
-* Request matching is configurable based on HTTP method, URI, host, path, body and headers.
+* Request matching is configurable based on HTTP method, URI, host, path, body and headers, or you can easily
+  implement a custom request matcher to handle any need.
 * The same request can receive different responses in different tests--just use different cassettes.
-* The recorded requests and responses are stored on disk as YAML and can easily be inspected and edited.
+* The recorded requests and responses are stored on disk in a serialization format of your choice
+  (currently YAML and JSON are built in, and you can easily implement your own custom serializer)
+  and can easily be inspected and edited.
 * Dynamic responses are supported using ERB.
 * Automatically re-records cassettes on a configurable regular interval to keep them fresh and current.
 * Disables all HTTP requests that you don't explicitly allow.
 * Simple cucumber integration is provided using tags.
-* Includes convenient RSpec macro.
+* Includes convenient RSpec macro and integration with RSpec 2 metadata.
 * Known to work well with many popular ruby libraries including RSpec 1 & 2, Cucumber, Test::Unit,
   Capybara, Mechanize, Rest-Client and HTTParty.
-* Extensively tested on 7 different ruby interpretters.
 * Includes Rack and Faraday middleware.
 
 ## Usage
@@ -89,30 +91,6 @@ VCR has been tested on the following ruby interpreters:
 * REE 1.8.7
 * JRuby 1.5.6
 * Rubinius 1.2.1
-
-## Known Issues
-
-VCR uses YAML to serialize the HTTP interactions to disk in a
-human-readable, human-editable format.  Unfortunately there are bugs
-in Syck, Ruby's default YAML engine, that cause it to modify strings
-when serializing them.  It appears the the bug is limited to entire
-lines of whitespace.  A string such as `"1\n \n2"` will get changed
-to `"1\n\n2"` (see [this gist](https://gist.github.com/815754) for
-example code).
-
-In practice, this usually isn't so bad, but it can
-occassionally cause problems, especially when the recorded
-response includes a `content_length` header and you are using an
-HTTP client that relies on this.  Mechanize will raise an `EOFError`
-when the `content_length` header does not match the response body
-length.
-
-One solution is to use Psych, the new YAML engine included
-in Ruby 1.9.  VCR attempts to use Psych if possible, but you may have
-to [re-compile ruby 1.9](http://rhnh.net/2011/01/31/psych-yaml-in-ruby-1-9-2-with-rvm-and-snow-leopard-osx)
-to use it.  See [this issue](https://github.com/myronmarston/vcr/issues#issue/43)
-for more info.  You can also use the `:update_content_length_header`
-cassette option to ensure the header has the correct value.
 
 ## Development
 
