@@ -16,7 +16,7 @@ group :extras do
   gem 'fuubar-cucumber'
 
   gem 'yard'
-  gem 'redcarpet'
+  gem 'redcarpet', '~> 1.17.2'
   gem 'github-markup'
 
   platforms :mri do
