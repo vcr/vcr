@@ -5,12 +5,11 @@ require 'uri'
 
 module VCR
   class Cassette
-
-    RSpec::Matchers.define :respond_with do |expected|
-      match { |a| expected.nil? ? a.nil? : a.body == expected }
-    end
-
     describe HTTPInteractionList do
+      ::RSpec::Matchers.define :respond_with do |expected|
+        match { |a| expected.nil? ? a.nil? : a.body == expected }
+      end
+
       before(:each) do
         VCR.stub(:request_matchers => VCR::RequestMatcherRegistry.new)
       end
