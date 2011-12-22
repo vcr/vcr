@@ -6,51 +6,8 @@ require 'uri'
 module VCR
   class Cassette
 
-    shared_examples_for "an HTTP interaction finding method" do |method|
-      it 'returns nil when the list is empty' do
-        HTTPInteractionList.new([], [:method]).send(method, stub).should respond_with(nil)
-      end
-
-      it 'returns nil when there is no matching interaction' do
-        HTTPInteractionList.new([
-          interaction('foo', :method => :post),
-          interaction('foo', :method => :put)
-        ], [:method]).send(method,
-          request_with(:method => :get)
-        ).should respond_with(nil)
-      end
-
-      it 'returns the first matching interaction' do
-        list = HTTPInteractionList.new([
-          interaction('put response', :method => :put),
-          interaction('post response 1', :method => :post),
-          interaction('post response 2', :method => :post)
-        ], [:method])
-
-        list.send(method, request_with(:method => :post)).should respond_with("post response 1")
-      end
-
-      it 'invokes each matcher block to find the matching interaction' do
-        VCR.request_matchers.register(:foo) { |r1, r2| true }
-        VCR.request_matchers.register(:bar) { |r1, r2| true }
-
-        calls = 0
-        VCR.request_matchers.register(:baz) { |r1, r2| calls += 1; calls == 2 }
-
-        list = HTTPInteractionList.new([
-          interaction('response', :method => :put)
-        ], [:foo, :bar, :baz])
-
-        list.send(method, request_with(:method => :post)).should respond_with(nil)
-        list.send(method, request_with(:method => :post)).should respond_with('response')
-      end
-
-      it "delegates to the parent list when it can't find a matching interaction" do
-        parent_list = mock(method => response('parent'))
-        HTTPInteractionList.new(
-          [], [:method], false, parent_list
-        ).send(method, stub).should respond_with('parent')
-      end
+    RSpec::Matchers.define :respond_with do |expected|
+      match { |a| expected.nil? ? a.nil? : a.body == expected }
     end
 
     describe HTTPInteractionList do
@@ -126,12 +83,49 @@ module VCR
       end
 
       describe "#response_for" do
-        it_behaves_like "an HTTP interaction finding method", :response_for do
-          def respond_with(value)
-            ::RSpec::Matchers::Matcher.new :respond_with, value do |expected|
-              match { |a| expected.nil? ? a.nil? : a.body == expected }
-            end
-          end
+        it 'returns nil when the list is empty' do
+          HTTPInteractionList.new([], [:method]).response_for(stub).should respond_with(nil)
+        end
+
+        it 'returns nil when there is no matching interaction' do
+          HTTPInteractionList.new([
+            interaction('foo', :method => :post),
+            interaction('foo', :method => :put)
+          ], [:method]).response_for(
+            request_with(:method => :get)
+          ).should respond_with(nil)
+        end
+
+        it 'returns the first matching interaction' do
+          list = HTTPInteractionList.new([
+            interaction('put response', :method => :put),
+            interaction('post response 1', :method => :post),
+            interaction('post response 2', :method => :post)
+          ], [:method])
+
+          list.response_for(request_with(:method => :post)).should respond_with("post response 1")
+        end
+
+        it 'invokes each matcher block to find the matching interaction' do
+          VCR.request_matchers.register(:foo) { |r1, r2| true }
+          VCR.request_matchers.register(:bar) { |r1, r2| true }
+
+          calls = 0
+          VCR.request_matchers.register(:baz) { |r1, r2| calls += 1; calls == 2 }
+
+          list = HTTPInteractionList.new([
+            interaction('response', :method => :put)
+          ], [:foo, :bar, :baz])
+
+          list.response_for(request_with(:method => :post)).should respond_with(nil)
+          list.response_for(request_with(:method => :post)).should respond_with('response')
+        end
+
+        it "delegates to the parent list when it can't find a matching interaction" do
+          parent_list = mock(:response_for => response('parent'))
+          HTTPInteractionList.new(
+            [], [:method], false, parent_list
+          ).response_for(stub).should respond_with('parent')
         end
 
         it 'consumes the first matching interaction so that it will not be used again' do
