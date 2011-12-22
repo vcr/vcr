@@ -15,6 +15,10 @@ group :extras do
   gem 'fuubar'
   gem 'fuubar-cucumber'
 
+  gem 'yard'
+  gem 'redcarpet'
+  gem 'github-markup'
+
   platforms :mri do
     gem 'rcov'
     gem 'rb-fsevent'

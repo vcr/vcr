@@ -1,2 +1,4 @@
 --no-private
 --exclude features
+--markup-provider redcarpet
+--markup markdown
