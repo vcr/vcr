@@ -4,6 +4,7 @@ module VCR
   class LibraryHooks
     # @private
     module Faraday
+      # @private
       module BuilderClassExtension
         def new(*args)
           super.extend BuilderInstanceExtension
@@ -12,6 +13,7 @@ module VCR
         ::Faraday::Builder.extend self
       end
 
+      # @private
       module BuilderInstanceExtension
         def lock!(*args)
           insert_vcr_middleware

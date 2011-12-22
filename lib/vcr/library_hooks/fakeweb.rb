@@ -11,6 +11,7 @@ module VCR
   class LibraryHooks
     # @private
     module FakeWeb
+      # @private
       class RequestHandler < ::VCR::RequestHandler
         attr_reader :net_http, :request, :request_body, :response_block
         def initialize(net_http, request, request_body = nil, &response_block)
@@ -136,6 +137,7 @@ end
 
 # @private
 module Net
+  # @private
   class HTTP
     unless method_defined?(:request_with_vcr)
       def request_with_vcr(*args, &block)

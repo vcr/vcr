@@ -2,6 +2,7 @@ module VCR
   class Cassette
     # @private
     class HTTPInteractionList
+      # @private
       module NullList
         extend self
         def response_for(*a); nil; end

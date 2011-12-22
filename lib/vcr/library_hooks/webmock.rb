@@ -8,6 +8,7 @@ module VCR
   class LibraryHooks
     # @private
     module WebMock
+      # @private
       module Helpers
         def vcr_request_from(webmock_request)
           VCR::Request.new \

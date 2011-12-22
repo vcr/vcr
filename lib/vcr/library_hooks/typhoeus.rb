@@ -8,6 +8,7 @@ module VCR
   class LibraryHooks
     # @private
     module Typhoeus
+      # @private
       module Helpers
         def vcr_request_from(request)
           VCR::Request.new \

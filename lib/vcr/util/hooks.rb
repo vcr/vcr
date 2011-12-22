@@ -40,6 +40,7 @@ module VCR
       hooks
     end
 
+    # @private
     module ClassMethods
       def define_hook(hook, prepend = false)
         placement_method = prepend ? :unshift : :<<

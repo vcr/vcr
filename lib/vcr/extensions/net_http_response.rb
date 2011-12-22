@@ -11,6 +11,7 @@ module VCR
     # This is a bit of a hack, but it allows a Net::HTTP response to be "re-read"
     # after it has aleady been read.  This attemps to preserve the behavior of
     # #read_body, acting just as if it had never been read.
+    # @private
     module HTTPResponse
       def self.extended(response)
         response.instance_variable_set(:@__read_body_previously_called, false)
