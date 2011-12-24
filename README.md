@@ -89,8 +89,8 @@ VCR has been tested on the following ruby interpreters:
 * MRI 1.8.7
 * MRI 1.9.2
 * REE 1.8.7
-* JRuby 1.5.6
-* Rubinius 1.2.1
+* JRuby
+* Rubinius
 
 ## Development
 
@@ -148,8 +148,10 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Betamax](https://github.com/robfletcher/betamax) (Groovy)
 * [Ephemeral Response](https://github.com/sandro/ephemeral_response) (Ruby)
 * [Mimic](https://github.com/acoulton/mimic) (PHP/Kohana)
+* [Net::HTTP Spy](http://github.com/martinbtt/net-http-spy) (Ruby)
 * [NetRecorder](https://github.com/chrisyoung/netrecorder) (Ruby)
 * [Stale Fish](https://github.com/jsmestad/stale_fish) (Ruby)
+* [WebFixtures](http://github.com/trydionel/web_fixtures) (Ruby)
 
 ## Copyright
 
