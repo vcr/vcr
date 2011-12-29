@@ -114,8 +114,8 @@ module VCR
     #   end
     attr_reader :cassette_library_dir
     def cassette_library_dir=(cassette_library_dir)
-      @cassette_library_dir = cassette_library_dir
-      FileUtils.mkdir_p(cassette_library_dir) if cassette_library_dir
+      @cassette_library_dir = cassette_library_dir ? File.absolute_path(cassette_library_dir) : nil
+      FileUtils.mkdir_p(@cassette_library_dir) if cassette_library_dir
     end
 
     # Default options to apply to every cassette.

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe VCR::Configuration do
   describe '#cassette_library_dir=' do
     let(:tmp_dir) { VCR::SPEC_ROOT + '/../tmp/cassette_library_dir/new_dir' }
-    after(:each) { FileUtils.rm_rf tmp_dir }
+    after(:each)  { FileUtils.rm_rf tmp_dir }
 
     it 'creates the directory if it does not exist' do
       expect { subject.cassette_library_dir = tmp_dir }.to change { File.exist?(tmp_dir) }.from(false).to(true)
@@ -11,6 +11,11 @@ describe VCR::Configuration do
 
     it 'does not raise an error if given nil' do
       expect { subject.cassette_library_dir = nil }.to_not raise_error
+    end
+
+    it 'resolves the given directory to an absolute path, so VCR continues to work even if the current directory changes' do
+      subject.cassette_library_dir = 'tmp/cassette_library_dir/new_dir'
+      subject.cassette_library_dir.should eq(File.absolute_path(tmp_dir))
     end
   end
 
