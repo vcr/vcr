@@ -14,8 +14,10 @@ describe VCR::Configuration do
     end
 
     it 'resolves the given directory to an absolute path, so VCR continues to work even if the current directory changes' do
-      subject.cassette_library_dir = 'tmp/cassette_library_dir/new_dir'
-      subject.cassette_library_dir.should eq(File.absolute_path(tmp_dir))
+      relative_dir = 'tmp/cassette_library_dir/new_dir'
+      subject.cassette_library_dir = relative_dir
+      absolute_dir = File.join(VCR::SPEC_ROOT.sub(/\/spec\z/, ''), relative_dir)
+      subject.cassette_library_dir.should eq(absolute_dir)
     end
   end
 

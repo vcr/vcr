@@ -114,8 +114,8 @@ module VCR
     #   end
     attr_reader :cassette_library_dir
     def cassette_library_dir=(cassette_library_dir)
-      @cassette_library_dir = cassette_library_dir ? File.absolute_path(cassette_library_dir) : nil
-      FileUtils.mkdir_p(@cassette_library_dir) if cassette_library_dir
+      FileUtils.mkdir_p(cassette_library_dir) if cassette_library_dir
+      @cassette_library_dir = cassette_library_dir ? absolute_path_for(cassette_library_dir) : nil
     end
 
     # Default options to apply to every cassette.
@@ -349,6 +349,10 @@ module VCR
       Fiber.new(&block).tap do |fiber|
         fiber.resume(request.fiber_aware)
       end
+    end
+
+    def absolute_path_for(path)
+      Dir.chdir(path) { Dir.pwd }
     end
   end
 end
