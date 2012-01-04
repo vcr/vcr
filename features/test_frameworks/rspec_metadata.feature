@@ -31,7 +31,7 @@ Feature: Usage with RSpec metadata
 
   Scenario: Use `:vcr` metadata
     Given a file named "spec/vcr_example_spec.rb" with:
-      """
+      """ruby
       start_sinatra_app(:port => 7777) do
         get('/') { "Hello" }
       end
@@ -73,7 +73,7 @@ Feature: Usage with RSpec metadata
 
   Scenario: Pass a hash to set the cassette options
     Given a file named "spec/vcr_example_spec.rb" with:
-      """
+      """ruby
       require 'spec_helper'
 
       describe "Using an options hash", :vcr => { :cassette_name => "example", :record => :new_episodes } do
