@@ -47,5 +47,18 @@ module VCR
       end
     end
     alias :tag :tags
+
+    def tags_with_prefix(prefix, options={})
+      tag_regex = /^(\s*(\@\w+)[,]?)+/
+      Dir.glob('**/**.feature').each do |f|
+        contents = File.read(f)
+        cuke_tags = contents.scan(tag_regex).flatten.map(&:strip).uniq
+        prefixed_tags = cuke_tags.select{|x| x.include?("@#{prefix}") }
+        existing_tags = self.class.instance_variable_get("@tags")
+        prefixed_tags -= existing_tags
+        self.tags(*prefixed_tags, options) unless prefixed_tags.empty?
+      end
+    end
   end
+
 end
