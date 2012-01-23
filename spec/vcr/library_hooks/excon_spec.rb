@@ -98,6 +98,26 @@ describe "Excon hook" do
       connection.request_kernel_call_counts.should eq(true => 3, false => 3)
     end
 
+    def error_raised_by
+      yield
+    rescue => e
+      return e
+    else
+      raise "No error was raised"
+    end
+
+    it 'raises the same error class as excon itself raises' do
+      real_error, stubbed_error = 2.times.map do
+        error_raised_by do
+          VCR.use_cassette('excon_error', :record => :once) do
+            Excon.get("http://localhost:#{VCR::SinatraApp.port}/not_found", :expects => 200)
+          end
+        end
+      end
+
+      stubbed_error.class.should be(real_error.class)
+    end
+
     it_behaves_like "request hooks", :excon do
       undef make_request
       def make_request(disabled = false)

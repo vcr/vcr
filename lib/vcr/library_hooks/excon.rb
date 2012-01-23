@@ -46,9 +46,16 @@ module VCR
           end
         end
 
+        def real_request_params
+          # TODO: should we change :retry_limit and :expects for an ignored request?
+          params.merge(:mock => false, :retry_limit => 0).tap do |p|
+            p.delete(:expects)
+          end
+        end
+
         def perform_real_request
           begin
-            response = ::Excon.new(uri).request(params.merge(:mock => false, :retry_limit => 0))
+            response = ::Excon.new(uri).request(real_request_params)
           rescue ::Excon::Errors::Error => excon_error
             response = response_from_excon_error(excon_error)
           end
