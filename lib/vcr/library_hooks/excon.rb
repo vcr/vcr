@@ -48,7 +48,7 @@ module VCR
 
         def perform_real_request
           begin
-            response = ::Excon.new(uri).request(params.merge(:mock => false))
+            response = ::Excon.new(uri).request(params.merge(:mock => false, :retry_limit => 0))
           rescue ::Excon::Errors::Error => excon_error
             response = response_from_excon_error(excon_error)
           end

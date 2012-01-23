@@ -74,6 +74,30 @@ describe "Excon hook" do
       }.to raise_error(Excon::Errors::Error)
     end
 
+    it 'performs the right number of retries' do
+      connection = Excon.new("http://localhost:#{VCR::SinatraApp.port}/not_found")
+
+      # Excon define's .stub so we can't use RSpec's here...
+      Excon.should_receive(:new).at_least(:once).and_return(connection)
+
+      connection.extend Module.new {
+        def request_kernel_call_counts
+          @request_kernel_call_counts ||= Hash.new(0)
+        end
+
+        def request_kernel(params, &block)
+          request_kernel_call_counts[params[:mock]] += 1
+          super
+        end
+      }
+
+      expect {
+        connection.get(:expects => 200, :idempotent => true, :retry_limit => 3)
+      }.to raise_error(Excon::Errors::Error)
+
+      connection.request_kernel_call_counts.should eq(true => 3, false => 3)
+    end
+
     it_behaves_like "request hooks", :excon do
       undef make_request
       def make_request(disabled = false)
