@@ -47,9 +47,14 @@ module VCR
         end
 
         def real_request_params
-          # TODO: should we change :retry_limit and :expects for an ignored request?
+          # Excon supports a variety of options that affect how it handles failure
+          # and retry; we don't want to use any options here--we just want to get
+          # a raw response, and then the main request (with :mock => true) can
+          # handle failure/retry on its own with its set options.
           params.merge(:mock => false, :retry_limit => 0).tap do |p|
-            p.delete(:expects)
+            [:expects, :idempotent, :instrumentor_name, :instrumentor].each do |key|
+              p.delete(key)
+            end
           end
         end
 
