@@ -3,22 +3,48 @@ module VCR
   class RequestHandler
     def handle
       invoke_before_request_hook
-      return on_ignored_request    if should_ignore?
-      return on_stubbed_request    if stubbed_response
-      return on_recordable_request if VCR.real_http_connections_allowed?
-      on_unhandled_request
+
+      # The before_request hook can change the type of request
+      # (i.e. by inserting a cassette), so we need to query the
+      # request type again.
+      #
+      # Likewise, the main handler logic an modify what
+      # #request_type would return (i.e. when a response stub is
+      # used), so we need to store the request type for the
+      # the after_request hook.
+      set_typed_request_for_after_hook
+
+      send "on_#{request_type}_request"
     end
 
   private
 
+    def typed_request
+      vcr_request.type = request_type
+      vcr_request
+    end
+
+    def set_typed_request_for_after_hook
+      @after_hook_typed_request = typed_request
+    end
+
+    def request_type
+      case
+        when should_ignore?                     then :ignored
+        when has_response_stub?                 then :stubbed
+        when VCR.real_http_connections_allowed? then :recordable
+        else                                         :unhandled
+      end
+    end
+
     def invoke_before_request_hook
       return if disabled?
-      VCR.configuration.invoke_hook(:before_http_request, vcr_request)
+      VCR.configuration.invoke_hook(:before_http_request, typed_request)
     end
 
     def invoke_after_request_hook(vcr_response)
       return if disabled?
-      VCR.configuration.invoke_hook(:after_http_request, vcr_request, vcr_response)
+      VCR.configuration.invoke_hook(:after_http_request, @after_hook_typed_request, vcr_response)
     end
 
     def should_ignore?
@@ -27,6 +53,10 @@ module VCR
 
     def disabled?
       VCR.library_hooks.disabled?(library_name)
+    end
+
+    def has_response_stub?
+      VCR.http_interactions.has_interaction_matching?(vcr_request)
     end
 
     def stubbed_response

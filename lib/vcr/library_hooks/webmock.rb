@@ -8,27 +8,7 @@ module VCR
   class LibraryHooks
     # @private
     module WebMock
-      # @private
-      module Helpers
-        def vcr_request_from(webmock_request)
-          VCR::Request.new \
-            webmock_request.method,
-            webmock_request.uri.to_s,
-            webmock_request.body,
-            webmock_request.headers
-        end
-
-        def vcr_response_from(response)
-          VCR::Response.new \
-            VCR::ResponseStatus.new(response.status.first, response.status.last),
-            response.headers,
-            response.body,
-            nil
-        end
-      end
-
       class RequestHandler < ::VCR::RequestHandler
-        include Helpers
 
         attr_reader :request
         def initialize(request)
@@ -37,8 +17,17 @@ module VCR
 
       private
 
+        def set_typed_request_for_after_hook
+          super
+          request.instance_variable_set(:@__typed_vcr_request, @after_hook_typed_request)
+        end
+
         def vcr_request
-          @vcr_request ||= vcr_request_from(request)
+          @vcr_request ||= VCR::Request.new \
+            request.method,
+            request.uri.to_s,
+            request.body,
+            request.headers
         end
 
         def on_unhandled_request
@@ -55,14 +44,21 @@ module VCR
         end
       end
 
-      extend Helpers
+      # @private
+      def self.vcr_response_from(response)
+        VCR::Response.new \
+          VCR::ResponseStatus.new(response.status.first, response.status.last),
+          response.headers,
+          response.body,
+          nil
+      end
 
       ::WebMock.globally_stub_request { |req| RequestHandler.new(req).handle }
 
       ::WebMock.after_request(:real_requests_only => true) do |request, response|
         unless VCR.library_hooks.disabled?(:webmock)
           http_interaction = VCR::HTTPInteraction.new \
-            vcr_request_from(request),
+            request.send(:instance_variable_get, :@__typed_vcr_request),
             vcr_response_from(response)
 
           VCR.record_http_interaction(http_interaction)
@@ -71,7 +67,8 @@ module VCR
 
       ::WebMock.after_request do |request, response|
         unless VCR.library_hooks.disabled?(:webmock)
-          VCR.configuration.invoke_hook(:after_http_request, vcr_request_from(request), vcr_response_from(response))
+          typed_vcr_request = request.send(:remove_instance_variable, :@__typed_vcr_request)
+          VCR.configuration.invoke_hook(:after_http_request, typed_vcr_request, vcr_response_from(response))
         end
       end
     end

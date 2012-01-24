@@ -124,7 +124,7 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
       VCR.configuration.ignore_request { |r| true }
     end
 
-    it_behaves_like "request hooks", :fakeweb do
+    it_behaves_like "request hooks", :fakeweb, :ignored do
       undef assert_expected_response
       def assert_expected_response(response)
         response.should be_nil

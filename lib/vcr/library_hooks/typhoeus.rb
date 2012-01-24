@@ -9,41 +9,30 @@ module VCR
     # @private
     module Typhoeus
       # @private
-      module Helpers
-        def vcr_request_from(request)
-          VCR::Request.new \
+      class RequestHandler < ::VCR::RequestHandler
+        attr_reader :request
+        def initialize(request)
+          @request = request
+        end
+
+        def vcr_request
+          @vcr_request ||= VCR::Request.new \
             request.method,
             request.url,
             request.body,
             request.headers
         end
 
-        def vcr_response_from(response)
-          VCR::Response.new \
-            VCR::ResponseStatus.new(response.code, response.status_message),
-            response.headers_hash,
-            response.body,
-            response.http_version
-        end
-      end
-
-      class RequestHandler < ::VCR::RequestHandler
-        include Helpers
-
-        attr_reader :request
-        def initialize(request)
-          @request = request
-        end
-
       private
+
+        def set_typed_request_for_after_hook
+          super
+          request.instance_variable_set(:@__typed_vcr_request, @after_hook_typed_request)
+        end
 
         def on_unhandled_request
           invoke_after_request_hook(nil)
           super
-        end
-
-        def vcr_request
-          @vcr_request ||= vcr_request_from(request)
         end
 
         def on_stubbed_request
@@ -64,17 +53,26 @@ module VCR
         end
       end
 
-      extend Helpers
+      # @private
+      def self.vcr_response_from(response)
+        VCR::Response.new \
+          VCR::ResponseStatus.new(response.code, response.status_message),
+          response.headers_hash,
+          response.body,
+          response.http_version
+      end
+
       ::Typhoeus::Hydra.after_request_before_on_complete do |request|
         unless VCR.library_hooks.disabled?(:typhoeus)
-          vcr_request, vcr_response = vcr_request_from(request), vcr_response_from(request.response)
+          vcr_response = vcr_response_from(request.response)
+          typed_vcr_request = request.send(:remove_instance_variable, :@__typed_vcr_request)
 
           unless request.response.mock?
-            http_interaction = VCR::HTTPInteraction.new(vcr_request, vcr_response)
+            http_interaction = VCR::HTTPInteraction.new(typed_vcr_request, vcr_response)
             VCR.record_http_interaction(http_interaction)
           end
 
-          VCR.configuration.invoke_hook(:after_http_request, vcr_request, vcr_response)
+          VCR.configuration.invoke_hook(:after_http_request, typed_vcr_request, vcr_response)
         end
       end
 

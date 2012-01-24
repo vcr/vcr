@@ -150,14 +150,14 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
     end
 
     describe "request hooks" do
-      context 'when there is an around_http_request hook' do
-        before(:each) do
-          # ensure that all the other library hooks are disabled so that we don't
-          # get double-hookage (such as for WebMock and Typhoeus both invoking the
-          # hooks for a typhoeus request)
-          VCR.library_hooks.stub(:disabled?) { |lib_name| lib_name != library_hook_name }
-        end
+      before(:each) do
+        # ensure that all the other library hooks are disabled so that we don't
+        # get double-hookage (such as for WebMock and Typhoeus both invoking the
+        # hooks for a typhoeus request)
+        VCR.library_hooks.stub(:disabled?) { |lib_name| lib_name != library_hook_name }
+      end
 
+      context 'when there is an around_http_request hook' do
         let(:request_url) { "http://localhost:#{VCR::SinatraApp.port}/foo" }
 
         it 'yields the request to the block' do
@@ -247,18 +247,35 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
         end
       end if RUBY_VERSION >= '1.9'
 
+      it 'correctly assigns the correct type to both before and after request hooks, even if they are different' do
+        before_type = after_type = nil
+        VCR.configuration.before_http_request do |request|
+          before_type = request.type
+          VCR.insert_cassette('example')
+        end
+
+        VCR.configuration.after_http_request do |request|
+          after_type = request.type
+          VCR.eject_cassette
+        end
+
+        make_http_request(:get, "http://localhost:#{VCR::SinatraApp.port}/foo")
+        before_type.should be(:unhandled)
+        after_type.should be(:recordable)
+      end
+
       context "when the request is ignored" do
         before(:each) do
           VCR.configuration.ignore_request { |r| true }
         end
 
-        it_behaves_like "request hooks", library_hook_name
+        it_behaves_like "request hooks", library_hook_name, :ignored
       end
 
       context 'when the request is recorded' do
         let!(:inserted_cassette) { VCR.insert_cassette('new_cassette') }
 
-        it_behaves_like "request hooks", library_hook_name do
+        it_behaves_like "request hooks", library_hook_name, :recordable do
           let(:string_in_cassette) { 'example.com get response 1 with path=foo' }
 
           it 'plays back the cassette when a request is made' do
@@ -290,11 +307,11 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
           stub_requests([http_interaction(request_url)], [:method, :uri])
         end
 
-        it_behaves_like "request hooks", library_hook_name
+        it_behaves_like "request hooks", library_hook_name, :stubbed
       end
 
       context 'when the request is not allowed' do
-        it_behaves_like "request hooks", library_hook_name do
+        it_behaves_like "request hooks", library_hook_name, :unhandled do
           undef assert_expected_response
           def assert_expected_response(response)
             response.should be_nil

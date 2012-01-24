@@ -87,6 +87,8 @@ module VCR
     include Normalizers::Header
     include Normalizers::Body
 
+    attr_accessor :type
+
     def initialize(*args)
       super
       self.method = self.method.to_s.downcase.to_sym if self.method

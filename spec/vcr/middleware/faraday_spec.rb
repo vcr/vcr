@@ -66,7 +66,7 @@ describe VCR::Middleware::Faraday do
       end
     end
 
-    it_behaves_like "request hooks", :faraday do
+    it_behaves_like "request hooks", :faraday, :recordable do
       let!(:inserted_cassette) { VCR.insert_cassette('new_cassette') }
 
       undef make_request
