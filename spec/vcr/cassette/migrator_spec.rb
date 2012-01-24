@@ -123,7 +123,7 @@ EOF
   it 'migrates a cassette from the 1.x to 2.x format' do
     File.open(file_name, 'w') { |f| f.write(original_contents) }
     subject.migrate!
-    File.read(file_name).should eq(updated_contents)
+    YAML.load_file(file_name).should eq(YAML.load(updated_contents))
     output.should match(/Migrated example.yml/)
   end
 
@@ -145,7 +145,7 @@ EOF
     modified_contents = original_contents.gsub('example.com', '<HOST>')
     File.open(file_name, 'w') { |f| f.write(modified_contents) }
     subject.migrate!
-    File.read(file_name).should eq(updated_contents.gsub('example.com', '<HOST>:80'))
+    YAML.load_file(file_name).should eq(YAML.load(updated_contents.gsub('example.com', '<HOST>:80')))
   end
 
   it 'ignores files that are empty' do
