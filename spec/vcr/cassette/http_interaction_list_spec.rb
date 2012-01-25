@@ -81,6 +81,73 @@ module VCR
         end
       end
 
+      describe "has_interaction_matching?" do
+        it 'returns false when the list is empty' do
+          HTTPInteractionList.new([], [:method]).should_not have_interaction_matching(stub)
+        end
+
+        it 'returns false when there is no matching interaction' do
+          list.should_not have_interaction_matching(request_with(:method => :get))
+        end
+
+        it 'returns true when there is a matching interaction' do
+          list.should have_interaction_matching(request_with(:method => :post))
+        end
+
+        it 'does not consume the interactions when they match' do
+          list.should have_interaction_matching(request_with(:method => :post))
+          list.remaining_unused_interaction_count.should eq(3)
+          list.should have_interaction_matching(request_with(:method => :post))
+          list.remaining_unused_interaction_count.should eq(3)
+        end
+
+        it 'invokes each matcher block to find the matching interaction' do
+          VCR.request_matchers.register(:foo) { |r1, r2| true }
+          VCR.request_matchers.register(:bar) { |r1, r2| true }
+
+          calls = 0
+          VCR.request_matchers.register(:baz) { |r1, r2| calls += 1; calls == 2 }
+
+          list = HTTPInteractionList.new([
+            interaction('response', :method => :put)
+          ], [:foo, :bar, :baz])
+
+          list.should_not have_interaction_matching(request_with(:method => :post))
+          list.should     have_interaction_matching(request_with(:method => :post))
+        end
+
+        it "delegates to the parent list when it can't find a matching interaction" do
+          parent_list = mock(:has_interaction_matching? => true)
+          HTTPInteractionList.new( [], [:method], false, parent_list).should have_interaction_matching(stub)
+          parent_list = mock(:has_interaction_matching? => false)
+          HTTPInteractionList.new( [], [:method], false, parent_list).should_not have_interaction_matching(stub)
+        end
+
+        context 'when allow_playback_repeats is set to true' do
+          let(:allow_playback_repeats) { true }
+
+          it 'considers used interactions' do
+            list.response_for(request_with(:method => :put))
+
+            10.times.map {
+              list.has_interaction_matching?(request_with(:method => :put))
+            }.should eq([true] * 10)
+          end
+        end
+
+        context 'when allow_playback_repeats is set to false' do
+          let(:allow_playback_repeats) { false }
+
+          it 'does not consider used interactions' do
+            list.response_for(request_with(:method => :put))
+
+            10.times.map {
+              list.has_interaction_matching?(request_with(:method => :put))
+            }.should eq([false] * 10)
+          end
+        end
+      end
+
       describe "#response_for" do
         it 'returns nil when the list is empty' do
           HTTPInteractionList.new([], [:method]).response_for(stub).should respond_with(nil)

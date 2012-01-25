@@ -6,6 +6,7 @@ module VCR
       module NullList
         extend self
         def response_for(*a); nil; end
+        def has_interaction_matching?(*a); false; end
         def has_used_interaction_matching?(*a); false; end
         def remaining_unused_interaction_count(*a); 0; end
       end
@@ -30,6 +31,12 @@ module VCR
         else
           @parent_list.response_for(request)
         end
+      end
+
+      def has_interaction_matching?(request)
+        !!matching_interaction_index_for(request) ||
+        !!matching_used_interaction_for(request) ||
+        @parent_list.has_interaction_matching?(request)
       end
 
       def has_used_interaction_matching?(request)
