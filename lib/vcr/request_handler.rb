@@ -5,7 +5,10 @@ module VCR
       invoke_before_request_hook
       return on_ignored_request    if should_ignore?
       return on_stubbed_request    if stubbed_response
-      return on_recordable_request if VCR.real_http_connections_allowed?
+      if VCR.real_http_connections_allowed?
+        invoke_before_real_request_hook
+        return on_recordable_request
+      end
       on_connection_not_allowed
     end
 
@@ -19,6 +22,11 @@ module VCR
     def invoke_after_request_hook(vcr_response)
       return if disabled?
       VCR.configuration.invoke_hook(:after_http_request, vcr_request, vcr_response)
+    end
+
+    def invoke_before_real_request_hook
+      return if disabled?
+      VCR.configuration.invoke_hook(:before_real_http_request, vcr_request)
     end
 
     def should_ignore?

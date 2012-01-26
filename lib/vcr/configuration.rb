@@ -75,6 +75,22 @@ module VCR
     # @see #around_http_request
     define_hook :before_http_request
 
+    # Adds a callback that will be called with each real HTTP request before it is made.
+    #
+    # @example
+    #  VCR.configure do |c|
+    #    c.before_real_http_request do |request|
+    #      puts "Request: #{request.method} #{request.uri}"
+    #    end
+    #  end
+    #
+    # @yield the callback
+    # @yieldparam request [VCR::Request] the request that is being made
+    # @see #before_http_request
+    # @see #after_http_request
+    # @see #around_http_request
+    define_hook :before_real_http_request
+
     # Adds a callback that will be called with each HTTP request after it is complete.
     #
     # @example
