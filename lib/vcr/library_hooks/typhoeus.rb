@@ -37,7 +37,7 @@ module VCR
 
       private
 
-        def on_connection_not_allowed
+        def on_unhandled_request
           invoke_after_request_hook(nil)
           super
         end

@@ -6,7 +6,7 @@ module VCR
       return on_ignored_request    if should_ignore?
       return on_stubbed_request    if stubbed_response
       return on_recordable_request if VCR.real_http_connections_allowed?
-      on_connection_not_allowed
+      on_unhandled_request
     end
 
   private
@@ -48,7 +48,7 @@ module VCR
     def on_recordable_request
     end
 
-    def on_connection_not_allowed
+    def on_unhandled_request
       raise VCR::Errors::UnhandledHTTPRequestError.new(vcr_request)
     end
   end
