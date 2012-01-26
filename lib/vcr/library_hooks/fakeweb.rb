@@ -65,12 +65,6 @@ module VCR
           perform_request(net_http.started?)
         end
 
-        # overriden to prevent it from invoking the after_http_request hook,
-        # since we invoke the hook in an ensure block above.
-        def on_connection_not_allowed
-          raise VCR::Errors::UnhandledHTTPRequestError.new(vcr_request)
-        end
-
         def perform_request(started, record_interaction = false)
           # Net::HTTP calls #request recursively in certain circumstances.
           # We only want to record the request when the request is started, as
