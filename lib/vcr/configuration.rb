@@ -113,6 +113,8 @@ module VCR
     #     c.cassette_library_dir = 'spec/cassettes'
     #   end
     attr_reader :cassette_library_dir
+
+    # Sets the directory to read cassettes from and write cassettes to.
     def cassette_library_dir=(cassette_library_dir)
       FileUtils.mkdir_p(cassette_library_dir) if cassette_library_dir
       @cassette_library_dir = cassette_library_dir ? absolute_path_for(cassette_library_dir) : nil
@@ -130,6 +132,8 @@ module VCR
     #   end
     # @note {VCR#insert_cassette} for the list of valid options.
     attr_reader :default_cassette_options
+
+    # Sets the default options that apply to every cassette.
     def default_cassette_options=(overrides)
       @default_cassette_options.merge!(overrides)
     end
