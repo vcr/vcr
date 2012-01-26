@@ -33,6 +33,17 @@ Cucumber::Rake::Task.new
 
 task :default => [:spec, :cucumber]
 
+desc "Ensures we keep up 100% YARD coverage"
+task :yard_coverage do
+  coverage_stats = `yard stats --list-undoc 2>&1`
+  if coverage_stats.include?('100.00% documented')
+    puts "Nice work! 100% documentation coverage"
+  else
+    puts coverage_stats
+    raise "Documentation coverage is less than 100%"
+  end
+end
+
 namespace :ci do
   desc "Sets things up for a ci build on travis-ci.org"
   task :setup do
@@ -51,7 +62,7 @@ namespace :ci do
   end
 
   desc "Run a ci build"
-  task :build => [:setup, :spec, :cucumber]
+  task :build => [:setup, :spec, :cucumber, :yard_coverage]
 end
 
 def ensure_relish_doc_symlinked(filename)
