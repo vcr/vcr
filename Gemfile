@@ -7,6 +7,8 @@ group :development do
   end
 end
 
+gem 'yard'
+
 # Additional gems that are useful, but not required for development.
 group :extras do
   gem 'guard-rspec'
@@ -15,7 +17,6 @@ group :extras do
   gem 'fuubar'
   gem 'fuubar-cucumber'
 
-  gem 'yard'
   gem 'redcarpet', '~> 1.17.2'
   gem 'github-markup'
 
