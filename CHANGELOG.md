@@ -2,6 +2,34 @@
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.rc1...master)
 
+## New Features
+
+  * Add YARD documentation for the public API. Thanks to
+    [Ben Oakes](https://github.com/benjaminoakes) for help with setting
+    this up.
+  * Fix `around_http_request` hook so that `request.proceed` returns
+    the response.
+  * Resolve `cassette_library_dir` to an absolute path. Thanks to
+    [Nate Clark](https://github.com/heythisisnate) for the suggestion.
+
+## Bug Fixes
+
+  * Fix rspec metadata integration to allow the cassette name to be set
+    at the example group level and apply to multiple examples. Thanks to
+    [Paul Russell](https://github.com/pauljamesrussell) for reporting the
+    bug.
+  * Add missing `require 'vcr/version'` to the cassette migrator task.
+    If you tried the migration rake task with 2.0.0.rc1 and got a
+    `NoMethodError`, it should be fixed now.
+  * Update Excon dependency to 0.9.5; 0.9.5 includes an important bug
+    fix needed by VCR.
+  * Ensure the excon retry limit is honored properly.
+  * Ensure that the correct error class is raised by excon when stubbing
+    an unexpected status.
+  * Fix FakeWeb library hook so that it records the request body when
+    using `Net::HTTP.post_form`. Thanks to
+    [Retistic](https://github.com/Retistic) for reporting the bug.
+
 ## 2.0.0 RC 1 (December 8, 2011)
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.beta2...v2.0.0.rc1)
