@@ -48,6 +48,15 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
       VCR.stub(:real_http_connections_allowed? => true)
     end
 
+    it 'records the request body when using #post_form' do
+      VCR.should_receive(:record_http_interaction) do |interaction|
+        interaction.request.body.should eq("q=ruby&max=50")
+      end
+
+      uri = URI("http://localhost:#{VCR::SinatraApp.port}/foo")
+      Net::HTTP.post_form(uri, 'q' => 'ruby', 'max' => '50')
+    end
+
     it "does not record headers for which Net::HTTP sets defaults near the end of the real request" do
       VCR.should_receive(:record_http_interaction) do |interaction|
         interaction.request.headers.should_not have_key('content-type')

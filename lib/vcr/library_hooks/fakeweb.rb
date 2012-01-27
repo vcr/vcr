@@ -113,7 +113,7 @@ module VCR
           @vcr_request ||= VCR::Request.new \
             request.method.downcase.to_sym,
             uri,
-            request_body,
+            (request_body || request.body),
             request.to_hash
         end
 
