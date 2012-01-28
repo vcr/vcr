@@ -18,16 +18,6 @@ RSpec::Core::RakeTask.new(:spec) do |t|
   t.rspec_opts = %w[--format progress] if (ENV['FULL_BUILD'] || !using_git)
 end
 
-desc "Run all examples using rcov"
-RSpec::Core::RakeTask.new :rcov => :cleanup_rcov_files do |t|
-  t.rcov = true
-  t.rcov_opts =  %[-Ilib -Ispec --exclude "spec/*,gems/*,ping,basic_object" --text-report --sort coverage --aggregate coverage.data]
-end
-
-task :cleanup_rcov_files do
-  rm_rf 'coverage.data'
-end
-
 require 'cucumber/rake/task'
 Cucumber::Rake::Task.new
 

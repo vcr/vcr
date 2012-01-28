@@ -24,7 +24,6 @@ group :extras do
   gem 'github-markup'
 
   platforms :mri do
-    gem 'rcov'
     gem 'rb-fsevent'
   end
 
