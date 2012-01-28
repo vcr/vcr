@@ -9,21 +9,6 @@ describe VCR::Middleware::Faraday do
       :not_disableable
   end
 
-  it_performs('version checking', 'Faraday',
-    :valid    => %w[ 0.7.0 0.7.10 ],
-    :too_low  => %w[ 0.6.9 0.5.99 ],
-    :too_high => %w[ 0.8.0 1.0.0 ],
-    :file     => 'vcr/middleware/faraday.rb'
-  ) do
-    before(:each) { @orig_version = Faraday::VERSION }
-    after(:each)  { Faraday::VERSION = @orig_version }
-
-    # Cannot be regular method def as that raises a "dynamic constant assignment" error
-    define_method :stub_version do |version|
-      ::Faraday::VERSION = version
-    end
-  end
-
   context 'when making parallel requests' do
     include VCRStubHelpers
     let(:parallel_manager)   { ::Faraday::Adapter::Typhoeus.setup_parallel_manager }
