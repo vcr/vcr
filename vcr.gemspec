@@ -17,38 +17,32 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 1.8.7'
   s.required_rubygems_version = '>= 1.3.5'
 
-  {
-    'bundler'         => '~> 1.0.7',
-    'rake'            => '~> 0.9.2',
+  s.add_development_dependency 'bundler', '~> 1.0.7'
+  s.add_development_dependency 'rake', '~> 0.9.2'
 
-    'cucumber'        => '~> 1.0.3',
-    'aruba'           => '~> 0.4.6',
+  s.add_development_dependency 'cucumber', '~> 1.0.3'
+  s.add_development_dependency 'aruba', '~> 0.4.6'
 
-    'rspec'           => '~> 2.8.0',
-    'shoulda'         => '~> 2.9.2',
+  s.add_development_dependency 'rspec', '~> 2.8.0'
+  s.add_development_dependency 'shoulda', '~> 2.9.2'
 
-    'fakeweb'         => '~> 1.3.0',
-    'webmock'         => '~> 1.7.8',
-    'addressable'     => '~> 2.2.6',
+  s.add_development_dependency 'fakeweb', '~> 1.3.0'
+  s.add_development_dependency 'webmock', '~> 1.7.8'
+  s.add_development_dependency 'addressable', '~> 2.2.6'
 
-    'faraday'         => '~> 0.7.2',
-    'httpclient'      => '~> 2.1.5.2',
-    'excon'           => '~> 0.9.5',
+  s.add_development_dependency 'faraday', '~> 0.7.2'
+  s.add_development_dependency 'httpclient', '~> 2.1.5.2'
+  s.add_development_dependency 'excon', '~> 0.9.5'
 
-    'timecop'         => '~> 0.3.5',
-    'rack'            => '1.1.0',
-    'sinatra'         => '~> 1.1.0',
-    'multi_json'      => '~> 1.0.3'
-  }.each do |lib, version|
-    s.add_development_dependency lib, version
+  s.add_development_dependency 'timecop', '~> 0.3.5'
+  s.add_development_dependency 'rack', '1.1.0'
+  s.add_development_dependency 'sinatra', '~> 1.1.0'
+  s.add_development_dependency 'multi_json', '~> 1.0.3'
+
+  unless RUBY_PLATFORM == 'java'
+    s.add_development_dependency 'patron', '~> 0.4.15'
+    s.add_development_dependency 'em-http-request', '~> 0.3.0'
+    s.add_development_dependency 'curb', '0.7.15'
+    s.add_development_dependency 'typhoeus', '~> 0.3.3'
   end
-
-  {
-    'patron'          => '~> 0.4.15',
-    'em-http-request' => '~> 0.3.0',
-    'curb'            => '0.7.15',
-    'typhoeus'        => '~> 0.3.3'
-  }.each do |lib, version|
-    s.add_development_dependency lib, version
-  end unless RUBY_PLATFORM == 'java'
 end
