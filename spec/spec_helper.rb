@@ -10,6 +10,13 @@ SimpleCov.start do
   add_filter "internet_connection"
 end
 
+SimpleCov.at_exit do
+  File.open(File.join(SimpleCov.coverage_path, 'coverage_percent.txt'), 'w') do |f|
+    f.write SimpleCov.result.covered_percent
+  end
+  SimpleCov.result.format!
+end
+
 using_git = File.exist?(File.expand_path('../../.git/', __FILE__))
 if using_git
   require 'bundler'

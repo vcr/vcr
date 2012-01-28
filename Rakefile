@@ -34,6 +34,16 @@ task :yard_coverage do
   end
 end
 
+desc "Checks the spec coverage and fails if it is less than 100%"
+task :check_code_coverage do
+  percent = File.read("./coverage/coverage_percent.txt").to_f
+  if percent < 99.0
+    raise "Spec coverage was not high enough: #{percent.round(2)}%"
+  else
+    puts "Nice job! Spec coverage is still above 99%"
+  end
+end
+
 namespace :ci do
   desc "Sets things up for a ci build on travis-ci.org"
   task :setup do
@@ -52,7 +62,7 @@ namespace :ci do
   end
 
   desc "Run a ci build"
-  task :build => [:setup, :spec, :cucumber, :yard_coverage]
+  task :build => [:setup, :spec, :cucumber, :yard_coverage, :check_code_coverage]
 end
 
 def ensure_relish_doc_symlinked(filename)
