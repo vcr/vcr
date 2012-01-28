@@ -8,6 +8,9 @@ group :development do
 end
 
 gem 'yard'
+platforms :mri_19 do
+  gem 'simplecov'
+end
 
 # Additional gems that are useful, but not required for development.
 group :extras do

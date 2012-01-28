@@ -1,4 +1,5 @@
 require 'rubygems'
+require 'simplecov'
 
 using_git = File.exist?(File.expand_path('../../.git/', __FILE__))
 if using_git
