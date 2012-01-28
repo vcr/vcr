@@ -97,12 +97,8 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
     end
   end
 
-  describe "VCR.configuration.after_library_hooks_loaded hook", :disable_warnings do
-    before(:each) do
-      load "vcr/library_hooks/fakeweb.rb" # to re-add the hook since it's cleared by each test
-    end
-
-    let(:run_hook) { VCR.configuration.invoke_hook(:after_library_hooks_loaded) }
+  describe "VCR.configuration.after_library_hooks_loaded hook" do
+    let(:run_hook) { $fakeweb_after_loaded_hook.call }
 
     context 'when WebMock has been loaded' do
       before(:each) { defined?(WebMock).should be_true }
