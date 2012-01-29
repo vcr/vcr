@@ -155,4 +155,4 @@ Thanks also to the following people who have contributed patches or helpful sugg
 
 ## Copyright
 
-Copyright (c) 2010-2011 Myron Marston. See LICENSE for details.
+Copyright (c) 2010-2012 Myron Marston. See LICENSE for details.
