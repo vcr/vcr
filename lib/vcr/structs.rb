@@ -1,5 +1,4 @@
 require 'time'
-require 'forwardable'
 
 module VCR
   # @private
