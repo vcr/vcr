@@ -117,6 +117,23 @@ describe VCR::Configuration do
     end
   end
 
+  describe "#before_record hook", :with_monkey_patches => :fakeweb do
+    specify 'the request on the yielded interaction is not typed even though the request given to before_http_request is' do
+      before_record_req = before_request_req = nil
+      VCR.configure do |c|
+        c.before_http_request { |r| before_request_req = r }
+        c.before_record { |i| before_record_req = i.request }
+      end
+
+      VCR.use_cassette("example") do
+        ::Net::HTTP.get_response(URI("http://localhost:#{VCR::SinatraApp.port}/foo"))
+      end
+
+      before_record_req.respond_to?(:type).should be_false
+      before_request_req.respond_to?(:type).should be_true
+    end
+  end
+
   %w[ filter_sensitive_data define_cassette_placeholder ].each do |method|
     describe "##{method}" do
       let(:interaction) { mock('interaction') }

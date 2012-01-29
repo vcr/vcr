@@ -20,8 +20,7 @@ module VCR
   private
 
     def typed_request
-      vcr_request.type = request_type
-      vcr_request
+      Request::Typed.new(vcr_request, request_type)
     end
 
     def set_typed_request_for_after_hook

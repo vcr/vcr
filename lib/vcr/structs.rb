@@ -1,4 +1,5 @@
 require 'time'
+require 'delegate'
 
 module VCR
   # @private
@@ -87,8 +88,6 @@ module VCR
     include Normalizers::Header
     include Normalizers::Body
 
-    attr_accessor :type
-
     def initialize(*args)
       super
       self.method = self.method.to_s.downcase.to_sym if self.method
@@ -126,6 +125,21 @@ module VCR
     def method(*args)
       return super if args.empty?
       @@object_method.bind(self).call(*args)
+    end
+
+    # Decorates a {Request} with its current type.
+    class Typed < DelegateClass(self)
+      # @return [Symbol] One of `:ignored`, `:stubbed`, `:recordable` or `:unhandled`.
+      attr_reader :type
+
+      # @param [Request] the request
+      # @param [Symbol] the type. Should be one of `:ignored`, `:stubbed`, `:recordable` or `:unhandled`.
+      def initialize(request, type)
+        @type = type
+        super(request)
+      end
+
+      undef method
     end
 
     # Transforms the request into a fiber aware one by extending
