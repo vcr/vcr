@@ -142,18 +142,8 @@ module VCR
       undef method
     end
 
-    # Transforms the request into a fiber aware one by extending
-    # the {FiberAware} module onto the instance. Necessary for the
-    # {VCR::Configuration#around_http_request} hook.
-    #
-    # @return [Request] the request instance
-    def fiber_aware
-      extend FiberAware
-    end
-
-    # Designed to be extended onto a {VCR::Request} instance in order to make
-    # it fiber-aware for the {VCR::Configuration#around_http_request} hook.
-    module FiberAware
+    # Provides fiber-awareness for the {VCR::Configuration#around_http_request} hook.
+    class FiberAware < DelegateClass(Typed)
       # Yields the fiber so the request can proceed.
       #
       # @return [VCR::Response] the response from the request
@@ -169,6 +159,17 @@ module VCR
       def to_proc
         lambda { proceed }
       end
+
+      undef method
+    end
+
+    # Transforms the request into a fiber aware one by extending
+    # the {FiberAware} module onto the instance. Necessary for the
+    # {VCR::Configuration#around_http_request} hook.
+    #
+    # @return [Request] the request instance
+    def fiber_aware
+      extend FiberAware
     end
 
   private

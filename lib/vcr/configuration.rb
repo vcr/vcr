@@ -351,7 +351,7 @@ module VCR
 
     def start_new_fiber_for(request, block)
       Fiber.new(&block).tap do |fiber|
-        fiber.resume(request.fiber_aware)
+        fiber.resume(Request::FiberAware.new(request))
       end
     end
 
