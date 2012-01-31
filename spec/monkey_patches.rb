@@ -118,7 +118,7 @@ unless RUBY_INTERPRETER == :jruby
   require 'curb'
 
   require 'vcr/library_hooks/typhoeus'
-  $typhoeus_after_loaded_hook = VCR.configuration.send(:hooks_for, :after_library_hooks_loaded, nil).last
+  $typhoeus_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].last
   $original_typhoeus_hooks = Typhoeus::Hydra.global_hooks.dup
 
   # define an alias that we can re-alias to in the future
@@ -128,7 +128,7 @@ unless RUBY_INTERPRETER == :jruby
 end
 
 require 'vcr/library_hooks/fakeweb'
-$fakeweb_after_loaded_hook = VCR.configuration.send(:hooks_for, :after_library_hooks_loaded, nil).last
+$fakeweb_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].last
 
 # All Net::HTTP monkey patches have now been loaded, so capture the
 # appropriate method definitions so we can disable them later.

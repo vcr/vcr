@@ -24,7 +24,7 @@ describe "Typhoeus hook", :with_monkey_patches => :typhoeus do
   describe "VCR.configuration.after_library_hooks_loaded hook" do
     it 'disables the webmock typhoeus adapter so it does not conflict with our typhoeus hook' do
       ::WebMock::HttpLibAdapters::TyphoeusAdapter.should_receive(:disable!)
-      $typhoeus_after_loaded_hook.call
+      $typhoeus_after_loaded_hook.conditionally_invoke
     end
   end
 end unless RUBY_PLATFORM == 'java'

@@ -5,17 +5,28 @@ module VCR
   module Hooks
     include VariableArgsBlockCaller
 
+    FilteredHook = Struct.new(:hook, :filters) do
+      include VariableArgsBlockCaller
+
+      def conditionally_invoke(*args)
+        filters = Array(self.filters)
+        return if filters.any? { |f| !call_block(f.to_proc, *args) }
+        call_block(hook, *args)
+      end
+    end
+
     def self.included(klass)
-      klass.extend(ClassMethods)
+      klass.class_eval do
+        extend ClassMethods
+        hooks_module = Module.new
+        const_set("DefinedHooks", hooks_module)
+        include hooks_module
+      end
     end
 
-    def invoke_hook(hook, *args)
-      invoke_tagged_hook(hook, nil, *args)
-    end
-
-    def invoke_tagged_hook(hook, tag, *args)
-      hooks_for(hook, tag).map do |callback|
-        call_block(callback, *args)
+    def invoke_hook(hook_type, *args)
+      hooks[hook_type].map do |hook|
+        hook.conditionally_invoke(*args)
       end
     end
 
@@ -23,37 +34,22 @@ module VCR
       hooks.clear
     end
 
-  private
-
     def hooks
-      @hooks ||= Hash.new do |hook_type_hash, hook_type|
-        hook_type_hash[hook_type] = Hash.new do |tag_hash, tag|
-          tag_hash[tag] = []
-        end
+      @hooks ||= Hash.new do |hash, hook_type|
+        hash[hook_type] = []
       end
-    end
-
-    def hooks_for(hook, tag)
-      for_hook = hooks[hook]
-      hooks = for_hook[tag] # matching tagged hooks
-      hooks += for_hook[nil] unless tag.nil? # untagged hooks
-      hooks
     end
 
     # @private
     module ClassMethods
-      def define_hook(hook, prepend = false)
+      def define_hook(hook_type, prepend = false)
         placement_method = prepend ? :unshift : :<<
 
-        # We use splat args here because 1.8.7 doesn't allow default
-        # values for block arguments, so we have to fake it.
-        define_method hook do |*args, &block|
-          if args.size > 1
-            raise ArgumentError.new("wrong number of arguments (#{args.size} for 1)")
+        # Put the hook methods in a module so we can override and super to these methods.
+        self::DefinedHooks.module_eval do
+          define_method hook_type do |*filters, &hook|
+            hooks[hook_type].send(placement_method, FilteredHook.new(hook, filters))
           end
-
-          tag = args.first
-          hooks[hook][tag].send(placement_method, block)
         end
       end
     end

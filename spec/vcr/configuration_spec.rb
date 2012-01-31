@@ -134,6 +134,19 @@ describe VCR::Configuration do
     end
   end
 
+  [:before_record, :before_playback].each do |hook_type|
+    describe "##{hook_type}" do
+      it 'sets up a tag filter' do
+        called = false
+        VCR.configuration.send(hook_type, :my_tag) { called = true }
+        VCR.configuration.invoke_hook(hook_type, stub, stub(:tag => nil))
+        called.should be_false
+        VCR.configuration.invoke_hook(hook_type, stub, stub(:tag => :my_tag))
+        called.should be_true
+      end
+    end
+  end
+
   %w[ filter_sensitive_data define_cassette_placeholder ].each do |method|
     describe "##{method}" do
       let(:interaction) { mock('interaction') }
@@ -142,13 +155,13 @@ describe VCR::Configuration do
       it 'adds a before_record hook that replaces the string returned by the block with the given string' do
         subject.send(method, 'foo', &lambda { 'bar' })
         interaction.should_receive(:filter!).with('bar', 'foo')
-        subject.invoke_hook(:before_record, interaction)
+        subject.invoke_hook(:before_record, interaction, stub.as_null_object)
       end
 
       it 'adds a before_playback hook that replaces the given string with the string returned by the block' do
         subject.send(method, 'foo', &lambda { 'bar' })
         interaction.should_receive(:filter!).with('foo', 'bar')
-        subject.invoke_hook(:before_playback, interaction)
+        subject.invoke_hook(:before_playback, interaction.as_null_object)
       end
 
       it 'tags the before_record hook when given a tag' do
@@ -164,14 +177,14 @@ describe VCR::Configuration do
       it 'yields the interaction to the block for the before_record hook' do
         yielded_interaction = nil
         subject.send(method, 'foo', &lambda { |i| yielded_interaction = i; 'bar' })
-        subject.invoke_hook(:before_record, interaction)
+        subject.invoke_hook(:before_record, interaction, stub.as_null_object)
         yielded_interaction.should equal(interaction)
       end
 
       it 'yields the interaction to the block for the before_playback hook' do
         yielded_interaction = nil
         subject.send(method, 'foo', &lambda { |i| yielded_interaction = i; 'bar' })
-        subject.invoke_hook(:before_playback, interaction)
+        subject.invoke_hook(:before_playback, interaction, stub.as_null_object)
         yielded_interaction.should equal(interaction)
       end
     end

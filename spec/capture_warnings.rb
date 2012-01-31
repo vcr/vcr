@@ -1,3 +1,4 @@
+require 'rspec/expectations'
 require 'tempfile'
 stderr_file = Tempfile.new("vcr.stderr")
 $stderr.reopen(stderr_file.path)

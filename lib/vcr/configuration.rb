@@ -31,6 +31,9 @@ module VCR
     # @yieldparam cassette [(optional) VCR::Cassette] The current cassette.
     # @see #before_playback
     define_hook :before_record
+    def before_record(tag = nil, &block)
+      super(filter_from(tag), &block)
+    end
 
     # Adds a callback that will be called before a previously recorded
     # HTTP interaction is loaded for playback.
@@ -56,6 +59,9 @@ module VCR
     # @yieldparam cassette [(optional) VCR::Cassette] The current cassette.
     # @see #before_record
     define_hook :before_playback
+    def before_playback(tag = nil, &block)
+      super(filter_from(tag), &block)
+    end
 
     # @private
     define_hook :after_library_hooks_loaded
@@ -357,6 +363,11 @@ module VCR
 
     def absolute_path_for(path)
       Dir.chdir(path) { Dir.pwd }
+    end
+
+    def filter_from(tag)
+      return lambda { true } unless tag
+      lambda { |_, cassette| cassette.tag == tag }
     end
   end
 end

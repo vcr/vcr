@@ -341,15 +341,14 @@ describe VCR::Cassette do
         end
 
         if stub_requests
-          it 'invokes the appropriately tagged before_playback hooks' do
-            VCR.configuration.should_receive(:invoke_tagged_hook).with(
+          it 'invokes the before_playback hooks' do
+            VCR.configuration.should_receive(:invoke_hook).with(
               :before_playback,
-              :foo,
               an_instance_of(VCR::HTTPInteraction),
               an_instance_of(VCR::Cassette)
             ).exactly(3).times
 
-            cassette = VCR::Cassette.new('example', :record => record_mode, :tag => :foo)
+            cassette = VCR::Cassette.new('example', :record => record_mode)
             cassette.should have(3).previously_recorded_interactions
           end
 
@@ -403,9 +402,8 @@ describe VCR::Cassette do
       cassette.stub!(:new_recorded_interactions).and_return(interactions)
 
       interactions.each do |i|
-        VCR.configuration.should_receive(:invoke_tagged_hook).with(
+        VCR.configuration.should_receive(:invoke_hook).with(
           :before_record,
-          :foo,
           i,
           cassette
         ).ordered

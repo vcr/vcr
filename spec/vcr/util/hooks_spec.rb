@@ -1,5 +1,73 @@
 require 'spec_helper'
 
+describe VCR::Hooks::FilteredHook do
+  describe "#conditionally_invoke" do
+    it 'invokes the hook' do
+      called = false
+      subject.hook = lambda { called = true }
+      subject.conditionally_invoke
+      called.should be_true
+    end
+
+    it 'forwards the given arguments to the hook' do
+      args = nil
+      subject.hook = lambda { |a, b| args = [a, b] }
+      subject.conditionally_invoke(3, 5)
+      args.should eq([3, 5])
+    end
+
+    it 'forwards only as many arguments as the hook block accepts' do
+      args = nil
+      subject.hook = lambda { |a| args = [a] }
+      subject.conditionally_invoke(3, 5)
+      args.should eq([3])
+    end
+
+    it 'does not invoke the hook if all of the filters return false' do
+      called = false
+      subject.hook = lambda { called = true }
+      subject.filters = lambda { false }
+      subject.conditionally_invoke
+      called.should be_false
+    end
+
+    it 'does not invoke the hook if any of the filters returns false' do
+      called = false
+      subject.hook = lambda { called = true }
+      subject.filters = [lambda { false }, lambda { true }]
+      subject.conditionally_invoke
+      called.should be_false
+    end
+
+    it 'forwards arguments to the filters' do
+      filter_args = nil
+      subject.filters = lambda { |a, b| filter_args = [a, b]; false }
+      subject.conditionally_invoke(3, 5)
+      filter_args.should eq([3, 5])
+    end
+
+    it 'forwards only as many arguments as the filter blocks accept' do
+      args1 = args2 = nil
+      subject.filters = [
+        lambda { |a| args1 = [a]; true },
+        lambda { |a, b| args2 = [a, b]; false }
+      ]
+
+      subject.conditionally_invoke(3, 5)
+      args1.should eq([3])
+      args2.should eq([3, 5])
+    end
+
+    it '#to_procs the filter objects' do
+      filter_called = false
+      subject.hook = lambda { }
+      subject.filters = [stub(:to_proc => lambda { filter_called = true })]
+      subject.conditionally_invoke
+      filter_called.should be_true
+    end
+  end
+end
+
 describe VCR::Hooks do
   let(:hooks_class) { Class.new { include VCR::Hooks } }
 
@@ -9,8 +77,22 @@ describe VCR::Hooks do
   before(:each) do
     hooks_class.instance_eval do
       define_hook :before_foo
-      define_hook :before_bar
+      define_hook :before_bar, :prepend
     end
+  end
+
+  it 'allows the class to override the hook method and super to the main definition' do
+    override_called = nil
+
+    hooks_class.class_eval do
+      define_method :before_foo do |&block|
+        override_called = true
+        super(&block)
+      end
+    end
+
+    subject.before_foo { }
+    override_called.should be_true
   end
 
   describe '#clear_hooks' do
@@ -22,14 +104,8 @@ describe VCR::Hooks do
     end
   end
 
-  describe '#invoke_hook(:before_foo)' do
-    it 'maps the return value of each callback' do
-      subject.before_foo { 17 }
-      subject.before_foo { 12 }
-      subject.invoke_hook(:before_foo).should eq([17, 12])
-    end
-
-    it 'invokes each of the :before_foo callbacks' do
+  describe '#invoke_hook' do
+    it 'invokes each of the callbacks' do
       subject.before_foo { invocations << :callback_1 }
       subject.before_foo { invocations << :callback_2 }
 
@@ -38,65 +114,22 @@ describe VCR::Hooks do
       invocations.should eq([:callback_1, :callback_2])
     end
 
-    it 'does not invoke :before_bar callbacks' do
-      subject.before_bar { invocations << :bar_callback }
-      subject.invoke_hook(:before_foo)
+    it 'maps the return value of each callback' do
+      subject.before_foo { 17 }
+      subject.before_foo { 12 }
+      subject.invoke_hook(:before_foo).should eq([17, 12])
+    end
+
+    it 'does not invoke any filtered callbacks' do
+      subject.before_foo(:real?) { invocations << :blue_callback }
+      subject.invoke_hook(:before_foo, stub(:real? => false))
       invocations.should be_empty
     end
 
-    it 'does not invoke any tagged callbacks' do
-      subject.before_foo(:blue) { invocations << :blue_callback }
-      subject.invoke_hook(:before_foo)
-      invocations.should be_empty
-    end
-
-    it 'passes along the provided arguments to the callback' do
-      subject.before_foo(&lambda { |a, b| invocations << [a, b] })
-      subject.invoke_hook(:before_foo, :arg1, :arg2)
-      invocations.flatten.should eq([:arg1, :arg2])
-    end
-
-    it 'only passes along 1 argument when the block accepts only 1 arguments' do
-      subject.before_foo(&lambda { |a| invocations << a })
-      subject.invoke_hook(:before_foo, :arg1, :arg2)
-      invocations.flatten.should eq([:arg1])
-    end
-
-    it 'passes along all arguments when the block accepts a variable number of args' do
-      subject.before_foo(&lambda { |*a| invocations << a })
-      subject.invoke_hook(:before_foo, :arg1, :arg2)
-      invocations.flatten.should eq([:arg1, :arg2])
-    end
-  end
-
-  describe "#invoke_tagged_hook(:before_foo, tag)" do
-    it 'invokes each of the :before_foo callbacks with a matching tag' do
-      subject.before_foo(:green) { invocations << :callback_1 }
-      subject.before_foo(:green) { invocations << :callback_2 }
-
-      invocations.should be_empty
-      subject.invoke_tagged_hook(:before_foo, :green)
-      invocations.should eq([:callback_1, :callback_2])
-    end
-
-    it 'invokes each of the :before_foo callbacks with no tag' do
-      subject.before_foo { invocations << :no_tag_1 }
-      subject.before_foo { invocations << :no_tag_2 }
-
-      subject.invoke_hook(:before_foo, :green)
-      invocations.should eq([:no_tag_1, :no_tag_2])
-    end
-
-    it 'does not invoke any callbacks with a different tag' do
-      subject.before_foo(:blue) { invocations << :blue_callback }
-      subject.invoke_tagged_hook(:before_foo, :green)
-      invocations.should be_empty
-    end
-
-    it 'passes along the provided arguments to the callback' do
-      subject.before_foo(:green, &lambda { |a, b| invocations << [a, b] })
-      subject.invoke_tagged_hook(:before_foo, :green, :arg1, :arg2)
-      invocations.flatten.should eq([:arg1, :arg2])
+    it 'invokes them in reverse order if the hook was defined with :prepend' do
+      subject.before_bar { 17 }
+      subject.before_bar { 12 }
+      subject.invoke_hook(:before_bar).should eq([12, 17])
     end
   end
 end

@@ -98,7 +98,7 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
   end
 
   describe "VCR.configuration.after_library_hooks_loaded hook" do
-    let(:run_hook) { $fakeweb_after_loaded_hook.call }
+    let(:run_hook) { $fakeweb_after_loaded_hook.conditionally_invoke }
 
     context 'when WebMock has been loaded' do
       before(:each) { defined?(WebMock).should be_true }
