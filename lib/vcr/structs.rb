@@ -139,6 +139,32 @@ module VCR
         super(request)
       end
 
+      # @return [Boolean] whether or not this request is being ignored
+      def ignored?
+        type == :ignored
+      end
+
+      # @return [Boolean] whether or not this request will be stubbed
+      def stubbed?
+        type == :stubbed
+      end
+
+      # @return [Boolean] whether or not this request will be recorded.
+      def recordable?
+        type == :recordable
+      end
+
+      # @return [Boolean] whether or not VCR knows how to handle this request.
+      def unhandled?
+        type == :unhandled
+      end
+
+      # @return [Boolean] whether or not this request will be made for real.
+      # @note VCR allows `:ignored` and `:recordable` requests to be made for real.
+      def real?
+        ignored? || recordable?
+      end
+
       undef method
     end
 

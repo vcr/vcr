@@ -220,6 +220,47 @@ module VCR
     end
   end
 
+  describe Request::Typed do
+    [:uri, :method, :headers, :body].each do |method|
+      it "delegates ##{method} to the request" do
+        request = stub(method => "delegated value")
+        Request::Typed.new(request, :type).send(method).should eq("delegated value")
+      end
+    end
+
+    describe "#type" do
+      it 'returns the initialized type' do
+        Request::Typed.new(stub, :ignored).type.should be(:ignored)
+      end
+    end
+
+    [:ignored, :stubbed, :recordable, :unhandled].each do |type|
+      describe "##{type}?" do
+        it "returns true if the type is set to :#{type}" do
+          Request::Typed.new(stub, type).send("#{type}?").should be_true
+        end
+
+        it "returns false if the type is set to :other" do
+          Request::Typed.new(stub, :other).send("#{type}?").should be_false
+        end
+      end
+    end
+
+    describe "#real?" do
+      [:ignored, :recordable].each do |type|
+        it "returns true if the type is set to :#{type}" do
+          Request::Typed.new(stub, type).should be_real
+        end
+      end
+
+      [:stubbed, :unhandled].each do |type|
+        it "returns false if the type is set to :#{type}" do
+          Request::Typed.new(stub, type).should_not be_real
+        end
+      end
+    end
+  end
+
   describe Request do
     describe '#method' do
       subject { VCR::Request.new(:get) }
