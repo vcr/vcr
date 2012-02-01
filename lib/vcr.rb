@@ -38,10 +38,10 @@ module VCR
   end
 
   # Inserts the named cassette using the given cassette options.
-  # New HTTP interactions, if allowed by the cassette's :record option, will
+  # New HTTP interactions, if allowed by the cassette's `:record` option, will
   # be recorded to the cassette. The cassette's existing HTTP interactions
   # will be used to stub requests, unless prevented by the cassete's
-  # :record option.
+  # `:record` option.
   #
   # @example
   #   VCR.insert_cassette('twitter', :record => :new_episodes)
@@ -88,10 +88,10 @@ module VCR
   # @raise [ArgumentError] when the given cassette is already being used.
   # @raise [VCR::Errors::TurnedOffError] when VCR has been turned off
   #  without using the :ignore_cassettes option.
-  # @raise [VCR::Errors::MissingERBVariableError] when the +:erb+ option
+  # @raise [VCR::Errors::MissingERBVariableError] when the `:erb` option
   #  is used and the ERB template requires variables that you did not provide.
   #
-  # @note If you use this method you _must_ call eject_cassette when you
+  # @note If you use this method you _must_ call `eject_cassette` when you
   #  are done. It is generally recommended that you use {#use_cassette}
   #  unless your code-under-test cannot be run as a block.
   #
@@ -135,7 +135,7 @@ module VCR
   # @yieldparam cassette [(optional) VCR::Cassette] the cassette that has
   #  been inserted.
   # @raise (see #insert_cassette)
-  # @return [nil]
+  # @return [void]
   # @see #insert_cassette
   # @see #eject_cassette
   def use_cassette(*args, &block)
@@ -194,11 +194,12 @@ module VCR
   #
   # @yield the configuration block
   # @yieldparam config [VCR::Configuration] the configuration object
+  # @return [void]
   def configure
     yield configuration
   end
 
-  # Sets up +Before+ and +After+ cucumber hooks in order to
+  # Sets up `Before` and `After` cucumber hooks in order to
   # use VCR with particular cucumber tags.
   #
   # @example
@@ -209,6 +210,7 @@ module VCR
   #
   # @yield the cucumber tags configuration block
   # @yieldparam t [VCR::CucumberTags] Cucumber tags config object
+  # @return [void]
   # @see VCR::CucumberTags#tags
   def cucumber_tags(&block)
     main_object = eval('self', block.binding)
@@ -226,6 +228,7 @@ module VCR
   # Turns VCR off for the duration of a block.
   #
   # @param (see #turn_off!)
+  # @return [void]
   # @raise (see #turn_off!)
   # @see #turn_off!
   # @see #turn_on!
@@ -247,6 +250,7 @@ module VCR
   #  inserted while VCR is turned off. If +true+ is passed, the cassette insertion
   #  will be ignored; otherwise a {VCR::Errors::TurnedOffError} will be raised.
   #
+  # @return [void]
   # @raise [VCR::Errors::CassetteInUseError] if there is currently a cassette in use
   # @raise [ArgumentError] if you pass an invalid option
   def turn_off!(options = {})
@@ -264,6 +268,7 @@ module VCR
   end
 
   # Turns on VCR, if it has previously been turned off.
+  # @return [void]
   # @see #turn_off!
   # @see #turned_off
   # @see #turned_on?
