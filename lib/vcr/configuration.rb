@@ -26,7 +26,7 @@ module VCR
     # @param tag [(optional) Symbol] Used to apply this hook to only cassettes that match
     #  the given tag.
     # @yield the callback
-    # @yieldparam interaction [VCR::HTTPInteraction] The interaction that will be
+    # @yieldparam interaction [VCR::HTTPInteraction::HookAware] The interaction that will be
     #  serialized and written to disk.
     # @yieldparam cassette [(optional) VCR::Cassette] The current cassette.
     # @see #before_playback
@@ -54,7 +54,7 @@ module VCR
     # @param tag [(optional) Symbol] Used to apply this hook to only cassettes that match
     #  the given tag.
     # @yield the callback
-    # @yieldparam interaction [VCR::HTTPInteraction] The interaction that is being
+    # @yieldparam interaction [VCR::HTTPInteraction::HookAware] The interaction that is being
     #  loaded.
     # @yieldparam cassette [(optional) VCR::Cassette] The current cassette.
     # @see #before_record
@@ -271,7 +271,7 @@ module VCR
     # @param tag [Symbol] Set this apply this to only to cassettes
     #  with a matching tag; otherwise it will apply to every cassette.
     # @yield block that determines what string to replace
-    # @yieldparam interaction [(optional) VCR::HTTPInteraction] the HTTP interaction
+    # @yieldparam interaction [(optional) VCR::HTTPInteraction::HookAware] the HTTP interaction
     # @yieldreturn the string to replace
     def define_cassette_placeholder(placeholder, tag = nil, &block)
       before_record(tag) do |interaction|

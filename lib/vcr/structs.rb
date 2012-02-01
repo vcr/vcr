@@ -216,7 +216,6 @@ module VCR
   # @attr [Time] recorded_at when this HTTP interaction was recorded
   class HTTPInteraction < Struct.new(:request, :response, :recorded_at)
     def initialize(*args)
-      @ignored = false
       super
       self.recorded_at ||= Time.now
     end
@@ -246,51 +245,66 @@ module VCR
           Time.httpdate(hash.fetch('recorded_at'))
     end
 
-    # Flags the HTTP interaction so that VCR ignores it. This is useful in
-    # a {VCR::Configuration#before_record} or {VCR::Configuration#before_playback}
-    # hook so that VCR does not record or play it back.
-    # @see #ignored?
-    def ignore!
-      @ignored = true
+    # @return [HookAware] an instance with additional capabilities
+    #  suitable for use in `before_record` and `before_playback` hooks.
+    def hook_aware
+      HookAware.new(self)
     end
 
-    # @return [Boolean] whether or not this HTTP interaction should be ignored.
-    # @see #ignore!
-    def ignored?
-      !!@ignored
-    end
-
-    # Replaces a string in any part of the HTTP interaction (headers, request body,
-    # response body, etc) with the given replacement text.
-    #
-    # @param [String] text the text to replace
-    # @param [String] replacement_text the text to put in its place
-    def filter!(text, replacement_text)
-      return self if [text, replacement_text].any? { |t| t.to_s.empty? }
-      filter_object!(self, text, replacement_text)
-    end
-
-  private
-
-    def filter_object!(object, text, replacement_text)
-      if object.respond_to?(:gsub)
-        object.gsub!(text, replacement_text) if object.include?(text)
-      elsif Hash === object
-        filter_hash!(object, text, replacement_text)
-      elsif object.respond_to?(:each)
-        # This handles nested arrays and structs
-        object.each { |o| filter_object!(o, text, replacement_text) }
+    # Decorates an {HTTPInteraction} with additional methods useful
+    # for a `before_record` or `before_playback` hook.
+    class HookAware < DelegateClass(HTTPInteraction)
+      def initialize(http_interaction)
+        @ignored = false
+        super
       end
 
-      object
-    end
+      # Flags the HTTP interaction so that VCR ignores it. This is useful in
+      # a {VCR::Configuration#before_record} or {VCR::Configuration#before_playback}
+      # hook so that VCR does not record or play it back.
+      # @see #ignored?
+      def ignore!
+        @ignored = true
+      end
 
-    def filter_hash!(hash, text, replacement_text)
-      filter_object!(hash.values, text, replacement_text)
+      # @return [Boolean] whether or not this HTTP interaction should be ignored.
+      # @see #ignore!
+      def ignored?
+        !!@ignored
+      end
 
-      hash.keys.each do |k|
-        new_key = filter_object!(k.dup, text, replacement_text)
-        hash[new_key] = hash.delete(k) unless k == new_key
+      # Replaces a string in any part of the HTTP interaction (headers, request body,
+      # response body, etc) with the given replacement text.
+      #
+      # @param [String] text the text to replace
+      # @param [String] replacement_text the text to put in its place
+      def filter!(text, replacement_text)
+        return self if [text, replacement_text].any? { |t| t.to_s.empty? }
+        filter_object!(self, text, replacement_text)
+      end
+
+    private
+
+      def filter_object!(object, text, replacement_text)
+        if object.respond_to?(:gsub)
+          object.gsub!(text, replacement_text) if object.include?(text)
+        elsif Hash === object
+          filter_hash!(object, text, replacement_text)
+        elsif object.respond_to?(:each)
+          # This handles nested arrays and structs
+          object.each { |o| filter_object!(o, text, replacement_text) }
+        end
+
+        object
+      end
+
+      def filter_hash!(hash, text, replacement_text)
+        filter_object!(hash.values, text, replacement_text)
+
+        hash.keys.each do |k|
+          new_key = filter_object!(k.dup, text, replacement_text)
+          hash[new_key] = hash.delete(k) unless k == new_key
+        end
       end
     end
   end

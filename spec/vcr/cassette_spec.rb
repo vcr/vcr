@@ -64,7 +64,10 @@ describe VCR::Cassette do
 
   describe "#serializable_hash" do
     subject { VCR::Cassette.new("foo") }
-    let(:interactions) { [stub(:to_hash => { "i" => 1 }, :ignored? => false), stub(:to_hash => { "i" => 2 }, :ignored? => false)] }
+    let(:interactions) do [
+      stub(:to_hash => { "i" => 1 }, :hook_aware => stub(:ignored? => false)),
+      stub(:to_hash => { "i" => 2 }, :hook_aware => stub(:ignored? => false))
+    ] end
 
     before(:each) do
       interactions.each do |i|
@@ -358,7 +361,7 @@ describe VCR::Cassette do
           it 'invokes the before_playback hooks' do
             VCR.configuration.should_receive(:invoke_hook).with(
               :before_playback,
-              an_instance_of(VCR::HTTPInteraction),
+              an_instance_of(VCR::HTTPInteraction::HookAware),
               an_instance_of(VCR::Cassette)
             ).exactly(3).times
 
@@ -416,9 +419,11 @@ describe VCR::Cassette do
       cassette.stub!(:new_recorded_interactions).and_return(interactions)
 
       interactions.each do |i|
+        hw = i.hook_aware
+        i.stub(:hook_aware => hw)
         VCR.configuration.should_receive(:invoke_hook).with(
           :before_record,
-          i,
+          hw,
           cassette
         ).ordered
       end
@@ -430,7 +435,9 @@ describe VCR::Cassette do
       interaction_1 = http_interaction { |i| i.request.uri = 'http://foo.com/'; i.response.body = 'res 1' }
       interaction_2 = http_interaction { |i| i.request.uri = 'http://bar.com/'; i.response.body = 'res 2' }
 
-      interaction_1.ignore!
+      hook_aware_interaction_1 = interaction_1.hook_aware
+      interaction_1.stub(:hook_aware => hook_aware_interaction_1)
+      hook_aware_interaction_1.ignore!
 
       cassette = VCR::Cassette.new('test_cassette')
       cassette.stub!(:new_recorded_interactions).and_return([interaction_1, interaction_2])
@@ -442,7 +449,10 @@ describe VCR::Cassette do
 
     it 'does not write the cassette to disk if all interactions have been ignored' do
       interaction_1 = http_interaction { |i| i.request.uri = 'http://foo.com/'; i.response.body = 'res 1' }
-      interaction_1.ignore!
+
+      hook_aware_interaction_1 = interaction_1.hook_aware
+      interaction_1.stub(:hook_aware => hook_aware_interaction_1)
+      hook_aware_interaction_1.ignore!
 
       cassette = VCR::Cassette.new('test_cassette')
       cassette.stub!(:new_recorded_interactions).and_return([interaction_1])

@@ -204,8 +204,9 @@ module VCR
 
     def invoke_hook(type, interactions)
       interactions.delete_if do |i|
-        VCR.configuration.invoke_hook(type, i, self)
-        i.ignored?
+        i.hook_aware.tap do |hw|
+          VCR.configuration.invoke_hook(type, hw, self)
+        end.ignored?
       end
     end
 
