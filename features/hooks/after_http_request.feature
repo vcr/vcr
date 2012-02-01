@@ -7,13 +7,24 @@ Feature: after_http_request hook
     * ejecting the current cassette (i.e. if you inserted it in a
       `before_http_request` hook)
 
+  You can also pass one or more "filters" to `after_http_request`, to make
+  the hook only be called for some requests. Any object that responds to `#to_proc`
+  can be a filter.  Here are some simple examples:
+
+    * `:real?` -- only real requests
+    * `:stubbed?` -- only stubbed requests
+    * `:ignored?` -- only ignored requests
+    * `:recordable?` -- only requests that are being recorded
+    * `lambda { |req| URI(req.uri).host == 'amazon.com' }` -- only requests to amazon.com.
+
   Scenario Outline: log all requests and responses using after_http_request hook
     Given a file named "after_http_request.rb" with:
       """ruby
       include_http_adapter_for("<http_lib>")
 
       start_sinatra_app(:port => 7777) do
-        get('/') { "Hello World" }
+        get('/foo') { "Hello World (foo)" }
+        get('/bar') { "Hello World (bar)" }
       end
 
       require 'vcr'
@@ -22,15 +33,17 @@ Feature: after_http_request hook
         <configuration>
         c.cassette_library_dir = 'cassettes'
         c.ignore_localhost = true
-        c.after_http_request do |request, response|
+        c.after_http_request(lambda { |req| req.uri =~ /foo/ }) do |request, response|
           puts "Response for #{request.method} #{request.uri}: #{response.body}"
         end
       end
 
-      make_http_request(:get, "http://localhost:7777/")
+      make_http_request(:get, "http://localhost:7777/foo")
+      make_http_request(:get, "http://localhost:7777/bar")
       """
     When I run `ruby after_http_request.rb`
-    Then it should pass with "Response for get http://localhost:7777/: Hello World"
+    Then the output should contain "Response for get http://localhost:7777/foo: Hello World (foo)"
+     But the output should not contain "bar"
 
    Examples:
       | configuration         | http_lib              |

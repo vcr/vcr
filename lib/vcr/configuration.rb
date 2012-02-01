@@ -70,13 +70,16 @@ module VCR
     #
     # @example
     #  VCR.configure do |c|
-    #    c.before_http_request do |request|
+    #    c.before_http_request(:real?) do |request|
     #      puts "Request: #{request.method} #{request.uri}"
     #    end
     #  end
     #
+    # @param filters [optional splat of #to_proc] one or more filters to apply.
+    #   The objects provided will be converted to procs using `#to_proc`. If provided,
+    #   the callback will only be invoked if these procs all return `true`.
     # @yield the callback
-    # @yieldparam request [VCR::Request] the request that is being made
+    # @yieldparam request [VCR::Request::Typed] the request that is being made
     # @see #after_http_request
     # @see #around_http_request
     define_hook :before_http_request
@@ -85,14 +88,17 @@ module VCR
     #
     # @example
     #  VCR.configure do |c|
-    #    c.after_http_request do |request, response|
+    #    c.after_http_request(:ignored?) do |request, response|
     #      puts "Request: #{request.method} #{request.uri}"
     #      puts "Response: #{response.status.code}"
     #    end
     #  end
     #
+    # @param filters [optional splat of #to_proc] one or more filters to apply.
+    #   The objects provided will be converted to procs using `#to_proc`. If provided,
+    #   the callback will only be invoked if these procs all return `true`.
     # @yield the callback
-    # @yieldparam request [VCR::Request] the request that is being made
+    # @yieldparam request [VCR::Request::Typed] the request that is being made
     # @yieldparam response [VCR::Response] the response from the request
     # @see #before_http_request
     # @see #around_http_request
@@ -310,7 +316,7 @@ module VCR
     #  end
     #
     # @yield the callback
-    # @yieldparam request [VCR::Request] the request that is being made
+    # @yieldparam request [VCR::Request::FiberAware] the request that is being made
     # @raise [VCR::Errors::NotSupportedError] if the fiber library cannot be loaded.
     # @note This method can only be used on ruby interpreters that support
     #  fibers (i.e. 1.9+). On 1.8 you can use separate +before_http_request+ and

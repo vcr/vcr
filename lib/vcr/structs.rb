@@ -132,8 +132,8 @@ module VCR
       # @return [Symbol] One of `:ignored`, `:stubbed`, `:recordable` or `:unhandled`.
       attr_reader :type
 
-      # @param [Request] the request
-      # @param [Symbol] the type. Should be one of `:ignored`, `:stubbed`, `:recordable` or `:unhandled`.
+      # @param [Request] request the request
+      # @param [Symbol] type the type. Should be one of `:ignored`, `:stubbed`, `:recordable` or `:unhandled`.
       def initialize(request, type)
         @type = type
         super(request)
