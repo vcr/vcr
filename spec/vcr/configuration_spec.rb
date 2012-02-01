@@ -131,8 +131,8 @@ describe VCR::Configuration do
 
       # 1.8 has #type as a method on Object.
       if RUBY_VERSION =~ /1.8/
-        before_record_req.type.should == VCR::Request
-        before_request_req.type.should == :recordable
+        before_record_req.type.should eq(VCR::Request)
+        before_request_req.type.should eq(:recordable)
       else
         before_record_req.should_not respond_to(:type)
         before_request_req.should respond_to(:type)
