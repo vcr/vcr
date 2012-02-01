@@ -131,6 +131,7 @@ module VCR
   #   end
   #
   # @param (see #insert_cassette)
+  # @option (see #insert_cassette)
   # @yield Block to run while this cassette is in use.
   # @yieldparam cassette [(optional) VCR::Cassette] the cassette that has
   #  been inserted.
@@ -138,7 +139,7 @@ module VCR
   # @return [void]
   # @see #insert_cassette
   # @see #eject_cassette
-  def use_cassette(*args, &block)
+  def use_cassette(name, options, &block)
     cassette = insert_cassette(*args)
 
     begin
