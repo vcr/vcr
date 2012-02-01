@@ -39,6 +39,20 @@ describe VCR::Cassette do
     end
   end
 
+  describe '#tags' do
+    it 'returns a blank array if no tag has been set' do
+      VCR::Cassette.new("name").tags.should eq([])
+    end
+
+    it 'converts a single :tag to an array' do
+      VCR::Cassette.new("name", :tag => :foo).tags.should eq([:foo])
+    end
+
+    it 'accepts an array as the :tags option' do
+      VCR::Cassette.new("name", :tags => [:foo]).tags.should eq([:foo])
+    end
+  end
+
   describe '#record_http_interaction' do
     it 'adds the interaction to #new_recorded_interactions' do
       cassette = VCR::Cassette.new(:test_cassette)

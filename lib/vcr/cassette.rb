@@ -37,16 +37,16 @@ module VCR
     # @return [Integer, nil] How frequently (in seconds) the cassette should be re-recorded.
     attr_reader :re_record_interval
 
-    # @return [Symbol, nil] If set, {VCR::Configuration#before_record} and
-    #  {VCR::Configuration#before_playback} hooks with the corresponding tag will apply.
-    attr_reader :tag
+    # @return [Array<Symbol>] If set, {VCR::Configuration#before_record} and
+    #  {VCR::Configuration#before_playback} hooks with a corresponding tag will apply.
+    attr_reader :tags
 
     # @param (see VCR#insert_cassette)
     # @see VCR#insert_cassette
     def initialize(name, options = {})
       options = VCR.configuration.default_cassette_options.merge(options)
       invalid_options = options.keys - [
-        :record, :erb, :match_requests_on, :re_record_interval, :tag,
+        :record, :erb, :match_requests_on, :re_record_interval, :tag, :tags,
         :update_content_length_header, :allow_playback_repeats, :exclusive,
         :serialize_with
       ]
@@ -60,7 +60,7 @@ module VCR
       @erb                          = options[:erb]
       @match_requests_on            = options[:match_requests_on]
       @re_record_interval           = options[:re_record_interval]
-      @tag                          = options[:tag]
+      @tags                         = Array(options.fetch(:tags) { options[:tag] })
       @update_content_length_header = options[:update_content_length_header]
       @allow_playback_repeats       = options[:allow_playback_repeats]
       @exclusive                    = options[:exclusive]

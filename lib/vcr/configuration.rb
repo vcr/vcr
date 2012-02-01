@@ -373,7 +373,7 @@ module VCR
 
     def filter_from(tag)
       return lambda { true } unless tag
-      lambda { |_, cassette| cassette.tag == tag }
+      lambda { |_, cassette| cassette.tags.include?(tag) }
     end
   end
 end

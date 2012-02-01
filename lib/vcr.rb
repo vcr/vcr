@@ -67,6 +67,9 @@ module VCR
   #  cassette will be re-recorded at the given interval, in seconds.
   # @option options :tag [Symbol] Used to apply tagged `before_record`
   #  and `before_playback` hooks to the cassette.
+  # @option options :tags [Array<Symbol>] Used to apply multiple tags to
+  #  a cassette so that tagged `before_record` and `before_playback` hooks
+  #  will apply to the cassette.
   # @option options :update_content_length_header [Boolean] Whether or
   #  not to overwrite the Content-Length header of the responses to
   #  match the length of the response body. Defaults to false.

@@ -139,9 +139,9 @@ describe VCR::Configuration do
       it 'sets up a tag filter' do
         called = false
         VCR.configuration.send(hook_type, :my_tag) { called = true }
-        VCR.configuration.invoke_hook(hook_type, stub, stub(:tag => nil))
+        VCR.configuration.invoke_hook(hook_type, stub, stub(:tags => []))
         called.should be_false
-        VCR.configuration.invoke_hook(hook_type, stub, stub(:tag => :my_tag))
+        VCR.configuration.invoke_hook(hook_type, stub, stub(:tags => [:my_tag]))
         called.should be_true
       end
     end
