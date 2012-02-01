@@ -1,10 +1,15 @@
 module VCR
   # @private
   class RequestHandler
+    include Logger
+
     def handle
+      log "Handling request: #{request_summary} (disabled: #{disabled?})"
       invoke_before_request_hook
 
       req_type = request_type(:consume_stub)
+
+      log "Identified request type (#{req_type}) for #{request_summary}"
 
       # The before_request hook can change the type of request
       # (i.e. by inserting a cassette), so we need to query the
@@ -82,6 +87,20 @@ module VCR
 
     def on_unhandled_request
       raise VCR::Errors::UnhandledHTTPRequestError.new(vcr_request)
+    end
+
+    def request_summary
+      request_matchers = if cass = VCR.current_cassette
+        cass.match_requests_on
+      else
+        VCR.configuration.default_cassette_options[:match_requests_on]
+      end
+
+      super(vcr_request, request_matchers)
+    end
+
+    def log_prefix
+      "[#{library_name}] "
     end
   end
 end

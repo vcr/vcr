@@ -2,6 +2,8 @@ module VCR
   class Cassette
     # @private
     class HTTPInteractionList
+      include Logger
+
       # @private
       module NullList
         extend self
@@ -13,18 +15,23 @@ module VCR
 
       attr_reader :interactions, :request_matchers, :allow_playback_repeats, :parent_list
 
-      def initialize(interactions, request_matchers, allow_playback_repeats = false, parent_list = NullList)
+      def initialize(interactions, request_matchers, allow_playback_repeats = false, parent_list = NullList, log_prefix = '')
         @interactions           = interactions.dup
-        @request_matchers       = request_matchers.map { |m| VCR.request_matchers[m] }
+        @request_matchers       = request_matchers
         @allow_playback_repeats = allow_playback_repeats
         @parent_list            = parent_list
         @used_interactions      = []
+        @log_prefix             = log_prefix
+
+        interaction_summaries = interactions.map { |i| "#{request_summary(i.request)} => #{response_summary(i.response)}" }
+        log "Initialized HTTPInteractionList with request matchers #{request_matchers.inspect} and #{interactions.size} interaction(s): { #{interaction_summaries.join(', ')} }", 1
       end
 
       def response_for(request)
         if index = matching_interaction_index_for(request)
           interaction = @interactions.delete_at(index)
           @used_interactions.unshift interaction
+          log "Found matching interaction for #{request_summary(request)} at index #{index}: #{response_summary(interaction.response)}", 1
           interaction.response
         elsif interaction = matching_used_interaction_for(request)
           interaction.response
@@ -49,6 +56,10 @@ module VCR
 
     private
 
+      def request_summary(request)
+        super(request, @request_matchers)
+      end
+
       def matching_interaction_index_for(request)
         @interactions.index { |i| interaction_matches_request?(request, i) }
       end
@@ -59,9 +70,18 @@ module VCR
       end
 
       def interaction_matches_request?(request, interaction)
-        @request_matchers.all? do |matcher|
-          matcher.matches?(request, interaction.request)
+        log "Checking if #{request_summary(request)} matches #{request_summary(interaction.request)} using #{@request_matchers.inspect}", 1
+        @request_matchers.all? do |matcher_name|
+          matcher = VCR.request_matchers[matcher_name]
+          matcher.matches?(request, interaction.request).tap do |matched|
+            matched = matched ? 'matched' : 'did not match'
+            log "#{matcher_name} (#{matched}): current request #{request_summary(request)} vs #{request_summary(interaction.request)}", 2
+          end
         end
+      end
+
+      def log_prefix
+        @log_prefix
       end
     end
   end

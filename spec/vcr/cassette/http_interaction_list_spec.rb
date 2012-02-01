@@ -1,3 +1,4 @@
+require 'vcr/util/logger'
 require 'vcr/cassette/http_interaction_list'
 require 'vcr/request_matcher_registry'
 require 'vcr/structs'
@@ -12,6 +13,7 @@ module VCR
 
       before(:each) do
         VCR.stub(:request_matchers => VCR::RequestMatcherRegistry.new)
+        VCR.stub_chain(:configuration, :debug_logger).and_return(stub.as_null_object)
       end
 
       def request_with(values)
@@ -23,7 +25,10 @@ module VCR
       end
 
       def response(body)
-        VCR::Response.new.tap { |r| r.body = body }
+        VCR::Response.new.tap do |r|
+          r.body = body
+          r.status = VCR::ResponseStatus.new(200)
+        end
       end
 
       def interaction(body, request_values)

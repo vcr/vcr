@@ -113,6 +113,8 @@ module VCR
         :serialize_with    => :yaml
       }
 
+      self.debug_logger = NullDebugLogger
+
       register_built_in_hooks
     end
 
@@ -348,6 +350,23 @@ module VCR
       VCR::RSpec::Metadata.configure!
     end
 
+    # An object to log debug output to.
+    #
+    # @overload debug_logger
+    #   @return [#puts] the logger
+    # @overload debug_logger=(logger)
+    #   @param logger [#puts] the logger
+    #   @return [void]
+    # @example
+    #   VCR.configure do |c|
+    #     c.debug_logger = $stderr
+    #   end
+    # @example
+    #   VCR.configure do |c|
+    #     c.debug_logger = File.open('vcr.log', 'w')
+    #   end
+    attr_accessor :debug_logger
+
   private
 
     def load_library_hook(hook)
@@ -386,6 +405,12 @@ module VCR
         interaction.response.update_content_length_header
       end
     end
+  end
+
+  # @private
+  module NullDebugLogger
+    extend self
+    def puts(*); end
   end
 end
 

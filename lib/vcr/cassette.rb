@@ -8,6 +8,7 @@ require 'vcr/cassette/serializers'
 module VCR
   # The media VCR uses to store HTTP interactions for later re-use.
   class Cassette
+    include Logger
 
     # The supported record modes.
     #
@@ -70,6 +71,8 @@ module VCR
       @parent_list                  = @exclusive ? HTTPInteractionList::NullList : VCR.http_interactions
 
       raise_error_unless_valid_record_mode
+
+      log "Initialized with options: #{options.inspect}"
     end
 
     # Ejects the current cassette. The cassette will no longer be used.
@@ -85,11 +88,13 @@ module VCR
         should_stub_requests? ? previously_recorded_interactions : [],
         match_requests_on,
         @allow_playback_repeats,
-        @parent_list
+        @parent_list,
+        log_prefix
     end
 
     # @private
     def record_http_interaction(interaction)
+      log "Recorded HTTP interaction #{request_summary(interaction.request)} => #{response_summary(interaction.response)}"
       new_recorded_interactions << interaction
     end
 
@@ -222,6 +227,14 @@ module VCR
             "them. For more info, see the VCR upgrade guide."
         end
       end
+    end
+
+    def log_prefix
+      @log_prefix ||= "[Cassette: '#{name}'] "
+    end
+
+    def request_summary(request)
+      super(request, match_requests_on)
     end
   end
 end

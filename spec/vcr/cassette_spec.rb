@@ -54,19 +54,21 @@ describe VCR::Cassette do
   end
 
   describe '#record_http_interaction' do
+    let(:the_interaction) { stub(:request => stub(:method => :get).as_null_object).as_null_object }
+
     it 'adds the interaction to #new_recorded_interactions' do
       cassette = VCR::Cassette.new(:test_cassette)
       cassette.new_recorded_interactions.should eq([])
-      cassette.record_http_interaction(:the_interaction)
-      cassette.new_recorded_interactions.should eq([:the_interaction])
+      cassette.record_http_interaction(the_interaction)
+      cassette.new_recorded_interactions.should eq([the_interaction])
     end
   end
 
   describe "#serializable_hash" do
     subject { VCR::Cassette.new("foo") }
     let(:interactions) do [
-      stub(:to_hash => { "i" => 1 }, :hook_aware => stub(:ignored? => false)),
-      stub(:to_hash => { "i" => 2 }, :hook_aware => stub(:ignored? => false))
+      stub(:to_hash => { "i" => 1 }, :hook_aware => stub(:ignored? => false), :request => stub(:method => :get).as_null_object).as_null_object,
+      stub(:to_hash => { "i" => 2 }, :hook_aware => stub(:ignored? => false), :request => stub(:method => :get).as_null_object).as_null_object
     ] end
 
     before(:each) do
@@ -383,14 +385,14 @@ describe VCR::Cassette do
             VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
             cassette = VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:body, :headers])
             cassette.http_interactions.interactions.should have(3).interactions
-            cassette.http_interactions.request_matchers.should eq([:body, :headers].map { |m| VCR.request_matchers[m] })
+            cassette.http_interactions.request_matchers.should eq([:body, :headers])
           end
         else
           it 'instantiates the http_interactions with the no interactions and the request matchers' do
             VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
             cassette = VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:body, :headers])
             cassette.http_interactions.interactions.should have(0).interactions
-            cassette.http_interactions.request_matchers.should eq([:body, :headers].map { |m| VCR.request_matchers[m] })
+            cassette.http_interactions.request_matchers.should eq([:body, :headers])
           end
         end
       end

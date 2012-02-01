@@ -1,3 +1,4 @@
+require 'vcr/util/logger'
 require 'vcr/util/variable_args_block_caller'
 
 require 'vcr/cassette'
