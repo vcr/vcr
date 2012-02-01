@@ -14,6 +14,12 @@ end
 Before do
   load_paths, requires = ['../../lib'], []
 
+  # Put any bundler-managed gems (such as :git gems) on the load path for when aruba shells out.
+  # Alternatively, we could hook up aruba to use bundler when it shells out, but invoking bundler
+  # for each and every time aruba starts ruby would slow everything down. We really only need it for
+  # bundler-managed gems.
+  load_paths.push($LOAD_PATH.grep %r|bundler/gems|)
+
   if RUBY_VERSION < '1.9'
     requires << "rubygems"
   else
