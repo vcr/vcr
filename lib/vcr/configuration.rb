@@ -112,6 +112,8 @@ module VCR
         :match_requests_on => RequestMatcherRegistry::DEFAULT_MATCHERS,
         :serialize_with    => :yaml
       }
+
+      register_built_in_hooks
     end
 
     # The directory to read cassettes from and write cassettes to.
@@ -374,6 +376,12 @@ module VCR
     def filter_from(tag)
       return lambda { true } unless tag
       lambda { |_, cassette| cassette.tags.include?(tag) }
+    end
+
+    def register_built_in_hooks
+      before_playback(:update_content_length_header) do |interaction|
+        interaction.response.update_content_length_header
+      end
     end
   end
 end

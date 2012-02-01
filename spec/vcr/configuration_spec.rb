@@ -149,7 +149,7 @@ describe VCR::Configuration do
 
   %w[ filter_sensitive_data define_cassette_placeholder ].each do |method|
     describe "##{method}" do
-      let(:interaction) { mock('interaction') }
+      let(:interaction) { mock('interaction').as_null_object }
       before(:each) { interaction.stub(:filter!) }
 
       it 'adds a before_record hook that replaces the string returned by the block with the given string' do
@@ -161,7 +161,7 @@ describe VCR::Configuration do
       it 'adds a before_playback hook that replaces the given string with the string returned by the block' do
         subject.send(method, 'foo', &lambda { 'bar' })
         interaction.should_receive(:filter!).with('foo', 'bar')
-        subject.invoke_hook(:before_playback, interaction.as_null_object)
+        subject.invoke_hook(:before_playback, interaction, stub.as_null_object)
       end
 
       it 'tags the before_record hook when given a tag' do

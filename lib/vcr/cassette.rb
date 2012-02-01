@@ -61,7 +61,7 @@ module VCR
       @match_requests_on            = options[:match_requests_on]
       @re_record_interval           = options[:re_record_interval]
       @tags                         = Array(options.fetch(:tags) { options[:tag] })
-      @update_content_length_header = options[:update_content_length_header]
+      @tags                         << :update_content_length_header if options[:update_content_length_header]
       @allow_playback_repeats       = options[:allow_playback_repeats]
       @exclusive                    = options[:exclusive]
       @serializer                   = VCR.cassette_serializers[options[:serialize_with]]
@@ -123,10 +123,6 @@ module VCR
 
   private
 
-    def update_content_length_header?
-      @update_content_length_header
-    end
-
     def previously_recorded_interactions
       @previously_recorded_interactions ||= if file && File.size?(file)
         deserialized_hash['http_interactions'].map { |h| HTTPInteraction.from_hash(h) }.tap do |interactions|
@@ -134,10 +130,6 @@ module VCR
 
           interactions.reject! do |i|
             i.request.uri.is_a?(String) && VCR.request_ignorer.ignore?(i.request)
-          end
-
-          if update_content_length_header?
-            interactions.each { |i| i.response.update_content_length_header }
           end
         end
       else
