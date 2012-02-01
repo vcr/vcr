@@ -419,11 +419,9 @@ describe VCR::Cassette do
       cassette.stub!(:new_recorded_interactions).and_return(interactions)
 
       interactions.each do |i|
-        hw = i.hook_aware
-        i.stub(:hook_aware => hw)
         VCR.configuration.should_receive(:invoke_hook).with(
           :before_record,
-          hw,
+          an_instance_of(VCR::HTTPInteraction::HookAware),
           cassette
         ).ordered
       end

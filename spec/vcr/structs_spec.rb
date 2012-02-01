@@ -197,7 +197,7 @@ module VCR
           subject.filter!('foo', nil)
           subject.filter!("", 'AAA')
           subject.filter!('foo', "")
-        }.not_to change { subject }
+        }.not_to change { interaction }
       end
 
       [:request, :response].each do |part|
