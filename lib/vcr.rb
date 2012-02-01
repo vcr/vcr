@@ -139,7 +139,7 @@ module VCR
   # @return [void]
   # @see #insert_cassette
   # @see #eject_cassette
-  def use_cassette(name, options, &block)
+  def use_cassette(name, options = {}, &block)
     cassette = insert_cassette(name, options)
 
     begin
