@@ -140,7 +140,7 @@ module VCR
   # @see #insert_cassette
   # @see #eject_cassette
   def use_cassette(name, options, &block)
-    cassette = insert_cassette(*args)
+    cassette = insert_cassette(name, options)
 
     begin
       call_block(block, cassette)
