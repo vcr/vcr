@@ -10,6 +10,7 @@ module VCR
   class Cassette
 
     # The supported record modes.
+    #
     #   * :all -- Record every HTTP interactions; do not play any back.
     #   * :none -- Do not record any HTTP interactions; play them back.
     #   * :new_episodes -- Playback previously recorded HTTP interactions and record new ones.

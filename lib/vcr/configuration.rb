@@ -160,12 +160,12 @@ module VCR
     #   end
     #
     # @param hooks [Array<Symbol>] List of libraries. Valid values are
-    #  +:fakeweb+, +:webmock+, +:typhoeus+, +:excon+ and +:faraday+.
+    #  `:fakeweb`, `:webmock`, `:typhoeus`, `:excon` and `:faraday`.
     # @raise [ArgumentError] when given an unsupported library name.
     # @raise [VCR::Errors::LibraryVersionTooLowError] when the version
     #  of a library you are using is too low for VCR to support.
-    # @note +:fakeweb+ and +:webmock+ cannot both be used since they both monkey patch
-    #  +Net::HTTP+. Otherwise, you can use any combination of these.
+    # @note `:fakeweb` and `:webmock` cannot both be used since they both monkey patch
+    #  `Net::HTTP`. Otherwise, you can use any combination of these.
     def hook_into(*hooks)
       hooks.each { |a| load_library_hook(a) }
       invoke_hook(:after_library_hooks_loaded)
@@ -232,9 +232,9 @@ module VCR
     end
 
     # Determines how VCR treats HTTP requests that are made when
-    # no VCR cassette is in use. When set to +true+, requests made
+    # no VCR cassette is in use. When set to `true`, requests made
     # when there is no VCR cassette in use will be allowed. When set
-    # to +false+ (the default), an {VCR::Errors::UnhandledHTTPRequestError}
+    # to `false` (the default), an {VCR::Errors::UnhandledHTTPRequestError}
     # will be raised for any HTTP request made when there is no
     # cassette in use.
     #
@@ -293,9 +293,10 @@ module VCR
     #
     # @return [VCR::Cassette::Serializers] the cassette serializer registry object.
     # @note Custom serializers must implement the following interface:
-    #   * +file_extension      # => String+
-    #   * +serialize(Hash)     # => String+
-    #   * +deserialize(String) # => Hash+
+    #
+    #   * `file_extension      # => String`
+    #   * `serialize(Hash)     # => String`
+    #   * `deserialize(String) # => Hash`
     def cassette_serializers
       VCR.cassette_serializers
     end

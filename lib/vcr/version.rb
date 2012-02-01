@@ -3,6 +3,7 @@ module VCR
 
   # @return [String] the current VCR version.
   # @note This string also has singleton methods:
+  #
   #   * `major` [Integer] The major version.
   #   * `minor` [Integer] The minor version.
   #   * `patch` [Integer] The patch version.
