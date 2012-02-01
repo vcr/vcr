@@ -129,15 +129,9 @@ describe VCR::Configuration do
         ::Net::HTTP.get_response(URI("http://localhost:#{VCR::SinatraApp.port}/foo"))
       end
 
-      # 1.8 has #type as a method on Object.
-      if RUBY_VERSION =~ /1.8/
-        before_record_req.type.should eq(VCR::Request)
-        before_request_req.type.should eq(:recordable)
-      else
-        before_record_req.should_not respond_to(:type)
-        before_request_req.should respond_to(:type)
-      end
-    end
+      before_record_req.should_not respond_to(:type)
+      before_request_req.should respond_to(:type)
+    end unless RUBY_VERSION =~ /^1\.8/
   end
 
   [:before_record, :before_playback].each do |hook_type|
