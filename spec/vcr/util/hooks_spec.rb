@@ -132,5 +132,20 @@ describe VCR::Hooks do
       subject.invoke_hook(:before_bar).should eq([12, 17])
     end
   end
+
+  describe "#has_hooks_for?" do
+    it 'returns false when given an unrecognized hook name' do
+      subject.should_not have_hooks_for(:abcd)
+    end
+
+    it 'returns false when given the name of a defined hook that has no registered callbacks' do
+      subject.should_not have_hooks_for(:before_foo)
+    end
+
+    it 'returns true when given the name of a defined hook that has registered callbacks' do
+      subject.before_foo { }
+      subject.should have_hooks_for(:before_foo)
+    end
+  end
 end
 
