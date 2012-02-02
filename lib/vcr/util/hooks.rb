@@ -40,6 +40,10 @@ module VCR
       end
     end
 
+    def has_hooks_for?(hook_type)
+      hooks[hook_type].any?
+    end
+
     # @private
     module ClassMethods
       def define_hook(hook_type, prepend = false)

@@ -18,6 +18,7 @@ module VCR
           @net_http, @request, @request_body, @response_block =
            net_http,  request,  request_body,  response_block
           @vcr_response, @recursing = nil, false
+          @request_type = request.instance_variable_get(:@__vcr_request_type)
         end
 
         def handle
@@ -33,6 +34,15 @@ module VCR
         end
 
       private
+
+        def request_type(*args)
+          @request_type || super
+        end
+
+        def set_typed_request_for_after_hook(request_type)
+          @request.instance_variable_set(:@__vcr_request_type, request_type)
+          super
+        end
 
         def invoke_before_request_hook
           unless self.class.already_seen_requests.include?(request.object_id)

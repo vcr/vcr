@@ -109,6 +109,24 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
       test_playback "with an encoded ampersand",        "http://example.com:80/search?q=#{CGI.escape("Q&A")}"
     end
 
+    it 'does not query the http interaction list excessively' do
+      VCR.library_hooks.stub(:disabled?) { |lib_name| lib_name != library_hook_name }
+
+      call_count = 0
+      [:has_interaction_matching?, :response_for].each do |method_name|
+        orig_meth = VCR.http_interactions.method(method_name)
+        VCR.http_interactions.stub(method_name) do |*args|
+          call_count += 1
+          orig_meth.call(*args)
+        end
+      end
+
+      VCR.insert_cassette('foo')
+      make_http_request(:get, "http://localhost:#{VCR::SinatraApp.port}/foo")
+
+      call_count.should eq(1)
+    end
+
     describe "using the library's stubbing/disconnection APIs" do
       let!(:request_url) { "http://localhost:#{VCR::SinatraApp.port}/foo" }
 

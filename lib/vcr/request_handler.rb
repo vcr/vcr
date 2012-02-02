@@ -4,6 +4,8 @@ module VCR
     def handle
       invoke_before_request_hook
 
+      req_type = request_type(:consume_stub)
+
       # The before_request hook can change the type of request
       # (i.e. by inserting a cassette), so we need to query the
       # request type again.
@@ -12,32 +14,29 @@ module VCR
       # #request_type would return (i.e. when a response stub is
       # used), so we need to store the request type for the
       # the after_request hook.
-      set_typed_request_for_after_hook
+      set_typed_request_for_after_hook(req_type)
 
-      send "on_#{request_type}_request"
+      send "on_#{req_type}_request"
     end
 
   private
 
-    def typed_request
-      Request::Typed.new(vcr_request, request_type)
+    def set_typed_request_for_after_hook(request_type)
+      @after_hook_typed_request = Request::Typed.new(vcr_request, request_type)
     end
 
-    def set_typed_request_for_after_hook
-      @after_hook_typed_request = typed_request
-    end
-
-    def request_type
+    def request_type(consume_stub = false)
       case
         when should_ignore?                     then :ignored
-        when has_response_stub?                 then :stubbed
+        when has_response_stub?(consume_stub)   then :stubbed
         when VCR.real_http_connections_allowed? then :recordable
         else                                         :unhandled
       end
     end
 
     def invoke_before_request_hook
-      return if disabled?
+      return if disabled? || !VCR.configuration.has_hooks_for?(:before_http_request)
+      typed_request = Request::Typed.new(vcr_request, request_type)
       VCR.configuration.invoke_hook(:before_http_request, typed_request)
     end
 
@@ -54,8 +53,12 @@ module VCR
       VCR.library_hooks.disabled?(library_name)
     end
 
-    def has_response_stub?
-      VCR.http_interactions.has_interaction_matching?(vcr_request)
+    def has_response_stub?(consume_stub)
+      if consume_stub
+        stubbed_response
+      else
+        VCR.http_interactions.has_interaction_matching?(vcr_request)
+      end
     end
 
     def stubbed_response

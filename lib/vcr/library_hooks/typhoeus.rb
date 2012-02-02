@@ -25,7 +25,7 @@ module VCR
 
       private
 
-        def set_typed_request_for_after_hook
+        def set_typed_request_for_after_hook(*args)
           super
           request.instance_variable_set(:@__typed_vcr_request, @after_hook_typed_request)
         end
