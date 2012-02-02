@@ -18,7 +18,12 @@ module VCR
           @net_http, @request, @request_body, @response_block =
            net_http,  request,  request_body,  response_block
           @vcr_response, @recursing = nil, false
-          @request_type = request.instance_variable_get(:@__vcr_request_type)
+
+          if ([:@__vcr_request_type, "@__vcr_request_type"] & request.instance_variables).any?
+            @request_type = request.instance_variable_get(:@__vcr_request_type)
+          else
+            @request_type = nil
+          end
         end
 
         def handle
