@@ -99,7 +99,7 @@ module VCR
     end
 
     # @return [String] The file for this cassette.
-    # @note VCR will take care of sanitizing the cassette name to make it valid file name.
+    # @note VCR will take care of sanitizing the cassette name to make it a valid file name.
     def file
       return nil unless VCR.configuration.cassette_library_dir
       File.join(VCR.configuration.cassette_library_dir, "#{sanitized_name}.#{@serializer.file_extension}")
