@@ -122,6 +122,7 @@ module VCR
     #   @return [String] the directory to read cassettes from and write cassettes to
     # @overload cassette_library_dir=(dir)
     #   @param dir [String] the directory to read cassettes from and write cassettes to
+    #   @return [void]
     # @example
     #   VCR.configure do |c|
     #     c.cassette_library_dir = 'spec/cassettes'
@@ -138,8 +139,9 @@ module VCR
     #
     # @overload default_cassette_options
     #   @return [Hash] default options to apply to every cassette
-    # @overload default_cassette_options=
+    # @overload default_cassette_options=(options)
     #   @param options [Hash] default options to apply to every cassette
+    #   @return [void]
     # @example
     #   VCR.configure do |c|
     #     c.default_cassette_options = { :record => :new_episodes }
@@ -341,7 +343,7 @@ module VCR
     end
 
     # Configures RSpec to use a VCR cassette for any example
-    # tagged with +:vcr+.
+    # tagged with `:vcr`.
     def configure_rspec_metadata!
       VCR::RSpec::Metadata.configure!
     end
