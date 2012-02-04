@@ -1,7 +1,4 @@
-require 'yaml'
-require 'vcr/structs'
-require 'uri'
-require 'vcr/version'
+require 'vcr'
 
 module VCR
   class Cassette

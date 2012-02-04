@@ -38,7 +38,7 @@ Feature: Usage with Test::Unit
     When I set the "SERVER" environment variable to "true"
      And I run `ruby -Itest test/vcr_example_test.rb`
     Then it should pass with "1 tests, 1 assertions, 0 failures, 0 errors"
-    And the file "test/fixtures/vcr_cassettes/test_unit_example.yml" should contain "body: Hello"
+    And the file "test/fixtures/vcr_cassettes/test_unit_example.yml" should contain "Hello"
 
     # Run again without starting the sinatra server so the response will be replayed
     When I set the "SERVER" environment variable to "false"

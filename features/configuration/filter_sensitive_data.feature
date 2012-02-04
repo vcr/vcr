@@ -51,7 +51,7 @@ Feature: Filter sensitive data
       """
     When I run `ruby filtering.rb --with-server`
     Then the output should contain "Response: Hello World"
-     And the file "cassettes/filtering.yml" should contain "body: <GREETING> <LOCATION>"
+     And the file "cassettes/filtering.yml" should contain "<GREETING> <LOCATION>"
      And the file "cassettes/filtering.yml" should not contain "Hello"
      And the file "cassettes/filtering.yml" should not contain "World"
 
@@ -90,8 +90,8 @@ Feature: Filter sensitive data
     Then the output should contain each of the following:
       | Tagged Response: Hello World 1   |
       | Untagged Response: Hello World 2 |
-     And the file "cassettes/tagged.yml" should contain "body: Hello <LOCATION> 1"
-     And the file "cassettes/untagged.yml" should contain "body: Hello World 2"
+     And the file "cassettes/tagged.yml" should contain "Hello <LOCATION> 1"
+     And the file "cassettes/untagged.yml" should contain "Hello World 2"
 
     When I run `ruby tagged_filtering.rb`
     Then the output should contain each of the following:
@@ -141,7 +141,7 @@ Feature: Filter sensitive data
       """
     When I run `ruby dynamic_filtering.rb --with-server`
     Then the output should contain "john.doe/monkey"
-    And the file "cassettes/example.yml" should contain "body: john.doe/<PASSWORD>"
+    And the file "cassettes/example.yml" should contain "john.doe/<PASSWORD>"
     And the file "cassettes/example.yml" should contain a YAML fragment like:
       """
       X-Http-Password:

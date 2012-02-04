@@ -206,4 +206,16 @@ describe VCR::Configuration do
       subject.cassette_serializers[:custom].should be(custom_serializer)
     end
   end
+
+  describe "#preserve_exact_bytes_for?" do
+    it "returns false by default" do
+      subject.preserve_exact_bytes_for?("string").should be_false
+    end
+
+    it "returns true when the configured block returns true" do
+      subject.preserve_exact_string_bytes { |string| string == "a" }
+      subject.preserve_exact_bytes_for?("a").should be_true
+      subject.preserve_exact_bytes_for?("b").should be_false
+    end
+  end
 end

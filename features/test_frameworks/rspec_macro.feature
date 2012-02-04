@@ -76,8 +76,8 @@ Feature: Usage with RSpec macro
       """
     When I run `rspec spec/vcr_example_spec.rb`
     Then the output should contain "2 examples, 0 failures"
-     And the file "spec/cassettes/VCR-RSpec_integration/without_an_explicit_cassette_name.yml" should contain "body: Hello"
-     And the file "spec/cassettes/net_http_example.yml" should contain "body: Hello"
+     And the file "spec/cassettes/VCR-RSpec_integration/without_an_explicit_cassette_name.yml" should contain "Hello"
+     And the file "spec/cassettes/net_http_example.yml" should contain "Hello"
 
   @rspec-1 @exclude-jruby
   Scenario: Use `use_vcr_cassette` macro with RSpec 1
@@ -101,6 +101,6 @@ Feature: Usage with RSpec macro
       """
     When I run `spec spec/vcr_example_spec.rb`
     Then the output should contain "2 examples, 0 failures"
-     And the file "spec/cassettes/VCR-RSpec_integration/without_an_explicit_cassette_name.yml" should contain "body: Hello"
-     And the file "spec/cassettes/net_http_example.yml" should contain "body: Hello"
+     And the file "spec/cassettes/VCR-RSpec_integration/without_an_explicit_cassette_name.yml" should contain "Hello"
+     And the file "spec/cassettes/net_http_example.yml" should contain "Hello"
 

@@ -65,13 +65,13 @@ Feature: hook_into
     Then the output should contain each of the following:
       | The response for request 1 was: Hello World |
       | The response for request 2 was: Hello World |
-     And the file "vcr_cassettes/example.yml" should contain "body: Hello World"
+     And the file "vcr_cassettes/example.yml" should contain "Hello World"
 
     When I run `ruby hook_into_http_lib_combo.rb 'Goodbye World'`
     Then the output should contain each of the following:
       | The response for request 1 was: Goodbye World |
       | The response for request 2 was: Hello World   |
-     And the file "vcr_cassettes/example.yml" should contain "body: Hello World"
+     And the file "vcr_cassettes/example.yml" should contain "Hello World"
 
    Examples:
       | configuration         | http_lib              |

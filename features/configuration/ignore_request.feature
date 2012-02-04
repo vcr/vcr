@@ -76,8 +76,8 @@ Feature: Ignore Request
       Port 7777 Response 1
       Port 7777 Response 2
       """
-    And the file "cassettes/example.yml" should contain "body: Port 8888"
-    And the file "cassettes/example.yml" should not contain "body: Port 7777"
+    And the file "cassettes/example.yml" should contain "Port 8888"
+    And the file "cassettes/example.yml" should not contain "Port 7777"
 
     Examples:
       | configuration         | http_lib              |
@@ -145,7 +145,7 @@ Feature: Ignore Request
       """
     When I run `ruby localhost_not_ignored.rb`
     Then it should fail with "An HTTP request has been made that VCR does not know how to handle"
-     And the file "cassettes/localhost.yml" should contain "body: Port 7777 Response 1"
+     And the file "cassettes/localhost.yml" should contain "Port 7777 Response 1"
 
     Examples:
       | configuration         | http_lib              |

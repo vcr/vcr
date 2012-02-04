@@ -111,5 +111,5 @@ Feature: exclusive cassette
       New outer response
       Old inner response
       """
-    And the file "cassettes/inner.yml" should contain "body: New outer response"
+    And the file "cassettes/inner.yml" should contain "New outer response"
 

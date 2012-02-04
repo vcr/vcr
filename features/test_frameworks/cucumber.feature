@@ -96,10 +96,10 @@ Feature: Usage with Cucumber
       |   GET http://localhost:7777/disallowed_1                                          |
       | An HTTP request has been made that VCR does not know how to handle:               |
       |   GET http://localhost:7777/disallowed_2                                          |
-    And the file "features/cassettes/cucumber_tags/localhost_request.yml" should contain "body: Hello localhost_request_1"
-    And the file "features/cassettes/cucumber_tags/localhost_request.yml" should contain "body: Hello localhost_request_2"
-    And the file "features/cassettes/nested_cassette.yml" should contain "body: Hello nested_cassette"
-    And the file "features/cassettes/allowed.yml" should contain "body: Hello allowed"
+    And the file "features/cassettes/cucumber_tags/localhost_request.yml" should contain "Hello localhost_request_1"
+    And the file "features/cassettes/cucumber_tags/localhost_request.yml" should contain "Hello localhost_request_2"
+    And the file "features/cassettes/nested_cassette.yml" should contain "Hello nested_cassette"
+    And the file "features/cassettes/allowed.yml" should contain "Hello allowed"
 
     # Run again without the server; we'll get the same responses because VCR
     # will replay the recorded responses.
@@ -110,8 +110,8 @@ Feature: Usage with Cucumber
       |   GET http://localhost:7777/disallowed_1                                          |
       | An HTTP request has been made that VCR does not know how to handle:               |
       |   GET http://localhost:7777/disallowed_2                                          |
-    And the file "features/cassettes/cucumber_tags/localhost_request.yml" should contain "body: Hello localhost_request_1"
-    And the file "features/cassettes/cucumber_tags/localhost_request.yml" should contain "body: Hello localhost_request_2"
-    And the file "features/cassettes/nested_cassette.yml" should contain "body: Hello nested_cassette"
-    And the file "features/cassettes/allowed.yml" should contain "body: Hello allowed"
+    And the file "features/cassettes/cucumber_tags/localhost_request.yml" should contain "Hello localhost_request_1"
+    And the file "features/cassettes/cucumber_tags/localhost_request.yml" should contain "Hello localhost_request_2"
+    And the file "features/cassettes/nested_cassette.yml" should contain "Hello nested_cassette"
+    And the file "features/cassettes/allowed.yml" should contain "Hello allowed"
 

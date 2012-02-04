@@ -66,10 +66,10 @@ Feature: Usage with RSpec metadata
       """
     When I run `rspec spec/vcr_example_spec.rb`
     Then it should pass with "4 examples, 0 failures"
-     And the file "spec/cassettes/VCR_example_group_metadata/records_an_http_request.yml" should contain "body: Hello"
-     And the file "spec/cassettes/VCR_example_group_metadata/records_another_http_request.yml" should contain "body: Hello"
-     And the file "spec/cassettes/VCR_example_group_metadata/in_a_nested_example_group/records_another_one.yml" should contain "body: Hello"
-     And the file "spec/cassettes/VCR_example_metadata/records_an_http_request.yml" should contain "body: Hello"
+     And the file "spec/cassettes/VCR_example_group_metadata/records_an_http_request.yml" should contain "Hello"
+     And the file "spec/cassettes/VCR_example_group_metadata/records_another_http_request.yml" should contain "Hello"
+     And the file "spec/cassettes/VCR_example_group_metadata/in_a_nested_example_group/records_another_one.yml" should contain "Hello"
+     And the file "spec/cassettes/VCR_example_metadata/records_an_http_request.yml" should contain "Hello"
 
   Scenario: Pass a hash to set the cassette options
     Given a file named "spec/vcr_example_spec.rb" with:

@@ -61,7 +61,7 @@ Feature: Rack
       Response 1: Hello foo 1
       Response 2: Hello foo 1
       """
-    And the file "cassettes/proxied.yml" should contain "body: Hello foo 1"
+    And the file "cassettes/proxied.yml" should contain "Hello foo 1"
 
   Scenario: Set cassette name based on rack request env
     Given a file named "proxy_server.rb" with:
@@ -88,5 +88,5 @@ Feature: Rack
       Response 1: Hello foo 1
       Response 2: Hello foo 1
       """
-    And the file "cassettes/localhost.yml" should contain "body: Hello foo 1"
+    And the file "cassettes/localhost.yml" should contain "Hello foo 1"
 

@@ -49,6 +49,16 @@ end
 
 module VCR
   describe HTTPInteraction do
+    if ''.respond_to?(:encoding)
+      def body_hash(key, value)
+        { key => value, 'encoding' => 'UTF-8' }
+      end
+    else
+      def body_hash(key, value)
+        { key => value }
+      end
+    end
+
     describe "#recorded_at" do
       let(:now) { Time.now }
 
@@ -70,7 +80,7 @@ module VCR
           'request' => {
             'method'  => 'get',
             'uri'     => 'http://foo.com/',
-            'body'    => 'req body',
+            'body'    => body_hash('string', 'req body'),
             'headers' => { "bar" => ["foo"] }
           },
           'response' => {
@@ -79,7 +89,7 @@ module VCR
               'message'    => 'OK'
             },
             'headers'      => { "foo"     => ["bar"] },
-            'body'         => 'res body',
+            'body'         => body_hash('string', 'res body'),
             'http_version' => '1.1'
           },
           'recorded_at' => "Wed, 04 May 2011 12:30:00 GMT"
@@ -105,9 +115,48 @@ module VCR
         i = HTTPInteraction.from_hash(hash)
         i.response.should eq(Response.new(ResponseStatus.new))
       end
+
+      it 'decodes the base64 body string' do
+        hash['request']['body'] = body_hash('base64_string', Base64.encode64('req body'))
+        hash['response']['body'] = body_hash('base64_string', Base64.encode64('res body'))
+
+        i = HTTPInteraction.from_hash(hash)
+        i.request.body.should eq('req body')
+        i.response.body.should eq('res body')
+      end
+
+      if ''.respond_to?(:encoding)
+        it 'force encodes the decoded base64 string as the original encoding' do
+          string = "café"
+          string.force_encoding("US-ASCII")
+          string.should_not be_valid_encoding
+
+          hash['request']['body']  = { 'base64_string' => Base64.encode64(string.dup), 'encoding' => 'US-ASCII' }
+          hash['response']['body'] = { 'base64_string' => Base64.encode64(string.dup), 'encoding' => 'US-ASCII' }
+
+          i = HTTPInteraction.from_hash(hash)
+          i.request.body.encoding.name.should eq("US-ASCII")
+          i.response.body.encoding.name.should eq("US-ASCII")
+          i.request.body.bytes.to_a.should eq(string.bytes.to_a)
+          i.response.body.bytes.to_a.should eq(string.bytes.to_a)
+          i.request.body.should_not be_valid_encoding
+          i.response.body.should_not be_valid_encoding
+        end
+
+        it 'does not attempt to force encode the decoded base64 string when there is no encoding given (i.e. if the cassette was recorded on ruby 1.8)' do
+          hash['request']['body']  = { 'base64_string' => Base64.encode64('foo') }
+
+          i = HTTPInteraction.from_hash(hash)
+          i.request.body.should eq('foo')
+        end
+      end
     end
 
     describe "#to_hash" do
+      before(:each) do
+        VCR.stub_chain(:configuration, :preserve_exact_bytes_for?).and_return(false)
+      end
+
       let(:hash) { interaction.to_hash }
 
       it 'returns a nested hash containing all of the pertinent details' do
@@ -118,7 +167,7 @@ module VCR
         hash['request'].should eq({
           'method'  => 'get',
           'uri'     => 'http://foo.com/',
-          'body'    => 'req body',
+          'body'    => body_hash('string', 'req body'),
           'headers' => { "bar" => ["foo"] }
         })
 
@@ -128,9 +177,23 @@ module VCR
             'message'    => 'OK'
           },
           'headers'      => { "foo"     => ["bar"] },
-          'body'         => 'res body',
+          'body'         => body_hash('string', 'res body'),
           'http_version' => '1.1'
         })
+      end
+
+      it 'encodes the body as base64 when the configuration is so set' do
+        VCR.stub_chain(:configuration, :preserve_exact_bytes_for?).and_return(true)
+        hash['request']['body'].should eq(body_hash('base64_string', Base64.encode64('req body')))
+        hash['response']['body'].should eq(body_hash('base64_string', Base64.encode64('res body')))
+      end
+
+      it "sets the string's original encoding", :if => ''.respond_to?(:encoding) do
+        interaction.request.body.force_encoding('ISO-8859-10')
+        interaction.response.body.force_encoding('ASCII-8BIT')
+
+        hash['request']['body']['encoding'].should eq('ISO-8859-10')
+        hash['response']['body']['encoding'].should eq('ASCII-8BIT')
       end
 
       def assert_yielded_keys(hash, *keys)

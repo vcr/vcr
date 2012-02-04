@@ -46,7 +46,7 @@ Feature: before_record hook
       end
       """
     When I run `ruby before_record_example.rb`
-    Then the file "cassettes/recording_example.yml" should contain "body: Hello World"
+    Then the file "cassettes/recording_example.yml" should contain "Hello World"
      And the file "cassettes/recording_example.yml" should not contain "Earth"
 
   Scenario: Modify recorded response based on the cassette
@@ -72,7 +72,7 @@ Feature: before_record hook
       end
       """
     When I run `ruby before_record_example.rb`
-    Then the file "cassettes/recording_example.yml" should contain "body: Hello Earth (recording_example)"
+    Then the file "cassettes/recording_example.yml" should contain "Hello Earth (recording_example)"
 
   Scenario: Prevent recording by ignoring interaction in before_record hook
     Given a file named "before_record_ignore.rb" with:

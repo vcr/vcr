@@ -45,7 +45,7 @@ Feature: Allow HTTP connections when no cassette
       """
     When I run `ruby record_replay_cassette.rb --with-server`
     Then the output should contain "Response: Hello"
-    And the file "cassettes/localhost.yml" should contain "body: Hello"
+    And the file "cassettes/localhost.yml" should contain "Hello"
 
     When I run `ruby record_replay_cassette.rb`
     Then the output should contain "Response: Hello"

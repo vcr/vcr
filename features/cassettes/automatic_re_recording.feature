@@ -55,14 +55,14 @@ Feature: Automatic Re-recording
     When I run `ruby re_record.rb`
     Then the output should contain "Old Response"
     But the output should not contain "New Response"
-    And the file "cassettes/example.yml" should contain "body: Old Response"
-    But the file "cassettes/example.yml" should not contain "body: New Response"
+    And the file "cassettes/example.yml" should contain "Old Response"
+    But the file "cassettes/example.yml" should not contain "New Response"
 
   Scenario: Cassette is re-recorded when enough time has passed
     Given it is Tue, 09 Nov 2011
     When I run `ruby re_record.rb`
     Then the output should contain "New Response"
     But the output should not contain "Old Response"
-    And the file "cassettes/example.yml" should contain "body: New Response"
-    But the file "cassettes/example.yml" should not contain "body: Old Response"
+    And the file "cassettes/example.yml" should contain "New Response"
+    But the file "cassettes/example.yml" should not contain "Old Response"
 
