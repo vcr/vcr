@@ -71,5 +71,5 @@ Feature: :new_episodes
     When I run `ruby record_new_requests.rb`
     Then it should pass with "Response: Hello"
     And the file "cassettes/example.yml" should contain each of these:
-      | body: example.com response |
-      | body: Hello                |
+      | example.com response |
+      | Hello                |

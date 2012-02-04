@@ -1,11 +1,40 @@
-require 'time'
+require 'base64'
 require 'delegate'
+require 'time'
 
 module VCR
   # @private
   module Normalizers
     # @private
     module Body
+      def self.included(klass)
+        klass.extend ClassMethods
+      end
+
+      module ClassMethods
+        def body_from(hash_or_string)
+          return hash_or_string unless hash_or_string.is_a?(Hash)
+
+          if hash_or_string.has_key?('base64_string')
+            string = Base64.decode64(hash_or_string['base64_string'])
+            force_encode_string(string, hash_or_string['encoding'])
+          else
+            hash_or_string['string']
+          end
+        end
+
+        if "".respond_to?(:encoding)
+          def force_encode_string(string, encoding)
+            return string unless encoding
+            string.force_encoding(encoding)
+          end
+        else
+          def force_encode_string(string, encoding)
+            string
+          end
+        end
+      end
+
       def initialize(*args)
         super
         # Ensure that the body is a raw string, in case the string instance
@@ -14,6 +43,26 @@ module VCR
         # This is needed for rest-client.  See this ticket for more info:
         # http://github.com/myronmarston/vcr/issues/4
         self.body = String.new(body.to_s)
+      end
+
+    private
+
+      def serializable_body
+        if VCR.configuration.preserve_exact_bytes_for?(body)
+          base_body_hash(body).merge('base64_string' => Base64.encode64(body))
+        else
+          base_body_hash(body).merge('string' => body)
+        end
+      end
+
+      if ''.respond_to?(:encoding)
+        def base_body_hash(body)
+          { 'encoding' => body.encoding.name }
+        end
+      else
+        def base_body_hash(body)
+          { }
+        end
       end
     end
 
@@ -103,7 +152,7 @@ module VCR
       {
         'method'  => method.to_s,
         'uri'     => uri,
-        'body'    => body,
+        'body'    => serializable_body,
         'headers' => headers
       }.tap { |h| OrderedHashSerializer.apply_to(h, members) }
     end
@@ -117,7 +166,7 @@ module VCR
       method &&= method.to_sym
       new method,
           hash['uri'],
-          hash['body'],
+          body_from(hash['body']),
           hash['headers']
     end
 
@@ -328,7 +377,7 @@ module VCR
       {
         'status'       => status.to_hash,
         'headers'      => headers,
-        'body'         => body,
+        'body'         => serializable_body,
         'http_version' => http_version
       }.tap { |h| OrderedHashSerializer.apply_to(h, members) }
     end
@@ -340,7 +389,7 @@ module VCR
     def self.from_hash(hash)
       new ResponseStatus.from_hash(hash.fetch('status', {})),
           hash['headers'],
-          hash['body'],
+          body_from(hash['body']),
           hash['http_version']
     end
 

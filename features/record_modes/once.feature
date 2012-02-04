@@ -88,4 +88,4 @@ Feature: :once
     When I remove the file "cassettes/example.yml"
     And I run `ruby record_new_requests.rb`
     Then it should pass with "Response: Hello"
-    And the file "cassettes/example.yml" should contain "body: Hello"
+    And the file "cassettes/example.yml" should contain "Hello"

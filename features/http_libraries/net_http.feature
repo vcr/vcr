@@ -33,7 +33,7 @@ Feature: Net::HTTP
       """
     When I run `ruby vcr_net_http.rb --with-server`
     Then the output should contain "VCR works with Net::HTTP posts!"
-    And the file "cassettes/net_http.yml" should contain "body: VCR works with Net::HTTP posts!"
+    And the file "cassettes/net_http.yml" should contain "VCR works with Net::HTTP posts!"
 
     When I run `ruby vcr_net_http.rb`
     Then the output should contain "VCR works with Net::HTTP posts!"
@@ -65,7 +65,7 @@ Feature: Net::HTTP
       """
     When I run `ruby vcr_net_http.rb --with-server`
     Then the output should contain "VCR works with Net::HTTP gets!"
-    And the file "cassettes/net_http.yml" should contain "body: VCR works with Net::HTTP gets!"
+    And the file "cassettes/net_http.yml" should contain "VCR works with Net::HTTP gets!"
 
     When I run `ruby vcr_net_http.rb`
     Then the output should contain "VCR works with Net::HTTP gets!"
@@ -97,7 +97,7 @@ Feature: Net::HTTP
       """
     When I run `ruby vcr_net_http.rb --with-server`
     Then the output should contain "VCR works with Net::HTTP gets!"
-    And the file "cassettes/net_http.yml" should contain "body: VCR works with Net::HTTP gets!"
+    And the file "cassettes/net_http.yml" should contain "VCR works with Net::HTTP gets!"
 
     When I run `ruby vcr_net_http.rb`
     Then the output should contain "VCR works with Net::HTTP gets!"
@@ -124,7 +124,7 @@ Feature: Net::HTTP
       """
     When I run `ruby vcr_net_http.rb --with-server`
     Then the output should contain "VCR works with Net::HTTP gets!"
-    And the file "cassettes/net_http.yml" should contain "body: VCR works with Net::HTTP gets!"
+    And the file "cassettes/net_http.yml" should contain "VCR works with Net::HTTP gets!"
 
     When I run `ruby vcr_net_http.rb`
     Then the output should contain "VCR works with Net::HTTP gets!"
@@ -157,9 +157,9 @@ Feature: Net::HTTP
         """
       When I run `ruby vcr_https.rb`
       Then the output should contain "VCR gist"
-      And the file "cassettes/https.yml" should contain "body: VCR gist"
+      And the file "cassettes/https.yml" should contain "VCR gist"
 
-      When I modify the file "cassettes/https.yml" to replace "body: VCR gist" with "body: HTTPS replaying works"
+      When I modify the file "cassettes/https.yml" to replace "VCR gist" with "HTTPS replaying works"
       And I run `ruby vcr_https.rb`
       Then the output should contain "HTTPS replaying works"
 

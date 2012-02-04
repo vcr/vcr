@@ -42,7 +42,7 @@ Feature: around_http_request hook
       Response for request 1: Response 1
       Response for request 2: Response 1
       """
-    And the file "cassettes/global.yml" should contain "body: Response 1"
+    And the file "cassettes/global.yml" should contain "Response 1"
 
    Examples:
       | configuration         | http_lib              |

@@ -45,7 +45,7 @@ Feature: Faraday middleware
       Response 1: Hello foo 1
       Response 2: Hello foo 1
       """
-    And the file "cassettes/example.yml" should contain "body: Hello foo 1"
+    And the file "cassettes/example.yml" should contain "Hello foo 1"
 
     Examples:
       | adapter  |

@@ -58,8 +58,8 @@ Feature: :all
       """
     When I run `ruby re_record.rb`
     Then it should pass with "Response: Hello"
-    And the file "cassettes/example.yml" should contain "body: Hello"
-    But the file "cassettes/example.yml" should not contain "body: old response"
+    And the file "cassettes/example.yml" should contain "Hello"
+    But the file "cassettes/example.yml" should not contain "old response"
 
   Scenario: Record new request
     Given a file named "record_new.rb" with:
@@ -74,5 +74,5 @@ Feature: :all
     When I run `ruby record_new.rb`
     Then it should pass with "Response: Goodbye"
     And the file "cassettes/example.yml" should contain each of these:
-      | body: old response |
-      | body: Goodbye      |
+      | old response |
+      | Goodbye      |

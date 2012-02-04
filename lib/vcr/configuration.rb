@@ -371,6 +371,38 @@ module VCR
     #   end
     attr_accessor :debug_logger
 
+    # Sets a callback that determines whether or not to base64 encode
+    # the bytes of a request or response body during serialization in
+    # order to preserve them exactly.
+    #
+    # @example
+    #   VCR.configure do |c|
+    #     c.preserve_exact_string_bytes do |string|
+    #       string.encoding.name == 'ASCII-8BIT' || !string.valid_encoding?
+    #     end
+    #   end
+    #
+    # @yield the callback
+    # @yieldparam string [String] the request or response body being serialized
+    # @yieldreturn [Boolean] whether or not to preserve the exact bytes for the given string
+    # @return [void]
+    # @see #preserve_exact_bytes_for?
+    # @note This is usually only necessary when the HTTP server returns a response
+    #  with a non-standard encoding or with invalid bytes for the given encoding. Note that
+    #  when you set this, and the block returns true, you sacrifice the human readability of
+    #  the data in the cassette.
+    def preserve_exact_string_bytes(&block)
+      @preserve_exact_string_bytes_block = block
+    end
+
+    # @return [Boolean] whether or not the given string should be base64 encoded during serialization
+    #  in order to preserve the bytes exactly.
+    # @param string [String] the string
+    # @see #preserve_exact_string_bytes
+    def preserve_exact_bytes_for?(string)
+      @preserve_exact_string_bytes_block.call(string)
+    end
+
   private
 
     def load_library_hook(hook)
@@ -408,6 +440,8 @@ module VCR
       before_playback(:update_content_length_header) do |interaction|
         interaction.response.update_content_length_header
       end
+
+      preserve_exact_string_bytes { |string| false }
     end
   end
 

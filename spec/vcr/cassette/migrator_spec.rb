@@ -47,7 +47,9 @@ http_interactions:
 - request: 
     method: get
     uri: http://example.com/foo
-    body: ""
+    body:
+      encoding: US-ASCII
+      string: ""
     headers: {}
 
   response: 
@@ -59,13 +61,17 @@ http_interactions:
       - text/html;charset=utf-8
       Content-Length: 
       - "9"
-    body: Hello foo
+    body:
+      encoding: UTF-8
+      string: Hello foo
     http_version: "1.1"
   recorded_at: Wed, 04 May 2011 12:30:00 GMT
 - request: 
     method: get
     uri: http://localhost:7777/bar
-    body: ""
+    body:
+      encoding: US-ASCII
+      string: ""
     headers: {}
 
   response: 
@@ -77,7 +83,9 @@ http_interactions:
       - text/html;charset=utf-8
       Content-Length: 
       - "9"
-    body: Hello bar
+    body:
+      encoding: UTF-8
+      string: Hello bar
     http_version: "1.1"
   recorded_at: Wed, 04 May 2011 12:30:00 GMT
 recorded_with: VCR #{VCR.version}
@@ -91,6 +99,11 @@ EOF
     FileUtils.rm_rf dir
     FileUtils.mkdir_p dir
   end
+
+  before(:each) do
+    # the encoding won't be set on rubies that don't support it
+    updated_contents.gsub!(/^\s+encoding:.*$/, '')
+  end unless ''.respond_to?(:encoding)
 
   # JRuby serializes YAML with some slightly different whitespace.
   before(:each) do
