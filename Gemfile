@@ -9,7 +9,7 @@ end
 
 gem 'yard'
 gem 'simplecov'
-gem 'webmock', :git => 'git://github.com/bblimke/webmock.git', :branch => 'vcr_fixes'
+gem 'webmock', :git => 'git://github.com/bblimke/webmock.git'
 
 # Additional gems that are useful, but not required for development.
 group :extras do

@@ -25,6 +25,7 @@ module MonkeyPatches
         ::WebMock.reset!
         ::WebMock::HttpLibAdapters::NetHttpAdapter.enable!
         ::WebMock::HttpLibAdapters::TyphoeusAdapter.enable! if defined?(::Typhoeus)
+        ::WebMock::HttpLibAdapters::ExconAdapter.enable! if defined?(::Excon)
         $original_webmock_callbacks.each do |cb|
           ::WebMock::CallbackRegistry.add_callback(cb[:options], cb[:block])
         end
@@ -43,6 +44,7 @@ module MonkeyPatches
     if defined?(::WebMock::HttpLibAdapters)
       ::WebMock::HttpLibAdapters::NetHttpAdapter.disable!
       ::WebMock::HttpLibAdapters::TyphoeusAdapter.disable! if defined?(::Typhoeus)
+      ::WebMock::HttpLibAdapters::ExconAdapter.disable! if defined?(::Excon)
       ::WebMock::CallbackRegistry.reset
       ::WebMock::StubRegistry.instance.request_stubs = []
     end
