@@ -66,10 +66,9 @@ describe VCR::Cassette do
 
   describe "#serializable_hash" do
     subject { VCR::Cassette.new("foo") }
-    let(:interactions) do [
-      stub(:to_hash => { "i" => 1 }, :hook_aware => stub(:ignored? => false), :request => stub(:method => :get).as_null_object).as_null_object,
-      stub(:to_hash => { "i" => 2 }, :hook_aware => stub(:ignored? => false), :request => stub(:method => :get).as_null_object).as_null_object
-    ] end
+    let(:interaction_1) { http_interaction { |i| i.request.body = 'req body 1'; i.response.body = 'res body 1' } }
+    let(:interaction_2) { http_interaction { |i| i.request.body = 'req body 2'; i.response.body = 'res body 2' } }
+    let(:interactions)  { [interaction_1, interaction_2] }
 
     before(:each) do
       interactions.each do |i|
@@ -80,7 +79,9 @@ describe VCR::Cassette do
     let(:metadata) { subject.serializable_hash.reject { |k,v| k == "http_interactions" } }
 
     it 'includes the hash form of all recorded interactions' do
-      subject.serializable_hash.should include('http_interactions' => [{ "i" => 1 }, { "i" => 2 }])
+      interaction_1.stub(:to_hash => { "i" => 1, 'body' => '' })
+      interaction_2.stub(:to_hash => { "i" => 2, 'body' => '' })
+      subject.serializable_hash.should include('http_interactions' => [{ "i" => 1, 'body' => '' }, { "i" => 2, 'body' => '' }])
     end
 
     it 'includes additional metadata about the cassette' do
