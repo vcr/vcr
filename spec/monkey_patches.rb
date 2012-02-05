@@ -154,3 +154,4 @@ RSpec.configure do |config|
 end
 
 require 'vcr/library_hooks/excon'
+$excon_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].last

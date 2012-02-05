@@ -113,5 +113,13 @@ describe "Excon hook" do
       end
     end
   end
+
+  describe "VCR.configuration.after_library_hooks_loaded hook" do
+    it 'disables the webmock excon adapter so it does not conflict with our typhoeus hook' do
+      ::WebMock::HttpLibAdapters::ExconAdapter.should respond_to(:disable!)
+      ::WebMock::HttpLibAdapters::ExconAdapter.should_receive(:disable!)
+      $excon_after_loaded_hook.conditionally_invoke
+    end
+  end
 end
 
