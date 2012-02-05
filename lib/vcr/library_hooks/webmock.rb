@@ -31,6 +31,7 @@ module VCR
         end
 
         if defined?(::Excon)
+          # @private
           def request_headers
             return nil unless request.headers
 
@@ -41,6 +42,7 @@ module VCR
             end
           end
         else
+          # @private
           def request_headers
             request.headers
           end
