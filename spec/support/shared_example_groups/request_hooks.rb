@@ -1,13 +1,6 @@
 shared_examples_for "request hooks" do |library_hook_name, request_type|
   let(:request_url) { "http://localhost:#{VCR::SinatraApp.port}/foo" }
 
-  before(:each) do
-    # ensure that all the other library hooks are disabled so that we don't
-    # get double-hookage (such as for WebMock and Typhoeus both invoking the
-    # hooks for a typhoeus request)
-    VCR.library_hooks.stub(:disabled?) { |lib_name| lib_name != library_hook_name }
-  end
-
   def make_request(disabled = false)
     make_http_request(:get, request_url)
   end

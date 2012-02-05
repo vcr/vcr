@@ -110,8 +110,6 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
     end
 
     it 'does not query the http interaction list excessively' do
-      VCR.library_hooks.stub(:disabled?) { |lib_name| lib_name != library_hook_name }
-
       call_count = 0
       [:has_interaction_matching?, :response_for].each do |method_name|
         orig_meth = VCR.http_interactions.method(method_name)
@@ -168,13 +166,6 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
     end
 
     describe "request hooks" do
-      before(:each) do
-        # ensure that all the other library hooks are disabled so that we don't
-        # get double-hookage (such as for WebMock and Typhoeus both invoking the
-        # hooks for a typhoeus request)
-        VCR.library_hooks.stub(:disabled?) { |lib_name| lib_name != library_hook_name }
-      end
-
       context 'when there is an around_http_request hook' do
         let(:request_url) { "http://localhost:#{VCR::SinatraApp.port}/foo" }
 

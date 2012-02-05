@@ -14,8 +14,6 @@ module MonkeyPatches
 
   ALL_MONKEY_PATCHES = NET_HTTP_MONKEY_PATCHES.dup
 
-  ALL_MONKEY_PATCHES << [Typhoeus::Hydra::Stubbing::SharedMethods, :find_stub_from_request] if defined?(::Typhoeus)
-
   def enable!(scope)
     case scope
       when :fakeweb
@@ -30,8 +28,11 @@ module MonkeyPatches
           ::WebMock::CallbackRegistry.add_callback(cb[:options], cb[:block])
         end
       when :typhoeus
-        Typhoeus::Hydra.global_hooks = $original_typhoeus_hooks
-        realias Typhoeus::Hydra::Stubbing::SharedMethods, :find_stub_from_request, :with_vcr
+        ::Typhoeus::Hydra.global_hooks = $original_typhoeus_global_hooks
+        ::Typhoeus::Hydra.stub_finders.clear
+        $original_typhoeus_stub_finders.each do |finder|
+          ::Typhoeus::Hydra.stub_finders << finder
+        end
       when :vcr
         realias Net::HTTP, :request, :with_vcr
       else raise ArgumentError.new("Unexpected scope: #{scope}")
@@ -50,7 +51,8 @@ module MonkeyPatches
     end
 
     if defined?(::Typhoeus)
-      Typhoeus::Hydra.clear_global_hooks
+      ::Typhoeus::Hydra.clear_global_hooks
+      ::Typhoeus::Hydra.stub_finders.clear
     end
   end
 
@@ -121,12 +123,8 @@ unless RUBY_INTERPRETER == :jruby
 
   require 'vcr/library_hooks/typhoeus'
   $typhoeus_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].last
-  $original_typhoeus_hooks = Typhoeus::Hydra.global_hooks.dup
-
-  # define an alias that we can re-alias to in the future
-  Typhoeus::Hydra::Stubbing::SharedMethods.class_eval do
-    alias find_stub_from_request_with_vcr find_stub_from_request
-  end
+  $original_typhoeus_global_hooks = Typhoeus::Hydra.global_hooks.dup
+  $original_typhoeus_stub_finders = Typhoeus::Hydra.stub_finders.dup
 end
 
 require 'vcr/library_hooks/fakeweb'
