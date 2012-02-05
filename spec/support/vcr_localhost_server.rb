@@ -59,6 +59,7 @@ module VCR
     def concurrently
       if should_use_subprocess?
         pid = Process.fork do
+          trap(:INT) { ::Rack::Handler::WEBrick.shutdown }
           yield
           exit # manually exit; otherwise this sub-process will re-run the specs that haven't run yet.
         end
