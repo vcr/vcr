@@ -146,8 +146,9 @@ Thanks also to the following people who have contributed patches or helpful sugg
 ## Similar Libraries
 
 * [Betamax](https://github.com/robfletcher/betamax) (Groovy)
-* [Ephemeral Response](https://github.com/sandro/ephemeral_response) (Ruby)
+* [VCR.js](https://github.com/elcuervo/vcr.js) (JavaScript)
 * [Mimic](https://github.com/acoulton/mimic) (PHP/Kohana)
+* [Ephemeral Response](https://github.com/sandro/ephemeral_response) (Ruby)
 * [Net::HTTP Spy](http://github.com/martinbtt/net-http-spy) (Ruby)
 * [NetRecorder](https://github.com/chrisyoung/netrecorder) (Ruby)
 * [Stale Fish](https://github.com/jsmestad/stale_fish) (Ruby)
