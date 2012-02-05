@@ -11,6 +11,17 @@
     the response.
   * Resolve `cassette_library_dir` to an absolute path. Thanks to
     [Nate Clark](https://github.com/heythisisnate) for the suggestion.
+  * Add to the `VCR::Request` API in `before_http_request` and
+    `after_http_request` hooks so the request has query methods like
+    `#real?`, `#recordable?`, `#ignored?`, etc. Thanks to
+    [Nate Clark](https://github.com/heythisisnate) for the idea.
+  * Allow filters (objects that respond to `#to_proc`) to be passed
+    to `before_http_request` and `after_http_request`.  This allows
+    an API like `before_http_request(:real?)` or
+    `after_http_request(lambda { |req| req.uri =~ /amazon/ })`.
+  * Add `debug_logger` config option. This can be used to
+    troubleshoot what VCR is doing.
+  * Update WebMock to version that supports Excon stubbing.
 
 ## Bug Fixes
 
