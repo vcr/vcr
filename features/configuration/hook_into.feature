@@ -12,6 +12,7 @@ Feature: hook_into
       - Curb (Curl::Easy, but not Curl::Multi)
       - EM HTTP Request
       - Typhoeus (Typhoeus::Hydra, but not Typhoeus::Easy or Typhoeus::Multi)
+      - Excon
     - :typhoeus can be used to hook into itself (as long as you use Typhoeus::Hydra,
       but not Typhoeus::Easy or Typhoeus::Multi).
     - :excon can be used to hook into itself.
@@ -80,6 +81,7 @@ Feature: hook_into
       | c.hook_into :webmock  | patron                |
       | c.hook_into :webmock  | em-http-request       |
       | c.hook_into :webmock  | typhoeus              |
+      | c.hook_into :webmock  | excon                 |
       | c.hook_into :typhoeus | typhoeus              |
       | c.hook_into :excon    | excon                 |
       | c.hook_into :faraday  | faraday (w/ net_http) |

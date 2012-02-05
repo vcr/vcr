@@ -27,7 +27,21 @@ module VCR
             request.method,
             request.uri.to_s,
             request.body,
+            request_headers
+        end
+
+        if defined?(::Excon)
+          def request_headers
+            # WebMock hooks deeply into a Excon at a place where it manually adds a "Host"
+            # header, but this isn't a header we actually care to store...
+            request.headers.dup.tap do |headers|
+              headers.delete("Host")
+            end
+          end
+        else
+          def request_headers
             request.headers
+          end
         end
 
         def on_unhandled_request

@@ -33,6 +33,11 @@ module MonkeyPatches
         $original_typhoeus_stub_finders.each do |finder|
           ::Typhoeus::Hydra.stub_finders << finder
         end
+      when :excon
+        $original_excon_stubs.each do |stub|
+          ::Excon.stubs << stub
+        end
+        ::Excon.mock = true
       when :vcr
         realias Net::HTTP, :request, :with_vcr
       else raise ArgumentError.new("Unexpected scope: #{scope}")
@@ -53,6 +58,11 @@ module MonkeyPatches
     if defined?(::Typhoeus)
       ::Typhoeus::Hydra.clear_global_hooks
       ::Typhoeus::Hydra.stub_finders.clear
+    end
+
+    if defined?(::Excon)
+      ::Excon.stubs.clear
+      ::Excon.mock = false
     end
   end
 
@@ -141,15 +151,17 @@ MonkeyPatches.disable_all!
 require 'vcr/library_hooks/webmock'
 $original_webmock_callbacks = ::WebMock::CallbackRegistry.callbacks
 
+require 'vcr/library_hooks/excon'
+$excon_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].last
+$original_excon_stubs = ::Excon.stubs.dup
+
 # disable all by default; we'll enable specific ones when we need them
 MonkeyPatches.disable_all!
 
 RSpec.configure do |config|
-  [:fakeweb, :webmock, :vcr, :typhoeus].each do |scope|
+  [:fakeweb, :webmock, :vcr, :typhoeus, :excon].each do |scope|
     config.before(:all, :with_monkey_patches => scope) { MonkeyPatches.enable!(scope) }
     config.after(:all,  :with_monkey_patches => scope) { MonkeyPatches.disable_all!   }
   end
 end
 
-require 'vcr/library_hooks/excon'
-$excon_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].last

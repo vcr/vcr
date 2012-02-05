@@ -18,8 +18,10 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
     ::WebMock.stub_request(method, url).to_return(:body => response_body)
   end
 
-  %w[net/http patron httpclient em-http-request curb typhoeus].each do |lib|
-    it_behaves_like 'a hook into an HTTP library', :webmock, lib do
+  %w[net/http patron httpclient em-http-request curb typhoeus excon].each do |lib|
+    other = []
+    other << :status_message_not_exposed if lib == 'excon'
+    it_behaves_like 'a hook into an HTTP library', :webmock, lib, *other do
       if lib == 'net/http'
         def normalize_request_headers(headers)
           headers.merge(DEFAULT_REQUEST_HEADERS)

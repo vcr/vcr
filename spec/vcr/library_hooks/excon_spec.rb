@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Excon hook" do
+describe "Excon hook", :with_monkey_patches => :excon do
   # TODO: figure out a way to get disabling VCR to work with Excon
   #       and allow dirct excon stubs to work.
   # def directly_stub_request(method, url, response_body)
