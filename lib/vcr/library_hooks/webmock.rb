@@ -32,6 +32,8 @@ module VCR
 
         if defined?(::Excon)
           def request_headers
+            return nil unless request.headers
+
             # WebMock hooks deeply into a Excon at a place where it manually adds a "Host"
             # header, but this isn't a header we actually care to store...
             request.headers.dup.tap do |headers|
