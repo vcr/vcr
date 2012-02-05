@@ -2,6 +2,8 @@ require 'sinatra'
 
 module VCR
   class SinatraApp < ::Sinatra::Base
+    disable :protection
+
     get '/' do
       "GET to root"
     end

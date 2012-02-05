@@ -38,6 +38,7 @@ def start_sinatra_app(options, &block)
   require 'sinatra'
   require 'support/vcr_localhost_server'
   klass = Class.new(Sinatra::Base)
+  klass.disable :protection
   klass.class_eval(&block)
 
   VCR::LocalhostServer.new(klass.new, options[:port])
