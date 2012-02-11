@@ -309,16 +309,11 @@ module VCR
     #
     # @example
     #  VCR.configure do |c|
-    #    c.around_http_request do |request|
-    #      uri = URI(request.uri)
-    #      if uri.host == 'api.geocoder.com'
-    #        # extract an address like "1700 E Pine St, Seattle, WA"
-    #        # from a query like "address=1700+E+Pine+St%2C+Seattle%2C+WA"
-    #        address = CGI.unescape(uri.query.split('=').last)
-    #        VCR.use_cassette("geocoding/#{address}", &request)
-    #      else
-    #        request.proceed
-    #      end
+    #    c.around_http_request(lambda {|r| r.uri =~ /api.geocoder.com/}) do |request|
+    #      # extract an address like "1700 E Pine St, Seattle, WA"
+    #      # from a query like "address=1700+E+Pine+St%2C+Seattle%2C+WA"
+    #      address = CGI.unescape(URI(request.uri).query.split('=').last)
+    #      VCR.use_cassette("geocoding/#{address}", &request)
     #    end
     #  end
     #
