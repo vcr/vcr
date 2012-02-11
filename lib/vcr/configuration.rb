@@ -325,23 +325,32 @@ module VCR
     # @yield the callback
     # @yieldparam request [VCR::Request::FiberAware] the request that is being made
     # @raise [VCR::Errors::NotSupportedError] if the fiber library cannot be loaded.
+    # @param filters [optional splat of #to_proc] one or more filters to apply.
+    #   The objects provided will be converted to procs using `#to_proc`. If provided,
+    #   the callback will only be invoked if these procs all return `true`.
     # @note This method can only be used on ruby interpreters that support
-    #  fibers (i.e. 1.9+). On 1.8 you can use separate +before_http_request+ and
-    #  +after_http_request+ hooks.
-    # @note You _must_ call +request.proceed+ or pass the request as a proc on to a
-    #  method that expects a block (i.e. some_method(&request)).
+    #  fibers (i.e. 1.9+). On 1.8 you can use separate `before_http_request` and
+    #  `after_http_request` hooks.
+    # @note You _must_ call `request.proceed` or pass the request as a proc on to a
+    #  method that yields to a block (i.e. `some_method(&request)`).
     # @see #before_http_request
     # @see #after_http_request
-    def around_http_request(&block)
+    def around_http_request(*filters, &block)
       require 'fiber'
     rescue LoadError
       raise Errors::NotSupportedError.new \
         "VCR::Configuration#around_http_request requires fibers, " +
         "which are not available on your ruby intepreter."
     else
-      fiber, hook_decaration = nil, caller.first
-      before_http_request { |request| fiber = start_new_fiber_for(request, block) }
-      after_http_request  { |request, response| resume_fiber(fiber, response, hook_decaration) }
+      fiber, hook_allowed, hook_decaration = nil, false, caller.first
+      before_http_request(*filters) do |request|
+        hook_allowed = true
+        fiber = start_new_fiber_for(request, block)
+      end
+
+      after_http_request(lambda { hook_allowed }) do |request, response|
+        resume_fiber(fiber, response, hook_decaration)
+      end
     end
 
     # Configures RSpec to use a VCR cassette for any example

@@ -254,6 +254,49 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
 
           3.times { make_http_request(:get, request_url) }
         end
+
+        it 'allows the hook to be filtered' do
+          order = []
+          VCR.configure do |c|
+            c.ignore_request { |r| true }
+            c.around_http_request(lambda { |r| r.uri =~ /foo/}) do |request|
+              order << :before_foo
+              request.proceed
+              order << :after_foo
+            end
+
+            c.around_http_request(lambda { |r| r.uri !~ /foo/}) do |request|
+              order << :before_not_foo
+              request.proceed
+              order << :after_not_foo
+            end
+          end
+
+          make_http_request(:get, request_url)
+          order.should eq([:before_foo, :after_foo])
+        end
+
+        it 'ensures that both around/before are invoked or neither' do
+          order = []
+          allow_1, allow_2 = false, true
+          VCR.configure do |c|
+            c.ignore_request { |r| true }
+            c.around_http_request(lambda { |r| allow_1 = !allow_1 }) do |request|
+              order << :before_1
+              request.proceed
+              order << :after_1
+            end
+
+            c.around_http_request(lambda { |r| allow_2 = !allow_2 }) do |request|
+              order << :before_2
+              request.proceed
+              order << :after_2
+            end
+          end
+
+          make_http_request(:get, request_url)
+          order.should eq([:before_1, :after_1])
+        end
       end if RUBY_VERSION >= '1.9'
 
       it 'correctly assigns the correct type to both before and after request hooks, even if they are different' do
