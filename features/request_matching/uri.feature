@@ -8,37 +8,45 @@ Feature: Matching on URI
   Background:
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
-      ---
-      http_interactions:
-      - request:
+      --- 
+      http_interactions: 
+      - request: 
           method: post
           uri: http://example.com/foo
-          body: ''
+          body: 
+            encoding: UTF-8
+            string: ""
           headers: {}
-        response:
-          status:
+        response: 
+          status: 
             code: 200
             message: OK
-          headers:
-            Content-Length:
-            - '12'
-          body: foo response
-          http_version: '1.1'
+          headers: 
+            Content-Length: 
+            - "12"
+          body: 
+            encoding: UTF-8
+            string: foo response
+          http_version: "1.1"
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
-      - request:
+      - request: 
           method: post
           uri: http://example.com/bar
-          body: ''
+          body: 
+            encoding: UTF-8
+            string: ""
           headers: {}
-        response:
-          status:
+        response: 
+          status: 
             code: 200
             message: OK
-          headers:
-            Content-Length:
-            - '12'
-          body: bar response
-          http_version: '1.1'
+          headers: 
+            Content-Length: 
+            - "12"
+          body: 
+            encoding: UTF-8
+            string: bar response
+          http_version: "1.1"
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0
       """

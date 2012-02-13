@@ -26,22 +26,26 @@ Feature: :all
       """
     And a previously recorded cassette file "cassettes/example.yml" with:
       """
-      ---
-      http_interactions:
-      - request:
+      --- 
+      http_interactions: 
+      - request: 
           method: get
           uri: http://localhost:7777/
-          body: ''
+          body: 
+            encoding: UTF-8
+            string: ""
           headers: {}
-        response:
-          status:
+        response: 
+          status: 
             code: 200
             message: OK
-          headers:
-            Content-Length:
-            - '20'
-          body: old response
-          http_version: '1.1'
+          headers: 
+            Content-Length: 
+            - "20"
+          body: 
+            encoding: UTF-8
+            string: old response
+          http_version: "1.1"
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0
       """

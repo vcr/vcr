@@ -17,7 +17,9 @@ Feature: Dynamic ERB cassettes
       - request:
           method: get
           uri: http://example.com/foo?a=<%= 'b' * 3 %>
-          body: ''
+          body:
+            encoding: UTF-8
+            string: ''
           headers: {}
         response:
           status:
@@ -28,7 +30,9 @@ Feature: Dynamic ERB cassettes
             - text/html;charset=utf-8
             Content-Length:
             - '9'
-          body: Hello <%= 'bar'.next %>
+          body:
+            encoding: UTF-8
+            string: Hello <%= 'bar'.next %>
           http_version: '1.1'
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0
@@ -58,7 +62,9 @@ Feature: Dynamic ERB cassettes
       - request:
           method: get
           uri: http://example.com/foo?a=<%= arg1 %>
-          body: ''
+          body:
+            encoding: UTF-8
+            string: ''
           headers: {}
         response:
           status:
@@ -69,7 +75,9 @@ Feature: Dynamic ERB cassettes
             - text/html;charset=utf-8
             Content-Length:
             - '9'
-          body: Hello <%= arg2 %>
+          body:
+            encoding: UTF-8
+            string: Hello <%= arg2 %>
           http_version: '1.1'
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0

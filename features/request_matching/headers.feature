@@ -5,41 +5,49 @@ Feature: Matching on Headers
   Scenario Outline: Replay interaction that matches the headers
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
-      ---
-      http_interactions:
-      - request:
+      --- 
+      http_interactions: 
+      - request: 
           method: post
           uri: http://example.net/some/long/path
-          body: ''
-          headers:
-            X-User-Id:
-            - '1'
-        response:
-          status:
+          body: 
+            encoding: UTF-8
+            string: ""
+          headers: 
+            X-User-Id: 
+            - "1"
+        response: 
+          status: 
             code: 200
             message: OK
-          headers:
-            Content-Length:
-            - '15'
-          body: user 1 response
-          http_version: '1.1'
+          headers: 
+            Content-Length: 
+            - "15"
+          body: 
+            encoding: UTF-8
+            string: user 1 response
+          http_version: "1.1"
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
-      - request:
+      - request: 
           method: post
           uri: http://example.net/some/long/path
-          body: ''
-          headers:
-            X-User-Id:
-            - '2'
-        response:
-          status:
+          body: 
+            encoding: UTF-8
+            string: ""
+          headers: 
+            X-User-Id: 
+            - "2"
+        response: 
+          status: 
             code: 200
             message: OK
-          headers:
-            Content-Length:
-            - '15'
-          body: user 2 response
-          http_version: '1.1'
+          headers: 
+            Content-Length: 
+            - "15"
+          body: 
+            encoding: UTF-8
+            string: user 2 response
+          http_version: "1.1"
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0
       """

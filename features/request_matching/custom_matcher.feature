@@ -15,37 +15,45 @@ Feature: Register and use a custom matcher
   Background:
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
-      ---
-      http_interactions:
-      - request:
+      --- 
+      http_interactions: 
+      - request: 
           method: get
           uri: http://foo.com:9000/foo
-          body: ''
+          body: 
+            encoding: UTF-8
+            string: ""
           headers: {}
-        response:
-          status:
+        response: 
+          status: 
             code: 200
             message: OK
-          headers:
-            Content-Length:
-            - '18'
-          body: port 9000 response
-          http_version: '1.1'
+          headers: 
+            Content-Length: 
+            - "18"
+          body: 
+            encoding: UTF-8
+            string: port 9000 response
+          http_version: "1.1"
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
-      - request:
+      - request: 
           method: get
           uri: http://foo.com:8000/foo
-          body: ''
+          body: 
+            encoding: UTF-8
+            string: ""
           headers: {}
-        response:
-          status:
+        response: 
+          status: 
             code: 200
             message: OK
-          headers:
-            Content-Length:
-            - '18'
-          body: port 8000 response
-          http_version: '1.1'
+          headers: 
+            Content-Length: 
+            - "18"
+          body: 
+            encoding: UTF-8
+            string: port 8000 response
+          http_version: "1.1"
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0
       """
