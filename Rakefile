@@ -122,9 +122,23 @@ end
 
 desc "Migrate cucumber cassettes"
 task :migrate_cucumber_cassettes do
-  sh "git checkout cb3559d6ffcb36cb823ae96a677e380e5b86ed80 -- features"
-  require 'vcr/cassette/migrator'
+  require 'vcr'
+  require 'ruby-debug'
+
+  VCR.configure do |c|
+    c.cassette_library_dir = 'tmp/migrate'
+    c.default_cassette_options = { :serialize_with => :syck }
+  end
+
+  # We want 2.0.0 in the cucumber cassettes instead of 2.0.0.rc1
+  def VCR.version
+    "2.0.0"
+  end
+
   Dir["features/**/*.feature"].each do |feature_file|
+    # The ERB cassettes can't be migrated automatically.
+    next if feature_file.include?('dynamic_erb')
+
     puts " - Migrating #{feature_file}"
     contents = File.read(feature_file)
 
@@ -135,15 +149,22 @@ task :migrate_cucumber_cassettes do
       cassette_yml = capture.gsub(/^#{indentation}/, '')
       new_yml = nil
 
-      Dir.mktmpdir do |dir|
-        file_name = "#{dir}/cassette.yml"
-        File.open(file_name, 'w') { |f| f.write(cassette_yml) }
-        VCR::Cassette::Migrator.new(dir, StringIO.new).migrate!
-        new_yml = File.read(file_name)
+      file_name = "tmp/migrate/cassette.yml"
+      File.open(file_name, 'w') { |f| f.write(cassette_yml) }
+      cassette = VCR::Cassette.new('cassette')
+
+      hash = begin
+        cassette.serializable_hash
+      rescue => e
+        puts "   Skipping #{capture[0, 80]}"
+        next
       end
+
+      new_yml = VCR::Cassette::Serializers::Syck.serialize(hash)
 
       new_yml.gsub!(/^/, indentation)
       new_yml << indentation
+      new_yml.gsub!(/^\s+\n(\s+response:)/, '\1')
       contents.gsub!(capture, new_yml)
     end
 

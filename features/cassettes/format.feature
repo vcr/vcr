@@ -9,6 +9,8 @@ Feature: Cassette format
       - method
       - uri
       - body
+        - encoding
+        - string
       - headers
     - response
       - status
@@ -16,6 +18,8 @@ Feature: Cassette format
         - message
       - headers
       - body
+        - encoding
+        - string
       - http version
 
   By default, VCR uses YAML to serialize this data.  You can configure
@@ -72,41 +76,49 @@ Feature: Cassette format
     When I run `ruby cassette_yaml.rb 'Hello'`
     Then the file "cassettes/example.yml" should contain YAML like:
       """
-      ---
-      http_interactions:
-      - request:
+      --- 
+      http_interactions: 
+      - request: 
           method: get
           uri: http://localhost:7777/foo
-          body: ''
+          body: 
+            encoding: UTF-8
+            string: ""
           headers: {}
-        response:
-          status:
+        response: 
+          status: 
             code: 200
             message: OK
-          headers:
-            Content-Type:
+          headers: 
+            Content-Type: 
             - text/html;charset=utf-8
-            Content-Length:
-            - '9'
-          body: Hello foo
-          http_version: '1.1'
+            Content-Length: 
+            - "9"
+          body: 
+            encoding: UTF-8
+            string: Hello foo
+          http_version: "1.1"
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
-      - request:
+      - request: 
           method: get
           uri: http://localhost:7777/bar
-          body: ''
+          body: 
+            encoding: UTF-8
+            string: ""
           headers: {}
-        response:
-          status:
+        response: 
+          status: 
             code: 200
             message: OK
-          headers:
-            Content-Type:
+          headers: 
+            Content-Type: 
             - text/html;charset=utf-8
-            Content-Length:
-            - '9'
-          body: Hello bar
-          http_version: '1.1'
+            Content-Length: 
+            - "9"
+          body: 
+            encoding: UTF-8
+            string: Hello bar
+          http_version: "1.1"
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0
       """
@@ -152,7 +164,10 @@ Feature: Cassette format
         "http_interactions": [
           {
             "response": {
-              "body": "Hello foo",
+              "body": {
+                "encoding": "UTF-8",
+                "string": "Hello foo"
+              },
               "http_version": null,
               "status": { "code": 200, "message": "OK" },
               "headers": {
@@ -165,7 +180,10 @@ Feature: Cassette format
             },
             "request": {
               "uri": "http://localhost:7777/foo",
-              "body": "",
+              "body": {
+                "encoding": "UTF-8",
+                "string": ""
+              },
               "method": "get",
               "headers": { }
             },
@@ -173,7 +191,10 @@ Feature: Cassette format
           },
           {
             "response": {
-              "body": "Hello bar",
+              "body": {
+                "encoding": "UTF-8",
+                "string": "Hello bar"
+              },
               "http_version": null,
               "status": { "code": 200, "message": "OK" },
               "headers": {
@@ -186,7 +207,10 @@ Feature: Cassette format
             },
             "request": {
               "uri": "http://localhost:7777/bar",
-              "body": "",
+              "body": {
+                "encoding": "UTF-8",
+                "string": ""
+              },
               "method": "get",
               "headers": { }
             },
@@ -241,7 +265,7 @@ Feature: Cassette format
         [{"request"=>
            {"method"=>"get",
             "uri"=>"http://localhost:7777/foo",
-            "body"=>"",
+            "body"=>{"encoding"=>"UTF-8", "string"=>""},
             "headers"=>{"Accept"=>["*/*"], "User-Agent"=>["Ruby"]}},
           "response"=>
            {"status"=>{"code"=>200, "message"=>"OK "},
@@ -249,13 +273,13 @@ Feature: Cassette format
              {"Content-Type"=>["text/html;charset=utf-8"],
               "Content-Length"=>["9"],
               "Connection"=>["Keep-Alive"]},
-            "body"=>"Hello foo",
+            "body"=>{"encoding"=>"UTF-8", "string"=>"Hello foo"},
             "http_version"=>nil},
           "recorded_at"=>"Tue, 01 Nov 2011 04:58:44 GMT"},
          {"request"=>
            {"method"=>"get",
             "uri"=>"http://localhost:7777/bar",
-            "body"=>"",
+            "body"=>{"encoding"=>"UTF-8", "string"=>""},
             "headers"=>{"Accept"=>["*/*"], "User-Agent"=>["Ruby"]}},
           "response"=>
            {"status"=>{"code"=>200, "message"=>"OK "},
@@ -263,7 +287,7 @@ Feature: Cassette format
              {"Content-Type"=>["text/html;charset=utf-8"],
               "Content-Length"=>["9"],
               "Connection"=>["Keep-Alive"]},
-            "body"=>"Hello bar",
+            "body"=>{"encoding"=>"UTF-8", "string"=>"Hello bar"},
             "http_version"=>nil},
           "recorded_at"=>"Tue, 01 Nov 2011 04:58:44 GMT"}],
        "recorded_with"=>"VCR 2.0.0"}

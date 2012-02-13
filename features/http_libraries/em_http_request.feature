@@ -59,57 +59,69 @@ Feature: EM HTTP Request
       """
     And the file "cassettes/em_http.yml" should contain YAML like:
       """
-      ---
-      http_interactions:
-      - request:
+      --- 
+      http_interactions: 
+      - request: 
           method: get
           uri: http://localhost:7777/foo
-          body: ''
+          body: 
+            encoding: UTF-8
+            string: ""
           headers: {}
-        response:
-          status:
+        response: 
+          status: 
             code: 200
             message: OK
-          headers:
-            Content-Type:
+          headers: 
+            Content-Type: 
             - text/html;charset=utf-8
-            Content-Length:
-            - '9'
-          body: Hello foo
+            Content-Length: 
+            - "9"
+          body: 
+            encoding: UTF-8
+            string: Hello foo
           http_version: 
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
-      - request:
+      - request: 
           method: get
           uri: http://localhost:7777/bar
-          body: ''
+          body: 
+            encoding: UTF-8
+            string: ""
           headers: {}
-        response:
-          status:
+        response: 
+          status: 
             code: 200
             message: OK
-          headers:
-            Content-Type:
+          headers: 
+            Content-Type: 
             - text/html;charset=utf-8
-            Content-Length:
-            - '9'
-          body: Hello bar
+            Content-Length: 
+            - "9"
+          body: 
+            encoding: UTF-8
+            string: Hello bar
           http_version: 
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
-      - request:
+      - request: 
           method: get
           uri: http://localhost:7777/bazz
-          body: ''
+          body: 
+            encoding: UTF-8
+            string: ""
           headers: {}
-        response:
-          status:
+        response: 
+          status: 
             code: 200
             message: OK
-          headers:
-            Content-Type:
+          headers: 
+            Content-Type: 
             - text/html;charset=utf-8
-            Content-Length:
-            - '10'
-          body: Hello bazz
+            Content-Length: 
+            - "10"
+          body: 
+            encoding: UTF-8
+            string: Hello bazz
           http_version: 
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0
@@ -154,57 +166,69 @@ Feature: EM HTTP Request
       """
     And the file "cassettes/em_http.yml" should contain YAML like:
       """
-      ---
-      http_interactions:
-      - request:
+      --- 
+      http_interactions: 
+      - request: 
           method: get
           uri: http://localhost:7777/foo
-          body: ''
+          body: 
+            encoding: UTF-8
+            string: ""
           headers: {}
-        response:
-          status:
+        response: 
+          status: 
             code: 200
             message: OK
-          headers:
-            Content-Type:
+          headers: 
+            Content-Type: 
             - text/html;charset=utf-8
-            Content-Length:
-            - '9'
-          body: Hello foo
+            Content-Length: 
+            - "9"
+          body: 
+            encoding: UTF-8
+            string: Hello foo
           http_version: 
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
-      - request:
+      - request: 
           method: get
           uri: http://localhost:7777/bar
-          body: ''
+          body: 
+            encoding: UTF-8
+            string: ""
           headers: {}
-        response:
-          status:
+        response: 
+          status: 
             code: 200
             message: OK
-          headers:
-            Content-Type:
+          headers: 
+            Content-Type: 
             - text/html;charset=utf-8
-            Content-Length:
-            - '9'
-          body: Hello bar
+            Content-Length: 
+            - "9"
+          body: 
+            encoding: UTF-8
+            string: Hello bar
           http_version: 
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
-      - request:
+      - request: 
           method: get
           uri: http://localhost:7777/bazz
-          body: ''
+          body: 
+            encoding: UTF-8
+            string: ""
           headers: {}
-        response:
-          status:
+        response: 
+          status: 
             code: 200
             message: OK
-          headers:
-            Content-Type:
+          headers: 
+            Content-Type: 
             - text/html;charset=utf-8
-            Content-Length:
-            - '10'
-          body: Hello bazz
+            Content-Length: 
+            - "10"
+          body: 
+            encoding: UTF-8
+            string: Hello bazz
           http_version: 
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0

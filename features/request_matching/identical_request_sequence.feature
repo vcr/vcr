@@ -8,37 +8,45 @@ Feature: Identical requests are replayed in sequence
   Scenario Outline: identical requests are replayed in sequence
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
-      ---
-      http_interactions:
-      - request:
+      --- 
+      http_interactions: 
+      - request: 
           method: get
           uri: http://example.com/foo
-          body: ''
+          body: 
+            encoding: UTF-8
+            string: ""
           headers: {}
-        response:
-          status:
+        response: 
+          status: 
             code: 200
             message: OK
-          headers:
-            Content-Length:
-            - '10'
-          body: Response 1
-          http_version: '1.1'
+          headers: 
+            Content-Length: 
+            - "10"
+          body: 
+            encoding: UTF-8
+            string: Response 1
+          http_version: "1.1"
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
-      - request:
+      - request: 
           method: get
           uri: http://example.com/foo
-          body: ''
+          body: 
+            encoding: UTF-8
+            string: ""
           headers: {}
-        response:
-          status:
+        response: 
+          status: 
             code: 200
             message: OK
-          headers:
-            Content-Length:
-            - '10'
-          body: Response 2
-          http_version: '1.1'
+          headers: 
+            Content-Length: 
+            - "10"
+          body: 
+            encoding: UTF-8
+            string: Response 2
+          http_version: "1.1"
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0
       """

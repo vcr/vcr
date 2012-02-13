@@ -9,37 +9,45 @@ Feature: Matching on Host
   Background:
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
-      ---
-      http_interactions:
-      - request:
+      --- 
+      http_interactions: 
+      - request: 
           method: post
           uri: http://host1.com/some/long/path
-          body: ''
+          body: 
+            encoding: UTF-8
+            string: ""
           headers: {}
-        response:
-          status:
+        response: 
+          status: 
             code: 200
             message: OK
-          headers:
-            Content-Length:
-            - '14'
-          body: host1 response
-          http_version: '1.1'
+          headers: 
+            Content-Length: 
+            - "14"
+          body: 
+            encoding: UTF-8
+            string: host1 response
+          http_version: "1.1"
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
-      - request:
+      - request: 
           method: post
           uri: http://host2.com/some/other/long/path
-          body: ''
+          body: 
+            encoding: UTF-8
+            string: ""
           headers: {}
-        response:
-          status:
+        response: 
+          status: 
             code: 200
             message: OK
-          headers:
-            Content-Length:
-            - '16'
-          body: host2 response
-          http_version: '1.1'
+          headers: 
+            Content-Length: 
+            - "16"
+          body: 
+            encoding: UTF-8
+            string: host2 response
+          http_version: "1.1"
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0
       """
