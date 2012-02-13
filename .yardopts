@@ -2,3 +2,8 @@
 --exclude features
 --markup markdown
 --hide-void-return
+-
+CHANGELOG.md
+CONTRIBUTING.md
+LICENSE
+Upgrade.md
