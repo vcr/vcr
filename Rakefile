@@ -162,3 +162,12 @@ task :run_last_cuke do
   end
 end
 
+desc "Boot test app"
+task :boot_test_app do
+  require './spec/support/vcr_localhost_server'
+  require './spec/support/sinatra_app'
+  VCR::SinatraApp.boot
+  puts "Booted sinatra app on port: #{VCR::SinatraApp.port}"
+  loop { }
+  puts "Shutting down."
+end
