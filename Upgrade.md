@@ -198,7 +198,7 @@ the request.
 
 ## Debug Logger
 
-VCR 2.0 has a new configure option that will turn on a logging mode
+VCR 2.0 has a new configuration option that will turn on a logging mode
 so you can get more insight into what VCR is doing, for troubleshooting
 purposes:
 
