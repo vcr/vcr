@@ -3,7 +3,7 @@ require 'multi_json'
 module VCR
   class Cassette
     class Serializers
-      # The JSON serializer. Uses +MultiJson+ under the covers.
+      # The JSON serializer. Uses `MultiJson` under the covers.
       #
       # @see Psych
       # @see Syck
@@ -18,7 +18,7 @@ module VCR
           "json"
         end
 
-        # Serializes the given hash using +MultiJson+.
+        # Serializes the given hash using `MultiJson`.
         #
         # @param [Hash] hash the object to serialize
         # @return [String] the JSON string
@@ -26,7 +26,7 @@ module VCR
           MultiJson.encode(hash)
         end
 
-        # Deserializes the given string using +MultiJson+.
+        # Deserializes the given string using `MultiJson`.
         #
         # @param [String] string the JSON string
         # @param [Hash] hash the deserialized object
