@@ -147,6 +147,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 
 * [Betamax](https://github.com/robfletcher/betamax) (Groovy)
 * [VCR.js](https://github.com/elcuervo/vcr.js) (JavaScript)
+* [TapeDeck.js](https://github.com/EndangeredMassa/TapeDeck.js) (JavaScript)
 * [Mimic](https://github.com/acoulton/mimic) (PHP/Kohana)
 * [Ephemeral Response](https://github.com/sandro/ephemeral_response) (Ruby)
 * [Net::HTTP Spy](http://github.com/martinbtt/net-http-spy) (Ruby)
