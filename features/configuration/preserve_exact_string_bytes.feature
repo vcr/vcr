@@ -5,7 +5,8 @@ Feature: Preserve Exact String Bytes
   not be encoded according to the encoding specified in the HTTP headers, or there may be bytes
   that are invalid for the given encoding. The YAML and JSON serializers are not generally
   designed to handle these cases gracefully, and you may get errors when the cassette is serialized
-  or deserialized.
+  or deserialized. Also, the encoding may not be preserved when round-tripped through the
+  serializer.
 
   VCR provides a configuration option to deal with cases like these. The `preserve_exact_string_bytes`
   method accepts a block that VCR will use to determine if a given request or response body string
