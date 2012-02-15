@@ -148,6 +148,7 @@ module VCR
 
           i = HTTPInteraction.from_hash(hash)
           i.request.body.should eq('foo')
+          i.request.body.encoding.name.should eq("ASCII-8BIT")
         end
       end
     end
