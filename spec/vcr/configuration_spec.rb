@@ -231,16 +231,15 @@ describe VCR::Configuration do
     end
 
     it "invokes the configured hook with the http message and the current cassette" do
-      cassette = stub(:cassette)
-      VCR.should respond_to(:current_cassette)
-      VCR.stub(:current_cassette => cassette)
+      VCR.use_cassette('example') do |cassette|
+        cassette.should be_a(VCR::Cassette)
+        message = stub(:message)
 
-      message = stub(:message)
-
-      yielded_objects = nil
-      subject.preserve_exact_body_bytes { |a, b| yielded_objects = [a, b] }
-      subject.preserve_exact_body_bytes_for?(message)
-      yielded_objects.should eq([message, cassette])
+        yielded_objects = nil
+        subject.preserve_exact_body_bytes { |a, b| yielded_objects = [a, b] }
+        subject.preserve_exact_body_bytes_for?(message)
+        yielded_objects.should eq([message, cassette])
+      end
     end
   end
 end
