@@ -41,6 +41,17 @@ describe VCR do
       cassette1, cassette2 = insert_cassette(:foo1), insert_cassette(:foo2)
       expect { VCR.eject_cassette }.to change(VCR, :current_cassette).from(cassette2).to(cassette1)
     end
+
+    it 'keeps the cassette as the current one until after #eject has finished', :focus do
+      cassette = insert_cassette
+      current = nil
+      cassette.stub(:eject) { current = VCR.current_cassette }
+
+      VCR.eject_cassette
+
+      current.should be(cassette)
+      VCR.current_cassette.should_not be(cassette)
+    end
   end
 
   describe '.use_cassette' do

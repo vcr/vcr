@@ -118,9 +118,9 @@ module VCR
   #
   # @return [VCR::Cassette, nil] the ejected cassette if there was one
   def eject_cassette
-    cassette = cassettes.pop
+    cassette = cassettes.last
     cassette.eject if cassette
-    cassette
+    cassettes.pop
   end
 
   # Inserts a cassette using the given name and options, runs the given
