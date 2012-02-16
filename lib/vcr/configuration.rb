@@ -393,16 +393,14 @@ module VCR
     #  with a non-standard encoding or with a body containing invalid bytes for the given
     #  encoding. Note that when you set this, and the block returns true, you sacrifice
     #  the human readability of the data in the cassette.
-    def preserve_exact_body_bytes(&block)
-      @preserve_exact_body_bytes_block = block
-    end
+    define_hook :preserve_exact_body_bytes
 
     # @return [Boolean] whether or not the body of the given HTTP message should
     #  be base64 encoded during serialization in order to preserve the bytes exactly.
     # @param http_message [#body, #headers] the `VCR::Request` or `VCR::Response` object being serialized
     # @see #preserve_exact_body_bytes
     def preserve_exact_body_bytes_for?(http_message)
-      @preserve_exact_body_bytes_block.call(http_message, VCR.current_cassette)
+      invoke_hook(:preserve_exact_body_bytes, http_message, VCR.current_cassette).any?
     end
 
   private
