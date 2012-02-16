@@ -377,30 +377,32 @@ module VCR
     #
     # @example
     #   VCR.configure do |c|
-    #     c.preserve_exact_string_bytes do |string|
-    #       string.encoding.name == 'ASCII-8BIT' || !string.valid_encoding?
+    #     c.preserve_exact_body_bytes do |http_message|
+    #       http_message.body.encoding.name == 'ASCII-8BIT' ||
+    #       !http_message.body.valid_encoding?
     #     end
     #   end
     #
     # @yield the callback
-    # @yieldparam string [String] the request or response body being serialized
-    # @yieldreturn [Boolean] whether or not to preserve the exact bytes for the given string
+    # @yieldparam http_message [#body, #headers] the `VCR::Request` or `VCR::Response` object being serialized
+    # @yieldparam cassette [VCR::Cassette] the cassette the http message belongs to
+    # @yieldreturn [Boolean] whether or not to preserve the exact bytes for the body of the given HTTP message
     # @return [void]
-    # @see #preserve_exact_bytes_for?
+    # @see #preserve_exact_body_bytes_for?
     # @note This is usually only necessary when the HTTP server returns a response
-    #  with a non-standard encoding or with invalid bytes for the given encoding. Note that
-    #  when you set this, and the block returns true, you sacrifice the human readability of
-    #  the data in the cassette.
-    def preserve_exact_string_bytes(&block)
-      @preserve_exact_string_bytes_block = block
+    #  with a non-standard encoding or with a body containing invalid bytes for the given
+    #  encoding. Note that when you set this, and the block returns true, you sacrifice
+    #  the human readability of the data in the cassette.
+    def preserve_exact_body_bytes(&block)
+      @preserve_exact_body_bytes_block = block
     end
 
-    # @return [Boolean] whether or not the given string should be base64 encoded during serialization
-    #  in order to preserve the bytes exactly.
-    # @param string [String] the string
-    # @see #preserve_exact_string_bytes
-    def preserve_exact_bytes_for?(string)
-      @preserve_exact_string_bytes_block.call(string)
+    # @return [Boolean] whether or not the body of the given HTTP message should
+    #  be base64 encoded during serialization in order to preserve the bytes exactly.
+    # @param http_message [#body, #headers] the `VCR::Request` or `VCR::Response` object being serialized
+    # @see #preserve_exact_body_bytes
+    def preserve_exact_body_bytes_for?(http_message)
+      @preserve_exact_body_bytes_block.call(http_message, VCR.current_cassette)
     end
 
   private
@@ -441,7 +443,7 @@ module VCR
         interaction.response.update_content_length_header
       end
 
-      preserve_exact_string_bytes { |string| false }
+      preserve_exact_body_bytes { false }
     end
   end
 

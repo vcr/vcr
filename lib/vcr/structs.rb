@@ -48,7 +48,7 @@ module VCR
     private
 
       def serializable_body
-        if VCR.configuration.preserve_exact_bytes_for?(body)
+        if VCR.configuration.preserve_exact_body_bytes_for?(self)
           base_body_hash(body).merge('base64_string' => Base64.encode64(body))
         else
           base_body_hash(body).merge('string' => body)
