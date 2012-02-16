@@ -421,6 +421,8 @@ describe VCR::Cassette do
       cassette = VCR::Cassette.new('example', :tag => :foo)
       cassette.stub!(:new_recorded_interactions).and_return(interactions)
 
+      VCR.configuration.stub(:invoke_hook).and_return([false])
+
       interactions.each do |i|
         VCR.configuration.should_receive(:invoke_hook).with(
           :before_record,

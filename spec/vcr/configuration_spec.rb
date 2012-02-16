@@ -222,6 +222,14 @@ describe VCR::Configuration do
       subject.preserve_exact_body_bytes_for?(message_for "b").should be_false
     end
 
+    it "returns true when any of the registered blocks returns true" do
+      called_hooks = []
+      subject.preserve_exact_body_bytes { called_hooks << :hook_1; false }
+      subject.preserve_exact_body_bytes { called_hooks << :hook_2; true }
+      subject.preserve_exact_body_bytes_for?(message_for "a").should be_true
+      called_hooks.should eq([:hook_1, :hook_2])
+    end
+
     it "invokes the configured hook with the http message and the current cassette" do
       cassette = stub(:cassette)
       VCR.should respond_to(:current_cassette)
