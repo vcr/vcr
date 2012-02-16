@@ -207,15 +207,32 @@ describe VCR::Configuration do
     end
   end
 
-  describe "#preserve_exact_bytes_for?" do
+  describe "#preserve_exact_body_bytes_for?" do
+    def message_for(body)
+      stub(:body => body)
+    end
+
     it "returns false by default" do
-      subject.preserve_exact_bytes_for?("string").should be_false
+      subject.preserve_exact_body_bytes_for?(message_for "string").should be_false
     end
 
     it "returns true when the configured block returns true" do
-      subject.preserve_exact_string_bytes { |string| string == "a" }
-      subject.preserve_exact_bytes_for?("a").should be_true
-      subject.preserve_exact_bytes_for?("b").should be_false
+      subject.preserve_exact_body_bytes { |msg| msg.body == "a" }
+      subject.preserve_exact_body_bytes_for?(message_for "a").should be_true
+      subject.preserve_exact_body_bytes_for?(message_for "b").should be_false
+    end
+
+    it "invokes the configured hook with the http message and the current cassette" do
+      cassette = stub(:cassette)
+      VCR.should respond_to(:current_cassette)
+      VCR.stub(:current_cassette => cassette)
+
+      message = stub(:message)
+
+      yielded_objects = nil
+      subject.preserve_exact_body_bytes { |a, b| yielded_objects = [a, b] }
+      subject.preserve_exact_body_bytes_for?(message)
+      yielded_objects.should eq([message, cassette])
     end
   end
 end

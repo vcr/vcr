@@ -155,7 +155,7 @@ module VCR
 
     describe "#to_hash" do
       before(:each) do
-        VCR.stub_chain(:configuration, :preserve_exact_bytes_for?).and_return(false)
+        VCR.stub_chain(:configuration, :preserve_exact_body_bytes_for?).and_return(false)
       end
 
       let(:hash) { interaction.to_hash }
@@ -184,7 +184,7 @@ module VCR
       end
 
       it 'encodes the body as base64 when the configuration is so set' do
-        VCR.stub_chain(:configuration, :preserve_exact_bytes_for?).and_return(true)
+        VCR.stub_chain(:configuration, :preserve_exact_body_bytes_for?).and_return(true)
         hash['request']['body'].should eq(body_hash('base64_string', Base64.encode64('req body')))
         hash['response']['body'].should eq(body_hash('base64_string', Base64.encode64('res body')))
       end

@@ -1,5 +1,5 @@
 @exclude-18
-Feature: Preserve Exact String Bytes
+Feature: Preserve Exact Body Bytes
 
   Some HTTP servers are not well-behaved and respond with invalid data: the response body may
   not be encoded according to the encoding specified in the HTTP headers, or there may be bytes
@@ -8,8 +8,8 @@ Feature: Preserve Exact String Bytes
   or deserialized. Also, the encoding may not be preserved when round-tripped through the
   serializer.
 
-  VCR provides a configuration option to deal with cases like these. The `preserve_exact_string_bytes`
-  method accepts a block that VCR will use to determine if a given request or response body string
+  VCR provides a configuration option to deal with cases like these. The `preserve_exact_body_bytes`
+  method accepts a block that VCR will use to determine if the body of the given request or response object
   should be base64 encoded in order to preserve the bytes exactly as-is. VCR does not do this by
   default, since base64-encoding the string removes the human readibility.
 
@@ -29,8 +29,9 @@ Feature: Preserve Exact String Bytes
       VCR.configure do |c|
         c.cassette_library_dir = 'cassettes'
         c.hook_into :fakeweb
-        c.preserve_exact_string_bytes do |string|
-          string.encoding.name == 'ASCII-8BIT' || !string.valid_encoding?
+        c.preserve_exact_body_bytes do |http_message|
+          http_message.body.encoding.name == 'ASCII-8BIT' ||
+          !http_message.body.valid_encoding?
         end
       end
 
