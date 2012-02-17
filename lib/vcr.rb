@@ -83,6 +83,9 @@ module VCR
   # @option options :serialize_with [Symbol] Which serializer to use.
   #  Valid values are :yaml, :syck, :psych, :json or any registered
   #  custom serializer. Defaults to :yaml.
+  # @option options :preserve_exact_body_bytes [Boolean] Whether or not
+  #  to base64 encode the bytes of the requests and responses for this cassette
+  #  when serializing it. See also `VCR::Configuration#preserve_exact_body_bytes`.
   #
   # @return [VCR::Cassette] the inserted cassette
   #
