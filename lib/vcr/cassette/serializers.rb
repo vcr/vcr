@@ -42,6 +42,16 @@ module VCR
         @serializers[name] = value
       end
     end
+
+    # @private
+    module EncodingErrorHandling
+      def handle_encoding_errors
+        yield
+      rescue *self::ENCODING_ERRORS => e
+        e.message << "\nNote: Using VCR's `:preserve_exact_body_bytes` option may help prevent this error in the future."
+        raise
+      end
+    end
   end
 end
 

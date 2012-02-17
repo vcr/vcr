@@ -1,4 +1,5 @@
 require 'vcr/cassette/serializers'
+require 'multi_json'
 begin
   require 'psych' # ensure psych is loaded for these tests if its available
 rescue LoadError
@@ -7,11 +8,21 @@ end
 module VCR
   class Cassette
     describe Serializers do
+      shared_examples_for "encoding error handling" do |name, string, error_class|
+        context "the #{name} serializer" do
+          it 'appends info about the :preserve_exact_body_bytes option to the error' do
+            expect {
+              result = serializer.serialize("a" => string)
+              serializer.deserialize(result)
+            }.to raise_error(error_class, /preserve_exact_body_bytes/)
+          end
+        end
+      end
 
       shared_examples_for "a serializer" do |name, file_extension, lazily_loaded|
-        context "the #{name} serializer" do
-          let(:serializer) { subject[name] }
+        let(:serializer) { subject[name] }
 
+        context "the #{name} serializer" do
           it 'lazily loads the serializer' do
             serializers = subject.instance_variable_get(:@serializers)
             serializers.should_not have_key(name)
@@ -34,10 +45,35 @@ module VCR
         end
       end
 
-      it_behaves_like "a serializer", :yaml,  "yml",  :lazily_loaded
-      it_behaves_like "a serializer", :syck,  "yml",  :lazily_loaded
-      it_behaves_like "a serializer", :psych, "yml",  :lazily_loaded if RUBY_VERSION =~ /1.9/
-      it_behaves_like "a serializer", :json,  "json", :lazily_loaded
+      it_behaves_like "a serializer", :yaml,  "yml",  :lazily_loaded do
+        it_behaves_like "encoding error handling", :yaml, "\xFA".force_encoding("UTF-8"), ArgumentError do
+          before { ::YAML::ENGINE.yamler = 'psych' }
+        end #if test_psych_encoding_errors
+      end
+
+      it_behaves_like "a serializer", :syck,  "yml",  :lazily_loaded do
+        it_behaves_like "encoding error handling", :syck, "\xFA".force_encoding("UTF-8"), ArgumentError
+      end
+
+      it_behaves_like "a serializer", :psych, "yml",  :lazily_loaded do
+        it_behaves_like "encoding error handling", :psych, "\xFA".force_encoding("UTF-8"), ArgumentError
+      end if RUBY_VERSION =~ /1.9/
+
+      it_behaves_like "a serializer", :json,  "json", :lazily_loaded do
+        engines = { :yajl => ::MultiJson::DecodeError }
+
+        if RUBY_VERSION =~ /1.9/
+          engines[:json_gem] = Encoding::UndefinedConversionError
+          engines[:json_pure] = Encoding::UndefinedConversionError
+        end
+
+        engines.each do |engine, error|
+          context "when MultiJson is configured to use #{engine.inspect}" do
+            before { MultiJson.engine = engine }
+            it_behaves_like "encoding error handling", :json, "\xFA", error
+          end
+        end
+      end
 
       context "a custom :ruby serializer" do
         let(:custom_serializer) do

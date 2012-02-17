@@ -12,6 +12,10 @@ module VCR
       # @see Syck
       module YAML
         extend self
+        extend EncodingErrorHandling
+
+        # @private
+        ENCODING_ERRORS = [ArgumentError]
 
         # The file extension to use for this serializer.
         #
@@ -25,7 +29,9 @@ module VCR
         # @param [Hash] hash the object to serialize
         # @return [String] the YAML string
         def serialize(hash)
-          ::YAML.dump(hash)
+          handle_encoding_errors do
+            ::YAML.dump(hash)
+          end
         end
 
         # Deserializes the given string using YAML.
@@ -33,7 +39,9 @@ module VCR
         # @param [String] string the YAML string
         # @param [Hash] hash the deserialized object
         def deserialize(string)
-          ::YAML.load(string)
+          handle_encoding_errors do
+            ::YAML.load(string)
+          end
         end
       end
     end

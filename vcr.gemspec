@@ -37,6 +37,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rack', '~> 1.3.6'
   s.add_development_dependency 'sinatra', '~> 1.3.2'
   s.add_development_dependency 'multi_json', '~> 1.0.3'
+  s.add_development_dependency 'yajl-ruby', '~> 1.1.0'
+  s.add_development_dependency 'json', '~> 1.6.5'
 
   unless RUBY_PLATFORM == 'java'
     s.add_development_dependency 'patron', '~> 0.4.15'
