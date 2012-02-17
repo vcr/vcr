@@ -11,6 +11,7 @@ module VCR
         klass.extend ClassMethods
       end
 
+      # @private
       module ClassMethods
         def body_from(hash_or_string)
           return hash_or_string unless hash_or_string.is_a?(Hash)
