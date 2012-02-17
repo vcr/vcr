@@ -10,6 +10,11 @@ module VCR
       # @see YAML
       module JSON
         extend self
+        extend EncodingErrorHandling
+
+        # @private
+        ENCODING_ERRORS = [MultiJson::DecodeError]
+        ENCODING_ERRORS << ::Encoding::UndefinedConversionError if defined?(::Encoding::UndefinedConversionError)
 
         # The file extension to use for this serializer.
         #
@@ -23,7 +28,9 @@ module VCR
         # @param [Hash] hash the object to serialize
         # @return [String] the JSON string
         def serialize(hash)
-          MultiJson.encode(hash)
+          handle_encoding_errors do
+            MultiJson.encode(hash)
+          end
         end
 
         # Deserializes the given string using `MultiJson`.
@@ -31,7 +38,9 @@ module VCR
         # @param [String] string the JSON string
         # @param [Hash] hash the deserialized object
         def deserialize(string)
-          MultiJson.decode(string)
+          handle_encoding_errors do
+            MultiJson.decode(string)
+          end
         end
       end
     end
