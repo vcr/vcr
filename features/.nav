@@ -24,6 +24,8 @@
   - ignore_request.feature
   - filter_sensitive_data.feature
   - allow_http_connections_when_no_cassette.feature
+  - debug_logging.feature
+  - preserve_exact_body_bytes.feature
 - hooks:
   - before_record.feature
   - before_playback.feature
