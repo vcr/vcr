@@ -441,7 +441,9 @@ module VCR
         interaction.response.update_content_length_header
       end
 
-      preserve_exact_body_bytes { false }
+      preserve_exact_body_bytes do |http_message, cassette|
+        cassette && cassette.tags.include?(:preserve_exact_body_bytes)
+      end
     end
   end
 

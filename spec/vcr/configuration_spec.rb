@@ -212,8 +212,20 @@ describe VCR::Configuration do
       stub(:body => body)
     end
 
-    it "returns false by default" do
-      subject.preserve_exact_body_bytes_for?(message_for "string").should be_false
+    context "default hook" do
+      it "returns false when there is no current cassette" do
+        subject.preserve_exact_body_bytes_for?(message_for "string").should be_false
+      end
+
+      it "returns false when the current cassette has been created without the :preserve_exact_body_bytes option" do
+        VCR.insert_cassette('foo')
+        subject.preserve_exact_body_bytes_for?(message_for "string").should be_false
+      end
+
+      it 'returns true when the current cassette has been created with the :preserve_exact_body_bytes option' do
+        VCR.insert_cassette('foo', :preserve_exact_body_bytes => true)
+        subject.preserve_exact_body_bytes_for?(message_for "string").should be_true
+      end
     end
 
     it "returns true when the configured block returns true" do

@@ -11,7 +11,11 @@ Feature: Preserve Exact Body Bytes
   VCR provides a configuration option to deal with cases like these. The `preserve_exact_body_bytes`
   method accepts a block that VCR will use to determine if the body of the given request or response object
   should be base64 encoded in order to preserve the bytes exactly as-is. VCR does not do this by
-  default, since base64-encoding the string removes the human readibility.
+  default, since base64-encoding the string removes the human readibility of the cassette.
+
+  Alternately, if you want to force an entire cassette to preserve the exact body bytes,
+  you can pass the `:preserve_exact_body_bytes => true` cassette option when inserting your
+  cassette.
 
   Scenario: Preserve exact bytes for response body with invalid encoding
     Given a file named "preserve.rb" with:
@@ -62,5 +66,38 @@ Feature: Preserve Exact Body Bytes
     And the file "cassettes/example.json" should contain:
       """
       "body":{"encoding":"ASCII-8BIT","base64_string":"YWJjIPo=\n"}
+      """
+
+  Scenario: Preserve exact bytes for cassette with `:preserve_exact_body_bytes` option
+    Given a file named "preserve.rb" with:
+      """ruby
+      start_sinatra_app(:port => 7777) do
+        get('/') { "Hello World" }
+      end
+
+      require 'vcr'
+
+      VCR.configure do |c|
+        c.cassette_library_dir = 'cassettes'
+        c.hook_into :fakeweb
+        c.default_cassette_options = { :serialize_with => :json }
+      end
+
+      VCR.use_cassette('preserve_bytes', :preserve_exact_body_bytes => true) do
+        Net::HTTP.get_response(URI("http://localhost:7777/"))
+      end
+
+      VCR.use_cassette('dont_preserve_bytes') do
+        Net::HTTP.get_response(URI("http://localhost:7777/"))
+      end
+      """
+    When I run `ruby preserve.rb`
+    Then the file "cassettes/preserve_bytes.json" should contain:
+      """
+      "body":{"encoding":"US-ASCII","base64_string":"SGVsbG8gV29ybGQ=\n"}
+      """
+     And the file "cassettes/dont_preserve_bytes.json" should contain:
+      """
+      "body":{"encoding":"US-ASCII","string":"Hello World"}
       """
 
