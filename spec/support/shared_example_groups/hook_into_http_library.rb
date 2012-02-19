@@ -27,22 +27,10 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
           end
         end
 
-        define_method :should_be_pending do
-          header_count == 2 && 'HTTP Client' == adapter_module.http_library_name
-        end
-
         it 'returns the same header value when recording and replaying' do
-          pending "There appears to be a bug in the the HTTP stubbing library", :if => should_be_pending do
-            (recorded_val = get_set_cookie_header).should_not be_nil
-            replayed_val = get_set_cookie_header
-
-            # we don't care about order differences if the values are arrays
-            if recorded_val.is_a?(Array) && replayed_val.is_a?(Array)
-              replayed_val.should =~ recorded_val
-            else
-              replayed_val.should eq(recorded_val)
-            end
-          end
+          (recorded_val = get_set_cookie_header).should_not be_nil
+          replayed_val = get_set_cookie_header
+          replayed_val.should eq(recorded_val)
         end
       end
     end

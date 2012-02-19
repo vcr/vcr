@@ -30,7 +30,7 @@ module VCR
     end
 
     get '/set-cookie-headers/2' do
-      headers 'Set-Cookie' => %w[ foo bar ]
+      headers 'Set-Cookie' => %w[ bar foo ]
       'header set'
     end
 
