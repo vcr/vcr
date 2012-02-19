@@ -28,13 +28,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
         end
 
         define_method :should_be_pending do
-          if header_count == 2
-            [
-              'HTTP Client',
-              'EM HTTP Request',
-              'Curb'
-            ].include?(adapter_module.http_library_name)
-          end
+          header_count == 2 && 'HTTP Client' == adapter_module.http_library_name
         end
 
         it 'returns the same header value when recording and replaying' do

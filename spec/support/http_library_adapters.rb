@@ -90,7 +90,8 @@ HTTP_LIBRARY_ADAPTERS['em-http-request'] = Module.new do
   end
 
   def get_header(header_key, response)
-    response.response_header[header_key.upcase.gsub('-', '_')].split(', ')
+    values = response.response_header[header_key.upcase.gsub('-', '_')]
+    values.is_a?(Array) ? values : values.split(', ')
   end
 
   def make_http_request(method, url, body = nil, headers = {})
@@ -116,11 +117,13 @@ HTTP_LIBRARY_ADAPTERS['curb'] = Module.new do
 
   def get_header(header_key, response)
     headers = response.header_str.split("\r\n")[1..-1]
+    value = nil
     headers.each do |h|
-      if h =~ /^#{Regexp.escape(header_key)}: (.*)$/
-        return $1.split(', ')
-      end
+      next unless h =~ /^#{Regexp.escape(header_key)}: (.*)$/
+      new_value = $1.split(', ')
+      value = value ? Array(value) + Array(new_value) : new_value
     end
+    value
   end
 
   def make_http_request(method, url, body = nil, headers = {})
