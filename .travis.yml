@@ -1,3 +1,4 @@
+language: ruby
 env: CUCUMBER_FORMAT=progress
 bundler_args: --without extras
 script: "bundle exec rake ci:build --trace"
@@ -6,7 +7,7 @@ rvm:
   - 1.9.2
   - 1.9.3
   - ree
-  - jruby
+  - jruby-18mode
 branches:
   only:
     - master
