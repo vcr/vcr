@@ -54,6 +54,7 @@ Feature: hook_into
         <configuration>
         c.cassette_library_dir = 'vcr_cassettes'
         c.ignore_localhost = false
+        c.default_cassette_options = { :serialize_with => :syck }
       end
 
       VCR.use_cassette('example') do

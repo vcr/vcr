@@ -28,6 +28,7 @@ Feature: around_http_request hook
       VCR.configure do |c|
         <configuration>
         c.cassette_library_dir = 'cassettes'
+        c.default_cassette_options = { :serialize_with => :syck }
         c.around_http_request do |request|
           VCR.use_cassette('global', :record => :new_episodes, &request)
         end
