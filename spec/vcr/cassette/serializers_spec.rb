@@ -63,8 +63,8 @@ module VCR
         engines = { :yajl => ::MultiJson::DecodeError }
 
         if RUBY_VERSION =~ /1.9/
-          engines[:json_gem] = Encoding::UndefinedConversionError
-          engines[:json_pure] = Encoding::UndefinedConversionError
+          engines[:json_gem] = EncodingError
+          engines[:json_pure] = EncodingError
         end
 
         engines.each do |engine, error|
