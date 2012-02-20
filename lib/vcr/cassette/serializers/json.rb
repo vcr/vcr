@@ -14,7 +14,7 @@ module VCR
 
         # @private
         ENCODING_ERRORS = [MultiJson::DecodeError]
-        ENCODING_ERRORS << ::Encoding::UndefinedConversionError if defined?(::Encoding::UndefinedConversionError)
+        ENCODING_ERRORS << EncodingError if defined?(EncodingError)
 
         # The file extension to use for this serializer.
         #
