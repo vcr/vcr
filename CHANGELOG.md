@@ -21,7 +21,7 @@
     `after_http_request(lambda { |req| req.uri =~ /amazon/ })`.
   * Add `debug_logger` config option. This can be used to
     troubleshoot what VCR is doing.
-  * Update WebMock to version that supports Excon stubbing.
+  * Update WebMock to version (1.8.0) that supports Excon stubbing.
 
 ## Bug Fixes
 

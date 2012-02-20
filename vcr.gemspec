@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'shoulda', '~> 2.9.2'
 
   s.add_development_dependency 'fakeweb', '~> 1.3.0'
-  s.add_development_dependency 'addressable', '~> 2.2.6'
+  s.add_development_dependency 'webmock', '~> 1.8.0'
 
   s.add_development_dependency 'faraday', '~> 0.7.2'
   s.add_development_dependency 'httpclient', '~> 2.1.5.2'
