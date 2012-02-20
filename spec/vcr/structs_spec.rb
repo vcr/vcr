@@ -150,6 +150,43 @@ module VCR
           i.request.body.should eq('foo')
           i.request.body.encoding.name.should eq("ASCII-8BIT")
         end
+
+        it 'tries to encode strings to the original encoding' do
+          hash['request']['body']  = { 'string' => "abc", 'encoding' => 'ISO-8859-1' }
+          hash['response']['body'] = { 'string' => "abc", 'encoding' => 'ISO-8859-1' }
+
+          i = HTTPInteraction.from_hash(hash)
+          i.request.body.should eq("abc")
+          i.response.body.should eq("abc")
+          i.request.body.encoding.name.should eq("ISO-8859-1")
+          i.response.body.encoding.name.should eq("ISO-8859-1")
+        end
+
+        context 'when the string cannot be encoded as the original encoding' do
+          before do
+            Request.stub(:warn)
+            Response.stub(:warn)
+
+            hash['request']['body']  = { 'string' => "\xFAbc", 'encoding' => 'ISO-8859-1' }
+            hash['response']['body']  = { 'string' => "\xFAbc", 'encoding' => 'ISO-8859-1' }
+            expect { "\xFAbc".encode("ISO-8859-1") }.to raise_error(EncodingError)
+          end
+
+          it 'does not force the encoding' do
+            i = HTTPInteraction.from_hash(hash)
+            i.request.body.should eq("\xFAbc")
+            i.response.body.should eq("\xFAbc")
+            i.request.body.encoding.name.should_not eq("ISO-8859-1")
+            i.response.body.encoding.name.should_not eq("ISO-8859-1")
+          end
+
+          it 'prints a warning and informs users of the :preserve_exact_body_bytes option' do
+            Request.should_receive(:warn).with(/ISO-8859-1.*preserve_exact_body_bytes/)
+            Response.should_receive(:warn).with(/ISO-8859-1.*preserve_exact_body_bytes/)
+
+            HTTPInteraction.from_hash(hash)
+          end
+        end
       end
     end
 

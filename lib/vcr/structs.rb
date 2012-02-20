@@ -15,12 +15,13 @@ module VCR
       module ClassMethods
         def body_from(hash_or_string)
           return hash_or_string unless hash_or_string.is_a?(Hash)
+          hash = hash_or_string
 
-          if hash_or_string.has_key?('base64_string')
-            string = Base64.decode64(hash_or_string['base64_string'])
-            force_encode_string(string, hash_or_string['encoding'])
+          if hash.has_key?('base64_string')
+            string = Base64.decode64(hash['base64_string'])
+            force_encode_string(string, hash['encoding'])
           else
-            hash_or_string['string']
+            try_encode_string(hash['string'], hash['encoding'])
           end
         end
 
@@ -29,8 +30,23 @@ module VCR
             return string unless encoding
             string.force_encoding(encoding)
           end
+
+          def try_encode_string(string, encoding)
+            return string if string.encoding.name == encoding
+            string.encode(encoding)
+          rescue EncodingError => e
+            struct_type = name.split('::').last.downcase
+            warn "VCR: got `#{e.class.name}: #{e.message}` while trying to encode the #{string.encoding.name} " +
+                 "#{struct_type} body to the original body encoding (#{encoding}). Consider using the " +
+                 "`:preserve_exact_body_bytes` option to work around this."
+            return string
+          end
         else
           def force_encode_string(string, encoding)
+            string
+          end
+
+          def try_encode_string(string, encoding)
             string
           end
         end
