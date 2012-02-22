@@ -28,6 +28,7 @@
     request or response body in order to preserve the bytes exactly.
     Thanks to [Jeff Pollard](https://github.com/Fluxx) for help
     designing this feature and for code reviewing it.
+  * Update to and require latest Excon (0.9.6).
 
 ## Bug Fixes
 

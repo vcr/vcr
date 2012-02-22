@@ -2,7 +2,7 @@ require 'vcr/util/version_checker'
 require 'vcr/request_handler'
 require 'excon'
 
-VCR::VersionChecker.new('Excon', Excon::VERSION, '0.9.5', '0.9').check_version!
+VCR::VersionChecker.new('Excon', Excon::VERSION, '0.9.6', '0.9').check_version!
 
 module VCR
   class LibraryHooks
@@ -151,7 +151,7 @@ module VCR
   end
 end
 
-Excon.mock = true
+Excon.defaults[:mock] = true
 
 VCR.configuration.after_library_hooks_loaded do
   # ensure WebMock's Excon adapter does not conflict with us here

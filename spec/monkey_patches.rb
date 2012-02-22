@@ -37,7 +37,7 @@ module MonkeyPatches
         $original_excon_stubs.each do |stub|
           ::Excon.stubs << stub
         end
-        ::Excon.mock = true
+        ::Excon.defaults[:mock] = true
       when :vcr
         realias Net::HTTP, :request, :with_vcr
       else raise ArgumentError.new("Unexpected scope: #{scope}")
@@ -62,7 +62,7 @@ module MonkeyPatches
 
     if defined?(::Excon)
       ::Excon.stubs.clear
-      ::Excon.mock = false
+      ::Excon.defaults[:mock] = false
     end
   end
 
