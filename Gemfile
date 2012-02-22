@@ -8,7 +8,6 @@ group :development do
 end
 
 gem 'yard'
-gem 'simplecov'
 
 # Additional gems that are useful, but not required for development.
 group :extras do
