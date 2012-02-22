@@ -133,6 +133,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Carlos Kirkconnell](https://github.com/kirkconnell)
 * [Eric Allam](http://github.com/rubymaverick)
 * [Flaviu Simihaian](https://github.com/closedbracket)
+* [Jeff Pollard](https://github.com/Fluxx)
 * [Justin Smestad](https://github.com/jsmestad)
 * [Karl Baum](https://github.com/kbaum)
 * [Michael Lavrisha](https://github.com/vrish88)

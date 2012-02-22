@@ -220,3 +220,26 @@ the philosophy of VCR to record the entire sequence of HTTP interactions
 interaction can only be played back once unless you use the new
 `:allow_playback_repeats` option.
 
+## Preserve Exact Body Bytes
+
+Sometimes the request or response body of an HTTP interaction cannot
+be serialized and deserialized properly. Usually this is due to the body
+having invalid UTF-8 bytes. This new option configures VCR to base64
+encode the body in order to preserve the bytes exactly. It can either
+be configured globally with a block, or set on individual cassettes:
+
+``` ruby
+VCR.configure do |c|
+  c.preserve_exact_body_bytes do |http_message|
+    http_message.body.encoding.name == 'ASCII-8BIT' ||
+    !http_message.body.valid_encoding?
+  end
+end
+
+# or....
+
+VCR.use_cassette("my_cassette", :preserve_exact_body_bytes => true) do
+  # ...
+end
+```
+

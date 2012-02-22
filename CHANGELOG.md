@@ -22,6 +22,12 @@
   * Add `debug_logger` config option. This can be used to
     troubleshoot what VCR is doing.
   * Update WebMock to version (1.8.0) that supports Excon stubbing.
+  * Store the encoding with the request & response bodies in the
+    serialized cassette.
+  * Add new `preserve_exact_body_bytes` option that base64 encodes the
+    request or response body in order to preserve the bytes exactly.
+    Thanks to [Jeff Pollard](https://github.com/Fluxx) for help
+    designing this feature and for code reviewing it.
 
 ## Bug Fixes
 
