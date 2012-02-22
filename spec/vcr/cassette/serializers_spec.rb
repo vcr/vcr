@@ -8,7 +8,7 @@ end
 module VCR
   class Cassette
     describe Serializers do
-      shared_examples_for "encoding error handling" do |name, string, error_class|
+      shared_examples_for "encoding error handling" do |name, error_class|
         context "the #{name} serializer" do
           it 'appends info about the :preserve_exact_body_bytes option to the error' do
             expect {
@@ -46,17 +46,22 @@ module VCR
       end
 
       it_behaves_like "a serializer", :yaml,  "yml",  :lazily_loaded do
-        it_behaves_like "encoding error handling", :yaml, "\xFA".force_encoding("UTF-8"), ArgumentError do
+        it_behaves_like "encoding error handling", :yaml, ArgumentError do
+          let(:string) { "\xFA".force_encoding("UTF-8") }
           before { ::YAML::ENGINE.yamler = 'psych' }
-        end #if test_psych_encoding_errors
+        end if ''.respond_to?(:encoding)
       end
 
       it_behaves_like "a serializer", :syck,  "yml",  :lazily_loaded do
-        it_behaves_like "encoding error handling", :syck, "\xFA".force_encoding("UTF-8"), ArgumentError
+        it_behaves_like "encoding error handling", :syck, ArgumentError do
+          let(:string) { "\xFA".force_encoding("UTF-8") }
+        end if ''.respond_to?(:encoding)
       end
 
       it_behaves_like "a serializer", :psych, "yml",  :lazily_loaded do
-        it_behaves_like "encoding error handling", :psych, "\xFA".force_encoding("UTF-8"), ArgumentError
+        it_behaves_like "encoding error handling", :psych, ArgumentError do
+          let(:string) { "\xFA".force_encoding("UTF-8") }
+        end if ''.respond_to?(:encoding)
       end if RUBY_VERSION =~ /1.9/
 
       it_behaves_like "a serializer", :json,  "json", :lazily_loaded do
@@ -70,7 +75,9 @@ module VCR
         engines.each do |engine, error|
           context "when MultiJson is configured to use #{engine.inspect}" do
             before { MultiJson.engine = engine }
-            it_behaves_like "encoding error handling", :json, "\xFA", error
+            it_behaves_like "encoding error handling", :json, error do
+              let(:string) { "\xFA" }
+            end
           end
         end
       end
