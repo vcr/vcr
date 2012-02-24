@@ -37,7 +37,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rack', '~> 1.3.6'
   s.add_development_dependency 'sinatra', '~> 1.3.2'
   s.add_development_dependency 'multi_json', '~> 1.0.3'
-  s.add_development_dependency 'yajl-ruby', '~> 1.1.0'
   s.add_development_dependency 'json', '~> 1.6.5'
   s.add_development_dependency 'limited_red', '~> 0.3.7'
   s.add_development_dependency 'simplecov', '~> 0.5.3'
@@ -47,5 +46,6 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'em-http-request', '~> 0.3.0'
     s.add_development_dependency 'curb', '~> 0.8.0'
     s.add_development_dependency 'typhoeus', '~> 0.3.3'
+    s.add_development_dependency 'yajl-ruby', '~> 1.1.0'
   end
 end
