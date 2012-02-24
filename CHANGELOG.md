@@ -1,6 +1,10 @@
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.rc1...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.rc2...master)
+
+## 2.0.0 RC 2 (February 23, 2012)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.rc1...v2.0.0.rc2)
 
 ## New Features
 
