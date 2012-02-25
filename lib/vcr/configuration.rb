@@ -7,117 +7,6 @@ module VCR
     include VCR::Hooks
     include VCR::VariableArgsBlockCaller
 
-    # Adds a callback that will be called before the recorded HTTP interactions
-    # are serialized and written to disk.
-    #
-    # @example
-    #  VCR.configure do |c|
-    #    # Don't record transient 5xx errors
-    #    c.before_record do |interaction|
-    #      interaction.ignore! if interaction.response.status.code >= 500
-    #    end
-    #
-    #    # Modify the response body for cassettes tagged with :twilio
-    #    c.before_record(:twilio) do |interaction|
-    #      interaction.response.body.downcase!
-    #    end
-    #  end
-    #
-    # @param tag [(optional) Symbol] Used to apply this hook to only cassettes that match
-    #  the given tag.
-    # @yield the callback
-    # @yieldparam interaction [VCR::HTTPInteraction::HookAware] The interaction that will be
-    #  serialized and written to disk.
-    # @yieldparam cassette [(optional) VCR::Cassette] The current cassette.
-    # @see #before_playback
-    define_hook :before_record
-    def before_record(tag = nil, &block)
-      super(filter_from(tag), &block)
-    end
-
-    # Adds a callback that will be called before a previously recorded
-    # HTTP interaction is loaded for playback.
-    #
-    # @example
-    #  VCR.configure do |c|
-    #    # Don't playback transient 5xx errors
-    #    c.before_playback do |interaction|
-    #      interaction.ignore! if interaction.response.status.code >= 500
-    #    end
-    #
-    #    # Change a response header for playback
-    #    c.before_playback(:twilio) do |interaction|
-    #      interaction.response.headers['X-Foo-Bar'] = 'Bazz'
-    #    end
-    #  end
-    #
-    # @param tag [(optional) Symbol] Used to apply this hook to only cassettes that match
-    #  the given tag.
-    # @yield the callback
-    # @yieldparam interaction [VCR::HTTPInteraction::HookAware] The interaction that is being
-    #  loaded.
-    # @yieldparam cassette [(optional) VCR::Cassette] The current cassette.
-    # @see #before_record
-    define_hook :before_playback
-    def before_playback(tag = nil, &block)
-      super(filter_from(tag), &block)
-    end
-
-    # @private
-    define_hook :after_library_hooks_loaded
-
-    # Adds a callback that will be called with each HTTP request before it is made.
-    #
-    # @example
-    #  VCR.configure do |c|
-    #    c.before_http_request(:real?) do |request|
-    #      puts "Request: #{request.method} #{request.uri}"
-    #    end
-    #  end
-    #
-    # @param filters [optional splat of #to_proc] one or more filters to apply.
-    #   The objects provided will be converted to procs using `#to_proc`. If provided,
-    #   the callback will only be invoked if these procs all return `true`.
-    # @yield the callback
-    # @yieldparam request [VCR::Request::Typed] the request that is being made
-    # @see #after_http_request
-    # @see #around_http_request
-    define_hook :before_http_request
-
-    # Adds a callback that will be called with each HTTP request after it is complete.
-    #
-    # @example
-    #  VCR.configure do |c|
-    #    c.after_http_request(:ignored?) do |request, response|
-    #      puts "Request: #{request.method} #{request.uri}"
-    #      puts "Response: #{response.status.code}"
-    #    end
-    #  end
-    #
-    # @param filters [optional splat of #to_proc] one or more filters to apply.
-    #   The objects provided will be converted to procs using `#to_proc`. If provided,
-    #   the callback will only be invoked if these procs all return `true`.
-    # @yield the callback
-    # @yieldparam request [VCR::Request::Typed] the request that is being made
-    # @yieldparam response [VCR::Response] the response from the request
-    # @see #before_http_request
-    # @see #around_http_request
-    define_hook :after_http_request, :prepend
-
-    # @private
-    def initialize
-      @allow_http_connections_when_no_cassette = nil
-      @default_cassette_options = {
-        :record            => :once,
-        :match_requests_on => RequestMatcherRegistry::DEFAULT_MATCHERS,
-        :serialize_with    => :yaml
-      }
-
-      self.debug_logger = NullDebugLogger
-
-      register_built_in_hooks
-    end
-
     # The directory to read cassettes from and write cassettes to.
     #
     # @overload cassette_library_dir
@@ -173,29 +62,6 @@ module VCR
     def hook_into(*hooks)
       hooks.each { |a| load_library_hook(a) }
       invoke_hook(:after_library_hooks_loaded)
-    end
-
-    # Registers a request matcher for later use.
-    #
-    # @example
-    #  VCR.configure do |c|
-    #    c.register_request_matcher :port do |request_1, request_2|
-    #      URI(request_1.uri).port == URI(request_2.uri).port
-    #    end
-    #  end
-    #
-    #  VCR.use_cassette("my_cassette", :match_requests_on => [:method, :host, :port]) do
-    #    # ...
-    #  end
-    #
-    # @param name [Symbol] the name of the request matcher
-    # @yield the request matcher
-    # @yieldparam request_1 [VCR::Request] One request
-    # @yieldparam request_2 [VCR::Request] The other request
-    # @yieldreturn [Boolean] whether or not these two requests should be considered
-    #  equivalent
-    def register_request_matcher(name, &block)
-      VCR.request_matchers.register(name, &block)
     end
 
     # Specifies host(s) that VCR should ignore.
@@ -254,6 +120,29 @@ module VCR
       !!@allow_http_connections_when_no_cassette
     end
 
+    # Registers a request matcher for later use.
+    #
+    # @example
+    #  VCR.configure do |c|
+    #    c.register_request_matcher :port do |request_1, request_2|
+    #      URI(request_1.uri).port == URI(request_2.uri).port
+    #    end
+    #  end
+    #
+    #  VCR.use_cassette("my_cassette", :match_requests_on => [:method, :host, :port]) do
+    #    # ...
+    #  end
+    #
+    # @param name [Symbol] the name of the request matcher
+    # @yield the request matcher
+    # @yieldparam request_1 [VCR::Request] One request
+    # @yieldparam request_2 [VCR::Request] The other request
+    # @yieldreturn [Boolean] whether or not these two requests should be considered
+    #  equivalent
+    def register_request_matcher(name, &block)
+      VCR.request_matchers.register(name, &block)
+    end
+
     # Sets up a {#before_record} and a {#before_playback} hook that will
     # insert a placeholder string in the cassette in place of another string.
     # You can use this as a generic way to interpolate a variable into the
@@ -304,6 +193,100 @@ module VCR
     def cassette_serializers
       VCR.cassette_serializers
     end
+
+    # Adds a callback that will be called before the recorded HTTP interactions
+    # are serialized and written to disk.
+    #
+    # @example
+    #  VCR.configure do |c|
+    #    # Don't record transient 5xx errors
+    #    c.before_record do |interaction|
+    #      interaction.ignore! if interaction.response.status.code >= 500
+    #    end
+    #
+    #    # Modify the response body for cassettes tagged with :twilio
+    #    c.before_record(:twilio) do |interaction|
+    #      interaction.response.body.downcase!
+    #    end
+    #  end
+    #
+    # @param tag [(optional) Symbol] Used to apply this hook to only cassettes that match
+    #  the given tag.
+    # @yield the callback
+    # @yieldparam interaction [VCR::HTTPInteraction::HookAware] The interaction that will be
+    #  serialized and written to disk.
+    # @yieldparam cassette [(optional) VCR::Cassette] The current cassette.
+    # @see #before_playback
+    define_hook :before_record
+    def before_record(tag = nil, &block)
+      super(filter_from(tag), &block)
+    end
+
+    # Adds a callback that will be called before a previously recorded
+    # HTTP interaction is loaded for playback.
+    #
+    # @example
+    #  VCR.configure do |c|
+    #    # Don't playback transient 5xx errors
+    #    c.before_playback do |interaction|
+    #      interaction.ignore! if interaction.response.status.code >= 500
+    #    end
+    #
+    #    # Change a response header for playback
+    #    c.before_playback(:twilio) do |interaction|
+    #      interaction.response.headers['X-Foo-Bar'] = 'Bazz'
+    #    end
+    #  end
+    #
+    # @param tag [(optional) Symbol] Used to apply this hook to only cassettes that match
+    #  the given tag.
+    # @yield the callback
+    # @yieldparam interaction [VCR::HTTPInteraction::HookAware] The interaction that is being
+    #  loaded.
+    # @yieldparam cassette [(optional) VCR::Cassette] The current cassette.
+    # @see #before_record
+    define_hook :before_playback
+    def before_playback(tag = nil, &block)
+      super(filter_from(tag), &block)
+    end
+
+    # Adds a callback that will be called with each HTTP request before it is made.
+    #
+    # @example
+    #  VCR.configure do |c|
+    #    c.before_http_request(:real?) do |request|
+    #      puts "Request: #{request.method} #{request.uri}"
+    #    end
+    #  end
+    #
+    # @param filters [optional splat of #to_proc] one or more filters to apply.
+    #   The objects provided will be converted to procs using `#to_proc`. If provided,
+    #   the callback will only be invoked if these procs all return `true`.
+    # @yield the callback
+    # @yieldparam request [VCR::Request::Typed] the request that is being made
+    # @see #after_http_request
+    # @see #around_http_request
+    define_hook :before_http_request
+
+    # Adds a callback that will be called with each HTTP request after it is complete.
+    #
+    # @example
+    #  VCR.configure do |c|
+    #    c.after_http_request(:ignored?) do |request, response|
+    #      puts "Request: #{request.method} #{request.uri}"
+    #      puts "Response: #{response.status.code}"
+    #    end
+    #  end
+    #
+    # @param filters [optional splat of #to_proc] one or more filters to apply.
+    #   The objects provided will be converted to procs using `#to_proc`. If provided,
+    #   the callback will only be invoked if these procs all return `true`.
+    # @yield the callback
+    # @yieldparam request [VCR::Request::Typed] the request that is being made
+    # @yieldparam response [VCR::Response] the response from the request
+    # @see #before_http_request
+    # @see #around_http_request
+    define_hook :after_http_request, :prepend
 
     # Adds a callback that will be executed around each HTTP request.
     #
@@ -405,6 +388,19 @@ module VCR
 
   private
 
+    def initialize
+      @allow_http_connections_when_no_cassette = nil
+      @default_cassette_options = {
+        :record            => :once,
+        :match_requests_on => RequestMatcherRegistry::DEFAULT_MATCHERS,
+        :serialize_with    => :yaml
+      }
+
+      self.debug_logger = NullDebugLogger
+
+      register_built_in_hooks
+    end
+
     def load_library_hook(hook)
       file = "vcr/library_hooks/#{hook}"
       require file
@@ -445,6 +441,9 @@ module VCR
         cassette && cassette.tags.include?(:preserve_exact_body_bytes)
       end
     end
+
+    # @private
+    define_hook :after_library_hooks_loaded
   end
 
   # @private

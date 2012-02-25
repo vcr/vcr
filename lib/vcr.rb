@@ -153,43 +153,6 @@ module VCR
     end
   end
 
-  # @private
-  def http_interactions
-    return current_cassette.http_interactions if current_cassette
-    VCR::Cassette::HTTPInteractionList::NullList
-  end
-
-  # @private
-  def real_http_connections_allowed?
-    return current_cassette.recording? if current_cassette
-    configuration.allow_http_connections_when_no_cassette? || @turned_off
-  end
-
-  # @return [RequestMatcherRegistry] the request matcher registry
-  def request_matchers
-    @request_matchers ||= RequestMatcherRegistry.new
-  end
-
-  # @private
-  def request_ignorer
-    @request_ignorer ||= RequestIgnorer.new
-  end
-
-  # @private
-  def library_hooks
-    @library_hooks ||= LibraryHooks.new
-  end
-
-  # @private
-  def cassette_serializers
-    @cassette_serializers ||= Cassette::Serializers.new
-  end
-
-  # @return [VCR::Configuration] the VCR configuration.
-  def configuration
-    @configuration ||= Configuration.new
-  end
-
   # Used to configure VCR.
   #
   # @example
@@ -202,6 +165,11 @@ module VCR
   # @return [void]
   def configure
     yield configuration
+  end
+
+  # @return [VCR::Configuration] the VCR configuration.
+  def configuration
+    @configuration ||= Configuration.new
   end
 
   # Sets up `Before` and `After` cucumber hooks in order to
@@ -220,14 +188,6 @@ module VCR
   def cucumber_tags(&block)
     main_object = eval('self', block.binding)
     yield VCR::CucumberTags.new(main_object)
-  end
-
-  # @private
-  def record_http_interaction(interaction)
-    return unless cassette = current_cassette
-    return if VCR.request_ignorer.ignore?(interaction.request)
-
-    cassette.record_http_interaction(interaction)
   end
 
   # Turns VCR off for the duration of a block.
@@ -292,11 +252,50 @@ module VCR
   end
 
   # @private
-  def ignore_cassettes?
-    @ignore_cassettes
+  def http_interactions
+    return current_cassette.http_interactions if current_cassette
+    VCR::Cassette::HTTPInteractionList::NullList
+  end
+
+  # @private
+  def real_http_connections_allowed?
+    return current_cassette.recording? if current_cassette
+    configuration.allow_http_connections_when_no_cassette? || @turned_off
+  end
+
+  # @return [RequestMatcherRegistry] the request matcher registry
+  def request_matchers
+    @request_matchers ||= RequestMatcherRegistry.new
+  end
+
+  # @private
+  def request_ignorer
+    @request_ignorer ||= RequestIgnorer.new
+  end
+
+  # @private
+  def library_hooks
+    @library_hooks ||= LibraryHooks.new
+  end
+
+  # @private
+  def cassette_serializers
+    @cassette_serializers ||= Cassette::Serializers.new
+  end
+
+  # @private
+  def record_http_interaction(interaction)
+    return unless cassette = current_cassette
+    return if VCR.request_ignorer.ignore?(interaction.request)
+
+    cassette.record_http_interaction(interaction)
   end
 
 private
+
+  def ignore_cassettes?
+    @ignore_cassettes
+  end
 
   def cassettes
     @cassettes ||= []

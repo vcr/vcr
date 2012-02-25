@@ -275,6 +275,75 @@ module VCR
     end
   end
 
+  # The response of an {HTTPInteraction}.
+  #
+  # @attr [ResponseStatus] status the status of the response
+  # @attr [Hash{String => Array<String>}] headers the response headers
+  # @attr [String] body the response body
+  # @attr [nil, String] http_version the HTTP version
+  class Response < Struct.new(:status, :headers, :body, :http_version)
+    include Normalizers::Header
+    include Normalizers::Body
+
+    # Builds a serializable hash from the response data.
+    #
+    # @return [Hash] hash that represents this response
+    #  and can be easily serialized.
+    # @see Response.from_hash
+    def to_hash
+      {
+        'status'       => status.to_hash,
+        'headers'      => headers,
+        'body'         => serializable_body,
+        'http_version' => http_version
+      }.tap { |h| OrderedHashSerializer.apply_to(h, members) }
+    end
+
+    # Constructs a new instance from a hash.
+    #
+    # @param [Hash] hash the hash to use to construct the instance.
+    # @return [Response] the response
+    def self.from_hash(hash)
+      new ResponseStatus.from_hash(hash.fetch('status', {})),
+          hash['headers'],
+          body_from(hash['body']),
+          hash['http_version']
+    end
+
+    # Updates the Content-Length response header so that it is
+    # accurate for the response body.
+    def update_content_length_header
+      value = body ? body.bytesize.to_s : '0'
+      key = %w[ Content-Length content-length ].find { |k| headers.has_key?(k) }
+      headers[key] = [value] if key
+    end
+  end
+
+  # The response status of an {HTTPInteraction}.
+  #
+  # @attr [Integer] code the HTTP status code
+  # @attr [String] message the HTTP status message (e.g. "OK" for a status of 200)
+  class ResponseStatus < Struct.new(:code, :message)
+    # Builds a serializable hash from the response status data.
+    #
+    # @return [Hash] hash that represents this response status
+    #  and can be easily serialized.
+    # @see ResponseStatus.from_hash
+    def to_hash
+      {
+        'code' => code, 'message' => message
+      }.tap { |h| OrderedHashSerializer.apply_to(h, members) }
+    end
+
+    # Constructs a new instance from a hash.
+    #
+    # @param [Hash] hash the hash to use to construct the instance.
+    # @return [ResponseStatus] the response status
+    def self.from_hash(hash)
+      new hash['code'], hash['message']
+    end
+  end
+
   # Represents a single interaction over HTTP, containing a request and a response.
   #
   # @attr [Request] request the request
@@ -372,75 +441,6 @@ module VCR
           hash[new_key] = hash.delete(k) unless k == new_key
         end
       end
-    end
-  end
-
-  # The response of an {HTTPInteraction}.
-  #
-  # @attr [ResponseStatus] status the status of the response
-  # @attr [Hash{String => Array<String>}] headers the response headers
-  # @attr [String] body the response body
-  # @attr [nil, String] http_version the HTTP version
-  class Response < Struct.new(:status, :headers, :body, :http_version)
-    include Normalizers::Header
-    include Normalizers::Body
-
-    # Builds a serializable hash from the response data.
-    #
-    # @return [Hash] hash that represents this response
-    #  and can be easily serialized.
-    # @see Response.from_hash
-    def to_hash
-      {
-        'status'       => status.to_hash,
-        'headers'      => headers,
-        'body'         => serializable_body,
-        'http_version' => http_version
-      }.tap { |h| OrderedHashSerializer.apply_to(h, members) }
-    end
-
-    # Constructs a new instance from a hash.
-    #
-    # @param [Hash] hash the hash to use to construct the instance.
-    # @return [Response] the response
-    def self.from_hash(hash)
-      new ResponseStatus.from_hash(hash.fetch('status', {})),
-          hash['headers'],
-          body_from(hash['body']),
-          hash['http_version']
-    end
-
-    # Updates the Content-Length response header so that it is
-    # accurate for the response body.
-    def update_content_length_header
-      value = body ? body.bytesize.to_s : '0'
-      key = %w[ Content-Length content-length ].find { |k| headers.has_key?(k) }
-      headers[key] = [value] if key
-    end
-  end
-
-  # The response status of an {HTTPInteraction}.
-  #
-  # @attr [Integer] code the HTTP status code
-  # @attr [String] message the HTTP status message (e.g. "OK" for a status of 200)
-  class ResponseStatus < Struct.new(:code, :message)
-    # Builds a serializable hash from the response status data.
-    #
-    # @return [Hash] hash that represents this response status
-    #  and can be easily serialized.
-    # @see ResponseStatus.from_hash
-    def to_hash
-      {
-        'code' => code, 'message' => message
-      }.tap { |h| OrderedHashSerializer.apply_to(h, members) }
-    end
-
-    # Constructs a new instance from a hash.
-    #
-    # @param [Hash] hash the hash to use to construct the instance.
-    # @return [ResponseStatus] the response status
-    def self.from_hash(hash)
-      new hash['code'], hash['message']
     end
   end
 end
