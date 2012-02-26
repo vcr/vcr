@@ -479,7 +479,7 @@ upgrade notes for more info.
 * New Features
   * Added support for [HTTPClient](http://github.com/nahi/httpclient), [Patron](http://github.com/toland/patron) and
     [em-http-request](http://github.com/igrigorik/em-http-request) when WebMock is used.  Any future http libraries
-    WebMock supports should (theoretically, at least) work without any VCR code changes.  Thanks to 
+    WebMock supports should (theoretically, at least) work without any VCR code changes.  Thanks to
     [Bartosz Blimke](http://github.com/bblimke) for adding the necessary code to WebMock to make this happen!
   * Added support for dynamic responses using ERB.  A cassette will be evaluated as ERB before the YAML
     is deserialized if you pass it an `:erb => true` option.  You can pass variables using

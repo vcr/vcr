@@ -52,8 +52,8 @@ end
 # Benchmarking Single setup/teardown:
 # webmock  0.000000   0.000000   6.950000 (  6.981525)
 # fakeweb  0.000000   0.010000   1.750000 (  1.740679)
-# 
-# 
+#
+#
 # Benchmarking Setup/teardown for each http request:
 # webmock  0.000000   0.000000   7.970000 (  7.981383)
 # fakeweb  0.000000   0.000000   2.210000 (  2.203478)

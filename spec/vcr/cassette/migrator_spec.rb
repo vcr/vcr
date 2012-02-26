@@ -3,38 +3,38 @@ require 'vcr/cassette/migrator'
 
 describe VCR::Cassette::Migrator do
   let(:original_contents) { <<-EOF
---- 
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: http://example.com:80/foo
-    body: 
-    headers: 
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+    body:
+    headers:
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      content-type: 
+    headers:
+      content-type:
       - text/html;charset=utf-8
-      content-length: 
+      content-length:
       - "9"
     body: Hello foo
     http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: http://localhost:7777/bar
-    body: 
-    headers: 
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+    body:
+    headers:
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      content-type: 
+    headers:
+      content-type:
       - text/html;charset=utf-8
-      content-length: 
+      content-length:
       - "9"
     body: Hello bar
     http_version: "1.1"
@@ -42,9 +42,9 @@ EOF
   }
 
   let(:updated_contents) { <<-EOF
---- 
-http_interactions: 
-- request: 
+---
+http_interactions:
+- request:
     method: get
     uri: http://example.com/foo
     body:
@@ -52,21 +52,21 @@ http_interactions:
       string: ""
     headers: {}
 
-  response: 
-    status: 
+  response:
+    status:
       code: 200
       message: OK
-    headers: 
-      Content-Type: 
+    headers:
+      Content-Type:
       - text/html;charset=utf-8
-      Content-Length: 
+      Content-Length:
       - "9"
     body:
       encoding: UTF-8
       string: Hello foo
     http_version: "1.1"
   recorded_at: Wed, 04 May 2011 12:30:00 GMT
-- request: 
+- request:
     method: get
     uri: http://localhost:7777/bar
     body:
@@ -74,14 +74,14 @@ http_interactions:
       string: ""
     headers: {}
 
-  response: 
-    status: 
+  response:
+    status:
       code: 200
       message: OK
-    headers: 
-      Content-Type: 
+    headers:
+      Content-Type:
       - text/html;charset=utf-8
-      Content-Length: 
+      Content-Length:
       - "9"
     body:
       encoding: UTF-8

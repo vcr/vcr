@@ -55,7 +55,7 @@ Wrap the body of it (or at least the code that makes the HTTP request) in a
 Run this test.  It will record the HTTP request to disk as a cassette (a
 test fixture), with content like:
 
-    --- 
+    ---
     http_interactions:
     - request:
         method: get
