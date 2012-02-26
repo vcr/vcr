@@ -156,11 +156,24 @@ module VCR
 
     def should_re_record?
       return false unless @re_record_interval
-      return false unless earliest_interaction_recorded_at
+      previously_recorded_at = earliest_interaction_recorded_at
+      return false unless previously_recorded_at
       return false unless File.exist?(file)
-      return false unless InternetConnection.available?
 
-      earliest_interaction_recorded_at + @re_record_interval < Time.now
+      now = Time.now
+
+      (previously_recorded_at + @re_record_interval < now).tap do |value|
+        info = "previously recorded at: '#{previously_recorded_at}'; now: '#{now}'; interval: #{@re_record_interval} seconds"
+
+        if !value
+          log "Not re-recording since the interval has not elapsed (#{info})."
+        elsif InternetConnection.available?
+          log "re-recording (#{info})."
+        else
+          log "Not re-recording because no internet connection is available (#{info})."
+          return false
+        end
+      end
     end
 
     def earliest_interaction_recorded_at
