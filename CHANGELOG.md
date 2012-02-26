@@ -2,6 +2,8 @@
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.rc2...master)
 
+* Add some additional logged events for the `debug_logger`.
+
 ## 2.0.0 RC 2 (February 23, 2012)
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.rc1...v2.0.0.rc2)
