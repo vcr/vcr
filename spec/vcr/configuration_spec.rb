@@ -117,7 +117,7 @@ describe VCR::Configuration do
     end
   end
 
-  describe "#before_record hook", :with_monkey_patches => :fakeweb do
+  describe "request/configuration interactions", :with_monkey_patches => :fakeweb do
     specify 'the request on the yielded interaction is not typed even though the request given to before_http_request is' do
       before_record_req = before_request_req = nil
       VCR.configure do |c|
@@ -132,6 +132,18 @@ describe VCR::Configuration do
       before_record_req.should_not respond_to(:type)
       before_request_req.should respond_to(:type)
     end unless RUBY_VERSION =~ /^1\.8/
+
+    specify 'the filter_sensitive_data option works even when it modifies the URL in a way that makes it an invalid URI' do
+      VCR.configure do |c|
+        c.filter_sensitive_data('<HOST>') { 'localhost' }
+      end
+
+      2.times do
+        VCR.use_cassette("example") do
+          ::Net::HTTP.get_response(URI("http://localhost:#{VCR::SinatraApp.port}/foo"))
+        end
+      end
+    end
   end
 
   [:before_record, :before_playback].each do |hook_type|

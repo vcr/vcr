@@ -155,9 +155,15 @@ module VCR
     include Normalizers::Body
 
     def initialize(*args)
-      super
+      skip_port_stripping = false
+      if args.last == :skip_port_stripping
+        skip_port_stripping = true
+        args.pop
+      end
+
+      super(*args)
       self.method = self.method.to_s.downcase.to_sym if self.method
-      self.uri = without_standard_port(self.uri)
+      self.uri = without_standard_port(self.uri) unless skip_port_stripping
     end
 
     # Builds a serializable hash from the request data.
@@ -184,7 +190,8 @@ module VCR
       new method,
           hash['uri'],
           body_from(hash['body']),
-          hash['headers']
+          hash['headers'],
+          :skip_port_stripping
     end
 
     @@object_method = Object.instance_method(:method)
