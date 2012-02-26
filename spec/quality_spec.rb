@@ -2,10 +2,6 @@
 # https://github.com/carlhuda/bundler/blob/v1.1.rc.7/spec/quality_spec.rb
 require "spec_helper"
 
-if defined?(Encoding)
-  Encoding.default_external = "UTF-8"
-end
-
 describe "The library itself" do
   def check_for_tab_characters(filename)
     failing_lines = []
