@@ -145,13 +145,16 @@ Feature: EM HTTP Request
           multi = EventMachine::MultiRequest.new
 
           %w[ foo bar bazz ].each do |path|
-            multi.add(EventMachine::HttpRequest.new("http://localhost:7777/#{path}").get)
+            multi.add(path, EventMachine::HttpRequest.new("http://localhost:7777/#{path}").get)
           end
 
           multi.callback do
-            multi.responses[:succeeded].each do |http|
-              puts http.response
+            responses = Hash[multi.responses[:callback]]
+
+            %w[ foo bar bazz ].each do |path|
+              puts responses[path].response
             end
+
             EventMachine.stop
           end
         end
