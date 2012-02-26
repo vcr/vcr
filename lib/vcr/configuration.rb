@@ -4,8 +4,9 @@ require 'vcr/util/hooks'
 module VCR
   # Stores the VCR configuration.
   class Configuration
-    include VCR::Hooks
-    include VCR::VariableArgsBlockCaller
+    include Hooks
+    include VariableArgsBlockCaller
+    include Logger
 
     # The directory to read cassettes from and write cassettes to.
     #
@@ -168,11 +169,15 @@ module VCR
     # @yieldreturn the string to replace
     def define_cassette_placeholder(placeholder, tag = nil, &block)
       before_record(tag) do |interaction|
-        interaction.filter!(call_block(block, interaction), placeholder)
+        orig_text = call_block(block, interaction)
+        log "before_record: replacing #{orig_text.inspect} with #{placeholder.inspect}"
+        interaction.filter!(orig_text, placeholder)
       end
 
       before_playback(tag) do |interaction|
-        interaction.filter!(placeholder, call_block(block, interaction))
+        orig_text = call_block(block, interaction)
+        log "before_playback: replacing #{placeholder.inspect} with #{orig_text.inspect}"
+        interaction.filter!(placeholder, orig_text)
       end
     end
     alias filter_sensitive_data define_cassette_placeholder
@@ -440,6 +445,10 @@ module VCR
       preserve_exact_body_bytes do |http_message, cassette|
         cassette && cassette.tags.include?(:preserve_exact_body_bytes)
       end
+    end
+
+    def log_prefix
+      "[VCR::Configuration] "
     end
 
     # @private
