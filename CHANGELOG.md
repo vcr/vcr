@@ -3,6 +3,14 @@
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.rc2...master)
 
 * Add some additional logged events for the `debug_logger`.
+* Don't worry about stripping the standard port from the request URI on
+  playback. The standard port only needs to be stripped during recording;
+  for playback, it will have already been stripped.  This allows people
+  to use the `filter_sensitive_data` option in a way that changes the URI;
+  before this change, doing so could result in `URI::InvalidURIError`.
+  Thanks to [Patrick Schmitz](https://github.com/bullfight) and
+  [Dan Thompson](https://github.com/danthompson) for reporting the issue
+  and helping diagnose it.
 
 ## 2.0.0 RC 2 (February 23, 2012)
 
