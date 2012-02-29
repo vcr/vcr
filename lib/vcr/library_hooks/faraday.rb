@@ -1,4 +1,4 @@
-require 'faraday'
+require 'vcr/middleware/faraday'
 
 module VCR
   class LibraryHooks
