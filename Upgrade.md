@@ -220,6 +220,39 @@ the philosophy of VCR to record the entire sequence of HTTP interactions
 interaction can only be played back once unless you use the new
 `:allow_playback_repeats` option.
 
+In VCR 1.x, request matching was delegated to the HTTP stubbing library
+(typically FakeWeb or WebMock). They contain some normalization logic
+that can treat some URIs that are different strings as equivalent.
+For example, WebMock ignores the ordering of query parameters:
+
+``` ruby
+> require 'webmock'
+ => true
+> uri1 = "http://foo.com/bar?a=1&b=2"
+ => "http://foo.com/bar?a=1&b=2"
+> uri2 = "http://foo.com/bar?b=2&a=1"
+ => "http://foo.com/bar?b=2&a=1"
+> uri1 == uri2
+ => false
+> WebMock::Util::URI.normalize_uri(uri1) == WebMock::Util::URI.normalize_uri(uri2)
+ => true
+```
+
+VCR 2, the `:uri` matcher simply [uses string
+equality](https://github.com/myronmarston/vcr/blob/master/lib/vcr/request_matcher_registry.rb#L111).
+This means that there are some cases of non-deterministic URIs that VCR
+1.x matched but VCR 2.0 will not match. If you need the `:uri` matcher
+to be tolerant of slight variations like these, you can easily override
+it:
+
+``` ruby
+VCR.configure do |c|
+  c.register_request_matcher(:uri) do |r1, r2|
+    WebMock::Util::URI.normalize_uri(r1.uri) == WebMock::Util::URI.normalize_uri(r2.uri)
+  end
+end
+```
+
 ## Preserve Exact Body Bytes
 
 Sometimes the request or response body of an HTTP interaction cannot
