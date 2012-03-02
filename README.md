@@ -69,15 +69,20 @@ maintenance) and accurate (the response will contain the same headers and body y
 
 ## Usage
 
-Browse the [documentation](http://relishapp.com/myronmarston/vcr) for usage info.
+The docs come in two flavors:
 
-The [VCR talk given at Philly.rb](http://philly-rb-vcr-talk.heroku.com/) also
-contains good usage info.
+* The [relish docs](http://relishapp.com/myronmarston/vcr) contain
+  example-based documentation (VCR's cucumber suite, in fact). It's a
+  good place to look when you are first getting started with VCR, or if
+  you want to see an example of how to use a feature.
+* The [rubydoc.info docs](http://rubydoc.info/gems/vcr/frames) contain
+  API documentation. The API docs contain detailed info about all of VCR's
+  public API.
 
 ## Release Policy
 
 VCR follows the principles of [semantic versioning](http://semver.org/).
-The [cucumber features](http://relishapp.com/myronmarston/vcr) define
+The [API documentation](http://rubydoc.info/gems/vcr/frames) define
 VCR's public API.  Patch level releases contain only bug fixes.  Minor
 releases contain backward-compatible new features.  Major new releases
 contain backwards-incompatible changes to the public API.
@@ -88,9 +93,12 @@ VCR has been tested on the following ruby interpreters:
 
 * MRI 1.8.7
 * MRI 1.9.2
+* MRI 1.9.3
 * REE 1.8.7
 * JRuby
 * Rubinius
+
+Note that as of VCR 2, 1.8.6 and 1.9.1 are not supported.
 
 ## Development
 
@@ -158,4 +166,5 @@ Thanks also to the following people who have contributed patches or helpful sugg
 
 ## Copyright
 
-Copyright (c) 2010-2012 Myron Marston. See LICENSE for details.
+Copyright (c) 2010-2012 Myron Marston. Released under the terms of the
+MIT license. See LICENSE for details.
