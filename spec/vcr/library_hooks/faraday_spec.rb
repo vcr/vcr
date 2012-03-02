@@ -5,7 +5,6 @@ describe "Faraday hook" do
   it 'inserts the VCR middleware just before the adapter' do
     conn = Faraday.new(:url => 'http://sushi.com') do |builder|
       builder.request  :url_encoded
-      builder.request  :json
       builder.response :logger
       builder.adapter  :net_http
     end
