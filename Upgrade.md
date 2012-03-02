@@ -239,7 +239,7 @@ For example, WebMock ignores the ordering of query parameters:
 ```
 
 VCR 2, the `:uri` matcher simply [uses string
-equality](https://github.com/myronmarston/vcr/blob/master/lib/vcr/request_matcher_registry.rb#L111).
+equality](https://github.com/myronmarston/vcr/blob/v2.0.0/lib/vcr/request_matcher_registry.rb#L111).
 This means that there are some cases of non-deterministic URIs that VCR
 1.x matched but VCR 2.0 will not match. If you need the `:uri` matcher
 to be tolerant of slight variations like these, you can easily override

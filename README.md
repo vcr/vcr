@@ -79,6 +79,9 @@ The docs come in two flavors:
   API documentation. The API docs contain detailed info about all of VCR's
   public API.
 
+See the [Upgrade](https://github.com/myronmarston/vcr/blob/master/Upgrade.md) doc
+for info about what's new and changed in VCR 2.0.
+
 ## Release Policy
 
 VCR follows the principles of [semantic versioning](http://semver.org/).
