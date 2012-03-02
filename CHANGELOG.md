@@ -12,6 +12,7 @@
   [Dan Thompson](https://github.com/danthompson) for reporting the issue
   and helping diagnose it.
 * Relax Excon dependency to include newly released 0.10.
+* Fix Faraday library hook so that it always does the version checking.
 
 ## 2.0.0 RC 2 (February 23, 2012)
 
