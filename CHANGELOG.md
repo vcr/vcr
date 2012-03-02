@@ -1,6 +1,10 @@
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.rc2...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0...master)
+
+## 2.0.0 (March 2, 2012)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.rc2...v2.0.0)
 
 * Add some additional logged events for the `debug_logger`.
 * Don't worry about stripping the standard port from the request URI on
