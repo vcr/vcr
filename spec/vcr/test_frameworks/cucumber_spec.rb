@@ -4,7 +4,7 @@ describe VCR::CucumberTags do
   subject { described_class.new(self) }
   let(:before_blocks_for_tags) { {} }
   let(:after_blocks_for_tags) { {} }
-  let(:current_scenario) { stub(name: "My scenario name") }
+  let(:current_scenario) { stub(:name => "My scenario name") }
 
   # define our own Before/After so we can test this in isolation from cucumber's implementation.
   def Before(tag, &block)
