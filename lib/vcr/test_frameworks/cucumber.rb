@@ -35,7 +35,8 @@ module VCR
         # cucumber has a bug: background steps do not run
         # within an around hook.
         # https://gist.github.com/652968
-        @main_object.Before(tag_name) do
+        @main_object.Before(tag_name) do |scenario|
+          cassette_name = "cucumber_tags/#{scenario.name.downcase.gsub(' ', '_')}" if options.delete(:use_scenario_name)
           VCR.insert_cassette(cassette_name, options)
         end
 

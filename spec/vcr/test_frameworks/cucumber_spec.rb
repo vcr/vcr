@@ -4,6 +4,7 @@ describe VCR::CucumberTags do
   subject { described_class.new(self) }
   let(:before_blocks_for_tags) { {} }
   let(:after_blocks_for_tags) { {} }
+  let(:current_scenario) { stub(name: 'My Scenario Name') }
 
   # define our own Before/After so we can test this in isolation from cucumber's implementation.
   def Before(tag, &block)
@@ -17,9 +18,9 @@ describe VCR::CucumberTags do
   def test_tag(cassette_attribute, tag, expected_value)
     VCR.current_cassette.should be_nil
 
-    before_blocks_for_tags[tag].call
+    before_blocks_for_tags[tag].call(current_scenario)
     VCR.current_cassette.send(cassette_attribute).should eq(expected_value)
-    after_blocks_for_tags[tag].call
+    after_blocks_for_tags[tag].call(current_scenario)
 
     VCR.current_cassette.should be_nil
   end
@@ -46,6 +47,21 @@ describe VCR::CucumberTags do
 
         test_tag(:record_mode, 'tag1', :none)
         test_tag(:record_mode, 'tag2', :new_episodes)
+      end
+
+      context 'with :use_scenario_name as an option' do
+        it "uses the scenario's name as the cassette name" do
+          subject.send(tag_method, 'tag1', :use_scenario_name => true)
+          
+          test_tag(:name, 'tag1', 'cucumber_tags/my_scenario_name')
+        end
+
+        it 'does not pass :use_scenario_name along the given options to the cassette' do
+          subject.send(tag_method, 'tag1', :use_scenario_name => true)
+
+          VCR::Cassette.should_receive(:new).with('cucumber_tags/my_scenario_name', hash_not_including(:use_scenario_name))
+          before_blocks_for_tags['tag1'].call(current_scenario)
+        end
       end
     end
   end
