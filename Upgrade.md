@@ -49,14 +49,26 @@ re-record your cassettes if you are able.
 
 ## Custom Request Matchers
 
-VCR 2.0 allows any callable (an object that responds to #call, such as a lambda)
-to be used as a request matcher:
+VCR 2.0 allows you to register custom request matchers:
 
 ``` ruby
 VCR.configure do |c|
   c.register_request_matcher :port do |request_1, request_2|
     URI(request_1.uri).port == URI(request_2.uri).port
   end
+end
+```
+
+You can also pass any callable (an object that responds to #call, such as a lambda)
+to the `:match_requests_on` option:
+
+``` ruby
+port_matcher = lambda do |request_1, request_2|
+  URI(request_1.uri).port == URI(request_2.uri).port
+end
+
+VCR.use_cassette("example", :match_requests_on => [:host, port_matcher, :method]) do
+  # make an HTTP request
 end
 ```
 
@@ -74,7 +86,8 @@ end
 
 VCR 2.0 supports multiple serializers. `:yaml`, `:json`, `:psych` and
 `:syck` are supported out of the box, and it's easy to implement your
-own:
+own. Custom serializers must implement `#file_extension`, `#serialize`
+and `#deserialize`:
 
 ``` ruby
 VCR.use_cassette("example", :serialize_with => :json) do
@@ -119,17 +132,15 @@ VCR.configure do |c|
   end
 
   # around_http_request only works on ruby 1.9
-  VCR.configure do |c|
-    c.around_http_request do |request|
-      uri = URI(request.uri)
-      if uri.host == 'api.geocoder.com'
-        # extract an address like "1700 E Pine St, Seattle, WA"
-        # from a query like "address=1700+E+Pine+St%2C+Seattle%2C+WA"
-        address = CGI.unescape(uri.query.split('=').last)
-        VCR.use_cassette("geocoding/#{address}", &request)
-      else
-        request.proceed
-      end
+  c.around_http_request do |request|
+    uri = URI(request.uri)
+    if uri.host == 'api.geocoder.com'
+      # extract an address like "1700 E Pine St, Seattle, WA"
+      # from a query like "address=1700+E+Pine+St%2C+Seattle%2C+WA"
+      address = CGI.unescape(uri.query.split('=').last)
+      VCR.use_cassette("geocoding/#{address}", &request)
+    else
+      request.proceed
     end
   end
 end
