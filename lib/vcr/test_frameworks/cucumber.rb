@@ -36,7 +36,7 @@ module VCR
         # within an around hook.
         # https://gist.github.com/652968
         @main_object.Before(tag_name) do |scenario|
-          cassette_name = "cucumber_tags/#{scenario.name.downcase.gsub(' ', '_')}" if options.delete(:use_scenario_name)
+          cassette_name = snake_case(scenario.name) if options.delete(:use_scenario_name)
           VCR.insert_cassette(cassette_name, options)
         end
 
@@ -48,5 +48,9 @@ module VCR
       end
     end
     alias :tag :tags
+   
+    def snake_case(name)
+     name.downcase.gsub(/[^0-9a-z ]/i, '').gsub(/\s+/, '_')
+    end
   end
 end
