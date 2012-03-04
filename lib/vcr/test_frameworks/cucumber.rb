@@ -36,7 +36,7 @@ module VCR
         # within an around hook.
         # https://gist.github.com/652968
         @main_object.Before(tag_name) do |scenario|
-          cassette_name = scenario.name if options.delete(:use_scenario_name)
+          cassette_name = "#{scenario.feature.name}/#{scenario.name}" if options.delete(:use_scenario_name)
           VCR.insert_cassette(cassette_name, options)
         end
 

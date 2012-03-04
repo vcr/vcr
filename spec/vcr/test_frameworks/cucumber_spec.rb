@@ -4,7 +4,8 @@ describe VCR::CucumberTags do
   subject { described_class.new(self) }
   let(:before_blocks_for_tags) { {} }
   let(:after_blocks_for_tags) { {} }
-  let(:current_scenario) { stub(:name => "My scenario name") }
+  let(:current_scenario) { stub(:name => "My scenario name",
+                                :feature => stub(:name => "My feature name")) }
 
   # define our own Before/After so we can test this in isolation from cucumber's implementation.
   def Before(tag, &block)
@@ -53,13 +54,13 @@ describe VCR::CucumberTags do
         it "uses the scenario's name as the cassette name" do
           subject.send(tag_method, 'tag1', :use_scenario_name => true)
           
-          test_tag(:name, 'tag1', 'My scenario name')
+          test_tag(:name, 'tag1', 'My feature name/My scenario name')
         end
 
         it 'does not pass :use_scenario_name along the given options to the cassette' do
           subject.send(tag_method, 'tag1', :use_scenario_name => true)
 
-          VCR::Cassette.should_receive(:new).with('My scenario name', hash_not_including(:use_scenario_name))
+          VCR::Cassette.should_receive(:new).with(anything, hash_not_including(:use_scenario_name))
           before_blocks_for_tags['tag1'].call(current_scenario)
         end
       end
