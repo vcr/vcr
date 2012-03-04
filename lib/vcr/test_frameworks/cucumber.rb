@@ -24,7 +24,7 @@ module VCR
     # will cause a VCR cassette to be used for scenarios with matching tags.
     #
     # @param [Array<String>] tag_names the cucumber scenario tags
-    # @param [(optional) Hash] options the cassette options
+    # @param [(optional) Hash] options the cassette options. Specify :use_scenario_name => true to automatically name the cassette according to the scenario name.
     def tags(*tag_names)
       options = tag_names.last.is_a?(::Hash) ? tag_names.pop : {}
       tag_names.each do |tag_name|
