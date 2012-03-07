@@ -63,6 +63,16 @@ describe VCR::CucumberTags do
           VCR::Cassette.should_receive(:new).with(anything, hash_not_including(:use_scenario_name))
           before_blocks_for_tags['tag1'].call(current_scenario)
         end
+
+        it 'does not modify the options passed to the cassette' do
+          original_options = { :use_scenario_name => true, :record => :none }
+          subject.send(tag_method, 'tag1', original_options)
+          before_blocks_for_tags['tag1'].call(current_scenario)
+
+          original_options.should have(2).items
+          original_options[:use_scenario_name].should == true
+          original_options[:record].should == :none
+        end
       end
     end
   end
