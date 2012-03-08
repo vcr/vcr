@@ -155,17 +155,21 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Sathya Sekaran](https://github.com/sfsekaran)
 * [Wesley Beary](https://github.com/geemus)
 
-## Similar Libraries
+## Ports in other languages
 
 * [Betamax](https://github.com/robfletcher/betamax) (Groovy)
 * [VCR.js](https://github.com/elcuervo/vcr.js) (JavaScript)
 * [TapeDeck.js](https://github.com/EndangeredMassa/TapeDeck.js) (JavaScript)
 * [Mimic](https://github.com/acoulton/mimic) (PHP/Kohana)
-* [Ephemeral Response](https://github.com/sandro/ephemeral_response) (Ruby)
-* [Net::HTTP Spy](http://github.com/martinbtt/net-http-spy) (Ruby)
-* [NetRecorder](https://github.com/chrisyoung/netrecorder) (Ruby)
-* [Stale Fish](https://github.com/jsmestad/stale_fish) (Ruby)
-* [WebFixtures](http://github.com/trydionel/web_fixtures) (Ruby)
+
+## Similar Libraries in Ruby
+
+* [Ephemeral Response](https://github.com/sandro/ephemeral_response)
+* [Net::HTTP Spy](http://github.com/martinbtt/net-http-spy)
+* [NetRecorder](https://github.com/chrisyoung/netrecorder)
+* [Stale Fish](https://github.com/jsmestad/stale_fish)
+* [WebFixtures](http://github.com/trydionel/web_fixtures)
+* [REST-assured](https://github.com/BBC/REST-assured)
 
 ## Copyright
 
