@@ -70,8 +70,8 @@ describe VCR::CucumberTags do
           before_blocks_for_tags['tag1'].call(current_scenario)
 
           original_options.should have(2).items
-          original_options[:use_scenario_name].should == true
-          original_options[:record].should == :none
+          original_options[:use_scenario_name].should eq(true)
+          original_options[:record].should eq(:none)
         end
       end
     end
