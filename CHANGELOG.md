@@ -2,6 +2,13 @@
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0...master)
 
+* Add new `:use_scenario_name` option to the cucumber tags API. This
+  allows you to use a generic tag (such as `@vcr`) and have the
+  cassettes named based on the feature and scenario rather than based on
+  the tag. Thanks to [Omer Rauchwerger](https://github.com/rauchy) for
+  the implementation and [Chad Jolly](https://github.com/cjolly) for the
+  initial idea and feedback.
+
 ## 2.0.0 (March 2, 2012)
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.rc2...v2.0.0)
