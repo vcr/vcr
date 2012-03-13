@@ -96,6 +96,10 @@ When /^I modify the file "([^"]*)" to replace "([^"]*)" with "([^"]*)"$/ do |fil
   modify_file(file_name, orig_text, new_text)
 end
 
+When /^I append to file "([^"]*)":$/ do |file_name, content|
+  append_to_file(file_name, content)
+end
+
 When /^I set the "([^"]*)" environment variable to "([^"]*)"$/ do |var, value|
   set_env(var, value)
 end

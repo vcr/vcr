@@ -12,6 +12,7 @@
   - automatic_re_recording.feature
   - exclusive.feature
   - update_content_length_header.feature
+  - decompress.feature
 - record_modes:
   - once.feature
   - new_episodes.feature
