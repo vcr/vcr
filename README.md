@@ -149,6 +149,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Justin Smestad](https://github.com/jsmestad)
 * [Karl Baum](https://github.com/kbaum)
 * [Michael Lavrisha](https://github.com/vrish88)
+* [Mislav Marohnić](https://github.com/mislav)
 * [Nathaniel Bibler](https://github.com/nbibler)
 * [Oliver Searle-Barnes](https://github.com/opsb)
 * [Omer Rauchwerger](https://github.com/rauchy)
