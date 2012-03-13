@@ -94,6 +94,7 @@ module VCR
 
       def normalize_headers
         new_headers = {}
+        @normalized_header_keys = Hash.new {|h,k| k }
 
         headers.each do |k, v|
           val_array = case v
@@ -103,9 +104,34 @@ module VCR
           end
 
           new_headers[k] = convert_to_raw_strings(val_array)
+          @normalized_header_keys[k.downcase] = k
         end if headers
 
         self.headers = new_headers
+      end
+
+      def header_key(key)
+        key = @normalized_header_keys[key.downcase]
+        key if headers.has_key? key
+      end
+
+      def get_header(key)
+        key = header_key(key)
+        headers[key] if key
+      end
+
+      def edit_header(key, value = nil)
+        if key = header_key(key)
+          value ||= yield headers[key]
+          headers[key] = Array(value)
+        end
+      end
+
+      def delete_header(key)
+        if key = header_key(key)
+          @normalized_header_keys.delete key.downcase
+          headers.delete key
+        end
       end
 
       def convert_to_raw_strings(array)
@@ -320,9 +346,58 @@ module VCR
     # Updates the Content-Length response header so that it is
     # accurate for the response body.
     def update_content_length_header
-      value = body ? body.bytesize.to_s : '0'
-      key = %w[ Content-Length content-length ].find { |k| headers.has_key?(k) }
-      headers[key] = [value] if key
+      edit_header('Content-Length') { body ? body.bytesize.to_s : '0' }
+    end
+
+    # The type of encoding.
+    #
+    # @return [String] encoding type
+    def content_encoding
+      enc = get_header('Content-Encoding') and enc.first
+    end
+
+    # Checks if the type of encoding is one of "gzip" or "deflate".
+    def compressed?
+      %w[ gzip deflate ].include? content_encoding
+    end
+
+    # Decodes the compressed body and deletes evidence that it was ever compressed.
+    #
+    # @return self
+    def decompress
+      self.class.decompress(body, content_encoding) { |new_body|
+        self.body = new_body
+        update_content_length_header
+        delete_header('Content-Encoding')
+      }
+      return self
+    end
+
+    begin
+      require 'zlib'
+      require 'stringio'
+      HAVE_ZLIB = true
+    rescue LoadError
+      HAVE_ZLIB = false
+    end
+
+    # Decode string compressed with gzip or deflate
+    def self.decompress(body, type)
+      unless HAVE_ZLIB
+        warn "VCR: cannot decompress response; Zlib not available"
+        return
+      end
+
+      case type
+      when 'gzip'
+        yield Zlib::GzipReader.new(StringIO.new(body), encoding: 'ASCII-8BIT').read
+      when 'deflate'
+        yield Zlib::Inflate.inflate(body)
+      when 'identity', NilClass
+        return
+      else
+        raise "unknown content encoding: #{type}"
+      end
     end
   end
 
