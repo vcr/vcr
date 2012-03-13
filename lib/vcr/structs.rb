@@ -364,6 +364,8 @@ module VCR
     # Decodes the compressed body and deletes evidence that it was ever compressed.
     #
     # @return self
+    # @raise [VCR::Errors::UnknownContentEncodingError] if the content encoding
+    #  is not a known encoding.
     def decompress
       self.class.decompress(body, content_encoding) { |new_body|
         self.body = new_body
@@ -382,6 +384,9 @@ module VCR
     end
 
     # Decode string compressed with gzip or deflate
+    #
+    # @raise [VCR::Errors::UnknownContentEncodingError] if the content encoding
+    #  is not a known encoding.
     def self.decompress(body, type)
       unless HAVE_ZLIB
         warn "VCR: cannot decompress response; Zlib not available"
@@ -396,7 +401,7 @@ module VCR
       when 'identity', NilClass
         return
       else
-        raise "unknown content encoding: #{type}"
+        raise Errors::UnknownContentEncodingError, "unknown content encoding: #{type}"
       end
     end
   end

@@ -2,6 +2,7 @@
 
 require 'yaml'
 require 'vcr/structs'
+require 'vcr/errors'
 require 'zlib'
 require 'stringio'
 
@@ -532,7 +533,7 @@ module VCR
             resp = instance('Hello', 'flabbergaster')
             resp.should_not be_compressed
             expect { resp.decompress }.
-              to raise_error(RuntimeError, 'unknown content encoding: flabbergaster')
+              to raise_error(Errors::UnknownContentEncodingError, 'unknown content encoding: flabbergaster')
           end
 
           it "unzips gzipped response" do
