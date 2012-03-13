@@ -97,7 +97,7 @@ When /^I modify the file "([^"]*)" to replace "([^"]*)" with "([^"]*)"$/ do |fil
 end
 
 When /^I append to file "([^"]*)":$/ do |file_name, content|
-  append_to_file(file_name, content)
+  append_to_file(file_name, "\n" + content)
 end
 
 When /^I set the "([^"]*)" environment variable to "([^"]*)"$/ do |var, value|
@@ -153,7 +153,8 @@ Then /^the file "([^"]*)" should contain a YAML fragment like:$/ do |file_name, 
 
     # Normalize by removing leading and trailing whitespace...
     file_content = file_content.split("\n").map do |line|
-      line.strip
+      # Different versions of psych use single vs. double quotes
+      line.strip.gsub('"', "'")
     end.join("\n")
 
     file_content.should include(fragment)
