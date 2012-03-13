@@ -5,6 +5,7 @@ require 'vcr/structs'
 require 'vcr/errors'
 require 'zlib'
 require 'stringio'
+require 'uri'
 
 shared_examples_for "a header normalizer" do
   let(:instance) do
