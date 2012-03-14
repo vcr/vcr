@@ -34,7 +34,7 @@ Feature: Decode compressed response
 
   Scenario: The option is not set by default
     When I append to file "decompress.rb":
-      """
+      """ruby
       VCR.use_cassette(:decompress) do
         Net::HTTP.get_response('localhost', '/', 7777)
       end
@@ -48,7 +48,7 @@ Feature: Decode compressed response
 
   Scenario: The option is enabled
     When I append to file "decompress.rb":
-      """
+      """ruby
       VCR.use_cassette(:decompress, :decode_compressed_response => true) do
         Net::HTTP.get_response('localhost', '/', 7777)
       end
