@@ -38,7 +38,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'sinatra', '~> 1.3.2'
   s.add_development_dependency 'multi_json', '~> 1.0.3'
   s.add_development_dependency 'json', '~> 1.6.5'
-  s.add_development_dependency 'limited_red', '~> 0.3.8' unless RUBY_VERSION == '1.8.7'
+  s.add_development_dependency 'limited_red', '~> 0.3.9'
   s.add_development_dependency 'simplecov', '~> 0.5.3'
 
   unless RUBY_PLATFORM == 'java'
