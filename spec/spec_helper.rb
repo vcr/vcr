@@ -48,9 +48,11 @@ RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
 
   tmp_dir = File.expand_path('../../tmp/cassette_library_dir', __FILE__)
-  config.before(:each, :skip_vcr_reset => lambda { |v| v != true }) do
-    VCR.reset!
-    VCR.configuration.cassette_library_dir = tmp_dir
+  config.before(:each) do
+    unless example.metadata[:skip_vcr_reset]
+      VCR.reset!
+      VCR.configuration.cassette_library_dir = tmp_dir
+    end
   end
 
   config.after(:each) do
