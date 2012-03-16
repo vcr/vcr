@@ -2,7 +2,7 @@ require 'vcr/util/version_checker'
 require 'vcr/request_handler'
 require 'excon'
 
-VCR::VersionChecker.new('Excon', Excon::VERSION, '0.9.6', '0.10').check_version!
+VCR::VersionChecker.new('Excon', Excon::VERSION, '0.9.6', '0.11').check_version!
 
 module VCR
   class LibraryHooks
@@ -52,7 +52,7 @@ module VCR
           # a raw response, and then the main request (with :mock => true) can
           # handle failure/retry on its own with its set options.
           params.merge(:mock => false, :retry_limit => 0).tap do |p|
-            [:expects, :idempotent, :instrumentor_name, :instrumentor].each do |key|
+            [:expects, :idempotent, :instrumentor_name, :instrumentor, :response_block, :request_block].each do |key|
               p.delete(key)
             end
           end

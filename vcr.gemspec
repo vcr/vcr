@@ -27,11 +27,11 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'shoulda', '~> 2.9.2'
 
   s.add_development_dependency 'fakeweb', '~> 1.3.0'
-  s.add_development_dependency 'webmock', '~> 1.8.0'
+  s.add_development_dependency 'webmock', '~> 1.8.3'
 
   s.add_development_dependency 'faraday', '~> 0.8.0.rc2'
   s.add_development_dependency 'httpclient', '~> 2.1.5.2'
-  s.add_development_dependency 'excon', '>= 0.9.6', '< 1.0'
+  s.add_development_dependency 'excon', '>= 0.11.0', '< 1.0'
 
   s.add_development_dependency 'timecop', '~> 0.3.5'
   s.add_development_dependency 'rack', '~> 1.3.6'
@@ -43,7 +43,7 @@ Gem::Specification.new do |s|
 
   unless RUBY_PLATFORM == 'java'
     s.add_development_dependency 'patron', '~> 0.4.15'
-    s.add_development_dependency 'em-http-request', '1.0.1'
+    s.add_development_dependency 'em-http-request', '~> 1.0.2'
     s.add_development_dependency 'curb', '~> 0.8.0'
     s.add_development_dependency 'typhoeus', '~> 0.3.3'
     s.add_development_dependency 'yajl-ruby', '~> 1.1.0'
