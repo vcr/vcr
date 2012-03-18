@@ -19,12 +19,13 @@ module VCR
     #   VCR.configure do |c|
     #     c.cassette_library_dir = 'spec/cassettes'
     #   end
-    attr_reader :cassette_library_dir
+    def cassette_library_dir
+      VCR.cassette_storage_backends[:file_system].storage_location
+    end
 
-    # Sets the directory to read cassettes from and write cassettes to.
     def cassette_library_dir=(cassette_library_dir)
-      FileUtils.mkdir_p(cassette_library_dir) if cassette_library_dir
-      @cassette_library_dir = cassette_library_dir ? absolute_path_for(cassette_library_dir) : nil
+      VCR.cassette_storage_backends[:file_system].storage_location = 
+          cassette_library_dir
     end
 
     # Default options to apply to every cassette.
@@ -400,7 +401,8 @@ module VCR
         :match_requests_on => RequestMatcherRegistry::DEFAULT_MATCHERS,
         :serialize_with    => :yaml
       }
-
+      @storage_backends = [:file_system]
+      
       self.debug_logger = NullDebugLogger
 
       register_built_in_hooks
@@ -414,6 +416,14 @@ module VCR
       raise ArgumentError.new("#{hook.inspect} is not a supported VCR HTTP library hook.")
     end
 
+    def load_storage_backend(storage_backend)
+      file = "vcr/storage_backends/backends/#{storage_backend}"
+      require file
+    rescue LoadError => e
+      raise ArgumentError.new("#{storage_backend.inspect} is not a supported " +
+                              "VCR storage backend.")
+    end    
+
     def resume_fiber(fiber, response, hook_declaration)
       fiber.resume(response)
     rescue FiberError
@@ -426,10 +436,6 @@ module VCR
       Fiber.new(&block).tap do |fiber|
         fiber.resume(Request::FiberAware.new(request))
       end
-    end
-
-    def absolute_path_for(path)
-      Dir.chdir(path) { Dir.pwd }
     end
 
     def filter_from(tag)
