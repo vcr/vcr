@@ -2,6 +2,10 @@
 
 require 'yaml'
 require 'vcr/structs'
+require 'vcr/errors'
+require 'zlib'
+require 'stringio'
+require 'uri'
 
 shared_examples_for "a header normalizer" do
   let(:instance) do
@@ -493,6 +497,72 @@ module VCR
             expect {
               inst.update_content_length_header
             }.to change { inst.headers[header] }.from(['2']).to(['3'])
+          end
+        end
+      end
+    end
+
+    describe '#decompress' do
+      %w[ content-encoding Content-Encoding ].each do |header|
+        context "for the #{header} header" do
+          define_method :instance do |body, content_encoding|
+            headers = { 'content-type' => 'text',
+                        'content-length' => body.bytesize.to_s }
+            headers[header] = content_encoding if content_encoding
+            described_class.new(VCR::ResponseStatus.new, headers, body)
+          end
+
+          let(:content) { 'The quick brown fox jumps over the lazy dog' }
+
+          it "does nothing when no compression" do
+            resp = instance('Hello', nil)
+            resp.should_not be_compressed
+            expect {
+              resp.decompress.should equal(resp)
+            }.to_not change { resp.headers['content-length'] }
+          end
+
+          it "does nothing when encoding is 'identity'" do
+            resp = instance('Hello', 'identity')
+            resp.should_not be_compressed
+            expect {
+              resp.decompress.should equal(resp)
+            }.to_not change { resp.headers['content-length'] }
+          end
+
+          it "raises error for unrecognized encoding" do
+            resp = instance('Hello', 'flabbergaster')
+            resp.should_not be_compressed
+            expect { resp.decompress }.
+              to raise_error(Errors::UnknownContentEncodingError, 'unknown content encoding: flabbergaster')
+          end
+
+          it "unzips gzipped response" do
+            io = StringIO.new
+            Zlib::GzipWriter.new(io).<<(content).close
+            gzipped = io.string
+            resp = instance(gzipped, 'gzip')
+            resp.should be_compressed
+            expect {
+              resp.decompress.should equal(resp)
+              resp.should_not be_compressed
+              resp.body.should eq(content)
+            }.to change { resp.headers['content-length'] }.
+              from([gzipped.bytesize.to_s]).
+              to([content.bytesize.to_s])
+          end
+
+          it "inflates deflated response" do
+            deflated = Zlib::Deflate.deflate(content)
+            resp = instance(deflated, 'deflate')
+            resp.should be_compressed
+            expect {
+              resp.decompress.should equal(resp)
+              resp.should_not be_compressed
+              resp.body.should eq(content)
+            }.to change { resp.headers['content-length'] }.
+              from([deflated.bytesize.to_s]).
+              to([content.bytesize.to_s])
           end
         end
       end

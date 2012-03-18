@@ -50,7 +50,7 @@ module VCR
       invalid_options = options.keys - [
         :record, :erb, :match_requests_on, :re_record_interval, :tag, :tags,
         :update_content_length_header, :allow_playback_repeats, :exclusive,
-        :serialize_with, :preserve_exact_body_bytes
+        :serialize_with, :preserve_exact_body_bytes, :decode_compressed_response
       ]
 
       if invalid_options.size > 0
@@ -65,6 +65,7 @@ module VCR
       @tags                         = Array(options.fetch(:tags) { options[:tag] })
       @tags                         << :update_content_length_header if options[:update_content_length_header]
       @tags                         << :preserve_exact_body_bytes if options[:preserve_exact_body_bytes]
+      @tags                         << :decode_compressed_response if options[:decode_compressed_response]
       @allow_playback_repeats       = options[:allow_playback_repeats]
       @exclusive                    = options[:exclusive]
       @serializer                   = VCR.cassette_serializers[options[:serialize_with]]

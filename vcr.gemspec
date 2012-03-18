@@ -17,33 +17,33 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 1.8.7'
   s.required_rubygems_version = '>= 1.3.5'
 
-  s.add_development_dependency 'bundler', '~> 1.0.7'
+  s.add_development_dependency 'bundler', '>= 1.0.7'
   s.add_development_dependency 'rake', '~> 0.9.2'
 
   s.add_development_dependency 'cucumber', '~> 1.1.4'
   s.add_development_dependency 'aruba', '~> 0.4.11'
 
-  s.add_development_dependency 'rspec', '~> 2.8.0'
+  s.add_development_dependency 'rspec', '~> 2.9.0.rc2'
   s.add_development_dependency 'shoulda', '~> 2.9.2'
 
   s.add_development_dependency 'fakeweb', '~> 1.3.0'
-  s.add_development_dependency 'webmock', '~> 1.8.0'
+  s.add_development_dependency 'webmock', '~> 1.8.3'
 
   s.add_development_dependency 'faraday', '~> 0.8.0.rc2'
   s.add_development_dependency 'httpclient', '~> 2.1.5.2'
-  s.add_development_dependency 'excon', '>= 0.9.6', '< 1.0'
+  s.add_development_dependency 'excon', '>= 0.11.0', '< 1.0'
 
   s.add_development_dependency 'timecop', '~> 0.3.5'
   s.add_development_dependency 'rack', '~> 1.3.6'
   s.add_development_dependency 'sinatra', '~> 1.3.2'
   s.add_development_dependency 'multi_json', '~> 1.0.3'
   s.add_development_dependency 'json', '~> 1.6.5'
-  s.add_development_dependency 'limited_red', '~> 0.3.8'
+  s.add_development_dependency 'limited_red', '~> 0.3.9'
   s.add_development_dependency 'simplecov', '~> 0.5.3'
 
   unless RUBY_PLATFORM == 'java'
     s.add_development_dependency 'patron', '~> 0.4.15'
-    s.add_development_dependency 'em-http-request', '~> 1.0.1'
+    s.add_development_dependency 'em-http-request', '~> 1.0.2'
     s.add_development_dependency 'curb', '~> 0.8.0'
     s.add_development_dependency 'typhoeus', '~> 0.3.3'
     s.add_development_dependency 'yajl-ruby', '~> 1.1.0'

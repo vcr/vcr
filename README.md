@@ -142,30 +142,37 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Ben Hutton](http://github.com/benhutton)
 * [Bradley Isotope](https://github.com/bradleyisotope)
 * [Carlos Kirkconnell](https://github.com/kirkconnell)
+* [Chad Jolly](https://github.com/cjolly)
 * [Eric Allam](http://github.com/rubymaverick)
 * [Flaviu Simihaian](https://github.com/closedbracket)
 * [Jeff Pollard](https://github.com/Fluxx)
 * [Justin Smestad](https://github.com/jsmestad)
 * [Karl Baum](https://github.com/kbaum)
 * [Michael Lavrisha](https://github.com/vrish88)
+* [Mislav Marohnić](https://github.com/mislav)
 * [Nathaniel Bibler](https://github.com/nbibler)
 * [Oliver Searle-Barnes](https://github.com/opsb)
+* [Omer Rauchwerger](https://github.com/rauchy)
 * [Paco Guzmán](https://github.com/pacoguzman)
 * [Ryan Bates](https://github.com/ryanb)
 * [Sathya Sekaran](https://github.com/sfsekaran)
 * [Wesley Beary](https://github.com/geemus)
 
-## Similar Libraries
+## Ports in other languages
 
 * [Betamax](https://github.com/robfletcher/betamax) (Groovy)
 * [VCR.js](https://github.com/elcuervo/vcr.js) (JavaScript)
 * [TapeDeck.js](https://github.com/EndangeredMassa/TapeDeck.js) (JavaScript)
 * [Mimic](https://github.com/acoulton/mimic) (PHP/Kohana)
-* [Ephemeral Response](https://github.com/sandro/ephemeral_response) (Ruby)
-* [Net::HTTP Spy](http://github.com/martinbtt/net-http-spy) (Ruby)
-* [NetRecorder](https://github.com/chrisyoung/netrecorder) (Ruby)
-* [Stale Fish](https://github.com/jsmestad/stale_fish) (Ruby)
-* [WebFixtures](http://github.com/trydionel/web_fixtures) (Ruby)
+
+## Similar Libraries in Ruby
+
+* [Ephemeral Response](https://github.com/sandro/ephemeral_response)
+* [Net::HTTP Spy](http://github.com/martinbtt/net-http-spy)
+* [NetRecorder](https://github.com/chrisyoung/netrecorder)
+* [Stale Fish](https://github.com/jsmestad/stale_fish)
+* [WebFixtures](http://github.com/trydionel/web_fixtures)
+* [REST-assured](https://github.com/BBC/REST-assured)
 
 ## Copyright
 

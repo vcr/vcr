@@ -32,9 +32,9 @@ describe "Excon hook", :with_monkey_patches => :excon do
         chunks = []
 
         VCR.use_cassette('excon_streaming', :record => :once) do
-          Excon.get("http://localhost:#{VCR::SinatraApp.port}/foo") do |chunk, remaining_bytes, total_bytes|
+          Excon.get "http://localhost:#{VCR::SinatraApp.port}/foo", :response_block => lambda { |chunk, remaining_bytes, total_bytes|
             chunks << chunk
-          end
+          }
         end
 
         chunks.join

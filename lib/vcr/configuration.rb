@@ -448,6 +448,10 @@ module VCR
         interaction.response.update_content_length_header
       end
 
+      before_record(:decode_compressed_response) do |interaction|
+        interaction.response.decompress if interaction.response.compressed?
+      end
+
       preserve_exact_body_bytes do |http_message, cassette|
         cassette && cassette.tags.include?(:preserve_exact_body_bytes)
       end

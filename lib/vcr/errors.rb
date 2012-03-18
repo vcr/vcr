@@ -40,6 +40,11 @@ module VCR
     # @see VCR::Configuration#around_http_request
     class NotSupportedError          < Error; end
 
+    # Error raised when you ask VCR to decode a compressed response
+    # body but the content encoding isn't one of the known ones.
+    # @see VCR::Response#decompress
+    class UnknownContentEncodingError < Error; end
+
     # Error raised when an HTTP request is made that VCR is unable to handle.
     # @note VCR will raise this to force you to do something about the
     #  HTTP request. The idea is that you want to handle _every_ HTTP

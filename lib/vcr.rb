@@ -75,6 +75,9 @@ module VCR
   # @option options :update_content_length_header [Boolean] Whether or
   #  not to overwrite the Content-Length header of the responses to
   #  match the length of the response body. Defaults to false.
+  # @option options :decode_compressed_response [Boolean] Whether or
+  #  not to decode compressed responses before recording the cassette.
+  #  This makes the cassette more human readable. Defaults to false.
   # @option options :allow_playback_repeats [Boolean] Whether or not to
   #  allow a single HTTP interaction to be played back multiple times.
   #  Defaults to false.
