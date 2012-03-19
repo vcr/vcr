@@ -549,7 +549,11 @@ module VCR
 
           it "unzips gzipped response" do
             io = StringIO.new
-            Zlib::GzipWriter.new(io).<<(content).close
+
+            writer = Zlib::GzipWriter.new(io)
+            writer << content
+            writer.close
+
             gzipped = io.string
             resp = instance(gzipped, 'gzip')
             resp.should be_compressed
