@@ -162,6 +162,16 @@ module VCR
           i.response.body.encoding.name.should eq("ISO-8859-1")
         end
 
+        it 'does not attempt to encode the string when there is no encoding given (i.e. if the cassette was recorded on ruby 1.8)' do
+          string = 'foo'
+          string.force_encoding("ISO-8859-1")
+          hash['request']['body']  = { 'string' => string }
+
+          i = HTTPInteraction.from_hash(hash)
+          i.request.body.should eq('foo')
+          i.request.body.encoding.name.should eq("ISO-8859-1")
+        end
+
         context 'when the string cannot be encoded as the original encoding' do
           before do
             Request.stub(:warn)

@@ -32,7 +32,7 @@ module VCR
           end
 
           def try_encode_string(string, encoding)
-            return string if string.encoding.name == encoding
+            return string if encoding.nil? || string.encoding.name == encoding
             string.encode(encoding)
           rescue EncodingError => e
             struct_type = name.split('::').last.downcase
