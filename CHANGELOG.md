@@ -13,6 +13,13 @@
   recording the cassette, in order to make it more human readable.
   Thanks to [Mislav Marohnić](https://github.com/mislav) for the
   idea and implementation.
+* Fix encoding logic to not attempt to encode the request or response
+  body on deserialization if there is no encoding specified. This should
+  allow cassettes recorded on 1.8 to work on 1.9. Thanks to
+  [Kevin Menard](https://github.com/nirvdrum) for reporting the bug.
+* Fix Excon adapter to fix a bug with Excon 0.11 and greater. When you
+  passed a block to an excon request, the response body would not be
+  recorded.
 
 ## 2.0.0 (March 2, 2012)
 
