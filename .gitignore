@@ -23,6 +23,8 @@ pkg
 ## PROJECT::SPECIFIC
 features/fixtures/vcr_cassettes/**/temp/
 *.rbc
+.rbc
+.rbx
 .bundle
 tmp
 rerun.txt
