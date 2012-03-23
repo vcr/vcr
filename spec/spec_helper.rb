@@ -1,20 +1,23 @@
 require 'rubygems'
-require 'simplecov'
 
-SimpleCov.start do
-  add_filter "/spec"
-  add_filter "/features"
+if RUBY_VERSION =~ /1.9/ && RUBY_ENGINE == 'ruby'
+  require 'simplecov'
 
-  # internet_connection mostly contains logic copied from the ruby 1.8.7
-  # stdlib for which I haven't written tests.
-  add_filter "internet_connection"
-end
+  SimpleCov.start do
+    add_filter "/spec"
+    add_filter "/features"
 
-SimpleCov.at_exit do
-  File.open(File.join(SimpleCov.coverage_path, 'coverage_percent.txt'), 'w') do |f|
-    f.write SimpleCov.result.covered_percent
+    # internet_connection mostly contains logic copied from the ruby 1.8.7
+    # stdlib for which I haven't written tests.
+    add_filter "internet_connection"
   end
-  SimpleCov.result.format!
+
+  SimpleCov.at_exit do
+    File.open(File.join(SimpleCov.coverage_path, 'coverage_percent.txt'), 'w') do |f|
+      f.write SimpleCov.result.covered_percent
+    end
+    SimpleCov.result.format!
+  end
 end
 
 using_git = File.exist?(File.expand_path('../../.git/', __FILE__))
