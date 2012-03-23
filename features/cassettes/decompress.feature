@@ -18,7 +18,11 @@ Feature: Decode compressed response
         get('/') {
           content = 'The quick brown fox jumps over the lazy dog'
           io = StringIO.new
-          Zlib::GzipWriter.new(io).<<(content).close
+
+          writer = Zlib::GzipWriter.new(io)
+          writer << content
+          writer.close
+
           headers['Content-Encoding'] = 'gzip'
           io.string
         }
