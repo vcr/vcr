@@ -172,6 +172,19 @@ module VCR
           i.request.body.encoding.name.should eq("ISO-8859-1")
         end
 
+        it 'force encodes to ASCII-8BIT (since it just means "no encoding" or binary)' do
+          string = "\u00f6"
+          string.encode("UTF-8")
+          string.should be_valid_encoding
+          hash['request']['body']  = { 'string' => string, 'encoding' => 'ASCII-8BIT' }
+
+          Request.should_not_receive(:warn)
+          i = HTTPInteraction.from_hash(hash)
+          i.request.body.should eq(string)
+          i.request.body.bytes.to_a.should eq(string.bytes.to_a)
+          i.request.body.encoding.name.should eq("ASCII-8BIT")
+        end
+
         context 'when the string cannot be encoded as the original encoding' do
           before do
             Request.stub(:warn)
