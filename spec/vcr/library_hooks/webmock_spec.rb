@@ -5,8 +5,8 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
     ::WebMock.reset!
   end
 
-  def disable_real_connections
-    ::WebMock.disable_net_connect!
+  def disable_real_connections(options = {})
+    ::WebMock.disable_net_connect!(options)
     ::WebMock::NetConnectNotAllowedError
   end
 
@@ -25,6 +25,38 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
       if lib == 'net/http'
         def normalize_request_headers(headers)
           headers.merge(DEFAULT_REQUEST_HEADERS)
+        end
+      end
+    end
+
+    unless adapter_module = HTTP_LIBRARY_ADAPTERS[lib]
+      raise ArgumentError.new("No http library adapter module could be found for #{lib}")
+    end
+
+    http_lib_unsupported = (RUBY_INTERPRETER != :mri && library =~ /(typhoeus|curb|patron|em-http)/)
+
+    describe "using #{adapter_module.http_library_name}", :unless => http_lib_unsupported do
+      include adapter_module
+
+      let!(:request_url) { "http://localhost:#{VCR::SinatraApp.port}/foo" }
+
+      context 'when real connections are disabled and VCR is turned off' do
+        it 'can allow connections to localhost' do
+          VCR.turn_off!
+          unexpected_error = disable_real_connections(:allow_localhost => true)
+
+          expect {
+            make_http_request(:get, request_url)
+          }.to_not raise_error(unexpected_error)
+        end
+
+        it 'can allow connections to matching urls' do
+          VCR.turn_off!
+          unexpected_error = disable_real_connections(:allow => /foo/)
+
+          expect {
+            make_http_request(:get, request_url)
+          }.to_not raise_error(unexpected_error)
         end
       end
     end
