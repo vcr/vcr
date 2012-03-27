@@ -99,7 +99,7 @@ module WebMock
     # ensure HTTP requests are always allowed; VCR takes care of disallowing
     # them at the appropriate times in its hook
     def net_connect_allowed_with_vcr?(*args)
-      VCR.turned_on? ? true : net_connect_allowed_without_vcr?
+      VCR.turned_on? ? true : net_connect_allowed_without_vcr?(*args)
     end
 
     alias net_connect_allowed_without_vcr? net_connect_allowed?
