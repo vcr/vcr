@@ -83,7 +83,7 @@ module VCR
           env.update :status => stubbed_response.status.code, :body => stubbed_response.body
 
           faraday_response = ::Faraday::Response.new
-          faraday_response.finish(env) unless env[:parallel_manager]
+          faraday_response.finish(env)
           env[:response] = faraday_response
         end
 
