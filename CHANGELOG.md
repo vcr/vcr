@@ -1,6 +1,17 @@
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0...2-0-stable)
+
+* Fix encoding logic to not attempt to encode the request or response
+  body on deserialization if there is no encoding specified. This should
+  allow cassettes recorded on 1.8 to work on 1.9. Thanks to
+  [Kevin Menard](https://github.com/nirvdrum) for reporting the bug.
+* Fix Excon adapter to fix a bug with Excon 0.11 and greater. When you
+  passed a block to an excon request, the response body would not be
+  recorded.
+* Fix Faraday middleware so that it plays back parallel requests
+  properly. Thanks to [Dave Weiser](https://github.com/davidann) for
+  reporting this bug.
 
 ## 2.0.0 (March 2, 2012)
 
