@@ -17,6 +17,7 @@ branches:
     - master
     - 1-x-stable
     - travis-testing
+    - 2-0-stable
 matrix:
   allow_failures:
     - rvm: jruby-19mode
