@@ -11,7 +11,6 @@ describe VCR::Middleware::Faraday do
 
   context 'when making parallel requests' do
     include VCRStubHelpers
-    let(:parallel_manager)   { ::Faraday::Adapter::Typhoeus.setup_parallel_manager }
     let(:connection)         { ::Faraday.new { |b| b.adapter :typhoeus } }
     let(:request_url) { "http://localhost:#{VCR::SinatraApp.port}/" }
 
@@ -20,7 +19,7 @@ describe VCR::Middleware::Faraday do
         responses = []
 
         VCR.use_cassette("multiple_parallel") do
-          connection.in_parallel(parallel_manager) do
+          connection.in_parallel do
             responses << connection.get(request_url)
             responses << connection.get(request_url)
           end
@@ -36,7 +35,7 @@ describe VCR::Middleware::Faraday do
 
     shared_examples_for "exclusive library hook" do
       def make_request
-        connection.in_parallel(parallel_manager) { connection.get(request_url) }
+        connection.in_parallel { connection.get(request_url) }
       end
 
       it 'makes the faraday middleware exclusively enabled for the duration of the request' do
@@ -78,7 +77,7 @@ describe VCR::Middleware::Faraday do
         undef make_request
         def make_request
           expect {
-            connection.in_parallel(parallel_manager) { connection.get(request_url) }
+            connection.in_parallel { connection.get(request_url) }
           }.to raise_error(VCR::Errors::UnhandledHTTPRequestError)
         end
       end
@@ -90,7 +89,7 @@ describe VCR::Middleware::Faraday do
       undef make_request
       def make_request(disabled = false)
         response = nil
-        connection.in_parallel(parallel_manager) do
+        connection.in_parallel do
           response = connection.get(request_url)
         end
         response
