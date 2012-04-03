@@ -95,6 +95,12 @@ describe VCR do
       VCR.should_not_receive(:eject_cassette)
       expect { VCR.use_cassette(:test) { } }.to raise_error(StandardError, 'Boom!')
     end
+
+    it 'raises a helpful error if no block is given' do
+      expect {
+        VCR.use_cassette(:test)
+      }.to raise_error(/requires a block/)
+    end
   end
 
   describe '.http_interactions' do
