@@ -144,6 +144,12 @@ module VCR
   # @see #insert_cassette
   # @see #eject_cassette
   def use_cassette(name, options = {}, &block)
+    unless block
+      raise ArgumentError, "`VCR.use_cassette` requires a block. " +
+                           "If you cannot wrap your code in a block, use " +
+                           "`VCR.insert_cassette` / `VCR.eject_cassette` instead."
+    end
+
     cassette = insert_cassette(name, options)
 
     begin
