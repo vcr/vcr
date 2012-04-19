@@ -114,6 +114,7 @@ Note that as of VCR 2, 1.8.6 and 1.9.1 are not supported.
   guide for instructions on running the specs and features.
 * Documentation is generated with [YARD](http://yardoc.org/) ([cheat sheet](http://cheat.errtheblog.com/s/yard/)).
   To generate while developing:
+* Code quality metrics are checked by [Code Climate](https://codeclimate.com/github/myronmarston/vcr).
 
 ```
 yard server --reload
