@@ -29,7 +29,7 @@ module VCR
         # @return [String] the JSON string
         def serialize(hash)
           handle_encoding_errors do
-            MultiJson.encode(hash)
+            MultiJson.dump(hash)
           end
         end
 
@@ -39,7 +39,7 @@ module VCR
         # @param [Hash] hash the deserialized object
         def deserialize(string)
           handle_encoding_errors do
-            MultiJson.decode(string)
+            MultiJson.load(string)
           end
         end
       end

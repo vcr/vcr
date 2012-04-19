@@ -76,7 +76,7 @@ module VCR
 
         engines.each do |engine, error|
           context "when MultiJson is configured to use #{engine.inspect}" do
-            before { MultiJson.engine = engine }
+            before { MultiJson.use(engine) }
             it_behaves_like "encoding error handling", :json, error do
               let(:string) { "\xFA" }
             end

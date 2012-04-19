@@ -36,10 +36,10 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'timecop', '~> 0.3.5'
   s.add_development_dependency 'rack', '~> 1.3.6'
   s.add_development_dependency 'sinatra', '~> 1.3.2'
-  s.add_development_dependency 'multi_json', '~> 1.0.3'
+  s.add_development_dependency 'multi_json', '~> 1.3.2'
   s.add_development_dependency 'json', '~> 1.6.5'
   s.add_development_dependency 'limited_red', '~> 0.3.9'
-  s.add_development_dependency 'simplecov', '~> 0.5.3'
+  s.add_development_dependency 'simplecov', '~> 0.6.1'
 
   unless RUBY_PLATFORM == 'java'
     s.add_development_dependency 'patron', '~> 0.4.15'
