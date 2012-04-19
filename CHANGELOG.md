@@ -1,6 +1,6 @@
-## In git
+## 2.0.1 (March 30, 2012)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0...2-0-stable)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0...v2.0.1)
 
 * Fix encoding logic to not attempt to encode the request or response
   body on deserialization if there is no encoding specified. This should
