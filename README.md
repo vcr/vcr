@@ -112,15 +112,13 @@ Note that as of VCR 2, 1.8.6 and 1.9.1 are not supported.
   and create a topic branch for every separate change you make.
 * See the [Contributing](https://github.com/myronmarston/vcr/blob/master/CONTRIBUTING.md)
   guide for instructions on running the specs and features.
+* Code quality metrics are checked by [Code Climate](https://codeclimate.com/github/myronmarston/vcr).
 * Documentation is generated with [YARD](http://yardoc.org/) ([cheat sheet](http://cheat.errtheblog.com/s/yard/)).
   To generate while developing:
-* Code quality metrics are checked by [Code Climate](https://codeclimate.com/github/myronmarston/vcr).
 
 ```
 yard server --reload
 ```
-
-If you find VCR useful, please recommend me on [working with rails](http://workingwithrails.com/person/16590-myron-marston).
 
 ## Thanks
 
