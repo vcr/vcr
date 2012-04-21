@@ -10,7 +10,6 @@ module VCR
       def [](name)
         @storage_backends.fetch(name) do |_|
           @storage_backends[name] = case name
-            when :db then Db
             when :file_system then FileSystem
             else raise ArgumentError.new("The requested VCR cassette storage " +
                                          "backend (#{name.inspect}) is not " +
