@@ -181,6 +181,13 @@ describe VCR do
     end
   end
 
+  describe ".cassette_storage_backends" do
+    it "always returns the same memoized Cassette::StorageBackends instance" do
+      VCR.cassette_storage_backends.should be_a(VCR::Cassette::StorageBackends)
+      VCR.cassette_storage_backends.should be(VCR.cassette_storage_backends)
+    end
+  end
+
   describe '.configuration' do
     it 'returns the configuration object' do
       VCR.configuration.should be_a(VCR::Configuration)

@@ -20,8 +20,10 @@ module VCR
 
       def []=(name, value)
         if @storage_backends.has_key?(name)
-          warn 'backend named #{name.inspect} is being overwritten.'
+          warn "WARNING: There is already a VCR cassette storage backend " +
+               "registered for #{name.inspect}. Overriding it."
         end
+
         @storage_backends[name] = value
       end
 
