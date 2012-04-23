@@ -1,6 +1,14 @@
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.1...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.1.0...master)
+
+* Fix `:use_scenario_name` cucumber tag option so that it works properly
+  with multiple scenarios. Thanks to [Brent Snook](https://github.com/brentsnook)
+  for reporting this bug.
+
+## 2.1.0 (April 19, 2012)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.1...v.2.1.0)
 
 * Add new `:use_scenario_name` option to the cucumber tags API. This
   allows you to use a generic tag (such as `@vcr`) and have the
