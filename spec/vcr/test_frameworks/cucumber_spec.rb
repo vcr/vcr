@@ -4,8 +4,12 @@ describe VCR::CucumberTags do
   subject { described_class.new(self) }
   let(:before_blocks_for_tags) { {} }
   let(:after_blocks_for_tags) { {} }
-  let(:current_scenario) { stub(:name => "My scenario name",
-                                :feature => stub(:name => "My feature name")) }
+
+  def scenario(name)
+    stub(:name => name, :feature => stub(:name => "My feature name"))
+  end
+
+  let(:current_scenario) { scenario "My scenario name" }
 
   # define our own Before/After so we can test this in isolation from cucumber's implementation.
   def Before(tag, &block)
@@ -16,12 +20,12 @@ describe VCR::CucumberTags do
     after_blocks_for_tags[tag.sub('@', '')] = block
   end
 
-  def test_tag(cassette_attribute, tag, expected_value)
+  def test_tag(cassette_attribute, tag, expected_value, scenario=current_scenario)
     VCR.current_cassette.should be_nil
 
-    before_blocks_for_tags[tag].call(current_scenario)
+    before_blocks_for_tags[tag].call(scenario)
     VCR.current_cassette.send(cassette_attribute).should eq(expected_value)
-    after_blocks_for_tags[tag].call(current_scenario)
+    after_blocks_for_tags[tag].call(scenario)
 
     VCR.current_cassette.should be_nil
   end
@@ -72,6 +76,13 @@ describe VCR::CucumberTags do
           original_options.should have(2).items
           original_options[:use_scenario_name].should eq(true)
           original_options[:record].should eq(:none)
+        end
+
+        it "works properly when multiple scenarios use the tag" do
+          subject.send(tag_method, 'tag1', :use_scenario_name => true)
+
+          test_tag(:name, 'tag1', 'My feature name/Foo', scenario("Foo"))
+          test_tag(:name, 'tag1', 'My feature name/Bar', scenario("Bar"))
         end
       end
     end
