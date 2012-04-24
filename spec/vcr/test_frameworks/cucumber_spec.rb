@@ -6,7 +6,7 @@ describe VCR::CucumberTags do
   let(:after_blocks_for_tags) { {} }
 
   def scenario(name)
-    stub(:name => name, :feature => stub(:name => "My feature name"))
+    stub(:name => name, :feature => stub(:name => "My feature name\nThe preamble text is not included"))
   end
 
   let(:current_scenario) { scenario "My scenario name" }

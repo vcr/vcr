@@ -38,7 +38,7 @@ module VCR
           options = original_options.dup
 
           cassette_name = if options.delete(:use_scenario_name)
-            "#{scenario.feature.name}/#{scenario.name}"
+            "#{scenario.feature.name.split("\n").first}/#{scenario.name}"
           else
             "cucumber_tags/#{tag_name.gsub(/\A@/, '')}"
           end
