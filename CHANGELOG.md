@@ -5,6 +5,11 @@
 * Fix `:use_scenario_name` cucumber tag option so that it works properly
   with multiple scenarios. Thanks to [Brent Snook](https://github.com/brentsnook)
   for reporting this bug.
+* Fix `:use_scenario_name` cucumber tag option so that it only uses the
+  first line of the scenario feature name. Cucumber includes all of the
+  pre-amble text in the feature name but that can create a ridiculously
+  long cassette name. Thanks to [Brent Snook](https://github.com/brentsnook)
+  for reporting this bug.
 
 ## 2.1.0 (April 19, 2012)
 
