@@ -415,14 +415,6 @@ module VCR
       raise ArgumentError.new("#{hook.inspect} is not a supported VCR HTTP library hook.")
     end
 
-    def load_storage_backend(storage_backend)
-      file = "vcr/storage_backends/backends/#{storage_backend}"
-      require file
-    rescue LoadError => e
-      raise ArgumentError.new("#{storage_backend.inspect} is not a supported " +
-                              "VCR storage backend.")
-    end
-
     def resume_fiber(fiber, response, hook_declaration)
       fiber.resume(response)
     rescue FiberError
