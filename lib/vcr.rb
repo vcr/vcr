@@ -3,6 +3,7 @@ require 'vcr/util/variable_args_block_caller'
 
 require 'vcr/cassette'
 require 'vcr/cassette/serializers'
+require 'vcr/cassette/storage_backends'
 require 'vcr/configuration'
 require 'vcr/deprecations'
 require 'vcr/errors'
@@ -290,6 +291,11 @@ module VCR
   # @private
   def cassette_serializers
     @cassette_serializers ||= Cassette::Serializers.new
+  end
+
+  # @private
+  def cassette_storage_backends
+    @storage_backends || Cassette::StorageBackends.new
   end
 
   # @private
