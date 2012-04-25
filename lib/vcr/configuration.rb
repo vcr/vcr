@@ -401,7 +401,6 @@ module VCR
         :match_requests_on => RequestMatcherRegistry::DEFAULT_MATCHERS,
         :serialize_with    => :yaml
       }
-      @storage_backends = [:file_system]
 
       self.debug_logger = NullDebugLogger
 
