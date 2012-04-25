@@ -1,6 +1,10 @@
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.1.0...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.1.1...master)
+
+## 2.1.1 (April 24, 2012)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.1.0...v2.1.1)
 
 * Fix `:use_scenario_name` cucumber tag option so that it works properly
   with multiple scenarios. Thanks to [Brent Snook](https://github.com/brentsnook)
