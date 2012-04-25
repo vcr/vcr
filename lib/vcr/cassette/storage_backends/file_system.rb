@@ -6,9 +6,7 @@ module VCR
       module FileSystem
         extend self
 
-        def storage_location
-          @storage_location
-        end
+        attr_reader :storage_location
 
         # User can set where to store the files
         def storage_location=(dir)
@@ -16,13 +14,11 @@ module VCR
           @storage_location = dir ? absolute_path_for(dir) : nil
         end
 
-        #####################################################################
-        private
+      private
 
         def absolute_path_for(path)
           Dir.chdir(path) { Dir.pwd }
         end
-
       end
     end
   end
