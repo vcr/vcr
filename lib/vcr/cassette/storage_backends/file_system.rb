@@ -11,11 +11,9 @@ module VCR
         end
 
         # User can set where to store the files
-        def storage_location=(cassette_library_dir)
-          FileUtils.mkdir_p(cassette_library_dir) if cassette_library_dir
-          @storage_location = cassette_library_dir ?
-              absolute_path_for(cassette_library_dir) :
-              nil
+        def storage_location=(dir)
+          FileUtils.mkdir_p(dir) if dir
+          @storage_location = dir ? absolute_path_for(dir) : nil
         end
 
         #####################################################################

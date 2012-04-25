@@ -23,9 +23,8 @@ module VCR
       VCR.cassette_storage_backends[:file_system].storage_location
     end
 
-    def cassette_library_dir=(cassette_library_dir)
-      VCR.cassette_storage_backends[:file_system].storage_location =
-          cassette_library_dir
+    def cassette_library_dir=(dir)
+      VCR.cassette_storage_backends[:file_system].storage_location = dir
     end
 
     # Default options to apply to every cassette.
