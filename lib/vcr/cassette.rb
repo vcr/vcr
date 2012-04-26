@@ -1,6 +1,3 @@
-require 'fileutils'
-require 'erb'
-
 require 'vcr/cassette/http_interaction_list'
 require 'vcr/cassette/erb_renderer'
 require 'vcr/cassette/serializers'
@@ -69,6 +66,7 @@ module VCR
       @allow_playback_repeats       = options[:allow_playback_repeats]
       @exclusive                    = options[:exclusive]
       @serializer                   = VCR.cassette_serializers[options[:serialize_with]]
+      @storage_backend              = VCR.cassette_storage_backends[:file_system]
       @record_mode                  = :all if should_re_record?
       @parent_list                  = @exclusive ? HTTPInteractionList::NullList : VCR.http_interactions
 
@@ -108,15 +106,14 @@ module VCR
     # @return [String] The file for this cassette.
     # @note VCR will take care of sanitizing the cassette name to make it a valid file name.
     def file
-      return nil unless VCR.configuration.cassette_library_dir
-      File.join(VCR.configuration.cassette_library_dir, "#{sanitized_name}.#{@serializer.file_extension}")
+      StorageBackends::FileSystem.absolute_path_to_file(storage_key)
     end
 
     # @return [Boolean] Whether or not the cassette is recording.
     def recording?
       case record_mode
         when :none; false
-        when :once; file.nil? || !File.size?(file)
+        when :once; raw_yaml_content.to_s == ''
         else true
       end
     end
@@ -132,7 +129,7 @@ module VCR
   private
 
     def previously_recorded_interactions
-      @previously_recorded_interactions ||= if file && File.size?(file)
+      @previously_recorded_interactions ||= if raw_yaml_content && !raw_yaml_content.empty?
         deserialized_hash['http_interactions'].map { |h| HTTPInteraction.from_hash(h) }.tap do |interactions|
           invoke_hook(:before_playback, interactions)
 
@@ -149,6 +146,10 @@ module VCR
       name.to_s.gsub(/[^\w\-\/]+/, '_')
     end
 
+    def storage_key
+      @storage_key ||= "#{sanitized_name}.#{@serializer.file_extension}"
+    end
+
     def raise_error_unless_valid_record_mode
       unless VALID_RECORD_MODES.include?(record_mode)
         raise ArgumentError.new("#{record_mode} is not a valid cassette record mode.  Valid modes are: #{VALID_RECORD_MODES.inspect}")
@@ -159,7 +160,6 @@ module VCR
       return false unless @re_record_interval
       previously_recorded_at = earliest_interaction_recorded_at
       return false unless previously_recorded_at
-      return false unless File.exist?(file)
 
       now = Time.now
 
@@ -190,7 +190,7 @@ module VCR
     end
 
     def raw_yaml_content
-      VCR::Cassette::ERBRenderer.new(File.read(file), erb).render
+      @raw_yaml_content ||= VCR::Cassette::ERBRenderer.new(@storage_backend[storage_key], erb).render
     end
 
     def merged_interactions
@@ -218,9 +218,7 @@ module VCR
       hash = serializable_hash
       return if hash["http_interactions"].none?
 
-      directory = File.dirname(file)
-      FileUtils.mkdir_p directory unless File.exist?(directory)
-      File.open(file, 'w') { |f| f.write @serializer.serialize(hash) }
+      @storage_backend[storage_key] = @serializer.serialize(hash)
     end
 
     def invoke_hook(type, interactions)

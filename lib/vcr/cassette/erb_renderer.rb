@@ -1,3 +1,5 @@
+require 'erb'
+
 module VCR
   class Cassette
     # @private

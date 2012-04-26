@@ -144,14 +144,11 @@ describe VCR::Cassette do
   end
 
   describe "reading the file from disk" do
-    before(:each) do
-      File.stub(:size? => true)
-      File.stub(:read) { empty_cassette_yaml }
-    end
-
     let(:empty_cassette_yaml) { YAML.dump("http_interactions" => []) }
 
     it 'optionally renders the file as ERB using the ERBRenderer' do
+      VCR::Cassette::StorageBackends::FileSystem.stub(:[] => empty_cassette_yaml)
+
       VCR::Cassette::ERBRenderer.should_receive(:new).with(
         empty_cassette_yaml, anything
       ).and_return(mock('renderer', :render => empty_cassette_yaml))
@@ -183,7 +180,6 @@ describe VCR::Cassette do
     end
 
     it 'raises a friendly error when the cassette file is in the old VCR 1.x format' do
-      File.unstub(:read)
       VCR.configuration.cassette_library_dir = 'spec/fixtures/cassette_spec'
       expect {
         VCR::Cassette.new('1_x_cassette').http_interactions
