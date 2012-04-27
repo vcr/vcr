@@ -190,7 +190,7 @@ module VCR
     end
 
     def raw_cassette_bytes
-      @raw_cassette_bytes ||= VCR::Cassette::ERBRenderer.new(@storage_backend[storage_key], erb).render
+      @raw_cassette_bytes ||= VCR::Cassette::ERBRenderer.new(@storage_backend[storage_key], erb, name).render
     end
 
     def merged_interactions

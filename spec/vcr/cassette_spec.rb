@@ -150,7 +150,7 @@ describe VCR::Cassette do
       VCR::Cassette::StorageBackends::FileSystem.stub(:[] => empty_cassette_yaml)
 
       VCR::Cassette::ERBRenderer.should_receive(:new).with(
-        empty_cassette_yaml, anything
+        empty_cassette_yaml, anything, "foo"
       ).and_return(mock('renderer', :render => empty_cassette_yaml))
 
       VCR::Cassette.new('foo', :record => :new_episodes).http_interactions
@@ -162,7 +162,7 @@ describe VCR::Cassette do
         VCR.configuration.default_cassette_options = { :erb => true }
 
         VCR::Cassette::ERBRenderer.should_receive(:new).with(
-          anything, erb
+          anything, erb, anything
         ).and_return(mock('renderer', :render => empty_cassette_yaml))
 
         VCR::Cassette.new('foo', :record => :new_episodes, :erb => erb).http_interactions
@@ -172,7 +172,7 @@ describe VCR::Cassette do
         VCR.configuration.default_cassette_options = { :erb => erb }
 
         VCR::Cassette::ERBRenderer.should_receive(:new).with(
-          anything, erb
+          anything, erb, anything
         ).and_return(mock('renderer', :render => empty_cassette_yaml))
 
         VCR::Cassette.new('foo', :record => :new_episodes).http_interactions
