@@ -1,4 +1,3 @@
-require 'fileutils'
 require 'vcr/util/hooks'
 
 module VCR
