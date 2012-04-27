@@ -29,13 +29,19 @@ module VCR
 
         def absolute_path_to_file(file_name)
           return nil unless storage_location
-          File.join(storage_location, file_name)
+          File.join(storage_location, sanitized_file_name_from(file_name))
         end
 
       private
 
         def absolute_path_for(path)
           Dir.chdir(path) { Dir.pwd }
+        end
+
+        def sanitized_file_name_from(file_name)
+          parts = file_name.to_s.split('.')
+          file_extension = '.' + parts.pop if parts.size > 1
+          parts.join('.').gsub(/[^\w\-\/]+/, '_') + file_extension.to_s
         end
       end
     end

@@ -142,12 +142,8 @@ module VCR
       end
     end
 
-    def sanitized_name
-      name.to_s.gsub(/[^\w\-\/]+/, '_')
-    end
-
     def storage_key
-      @storage_key ||= "#{sanitized_name}.#{@serializer.file_extension}"
+      @storage_key ||= [name, @serializer.file_extension].join('.')
     end
 
     def raise_error_unless_valid_record_mode

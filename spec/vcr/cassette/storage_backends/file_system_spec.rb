@@ -48,6 +48,14 @@ module VCR
             FileSystem.storage_location = nil
             FileSystem.absolute_path_to_file("bar/bazz.json").should be_nil
           end
+
+          it "sanitizes the file name" do
+            expected = File.join(FileSystem.storage_location, "_t_i-t_1_2_f_n.json")
+            FileSystem.absolute_path_to_file("\nt \t!  i-t_1.2_f n.json").should eq(expected)
+
+            expected = File.join(FileSystem.storage_location, "a_1/b")
+            FileSystem.absolute_path_to_file("a 1/b").should eq(expected)
+          end
         end
       end
     end
