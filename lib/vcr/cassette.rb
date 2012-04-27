@@ -113,7 +113,7 @@ module VCR
     def recording?
       case record_mode
         when :none; false
-        when :once; raw_yaml_content.to_s == ''
+        when :once; raw_cassette_bytes.to_s.empty?
         else true
       end
     end
@@ -129,7 +129,7 @@ module VCR
   private
 
     def previously_recorded_interactions
-      @previously_recorded_interactions ||= if raw_yaml_content && !raw_yaml_content.empty?
+      @previously_recorded_interactions ||= if !raw_cassette_bytes.to_s.empty?
         deserialized_hash['http_interactions'].map { |h| HTTPInteraction.from_hash(h) }.tap do |interactions|
           invoke_hook(:before_playback, interactions)
 
@@ -189,8 +189,8 @@ module VCR
       record_mode == :all
     end
 
-    def raw_yaml_content
-      @raw_yaml_content ||= VCR::Cassette::ERBRenderer.new(@storage_backend[storage_key], erb).render
+    def raw_cassette_bytes
+      @raw_cassette_bytes ||= VCR::Cassette::ERBRenderer.new(@storage_backend[storage_key], erb).render
     end
 
     def merged_interactions
@@ -230,7 +230,7 @@ module VCR
     end
 
     def deserialized_hash
-      @deserialized_hash ||= @serializer.deserialize(raw_yaml_content).tap do |hash|
+      @deserialized_hash ||= @serializer.deserialize(raw_cassette_bytes).tap do |hash|
         unless hash.is_a?(Hash) && hash['http_interactions'].is_a?(Array)
           raise Errors::InvalidCassetteFormatError.new \
             "#{file} does not appear to be a valid VCR 2.0 cassette. " +
