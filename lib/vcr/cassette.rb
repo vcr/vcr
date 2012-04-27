@@ -2,7 +2,7 @@ require 'fileutils'
 require 'erb'
 
 require 'vcr/cassette/http_interaction_list'
-require 'vcr/cassette/reader'
+require 'vcr/cassette/erb_renderer'
 require 'vcr/cassette/serializers'
 
 module VCR
@@ -190,7 +190,7 @@ module VCR
     end
 
     def raw_yaml_content
-      VCR::Cassette::Reader.new(file, erb).read
+      VCR::Cassette::ERBRenderer.new(File.read(file), erb).render
     end
 
     def merged_interactions
