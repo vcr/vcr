@@ -26,7 +26,8 @@ describe VCR::Configuration do
       subject.default_cassette_options.should eq({
         :match_requests_on => VCR::RequestMatcherRegistry::DEFAULT_MATCHERS,
         :record            => :once,
-        :serialize_with    => :yaml
+        :serialize_with    => :yaml,
+        :storage_backend   => :file_system
       })
     end
 
@@ -216,6 +217,15 @@ describe VCR::Configuration do
       expect { subject.cassette_serializers[:custom] }.to raise_error(ArgumentError)
       subject.cassette_serializers[:custom] = custom_serializer
       subject.cassette_serializers[:custom].should be(custom_serializer)
+    end
+  end
+
+  describe "#storage_backends" do
+    let(:custom_backend) { stub }
+    it 'allows a custom backend to be registered' do
+      expect { subject.storage_backends[:custom] }.to raise_error(ArgumentError)
+      subject.storage_backends[:custom] = custom_backend
+      subject.storage_backends[:custom].should be(custom_backend)
     end
   end
 

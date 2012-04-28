@@ -73,6 +73,13 @@ module VCRHelpers
       File.open(file_name, 'w') { |f| f.write(file) }
     end
   end
+
+  def redis
+    @redis ||= begin
+       require 'redis'
+       Redis.connect
+    end
+  end
 end
 World(VCRHelpers)
 
@@ -90,6 +97,10 @@ end
 
 Given /^it is (.*)$/ do |date_string|
   set_env('DATE_STRING', date_string)
+end
+
+Given /^the redis DB has no data$/ do
+  redis.flushdb
 end
 
 When /^I modify the file "([^"]*)" to replace "([^"]*)" with "([^"]*)"$/ do |file_name, orig_text, new_text|
@@ -166,5 +177,9 @@ Then /^the cassette "([^"]*)" should have the following response bodies:$/ do |f
   actual_response_bodies = interactions.map { |i| i.response.body }
   expected_response_bodies = table.raw.flatten
   actual_response_bodies.should =~ expected_response_bodies
+end
+
+Then /^the value stored at the redis key "([^"]*)" should include "([^"]*)"$/ do |key, value_fragment|
+  redis.get(key).should include(value_fragment)
 end
 

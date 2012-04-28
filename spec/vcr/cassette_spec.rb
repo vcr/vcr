@@ -203,6 +203,15 @@ describe VCR::Cassette do
       VCR::Cassette.new('empty', :record => :none).send(:previously_recorded_interactions).should eq([])
     end
 
+    let(:custom_backend) { stub("custom backend") }
+
+    it 'reads from the configured storage backend' do
+      VCR.configuration.cassette_library_dir = nil
+      VCR.cassette_storage_backends[:foo] = custom_backend
+      custom_backend.should_receive(:[]).with("abc.yml") { "" }
+      VCR::Cassette.new("abc", :storage_backend => :foo).http_interactions
+    end
+
     VCR::Cassette::VALID_RECORD_MODES.each do |record_mode|
       stub_requests = (record_mode != :all)
 
@@ -399,6 +408,19 @@ describe VCR::Cassette do
   end
 
   describe '#eject' do
+    let(:custom_backend) { stub("custom backend", :[] => nil) }
+
+    it 'stores the cassette content using the configured storage backend' do
+      VCR.configuration.cassette_library_dir = nil
+      VCR.cassette_storage_backends[:foo] = custom_backend
+      cassette = VCR.insert_cassette("foo", :storage_backend => :foo)
+      cassette.record_http_interaction http_interaction
+
+      custom_backend.should_receive(:[]=).with("foo.yml", /http_interactions/)
+
+      cassette.eject
+    end
+
     it "writes the serializable_hash to disk as yaml" do
       cassette = VCR::Cassette.new(:eject_test)
       cassette.record_http_interaction http_interaction # so it has one

@@ -198,6 +198,10 @@ module VCR
       VCR.cassette_serializers
     end
 
+    def storage_backends
+      VCR.cassette_storage_backends
+    end
+
     # Adds a callback that will be called before the recorded HTTP interactions
     # are serialized and written to disk.
     #
@@ -397,7 +401,8 @@ module VCR
       @default_cassette_options = {
         :record            => :once,
         :match_requests_on => RequestMatcherRegistry::DEFAULT_MATCHERS,
-        :serialize_with    => :yaml
+        :serialize_with    => :yaml,
+        :storage_backend   => :file_system
       }
 
       self.debug_logger = NullDebugLogger

@@ -47,7 +47,8 @@ module VCR
       invalid_options = options.keys - [
         :record, :erb, :match_requests_on, :re_record_interval, :tag, :tags,
         :update_content_length_header, :allow_playback_repeats, :exclusive,
-        :serialize_with, :preserve_exact_body_bytes, :decode_compressed_response
+        :serialize_with, :preserve_exact_body_bytes, :decode_compressed_response,
+        :storage_backend
       ]
 
       if invalid_options.size > 0
@@ -66,7 +67,7 @@ module VCR
       @allow_playback_repeats       = options[:allow_playback_repeats]
       @exclusive                    = options[:exclusive]
       @serializer                   = VCR.cassette_serializers[options[:serialize_with]]
-      @storage_backend              = VCR.cassette_storage_backends[:file_system]
+      @storage_backend              = VCR.cassette_storage_backends[options[:storage_backend]]
       @record_mode                  = :all if should_re_record?
       @parent_list                  = @exclusive ? HTTPInteractionList::NullList : VCR.http_interactions
 
@@ -209,7 +210,6 @@ module VCR
     end
 
     def write_recorded_interactions_to_disk
-      return unless VCR.configuration.cassette_library_dir
       return if new_recorded_interactions.none?
       hash = serializable_hash
       return if hash["http_interactions"].none?
