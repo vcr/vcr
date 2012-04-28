@@ -33,7 +33,7 @@ module VCR
       #
       # @param name [Symbol] the name of the serializer
       # @param value [#file_extension, #serialize, #deserialize] the serializer object. It must implement
-      #  +file_extension()+, +serialize(Hash)+ and +deserialize(String)+.
+      #  `file_extension()`, `serialize(Hash)` and `deserialize(String)`.
       def []=(name, value)
         if @serializers.has_key?(name)
           warn "WARNING: There is already a VCR cassette serializer registered for #{name.inspect}. Overriding it."

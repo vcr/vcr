@@ -7,21 +7,24 @@ module VCR
     include VariableArgsBlockCaller
     include Logger
 
-    # The directory to read cassettes from and write cassettes to.
+    # Gets the directory to read cassettes from and write cassettes to.
     #
-    # @overload cassette_library_dir
-    #   @return [String] the directory to read cassettes from and write cassettes to
-    # @overload cassette_library_dir=(dir)
-    #   @param dir [String] the directory to read cassettes from and write cassettes to
-    #   @return [void]
-    # @example
-    #   VCR.configure do |c|
-    #     c.cassette_library_dir = 'spec/cassettes'
-    #   end
+    # @return [String] the directory to read cassettes from and write cassettes to
     def cassette_library_dir
       VCR.cassette_persisters[:file_system].storage_location
     end
 
+    # Sets the directory to read cassettes from and writes cassettes to.
+    #
+    # @example
+    #   VCR.configure do |c|
+    #     c.cassette_library_dir = 'spec/cassettes'
+    #   end
+    #
+    # @param dir [String] the directory to read cassettes from and write cassettes to
+    # @return [void]
+    # @note This is only necessary if you use the `:file_system`
+    #   cassette persister (the default).
     def cassette_library_dir=(dir)
       VCR.cassette_persisters[:file_system].storage_location = dir
     end
@@ -198,6 +201,18 @@ module VCR
       VCR.cassette_serializers
     end
 
+    # Gets the registry of cassette persisters. Use it to register a custom persister.
+    #
+    # @example
+    #   VCR.configure do |c|
+    #     c.cassette_persisters[:my_custom_persister] = my_custom_persister
+    #   end
+    #
+    # @return [VCR::Cassette::Persisters] the cassette persister registry object.
+    # @note Custom persisters must implement the following interface:
+    #
+    #   * `persister[storage_key]`           # returns previously persisted content
+    #   * `persister[storage_key] = content` # persists given content
     def cassette_persisters
       VCR.cassette_persisters
     end
