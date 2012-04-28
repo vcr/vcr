@@ -2,6 +2,12 @@
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v2.1.1...master)
 
+* Add new `:persist_with` cassette option. It allows you to provide a
+  customized persistence implementation so you can persist it to
+  something other than disk (i.e. a key-value store or a database).
+  Thanks to [Chris Le](https://github.com/chrisle) for the idea and
+  help with the implementation.
+
 ## 2.1.1 (April 24, 2012)
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v2.1.0...v2.1.1)
