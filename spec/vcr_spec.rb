@@ -181,10 +181,10 @@ describe VCR do
     end
   end
 
-  describe ".cassette_storage_backends" do
-    it "always returns the same memoized Cassette::StorageBackends instance" do
-      VCR.cassette_storage_backends.should be_a(VCR::Cassette::StorageBackends)
-      VCR.cassette_storage_backends.should be(VCR.cassette_storage_backends)
+  describe ".cassette_persisters" do
+    it "always returns the same memoized Cassette::Persisters instance" do
+      VCR.cassette_persisters.should be_a(VCR::Cassette::Persisters)
+      VCR.cassette_persisters.should be(VCR.cassette_persisters)
     end
   end
 

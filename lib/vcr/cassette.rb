@@ -48,7 +48,7 @@ module VCR
         :record, :erb, :match_requests_on, :re_record_interval, :tag, :tags,
         :update_content_length_header, :allow_playback_repeats, :exclusive,
         :serialize_with, :preserve_exact_body_bytes, :decode_compressed_response,
-        :storage_backend
+        :persist_with
       ]
 
       if invalid_options.size > 0
@@ -67,7 +67,7 @@ module VCR
       @allow_playback_repeats       = options[:allow_playback_repeats]
       @exclusive                    = options[:exclusive]
       @serializer                   = VCR.cassette_serializers[options[:serialize_with]]
-      @storage_backend              = VCR.cassette_storage_backends[options[:storage_backend]]
+      @persister                    = VCR.cassette_persisters[options[:persist_with]]
       @record_mode                  = :all if should_re_record?
       @parent_list                  = @exclusive ? HTTPInteractionList::NullList : VCR.http_interactions
 
@@ -107,7 +107,7 @@ module VCR
     # @return [String] The file for this cassette.
     # @note VCR will take care of sanitizing the cassette name to make it a valid file name.
     def file
-      StorageBackends::FileSystem.absolute_path_to_file(storage_key)
+      Persisters::FileSystem.absolute_path_to_file(storage_key)
     end
 
     # @return [Boolean] Whether or not the cassette is recording.
@@ -187,7 +187,7 @@ module VCR
     end
 
     def raw_cassette_bytes
-      @raw_cassette_bytes ||= VCR::Cassette::ERBRenderer.new(@storage_backend[storage_key], erb, name).render
+      @raw_cassette_bytes ||= VCR::Cassette::ERBRenderer.new(@persister[storage_key], erb, name).render
     end
 
     def merged_interactions
@@ -214,7 +214,7 @@ module VCR
       hash = serializable_hash
       return if hash["http_interactions"].none?
 
-      @storage_backend[storage_key] = @serializer.serialize(hash)
+      @persister[storage_key] = @serializer.serialize(hash)
     end
 
     def invoke_hook(type, interactions)

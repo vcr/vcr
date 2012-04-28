@@ -1,9 +1,9 @@
 require 'spec_helper'
-require 'vcr/cassette/storage_backends/file_system'
+require 'vcr/cassette/persisters/file_system'
 
 module VCR
   class Cassette
-    class StorageBackends
+    class Persisters
       describe FileSystem do
         before { FileSystem.storage_location = VCR.configuration.cassette_library_dir }
 

@@ -27,7 +27,7 @@ describe VCR::Configuration do
         :match_requests_on => VCR::RequestMatcherRegistry::DEFAULT_MATCHERS,
         :record            => :once,
         :serialize_with    => :yaml,
-        :storage_backend   => :file_system
+        :persist_with      => :file_system
       })
     end
 
@@ -220,12 +220,12 @@ describe VCR::Configuration do
     end
   end
 
-  describe "#storage_backends" do
-    let(:custom_backend) { stub }
-    it 'allows a custom backend to be registered' do
-      expect { subject.storage_backends[:custom] }.to raise_error(ArgumentError)
-      subject.storage_backends[:custom] = custom_backend
-      subject.storage_backends[:custom].should be(custom_backend)
+  describe "#cassette_persisters" do
+    let(:custom_persister) { stub }
+    it 'allows a custom persister to be registered' do
+      expect { subject.cassette_persisters[:custom] }.to raise_error(ArgumentError)
+      subject.cassette_persisters[:custom] = custom_persister
+      subject.cassette_persisters[:custom].should be(custom_persister)
     end
   end
 

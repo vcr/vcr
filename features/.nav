@@ -13,7 +13,7 @@
   - exclusive.feature
   - update_content_length_header.feature
   - decompress.feature
-  - storage.feature
+  - persistence.feature
 - record_modes:
   - once.feature
   - new_episodes.feature

@@ -19,11 +19,11 @@ module VCR
     #     c.cassette_library_dir = 'spec/cassettes'
     #   end
     def cassette_library_dir
-      VCR.cassette_storage_backends[:file_system].storage_location
+      VCR.cassette_persisters[:file_system].storage_location
     end
 
     def cassette_library_dir=(dir)
-      VCR.cassette_storage_backends[:file_system].storage_location = dir
+      VCR.cassette_persisters[:file_system].storage_location = dir
     end
 
     # Default options to apply to every cassette.
@@ -198,8 +198,8 @@ module VCR
       VCR.cassette_serializers
     end
 
-    def storage_backends
-      VCR.cassette_storage_backends
+    def cassette_persisters
+      VCR.cassette_persisters
     end
 
     # Adds a callback that will be called before the recorded HTTP interactions
@@ -402,7 +402,7 @@ module VCR
         :record            => :once,
         :match_requests_on => RequestMatcherRegistry::DEFAULT_MATCHERS,
         :serialize_with    => :yaml,
-        :storage_backend   => :file_system
+        :persist_with      => :file_system
       }
 
       self.debug_logger = NullDebugLogger

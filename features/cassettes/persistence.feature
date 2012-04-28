@@ -1,22 +1,22 @@
-Feature: Cassette Storage
+Feature: Cassette Persistence
 
-  By default, cassettes will be stored on the file system. However, you
-  can easily configure VCR to store the cassettes in a database, a key-value
+  By default, cassettes will be persisted to the file system. However, you
+  can easily configure VCR to persist the cassettes to a database, a key-value
   store, or anywhere you like.
 
   To use something besides the file system, you must provide an object
   that provides a hash-like interface:
 
-    * `storage_object[name]` should return the content stored for the
+    * `persister[name]` should return the content previously persisted for the
       given cassette name.
-    * `storage_object[name] = content` should store the content for the
+    * `persister[name] = content` should persist the content for the
       given cassette name.
 
   Register this object with VCR, and then you can configure all cassettes
   to use it (using the `default_cassette_options`) or just some cassettes
   to use it (by passing it as an option to individual cassettes).
 
-  Scenario: Store cassettes in Redis
+  Scenario: Persist cassettes in Redis
     Given the redis DB has no data
       And a file named "use_redis.rb" with:
       """ruby
@@ -28,7 +28,7 @@ Feature: Cassette Storage
 
       require 'redis'
 
-      class VCRRedisStore
+      class RedisCassettePersister
         def initialize(redis)
           @redis = redis
         end
@@ -46,8 +46,8 @@ Feature: Cassette Storage
 
       VCR.configure do |c|
         c.hook_into :fakeweb
-        c.storage_backends[:redis] = VCRRedisStore.new(Redis.connect)
-        c.default_cassette_options = { :storage_backend => :redis }
+        c.cassette_persisters[:redis] = RedisCassettePersister.new(Redis.connect)
+        c.default_cassette_options = { :persist_with => :redis }
       end
 
       VCR.use_cassette("redis_example") do

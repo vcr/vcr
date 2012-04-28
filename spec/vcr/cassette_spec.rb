@@ -147,7 +147,7 @@ describe VCR::Cassette do
     let(:empty_cassette_yaml) { YAML.dump("http_interactions" => []) }
 
     it 'optionally renders the file as ERB using the ERBRenderer' do
-      VCR::Cassette::StorageBackends::FileSystem.stub(:[] => empty_cassette_yaml)
+      VCR::Cassette::Persisters::FileSystem.stub(:[] => empty_cassette_yaml)
 
       VCR::Cassette::ERBRenderer.should_receive(:new).with(
         empty_cassette_yaml, anything, "foo"
@@ -203,13 +203,13 @@ describe VCR::Cassette do
       VCR::Cassette.new('empty', :record => :none).send(:previously_recorded_interactions).should eq([])
     end
 
-    let(:custom_backend) { stub("custom backend") }
+    let(:custom_persister) { stub("custom persister") }
 
-    it 'reads from the configured storage backend' do
+    it 'reads from the configured persister' do
       VCR.configuration.cassette_library_dir = nil
-      VCR.cassette_storage_backends[:foo] = custom_backend
-      custom_backend.should_receive(:[]).with("abc.yml") { "" }
-      VCR::Cassette.new("abc", :storage_backend => :foo).http_interactions
+      VCR.cassette_persisters[:foo] = custom_persister
+      custom_persister.should_receive(:[]).with("abc.yml") { "" }
+      VCR::Cassette.new("abc", :persist_with => :foo).http_interactions
     end
 
     VCR::Cassette::VALID_RECORD_MODES.each do |record_mode|
@@ -408,15 +408,15 @@ describe VCR::Cassette do
   end
 
   describe '#eject' do
-    let(:custom_backend) { stub("custom backend", :[] => nil) }
+    let(:custom_persister) { stub("custom persister", :[] => nil) }
 
-    it 'stores the cassette content using the configured storage backend' do
+    it 'stores the cassette content using the configured persister' do
       VCR.configuration.cassette_library_dir = nil
-      VCR.cassette_storage_backends[:foo] = custom_backend
-      cassette = VCR.insert_cassette("foo", :storage_backend => :foo)
+      VCR.cassette_persisters[:foo] = custom_persister
+      cassette = VCR.insert_cassette("foo", :persist_with => :foo)
       cassette.record_http_interaction http_interaction
 
-      custom_backend.should_receive(:[]=).with("foo.yml", /http_interactions/)
+      custom_persister.should_receive(:[]=).with("foo.yml", /http_interactions/)
 
       cassette.eject
     end

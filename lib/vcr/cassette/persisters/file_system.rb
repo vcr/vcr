@@ -2,7 +2,7 @@ require 'fileutils'
 
 module VCR
   class Cassette
-    class StorageBackends
+    class Persisters
       module FileSystem
         extend self
 
