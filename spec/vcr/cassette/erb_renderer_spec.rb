@@ -29,6 +29,10 @@ describe VCR::Cassette::ERBRenderer do
           %{Pass it to the cassette using :erb => #{ {:var1=>"some value"}.inspect }.}
         )
       end
+
+      it 'gracefully handles the template being nil' do
+        render(nil, true).should be_nil
+      end
     end
 
     context 'when ERB is enabled and variables are passed' do

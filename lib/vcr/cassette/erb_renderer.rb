@@ -9,7 +9,7 @@ module VCR
       end
 
       def render
-        return @raw_template unless use_erb?
+        return @raw_template if @raw_template.nil? || !use_erb?
         binding = binding_for_variables if erb_variables
         template.result(binding)
       rescue NameError => e
