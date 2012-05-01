@@ -2,8 +2,11 @@ module VCR
   # @private
   module VariableArgsBlockCaller
     def call_block(block, *args)
-      first_n_args = block.arity == -1 ? 1 : [args.size, block.arity].min
-      block.call(*args.first(first_n_args))
+      if block.arity >= 0
+        args = args.first([args.size, block.arity].min)
+      end
+
+      block.call(*args)
     end
   end
 end

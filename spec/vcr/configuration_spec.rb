@@ -203,6 +203,26 @@ describe VCR::Configuration do
     end
   end
 
+  describe "#after_http_request" do
+    let(:raw_request) { VCR::Request.new }
+    let(:response)    { VCR::Response.new }
+
+    def request(type)
+      VCR::Request::Typed.new(raw_request, type)
+    end
+
+    it 'handles symbol request predicate filters properly' do
+      yielded = false
+      subject.after_http_request(:stubbed?) { |req| yielded = true }
+      subject.invoke_hook(:after_http_request, request(:stubbed), response)
+      yielded.should be_true
+
+      yielded = false
+      subject.invoke_hook(:after_http_request, request(:ignored), response)
+      yielded.should be_false
+    end
+  end
+
   describe "#around_http_request, when called on ruby 1.8" do
     it 'raises an error since fibers are not available' do
       expect {

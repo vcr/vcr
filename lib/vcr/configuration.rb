@@ -242,7 +242,7 @@ module VCR
     # @see #before_playback
     define_hook :before_record
     def before_record(tag = nil, &block)
-      super(filter_from(tag), &block)
+      super(tag_filter_from(tag), &block)
     end
 
     # Adds a callback that will be called before a previously recorded
@@ -270,7 +270,7 @@ module VCR
     # @see #before_record
     define_hook :before_playback
     def before_playback(tag = nil, &block)
-      super(filter_from(tag), &block)
+      super(tag_filter_from(tag), &block)
     end
 
     # Adds a callback that will be called with each HTTP request before it is made.
@@ -310,6 +310,9 @@ module VCR
     # @see #before_http_request
     # @see #around_http_request
     define_hook :after_http_request, :prepend
+    def after_http_request(*filters)
+      super(*filters.map { |f| request_filter_from(f) })
+    end
 
     # Adds a callback that will be executed around each HTTP request.
     #
@@ -447,9 +450,14 @@ module VCR
       end
     end
 
-    def filter_from(tag)
+    def tag_filter_from(tag)
       return lambda { true } unless tag
       lambda { |_, cassette| cassette.tags.include?(tag) }
+    end
+
+    def request_filter_from(object)
+      return object unless object.is_a?(Symbol)
+      lambda { |arg| arg.send(object) }
     end
 
     def register_built_in_hooks

@@ -46,6 +46,13 @@ describe VCR::Hooks::FilteredHook do
       filter_args.should eq([3, 5])
     end
 
+    it 'handles splat args properly' do
+      filter_args = nil
+      subject.filters = lambda { |*args| filter_args = args; false }
+      subject.conditionally_invoke(3, 5)
+      filter_args.should eq([3, 5])
+    end
+
     it 'forwards only as many arguments as the filter blocks accept' do
       args1 = args2 = nil
       subject.filters = [
