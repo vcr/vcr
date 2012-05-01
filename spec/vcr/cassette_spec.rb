@@ -9,33 +9,17 @@ describe VCR::Cassette do
   end
 
   describe '#file' do
-    it 'combines the cassette_library_dir with the cassette name' do
-      cassette = VCR::Cassette.new('the_file')
-      cassette.file.should eq(File.join(VCR.configuration.cassette_library_dir, 'the_file.yml'))
+    it 'delegates the file resolution to the FileSystem persister' do
+      fs = VCR::Cassette::Persisters::FileSystem
+      fs.should respond_to(:absolute_path_to_file).with(1).argument
+      fs.should_receive(:absolute_path_to_file).with("cassette name.yml") { "f.yml" }
+      VCR::Cassette.new("cassette name").file.should eq("f.yml")
     end
 
-    it 'uses the file extension from the serializer' do
-      VCR.cassette_serializers[:custom] = stub(:file_extension => "custom")
-      cassette = VCR::Cassette.new('the_file', :serialize_with => :custom)
-      cassette.file.should =~ /\.custom$/
-    end
-
-    it 'strips out disallowed characters so that it is a valid file name with no spaces' do
-      cassette = VCR::Cassette.new("\nthis \t!  is-the_13212_file name")
-      cassette.file.should =~ /#{Regexp.escape('_this_is-the_13212_file_name.yml')}$/
-    end
-
-    it 'keeps any path separators' do
-      cassette = VCR::Cassette.new("dir/file_name")
-      cassette.file.should =~ /#{Regexp.escape('dir/file_name.yml')}$/
-    end
-
-    VCR::Cassette::VALID_RECORD_MODES.each do |mode|
-      it "returns nil if the cassette_library_dir is not set (when the record mode is :#{mode})" do
-        VCR.configuration.cassette_library_dir = nil
-        cassette = VCR::Cassette.new('the_file', :record => mode)
-        cassette.file.should be_nil
-      end
+    it 'raises a NotImplementedError when a different persister is used' do
+      VCR.cassette_persisters[:a] = stub
+      cassette = VCR::Cassette.new("f", :persist_with => :a)
+      expect { cassette.file }.to raise_error(NotImplementedError)
     end
   end
 

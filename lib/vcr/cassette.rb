@@ -105,9 +105,14 @@ module VCR
     end
 
     # @return [String] The file for this cassette.
+    # @raise [NotImplementedError] if the configured cassette persister
+    #  does not support resolving file paths.
     # @note VCR will take care of sanitizing the cassette name to make it a valid file name.
     def file
-      Persisters::FileSystem.absolute_path_to_file(storage_key)
+      unless @persister.respond_to?(:absolute_path_to_file)
+        raise NotImplementedError, "The configured cassette persister does not support resolving file paths"
+      end
+      @persister.absolute_path_to_file(storage_key)
     end
 
     # @return [Boolean] Whether or not the cassette is recording.
