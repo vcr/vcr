@@ -33,7 +33,7 @@ Feature: after_http_request hook
         <configuration>
         c.cassette_library_dir = 'cassettes'
         c.ignore_localhost = true
-        c.after_http_request(lambda { |req| req.uri =~ /foo/ }) do |request, response|
+        c.after_http_request(:ignored?, lambda { |req| req.uri =~ /foo/ }) do |request, response|
           puts "Response for #{request.method} #{request.uri}: #{response.body}"
         end
       end
