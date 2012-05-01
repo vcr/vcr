@@ -155,6 +155,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Oliver Searle-Barnes](https://github.com/opsb)
 * [Omer Rauchwerger](https://github.com/rauchy)
 * [Paco Guzmán](https://github.com/pacoguzman)
+* [playupchris](https://github.com/playupchris)
 * [Ryan Bates](https://github.com/ryanb)
 * [Sathya Sekaran](https://github.com/sfsekaran)
 * [Wesley Beary](https://github.com/geemus)

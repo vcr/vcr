@@ -7,6 +7,11 @@
   something other than disk (i.e. a key-value store or a database).
   Thanks to [Chris Le](https://github.com/chrisle) for the idea and
   help with the implementation.
+* Fix `after_http_request` to handle symbol request predicate filters
+  (e.g. `:ignored?`, `:stubbed?`, `:recordable?`, `:unhandled?`, `:real?`)
+  properly. Previously using one of these would raise an ArgumentError.
+  Thanks to [playupchris](https://github.com/playupchris) for reporting
+  the bug and providing a fix.
 
 ## 2.1.1 (April 24, 2012)
 
