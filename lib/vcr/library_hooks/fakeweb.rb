@@ -171,7 +171,7 @@ module FakeWeb
     # ensure HTTP requests are always allowed; VCR takes care of disallowing
     # them at the appropriate times in its hook
     def allow_net_connect_with_vcr?(*args)
-      VCR.turned_on? ? true : allow_net_connect_without_vcr?
+      VCR.turned_on? ? true : allow_net_connect_without_vcr?(*args)
     end
 
     alias allow_net_connect_without_vcr? allow_net_connect?
