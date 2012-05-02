@@ -75,6 +75,10 @@ Feature: Usage with Cucumber
       """
       Feature: VCR example
 
+        Note: Cucumber treats the pre-amble as part of the feature name. When
+        using the :use_scenario_name option, VCR will only use the first line
+        of the feature name as the directory for the cassette.
+
         @localhost_request
         Scenario: tagged scenario
           When a request is made to "http://localhost:7777/localhost_request_1"

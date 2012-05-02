@@ -112,14 +112,13 @@ Note that as of VCR 2, 1.8.6 and 1.9.1 are not supported.
   and create a topic branch for every separate change you make.
 * See the [Contributing](https://github.com/myronmarston/vcr/blob/master/CONTRIBUTING.md)
   guide for instructions on running the specs and features.
+* Code quality metrics are checked by [Code Climate](https://codeclimate.com/github/myronmarston/vcr).
 * Documentation is generated with [YARD](http://yardoc.org/) ([cheat sheet](http://cheat.errtheblog.com/s/yard/)).
   To generate while developing:
 
 ```
 yard server --reload
 ```
-
-If you find VCR useful, please recommend me on [working with rails](http://workingwithrails.com/person/16590-myron-marston).
 
 ## Thanks
 
@@ -143,7 +142,9 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Bradley Isotope](https://github.com/bradleyisotope)
 * [Carlos Kirkconnell](https://github.com/kirkconnell)
 * [Chad Jolly](https://github.com/cjolly)
+* [Chris Le](https://github.com/chrisle)
 * [Eric Allam](http://github.com/rubymaverick)
+* [Ezekiel Templin](https://github.com/ezkl)
 * [Flaviu Simihaian](https://github.com/closedbracket)
 * [Jeff Pollard](https://github.com/Fluxx)
 * [Justin Smestad](https://github.com/jsmestad)
@@ -154,6 +155,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Oliver Searle-Barnes](https://github.com/opsb)
 * [Omer Rauchwerger](https://github.com/rauchy)
 * [Paco Guzmán](https://github.com/pacoguzman)
+* [playupchris](https://github.com/playupchris)
 * [Ryan Bates](https://github.com/ryanb)
 * [Sathya Sekaran](https://github.com/sfsekaran)
 * [Wesley Beary](https://github.com/geemus)
@@ -163,6 +165,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Betamax](https://github.com/robfletcher/betamax) (Groovy)
 * [VCR.js](https://github.com/elcuervo/vcr.js) (JavaScript)
 * [TapeDeck.js](https://github.com/EndangeredMassa/TapeDeck.js) (JavaScript)
+* [Nock](https://github.com/flatiron/nock) (JavaScript/Node)
 * [Mimic](https://github.com/acoulton/mimic) (PHP/Kohana)
 
 ## Similar Libraries in Ruby

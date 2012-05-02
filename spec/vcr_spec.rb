@@ -95,6 +95,12 @@ describe VCR do
       VCR.should_not_receive(:eject_cassette)
       expect { VCR.use_cassette(:test) { } }.to raise_error(StandardError, 'Boom!')
     end
+
+    it 'raises a helpful error if no block is given' do
+      expect {
+        VCR.use_cassette(:test)
+      }.to raise_error(/requires a block/)
+    end
   end
 
   describe '.http_interactions' do
@@ -172,6 +178,13 @@ describe VCR do
     it 'always returns the same memoized cassette serializers instance' do
       VCR.cassette_serializers.should be_a(VCR::Cassette::Serializers)
       VCR.cassette_serializers.should be(VCR.cassette_serializers)
+    end
+  end
+
+  describe ".cassette_persisters" do
+    it "always returns the same memoized Cassette::Persisters instance" do
+      VCR.cassette_persisters.should be_a(VCR::Cassette::Persisters)
+      VCR.cassette_persisters.should be(VCR.cassette_persisters)
     end
   end
 

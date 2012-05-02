@@ -1,4 +1,3 @@
-require 'fileutils'
 require 'vcr/util/hooks'
 
 module VCR
@@ -8,23 +7,26 @@ module VCR
     include VariableArgsBlockCaller
     include Logger
 
-    # The directory to read cassettes from and write cassettes to.
+    # Gets the directory to read cassettes from and write cassettes to.
     #
-    # @overload cassette_library_dir
-    #   @return [String] the directory to read cassettes from and write cassettes to
-    # @overload cassette_library_dir=(dir)
-    #   @param dir [String] the directory to read cassettes from and write cassettes to
-    #   @return [void]
+    # @return [String] the directory to read cassettes from and write cassettes to
+    def cassette_library_dir
+      VCR.cassette_persisters[:file_system].storage_location
+    end
+
+    # Sets the directory to read cassettes from and writes cassettes to.
+    #
     # @example
     #   VCR.configure do |c|
     #     c.cassette_library_dir = 'spec/cassettes'
     #   end
-    attr_reader :cassette_library_dir
-
-    # Sets the directory to read cassettes from and write cassettes to.
-    def cassette_library_dir=(cassette_library_dir)
-      FileUtils.mkdir_p(cassette_library_dir) if cassette_library_dir
-      @cassette_library_dir = cassette_library_dir ? absolute_path_for(cassette_library_dir) : nil
+    #
+    # @param dir [String] the directory to read cassettes from and write cassettes to
+    # @return [void]
+    # @note This is only necessary if you use the `:file_system`
+    #   cassette persister (the default).
+    def cassette_library_dir=(dir)
+      VCR.cassette_persisters[:file_system].storage_location = dir
     end
 
     # Default options to apply to every cassette.
@@ -199,6 +201,23 @@ module VCR
       VCR.cassette_serializers
     end
 
+    # Gets the registry of cassette persisters. Use it to register a custom persister.
+    #
+    # @example
+    #   VCR.configure do |c|
+    #     c.cassette_persisters[:my_custom_persister] = my_custom_persister
+    #   end
+    #
+    # @return [VCR::Cassette::Persisters] the cassette persister registry object.
+    # @note Custom persisters must implement the following interface:
+    #
+    #   * `persister[storage_key]`           # returns previously persisted content
+    #   * `persister[storage_key] = content` # persists given content
+    def cassette_persisters
+      VCR.cassette_persisters
+    end
+
+    define_hook :before_record
     # Adds a callback that will be called before the recorded HTTP interactions
     # are serialized and written to disk.
     #
@@ -222,11 +241,11 @@ module VCR
     #  serialized and written to disk.
     # @yieldparam cassette [(optional) VCR::Cassette] The current cassette.
     # @see #before_playback
-    define_hook :before_record
     def before_record(tag = nil, &block)
-      super(filter_from(tag), &block)
+      super(tag_filter_from(tag), &block)
     end
 
+    define_hook :before_playback
     # Adds a callback that will be called before a previously recorded
     # HTTP interaction is loaded for playback.
     #
@@ -250,9 +269,8 @@ module VCR
     #  loaded.
     # @yieldparam cassette [(optional) VCR::Cassette] The current cassette.
     # @see #before_record
-    define_hook :before_playback
     def before_playback(tag = nil, &block)
-      super(filter_from(tag), &block)
+      super(tag_filter_from(tag), &block)
     end
 
     # Adds a callback that will be called with each HTTP request before it is made.
@@ -273,6 +291,7 @@ module VCR
     # @see #around_http_request
     define_hook :before_http_request
 
+    define_hook :after_http_request, :prepend
     # Adds a callback that will be called with each HTTP request after it is complete.
     #
     # @example
@@ -291,7 +310,9 @@ module VCR
     # @yieldparam response [VCR::Response] the response from the request
     # @see #before_http_request
     # @see #around_http_request
-    define_hook :after_http_request, :prepend
+    def after_http_request(*filters)
+      super(*filters.map { |f| request_filter_from(f) })
+    end
 
     # Adds a callback that will be executed around each HTTP request.
     #
@@ -398,7 +419,8 @@ module VCR
       @default_cassette_options = {
         :record            => :once,
         :match_requests_on => RequestMatcherRegistry::DEFAULT_MATCHERS,
-        :serialize_with    => :yaml
+        :serialize_with    => :yaml,
+        :persist_with      => :file_system
       }
 
       self.debug_logger = NullDebugLogger
@@ -428,13 +450,14 @@ module VCR
       end
     end
 
-    def absolute_path_for(path)
-      Dir.chdir(path) { Dir.pwd }
-    end
-
-    def filter_from(tag)
+    def tag_filter_from(tag)
       return lambda { true } unless tag
       lambda { |_, cassette| cassette.tags.include?(tag) }
+    end
+
+    def request_filter_from(object)
+      return object unless object.is_a?(Symbol)
+      lambda { |arg| arg.send(object) }
     end
 
     def register_built_in_hooks

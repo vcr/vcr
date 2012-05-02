@@ -3,6 +3,7 @@ require 'vcr/util/variable_args_block_caller'
 
 require 'vcr/cassette'
 require 'vcr/cassette/serializers'
+require 'vcr/cassette/persisters'
 require 'vcr/configuration'
 require 'vcr/deprecations'
 require 'vcr/errors'
@@ -86,6 +87,9 @@ module VCR
   # @option options :serialize_with [Symbol] Which serializer to use.
   #  Valid values are :yaml, :syck, :psych, :json or any registered
   #  custom serializer. Defaults to :yaml.
+  # @option options :persist_with [Symbol] Which cassette persister to
+  #  use. Defaults to :file_system. You can also register and use a
+  #  custom persister.
   # @option options :preserve_exact_body_bytes [Boolean] Whether or not
   #  to base64 encode the bytes of the requests and responses for this cassette
   #  when serializing it. See also `VCR::Configuration#preserve_exact_body_bytes`.
@@ -147,6 +151,12 @@ module VCR
   # @see #insert_cassette
   # @see #eject_cassette
   def use_cassette(name, options = {}, &block)
+    unless block
+      raise ArgumentError, "`VCR.use_cassette` requires a block. " +
+                           "If you cannot wrap your code in a block, use " +
+                           "`VCR.insert_cassette` / `VCR.eject_cassette` instead."
+    end
+
     cassette = insert_cassette(name, options)
 
     begin
@@ -284,6 +294,11 @@ module VCR
   # @private
   def cassette_serializers
     @cassette_serializers ||= Cassette::Serializers.new
+  end
+
+  # @private
+  def cassette_persisters
+    @cassette_persisters ||= Cassette::Persisters.new
   end
 
   # @private

@@ -1,13 +1,15 @@
+require 'erb'
+
 module VCR
   class Cassette
     # @private
-    class Reader
-      def initialize(file_name, erb)
-        @file_name, @erb = file_name, erb
+    class ERBRenderer
+      def initialize(raw_template, erb, cassette_name=nil)
+        @raw_template, @erb, @cassette_name = raw_template, erb, cassette_name
       end
 
-      def read
-        return file_content unless use_erb?
+      def render
+        return @raw_template if @raw_template.nil? || !use_erb?
         binding = binding_for_variables if erb_variables
         template.result(binding)
       rescue NameError => e
@@ -20,7 +22,7 @@ module VCR
         example_hash = (erb_variables || {}).merge(e.name => 'some value')
 
         raise Errors::MissingERBVariableError.new(
-          "The ERB in the #{@file_name} cassette file references undefined variable #{e.name}.  " +
+          "The ERB in the #{@cassette_name} cassette file references undefined variable #{e.name}.  " +
           "Pass it to the cassette using :erb => #{ example_hash.inspect }."
         )
       end
@@ -33,12 +35,8 @@ module VCR
         @erb if @erb.is_a?(Hash)
       end
 
-      def file_content
-        @file_content ||= File.read(@file_name)
-      end
-
       def template
-        @template ||= ERB.new(file_content)
+        @template ||= ERB.new(@raw_template)
       end
 
       @@struct_cache = Hash.new do |hash, attributes|

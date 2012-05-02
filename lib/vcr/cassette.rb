@@ -1,8 +1,5 @@
-require 'fileutils'
-require 'erb'
-
 require 'vcr/cassette/http_interaction_list'
-require 'vcr/cassette/reader'
+require 'vcr/cassette/erb_renderer'
 require 'vcr/cassette/serializers'
 
 module VCR
@@ -46,35 +43,14 @@ module VCR
     # @param (see VCR#insert_cassette)
     # @see VCR#insert_cassette
     def initialize(name, options = {})
-      options = VCR.configuration.default_cassette_options.merge(options)
-      invalid_options = options.keys - [
-        :record, :erb, :match_requests_on, :re_record_interval, :tag, :tags,
-        :update_content_length_header, :allow_playback_repeats, :exclusive,
-        :serialize_with, :preserve_exact_body_bytes, :decode_compressed_response
-      ]
+      @name    = name
+      @options = VCR.configuration.default_cassette_options.merge(options)
 
-      if invalid_options.size > 0
-        raise ArgumentError.new("You passed the following invalid options to VCR::Cassette.new: #{invalid_options.inspect}.")
-      end
-
-      @name                         = name
-      @record_mode                  = options[:record]
-      @erb                          = options[:erb]
-      @match_requests_on            = options[:match_requests_on]
-      @re_record_interval           = options[:re_record_interval]
-      @tags                         = Array(options.fetch(:tags) { options[:tag] })
-      @tags                         << :update_content_length_header if options[:update_content_length_header]
-      @tags                         << :preserve_exact_body_bytes if options[:preserve_exact_body_bytes]
-      @tags                         << :decode_compressed_response if options[:decode_compressed_response]
-      @allow_playback_repeats       = options[:allow_playback_repeats]
-      @exclusive                    = options[:exclusive]
-      @serializer                   = VCR.cassette_serializers[options[:serialize_with]]
-      @record_mode                  = :all if should_re_record?
-      @parent_list                  = @exclusive ? HTTPInteractionList::NullList : VCR.http_interactions
-
+      assert_valid_options!
+      extract_options
       raise_error_unless_valid_record_mode
 
-      log "Initialized with options: #{options.inspect}"
+      log "Initialized with options: #{@options.inspect}"
     end
 
     # Ejects the current cassette. The cassette will no longer be used.
@@ -106,17 +82,21 @@ module VCR
     end
 
     # @return [String] The file for this cassette.
+    # @raise [NotImplementedError] if the configured cassette persister
+    #  does not support resolving file paths.
     # @note VCR will take care of sanitizing the cassette name to make it a valid file name.
     def file
-      return nil unless VCR.configuration.cassette_library_dir
-      File.join(VCR.configuration.cassette_library_dir, "#{sanitized_name}.#{@serializer.file_extension}")
+      unless @persister.respond_to?(:absolute_path_to_file)
+        raise NotImplementedError, "The configured cassette persister does not support resolving file paths"
+      end
+      @persister.absolute_path_to_file(storage_key)
     end
 
     # @return [Boolean] Whether or not the cassette is recording.
     def recording?
       case record_mode
         when :none; false
-        when :once; file.nil? || !File.size?(file)
+        when :once; raw_cassette_bytes.to_s.empty?
         else true
       end
     end
@@ -131,8 +111,44 @@ module VCR
 
   private
 
+    def assert_valid_options!
+      invalid_options = @options.keys - [
+        :record, :erb, :match_requests_on, :re_record_interval, :tag, :tags,
+        :update_content_length_header, :allow_playback_repeats, :exclusive,
+        :serialize_with, :preserve_exact_body_bytes, :decode_compressed_response,
+        :persist_with
+      ]
+
+      if invalid_options.size > 0
+        raise ArgumentError.new("You passed the following invalid options to VCR::Cassette.new: #{invalid_options.inspect}.")
+      end
+    end
+
+    def extract_options
+      [:erb, :match_requests_on, :re_record_interval,
+       :allow_playback_repeats, :exclusive].each do |name|
+        instance_variable_set("@#{name}", @options[name])
+      end
+
+      assign_tags
+
+      @record_mode = @options[:record]
+      @serializer  = VCR.cassette_serializers[@options[:serialize_with]]
+      @persister   = VCR.cassette_persisters[@options[:persist_with]]
+      @record_mode = :all if should_re_record?
+      @parent_list = @exclusive ? HTTPInteractionList::NullList : VCR.http_interactions
+    end
+
+    def assign_tags
+      @tags = Array(@options.fetch(:tags) { @options[:tag] })
+
+      [:update_content_length_header, :preserve_exact_body_bytes, :decode_compressed_response].each do |tag|
+        @tags << tag if @options[tag]
+      end
+    end
+
     def previously_recorded_interactions
-      @previously_recorded_interactions ||= if file && File.size?(file)
+      @previously_recorded_interactions ||= if !raw_cassette_bytes.to_s.empty?
         deserialized_hash['http_interactions'].map { |h| HTTPInteraction.from_hash(h) }.tap do |interactions|
           invoke_hook(:before_playback, interactions)
 
@@ -145,8 +161,8 @@ module VCR
       end
     end
 
-    def sanitized_name
-      name.to_s.gsub(/[^\w\-\/]+/, '_')
+    def storage_key
+      @storage_key ||= [name, @serializer.file_extension].join('.')
     end
 
     def raise_error_unless_valid_record_mode
@@ -159,7 +175,6 @@ module VCR
       return false unless @re_record_interval
       previously_recorded_at = earliest_interaction_recorded_at
       return false unless previously_recorded_at
-      return false unless File.exist?(file)
 
       now = Time.now
 
@@ -189,8 +204,8 @@ module VCR
       record_mode == :all
     end
 
-    def raw_yaml_content
-      VCR::Cassette::Reader.new(file, erb).read
+    def raw_cassette_bytes
+      @raw_cassette_bytes ||= VCR::Cassette::ERBRenderer.new(@persister[storage_key], erb, name).render
     end
 
     def merged_interactions
@@ -213,14 +228,11 @@ module VCR
     end
 
     def write_recorded_interactions_to_disk
-      return unless VCR.configuration.cassette_library_dir
       return if new_recorded_interactions.none?
       hash = serializable_hash
       return if hash["http_interactions"].none?
 
-      directory = File.dirname(file)
-      FileUtils.mkdir_p directory unless File.exist?(directory)
-      File.open(file, 'w') { |f| f.write @serializer.serialize(hash) }
+      @persister[storage_key] = @serializer.serialize(hash)
     end
 
     def invoke_hook(type, interactions)
@@ -232,7 +244,7 @@ module VCR
     end
 
     def deserialized_hash
-      @deserialized_hash ||= @serializer.deserialize(raw_yaml_content).tap do |hash|
+      @deserialized_hash ||= @serializer.deserialize(raw_cassette_bytes).tap do |hash|
         unless hash.is_a?(Hash) && hash['http_interactions'].is_a?(Array)
           raise Errors::InvalidCassetteFormatError.new \
             "#{file} does not appear to be a valid VCR 2.0 cassette. " +

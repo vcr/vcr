@@ -26,10 +26,10 @@ task :default => [:spec, :cucumber]
 desc "Ensures we keep up 100% YARD coverage"
 task :yard_coverage do
   coverage_stats = `yard stats --list-undoc 2>&1`
+  puts coverage_stats
   if coverage_stats.include?('100.00% documented')
-    puts "Nice work! 100% documentation coverage"
+    puts "\nNice work! 100% documentation coverage"
   else
-    puts coverage_stats
     raise "Documentation coverage is less than 100%"
   end
 end

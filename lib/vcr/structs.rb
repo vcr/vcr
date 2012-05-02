@@ -294,15 +294,6 @@ module VCR
       undef method
     end
 
-    # Transforms the request into a fiber aware one by extending
-    # the {FiberAware} module onto the instance. Necessary for the
-    # {VCR::Configuration#around_http_request} hook.
-    #
-    # @return [Request] the request instance
-    def fiber_aware
-      extend FiberAware
-    end
-
   private
 
     def without_standard_port(uri)

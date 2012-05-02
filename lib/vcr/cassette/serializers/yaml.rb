@@ -37,7 +37,7 @@ module VCR
         # Deserializes the given string using YAML.
         #
         # @param [String] string the YAML string
-        # @param [Hash] hash the deserialized object
+        # @return [Hash] the deserialized object
         def deserialize(string)
           handle_encoding_errors do
             ::YAML.load(string)

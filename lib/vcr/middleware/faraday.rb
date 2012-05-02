@@ -17,7 +17,7 @@ module VCR
 
       # Constructs a new instance of the Faraday middleware.
       #
-      # @param [#call] the faraday app
+      # @param [#call] app the faraday app
       def initialize(app)
         super
         @app = app
@@ -83,7 +83,7 @@ module VCR
           env.update :status => stubbed_response.status.code, :body => stubbed_response.body
 
           faraday_response = ::Faraday::Response.new
-          faraday_response.finish(env) unless env[:parallel_manager]
+          faraday_response.finish(env)
           env[:response] = faraday_response
         end
 

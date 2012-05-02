@@ -9,33 +9,17 @@ describe VCR::Cassette do
   end
 
   describe '#file' do
-    it 'combines the cassette_library_dir with the cassette name' do
-      cassette = VCR::Cassette.new('the_file')
-      cassette.file.should eq(File.join(VCR.configuration.cassette_library_dir, 'the_file.yml'))
+    it 'delegates the file resolution to the FileSystem persister' do
+      fs = VCR::Cassette::Persisters::FileSystem
+      fs.should respond_to(:absolute_path_to_file).with(1).argument
+      fs.should_receive(:absolute_path_to_file).with("cassette name.yml") { "f.yml" }
+      VCR::Cassette.new("cassette name").file.should eq("f.yml")
     end
 
-    it 'uses the file extension from the serializer' do
-      VCR.cassette_serializers[:custom] = stub(:file_extension => "custom")
-      cassette = VCR::Cassette.new('the_file', :serialize_with => :custom)
-      cassette.file.should =~ /\.custom$/
-    end
-
-    it 'strips out disallowed characters so that it is a valid file name with no spaces' do
-      cassette = VCR::Cassette.new("\nthis \t!  is-the_13212_file name")
-      cassette.file.should =~ /#{Regexp.escape('_this_is-the_13212_file_name.yml')}$/
-    end
-
-    it 'keeps any path separators' do
-      cassette = VCR::Cassette.new("dir/file_name")
-      cassette.file.should =~ /#{Regexp.escape('dir/file_name.yml')}$/
-    end
-
-    VCR::Cassette::VALID_RECORD_MODES.each do |mode|
-      it "returns nil if the cassette_library_dir is not set (when the record mode is :#{mode})" do
-        VCR.configuration.cassette_library_dir = nil
-        cassette = VCR::Cassette.new('the_file', :record => mode)
-        cassette.file.should be_nil
-      end
+    it 'raises a NotImplementedError when a different persister is used' do
+      VCR.cassette_persisters[:a] = stub
+      cassette = VCR::Cassette.new("f", :persist_with => :a)
+      expect { cassette.file }.to raise_error(NotImplementedError)
     end
   end
 
@@ -144,38 +128,36 @@ describe VCR::Cassette do
   end
 
   describe "reading the file from disk" do
-    before(:each) do
-      File.stub(:size? => true)
-    end
-
     let(:empty_cassette_yaml) { YAML.dump("http_interactions" => []) }
 
-    it 'reads the appropriate file from disk using a VCR::Cassette::Reader' do
-      VCR::Cassette::Reader.should_receive(:new).with(
-        "#{VCR.configuration.cassette_library_dir}/foo.yml", anything
-      ).and_return(mock('reader', :read => empty_cassette_yaml))
+    it 'optionally renders the file as ERB using the ERBRenderer' do
+      VCR::Cassette::Persisters::FileSystem.stub(:[] => empty_cassette_yaml)
+
+      VCR::Cassette::ERBRenderer.should_receive(:new).with(
+        empty_cassette_yaml, anything, "foo"
+      ).and_return(mock('renderer', :render => empty_cassette_yaml))
 
       VCR::Cassette.new('foo', :record => :new_episodes).http_interactions
     end
 
     [true, false, nil, { }].each do |erb|
-      it "passes #{erb.inspect} to the VCR::Cassette::Reader when given as the :erb option" do
+      it "passes #{erb.inspect} to the VCR::Cassette::ERBRenderer when given as the :erb option" do
         # test that it overrides the default
         VCR.configuration.default_cassette_options = { :erb => true }
 
-        VCR::Cassette::Reader.should_receive(:new).with(
-          anything, erb
-        ).and_return(mock('reader', :read => empty_cassette_yaml))
+        VCR::Cassette::ERBRenderer.should_receive(:new).with(
+          anything, erb, anything
+        ).and_return(mock('renderer', :render => empty_cassette_yaml))
 
         VCR::Cassette.new('foo', :record => :new_episodes, :erb => erb).http_interactions
       end
 
-      it "passes #{erb.inspect} to the VCR::Cassette::Reader when it is the default :erb option and none is given" do
+      it "passes #{erb.inspect} to the VCR::Cassette::ERBRenderer when it is the default :erb option and none is given" do
         VCR.configuration.default_cassette_options = { :erb => erb }
 
-        VCR::Cassette::Reader.should_receive(:new).with(
-          anything, erb
-        ).and_return(mock('reader', :read => empty_cassette_yaml))
+        VCR::Cassette::ERBRenderer.should_receive(:new).with(
+          anything, erb, anything
+        ).and_return(mock('renderer', :render => empty_cassette_yaml))
 
         VCR::Cassette.new('foo', :record => :new_episodes).http_interactions
       end
@@ -203,6 +185,15 @@ describe VCR::Cassette do
     it 'does not raise an error in the case of an empty file' do
       VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
       VCR::Cassette.new('empty', :record => :none).send(:previously_recorded_interactions).should eq([])
+    end
+
+    let(:custom_persister) { stub("custom persister") }
+
+    it 'reads from the configured persister' do
+      VCR.configuration.cassette_library_dir = nil
+      VCR.cassette_persisters[:foo] = custom_persister
+      custom_persister.should_receive(:[]).with("abc.yml") { "" }
+      VCR::Cassette.new("abc", :persist_with => :foo).http_interactions
     end
 
     VCR::Cassette::VALID_RECORD_MODES.each do |record_mode|
@@ -401,6 +392,19 @@ describe VCR::Cassette do
   end
 
   describe '#eject' do
+    let(:custom_persister) { stub("custom persister", :[] => nil) }
+
+    it 'stores the cassette content using the configured persister' do
+      VCR.configuration.cassette_library_dir = nil
+      VCR.cassette_persisters[:foo] = custom_persister
+      cassette = VCR.insert_cassette("foo", :persist_with => :foo)
+      cassette.record_http_interaction http_interaction
+
+      custom_persister.should_receive(:[]=).with("foo.yml", /http_interactions/)
+
+      cassette.eject
+    end
+
     it "writes the serializable_hash to disk as yaml" do
       cassette = VCR::Cassette.new(:eject_test)
       cassette.record_http_interaction http_interaction # so it has one
