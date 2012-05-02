@@ -139,4 +139,15 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
       end
     end
   end
+
+  describe "when VCR is turned off" do
+    it 'allows white listed connections' do
+      ::FakeWeb.allow_net_connect = %r[localhost]
+
+      VCR.turn_off!
+
+      uri = URI("http://localhost:#{VCR::SinatraApp.port}/foo")
+      Net::HTTP.get(uri).should == "FOO!"
+    end
+  end
 end
