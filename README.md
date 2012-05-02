@@ -165,6 +165,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Betamax](https://github.com/robfletcher/betamax) (Groovy)
 * [VCR.js](https://github.com/elcuervo/vcr.js) (JavaScript)
 * [TapeDeck.js](https://github.com/EndangeredMassa/TapeDeck.js) (JavaScript)
+* [Nock](https://github.com/flatiron/nock) (JavaScript/Node)
 * [Mimic](https://github.com/acoulton/mimic) (PHP/Kohana)
 
 ## Similar Libraries in Ruby
