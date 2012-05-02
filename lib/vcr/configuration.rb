@@ -217,6 +217,7 @@ module VCR
       VCR.cassette_persisters
     end
 
+    define_hook :before_record
     # Adds a callback that will be called before the recorded HTTP interactions
     # are serialized and written to disk.
     #
@@ -240,11 +241,11 @@ module VCR
     #  serialized and written to disk.
     # @yieldparam cassette [(optional) VCR::Cassette] The current cassette.
     # @see #before_playback
-    define_hook :before_record
     def before_record(tag = nil, &block)
       super(tag_filter_from(tag), &block)
     end
 
+    define_hook :before_playback
     # Adds a callback that will be called before a previously recorded
     # HTTP interaction is loaded for playback.
     #
@@ -268,7 +269,6 @@ module VCR
     #  loaded.
     # @yieldparam cassette [(optional) VCR::Cassette] The current cassette.
     # @see #before_record
-    define_hook :before_playback
     def before_playback(tag = nil, &block)
       super(tag_filter_from(tag), &block)
     end
@@ -291,6 +291,7 @@ module VCR
     # @see #around_http_request
     define_hook :before_http_request
 
+    define_hook :after_http_request, :prepend
     # Adds a callback that will be called with each HTTP request after it is complete.
     #
     # @example
@@ -309,7 +310,6 @@ module VCR
     # @yieldparam response [VCR::Response] the response from the request
     # @see #before_http_request
     # @see #around_http_request
-    define_hook :after_http_request, :prepend
     def after_http_request(*filters)
       super(*filters.map { |f| request_filter_from(f) })
     end
