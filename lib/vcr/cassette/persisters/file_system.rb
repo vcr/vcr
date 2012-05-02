@@ -29,7 +29,7 @@ module VCR
         # Sets the cassette for the given storage key (file name).
         #
         # @param [String] file_name the file name
-        # @param [String] the content to store
+        # @param [String] content the content to store
         def []=(file_name, content)
           path = absolute_path_to_file(file_name)
           directory = File.dirname(path)

@@ -35,7 +35,7 @@ module VCR
         # Deserializes the given string using Psych.
         #
         # @param [String] string the YAML string
-        # @param [Hash] hash the deserialized object
+        # @return [Hash] the deserialized object
         def deserialize(string)
           handle_encoding_errors do
             ::Psych.load(string)

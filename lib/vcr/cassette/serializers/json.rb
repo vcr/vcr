@@ -36,7 +36,7 @@ module VCR
         # Deserializes the given string using `MultiJson`.
         #
         # @param [String] string the JSON string
-        # @param [Hash] hash the deserialized object
+        # @return [Hash] the deserialized object
         def deserialize(string)
           handle_encoding_errors do
             MultiJson.decode(string)

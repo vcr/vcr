@@ -17,7 +17,7 @@ module VCR
 
       # Constructs a new instance of the Faraday middleware.
       #
-      # @param [#call] the faraday app
+      # @param [#call] app the faraday app
       def initialize(app)
         super
         @app = app
