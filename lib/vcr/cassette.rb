@@ -43,37 +43,14 @@ module VCR
     # @param (see VCR#insert_cassette)
     # @see VCR#insert_cassette
     def initialize(name, options = {})
-      options = VCR.configuration.default_cassette_options.merge(options)
-      invalid_options = options.keys - [
-        :record, :erb, :match_requests_on, :re_record_interval, :tag, :tags,
-        :update_content_length_header, :allow_playback_repeats, :exclusive,
-        :serialize_with, :preserve_exact_body_bytes, :decode_compressed_response,
-        :persist_with
-      ]
+      @name    = name
+      @options = VCR.configuration.default_cassette_options.merge(options)
 
-      if invalid_options.size > 0
-        raise ArgumentError.new("You passed the following invalid options to VCR::Cassette.new: #{invalid_options.inspect}.")
-      end
-
-      @name                         = name
-      @record_mode                  = options[:record]
-      @erb                          = options[:erb]
-      @match_requests_on            = options[:match_requests_on]
-      @re_record_interval           = options[:re_record_interval]
-      @tags                         = Array(options.fetch(:tags) { options[:tag] })
-      @tags                         << :update_content_length_header if options[:update_content_length_header]
-      @tags                         << :preserve_exact_body_bytes if options[:preserve_exact_body_bytes]
-      @tags                         << :decode_compressed_response if options[:decode_compressed_response]
-      @allow_playback_repeats       = options[:allow_playback_repeats]
-      @exclusive                    = options[:exclusive]
-      @serializer                   = VCR.cassette_serializers[options[:serialize_with]]
-      @persister                    = VCR.cassette_persisters[options[:persist_with]]
-      @record_mode                  = :all if should_re_record?
-      @parent_list                  = @exclusive ? HTTPInteractionList::NullList : VCR.http_interactions
-
+      assert_valid_options!
+      extract_options
       raise_error_unless_valid_record_mode
 
-      log "Initialized with options: #{options.inspect}"
+      log "Initialized with options: #{@options.inspect}"
     end
 
     # Ejects the current cassette. The cassette will no longer be used.
@@ -133,6 +110,42 @@ module VCR
     end
 
   private
+
+    def assert_valid_options!
+      invalid_options = @options.keys - [
+        :record, :erb, :match_requests_on, :re_record_interval, :tag, :tags,
+        :update_content_length_header, :allow_playback_repeats, :exclusive,
+        :serialize_with, :preserve_exact_body_bytes, :decode_compressed_response,
+        :persist_with
+      ]
+
+      if invalid_options.size > 0
+        raise ArgumentError.new("You passed the following invalid options to VCR::Cassette.new: #{invalid_options.inspect}.")
+      end
+    end
+
+    def extract_options
+      [:erb, :match_requests_on, :re_record_interval,
+       :allow_playback_repeats, :exclusive].each do |name|
+        instance_variable_set("@#{name}", @options[name])
+      end
+
+      assign_tags
+
+      @record_mode = @options[:record]
+      @serializer  = VCR.cassette_serializers[@options[:serialize_with]]
+      @persister   = VCR.cassette_persisters[@options[:persist_with]]
+      @record_mode = :all if should_re_record?
+      @parent_list = @exclusive ? HTTPInteractionList::NullList : VCR.http_interactions
+    end
+
+    def assign_tags
+      @tags = Array(@options.fetch(:tags) { @options[:tag] })
+
+      [:update_content_length_header, :preserve_exact_body_bytes, :decode_compressed_response].each do |tag|
+        @tags << tag if @options[tag]
+      end
+    end
 
     def previously_recorded_interactions
       @previously_recorded_interactions ||= if !raw_cassette_bytes.to_s.empty?
