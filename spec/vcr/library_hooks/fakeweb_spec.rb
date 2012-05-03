@@ -147,7 +147,7 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
       VCR.turn_off!
 
       uri = URI("http://localhost:#{VCR::SinatraApp.port}/foo")
-      Net::HTTP.get(uri).should == "FOO!"
+      Net::HTTP.get(uri).should eq("FOO!")
     end
   end
 end
