@@ -146,6 +146,8 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Eric Allam](http://github.com/rubymaverick)
 * [Ezekiel Templin](https://github.com/ezkl)
 * [Flaviu Simihaian](https://github.com/closedbracket)
+* [Gordon Wilson](https://github.com/gordoncww)
+* [Ingemar](https://github.com/ingemar)
 * [Jeff Pollard](https://github.com/Fluxx)
 * [Justin Smestad](https://github.com/jsmestad)
 * [Karl Baum](https://github.com/kbaum)

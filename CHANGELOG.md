@@ -12,6 +12,14 @@
   properly. Previously using one of these would raise an ArgumentError.
   Thanks to [playupchris](https://github.com/playupchris) for reporting
   the bug and providing a fix.
+* Fix FakeWeb hook so that it no longer breaks
+  `FakeWeb.allow_net_connect?` with arguments. Thanks to
+  [Ingemar](https://github.com/ingemar) for reporting the bug and
+  providing a fix.
+* Fix WebMock hook so that it no longer breaks
+  `WebMock.net_connect_allowed?` with arguments. Thanks to
+  [Gordon Wilson](https://github.com/gordoncww) for reporting the bug and
+  providing a fix.
 
 ## 2.1.1 (April 24, 2012)
 
