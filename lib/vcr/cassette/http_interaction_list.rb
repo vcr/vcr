@@ -13,12 +13,13 @@ module VCR
         def remaining_unused_interaction_count(*a); 0; end
       end
 
-      attr_reader :interactions, :request_matchers, :allow_playback_repeats, :parent_list
+      attr_reader :interactions, :request_matchers, :allow_playback_repeats, :allow_episode_skipping, :parent_list
 
-      def initialize(interactions, request_matchers, allow_playback_repeats = false, parent_list = NullList, log_prefix = '')
+      def initialize(interactions, request_matchers, allow_playback_repeats = false, allow_episode_skipping = true, parent_list = NullList, log_prefix = '')
         @interactions           = interactions.dup
         @request_matchers       = request_matchers
         @allow_playback_repeats = allow_playback_repeats
+        @allow_episode_skipping = allow_episode_skipping
         @parent_list            = parent_list
         @used_interactions      = []
         @log_prefix             = log_prefix
