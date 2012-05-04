@@ -29,12 +29,9 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
       end
     end
 
-    unless adapter_module = HTTP_LIBRARY_ADAPTERS[lib]
-      raise ArgumentError.new("No http library adapter module could be found for #{lib}")
-    end
+    http_lib_unsupported = (RUBY_INTERPRETER != :mri && lib =~ /(typhoeus|curb|patron|em-http)/)
 
-    http_lib_unsupported = (RUBY_INTERPRETER != :mri && library =~ /(typhoeus|curb|patron|em-http)/)
-
+    adapter_module = HTTP_LIBRARY_ADAPTERS.fetch(lib)
     describe "using #{adapter_module.http_library_name}", :unless => http_lib_unsupported do
       include adapter_module
 
