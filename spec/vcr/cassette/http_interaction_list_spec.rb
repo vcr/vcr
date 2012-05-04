@@ -87,6 +87,50 @@ module VCR
         end
       end
 
+      describe "#unused_interactions?" do
+        it 'returns true when there are still unused interactions' do
+          list.should have_unused_interactions
+          list.response_for(request_with(:method => :put))
+          list.should have_unused_interactions
+        end
+
+        it 'returns false when there are no unused interactions left' do
+          [:put, :post, :post].each do |method|
+            list.response_for(request_with(:method => method))
+          end
+          list.should_not have_unused_interactions
+        end
+      end
+
+      describe "#assert_finished?" do
+        context 'when allow_episode_skipping is set to false' do
+          let(:allow_episode_skipping) { false }
+
+          it 'should raise a SkippedHTTPRequestError when there are unused interactions left' do
+            expect { list.assert_finished! }.to raise_error Errors::SkippedHTTPRequestError
+            list.response_for(request_with(:method => :put))
+            expect { list.assert_finished! }.to raise_error Errors::SkippedHTTPRequestError
+          end
+
+          it 'should raise nothing when there are no unused interactions left' do
+            [:put, :post, :post].each do |method|
+              list.response_for(request_with(:method => method))
+            end
+            expect { list.assert_finished! }.to_not raise_error
+          end
+        end
+
+        context 'when allow_episode_skipping is set to true' do
+          it 'should raise nothing' do
+            expect { list.assert_finished! }.to_not raise_error
+            [:put, :post, :post].each do |method|
+              list.response_for(request_with(:method => method))
+            end
+            expect { list.assert_finished! }.to_not raise_error
+          end
+        end
+      end
+
       describe "has_interaction_matching?" do
         it 'returns false when the list is empty' do
           HTTPInteractionList.new([], [:method]).should_not have_interaction_matching(stub)

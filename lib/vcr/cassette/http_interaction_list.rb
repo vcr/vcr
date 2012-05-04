@@ -55,6 +55,18 @@ module VCR
         @interactions.size
       end
 
+      # @return [Boolean] Whether or not there are unused interactions left in the list.
+      def has_unused_interactions?
+        @interactions.size > 0
+      end
+
+      # Checks if we can stop using this interaction list without consequences.
+      # @raise [VCR::Errors::SkippedHTTPRequestError] when not all interactions were played back
+      #  when allow_episode_skipping is off.
+      def assert_finished!
+        raise Errors::SkippedHTTPRequestError if !allow_episode_skipping && has_unused_interactions?
+      end
+
     private
 
       def request_summary(request)
