@@ -49,6 +49,12 @@ shared_examples_for "a body normalizer" do
   it 'converts nil to a blank string' do
     instance(nil).body.should eq("")
   end
+
+  it 'raises an error if given another type of object as the body' do
+    expect {
+      instance(:a => "hash")
+    }.to raise_error(ArgumentError)
+  end
 end
 
 module VCR
