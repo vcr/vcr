@@ -419,6 +419,7 @@ module VCR
       @default_cassette_options = {
         :record            => :once,
         :match_requests_on => RequestMatcherRegistry::DEFAULT_MATCHERS,
+        :allow_unused_http_interactions => true,
         :serialize_with    => :yaml,
         :persist_with      => :file_system
       }

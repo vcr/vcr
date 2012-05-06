@@ -66,7 +66,6 @@ module VCR
         should_stub_requests? ? previously_recorded_interactions : [],
         match_requests_on,
         @allow_playback_repeats,
-        @allow_episode_skipping,
         @parent_list,
         log_prefix
     end
@@ -115,8 +114,8 @@ module VCR
     def assert_valid_options!
       invalid_options = @options.keys - [
         :record, :erb, :match_requests_on, :re_record_interval, :tag, :tags,
-        :update_content_length_header, :allow_playback_repeats, :allow_episode_skipping, :exclusive,
-        :serialize_with, :preserve_exact_body_bytes, :decode_compressed_response,
+        :update_content_length_header, :allow_playback_repeats, :allow_unused_http_interactions,
+        :exclusive, :serialize_with, :preserve_exact_body_bytes, :decode_compressed_response,
         :persist_with
       ]
 
@@ -125,9 +124,9 @@ module VCR
       end
     end
 
-    def extract_options
+  def extract_options
       [:erb, :match_requests_on, :re_record_interval,
-       :allow_playback_repeats, :allow_episode_skipping, :exclusive].each do |name|
+       :allow_playback_repeats, :allow_unused_http_interactions, :exclusive].each do |name|
         instance_variable_set("@#{name}", @options[name])
       end
 

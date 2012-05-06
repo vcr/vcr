@@ -44,8 +44,7 @@ module VCR
       ] end
 
       let(:allow_playback_repeats) { false } # the default
-      let(:allow_episode_skipping) { true } # the default
-      let(:list) { HTTPInteractionList.new(original_list_array, [:method], allow_playback_repeats, allow_episode_skipping) }
+      let(:list) { HTTPInteractionList.new(original_list_array, [:method], allow_playback_repeats) }
 
       describe "#has_used_interaction_matching?" do
         it 'returns false when no interactions have been used' do
@@ -87,47 +86,18 @@ module VCR
         end
       end
 
-      describe "#unused_interactions?" do
-        it 'returns true when there are still unused interactions' do
-          list.should have_unused_interactions
-          list.response_for(request_with(:method => :put))
-          list.should have_unused_interactions
+      describe "#assert_no_unused_interactions?" do
+        it 'should raise a SkippedHTTPRequestError when there are unused interactions left' do
+           expect { list.assert_no_unused_interactions! }.to raise_error Errors::SkippedHTTPRequestError
+           list.response_for(request_with(:method => :put))
+           expect { list.assert_no_unused_interactions! }.to raise_error Errors::SkippedHTTPRequestError
         end
 
-        it 'returns false when there are no unused interactions left' do
+        it 'should raise nothing when there are no unused interactions left' do
           [:put, :post, :post].each do |method|
             list.response_for(request_with(:method => method))
           end
-          list.should_not have_unused_interactions
-        end
-      end
-
-      describe "#assert_finished?" do
-        context 'when allow_episode_skipping is set to false' do
-          let(:allow_episode_skipping) { false }
-
-          it 'should raise a SkippedHTTPRequestError when there are unused interactions left' do
-            expect { list.assert_finished! }.to raise_error Errors::SkippedHTTPRequestError
-            list.response_for(request_with(:method => :put))
-            expect { list.assert_finished! }.to raise_error Errors::SkippedHTTPRequestError
-          end
-
-          it 'should raise nothing when there are no unused interactions left' do
-            [:put, :post, :post].each do |method|
-              list.response_for(request_with(:method => method))
-            end
-            expect { list.assert_finished! }.to_not raise_error
-          end
-        end
-
-        context 'when allow_episode_skipping is set to true' do
-          it 'should raise nothing' do
-            expect { list.assert_finished! }.to_not raise_error
-            [:put, :post, :post].each do |method|
-              list.response_for(request_with(:method => method))
-            end
-            expect { list.assert_finished! }.to_not raise_error
-          end
+          list.assert_no_unused_interactions! # should not raise an error.
         end
       end
 
@@ -168,9 +138,9 @@ module VCR
 
         it "delegates to the parent list when it can't find a matching interaction" do
           parent_list = mock(:has_interaction_matching? => true)
-          HTTPInteractionList.new( [], [:method], false, allow_episode_skipping, parent_list).should have_interaction_matching(stub)
+          HTTPInteractionList.new( [], [:method], false, parent_list).should have_interaction_matching(stub)
           parent_list = mock(:has_interaction_matching? => false)
-          HTTPInteractionList.new( [], [:method], false, allow_episode_skipping, parent_list).should_not have_interaction_matching(stub)
+          HTTPInteractionList.new( [], [:method], false, parent_list).should_not have_interaction_matching(stub)
         end
 
         context 'when allow_playback_repeats is set to true' do
@@ -240,7 +210,7 @@ module VCR
         it "delegates to the parent list when it can't find a matching interaction" do
           parent_list = mock(:response_for => response('parent'))
           HTTPInteractionList.new(
-            [], [:method], false, allow_episode_skipping, parent_list
+            [], [:method], false, parent_list
           ).response_for(stub).should respond_with('parent')
         end
 

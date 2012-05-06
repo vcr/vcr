@@ -13,13 +13,12 @@ module VCR
         def remaining_unused_interaction_count(*a); 0; end
       end
 
-      attr_reader :interactions, :request_matchers, :allow_playback_repeats, :allow_episode_skipping, :parent_list
+      attr_reader :interactions, :request_matchers, :allow_playback_repeats, :parent_list
 
-      def initialize(interactions, request_matchers, allow_playback_repeats = false, allow_episode_skipping = true, parent_list = NullList, log_prefix = '')
+      def initialize(interactions, request_matchers, allow_playback_repeats = false, parent_list = NullList, log_prefix = '')
         @interactions           = interactions.dup
         @request_matchers       = request_matchers
         @allow_playback_repeats = allow_playback_repeats
-        @allow_episode_skipping = allow_episode_skipping
         @parent_list            = parent_list
         @used_interactions      = []
         @log_prefix             = log_prefix
@@ -55,19 +54,19 @@ module VCR
         @interactions.size
       end
 
+      # Checks if there are no unused interactions left.
+      # @raise [VCR::Errors::SkippedHTTPRequestError] when not all interactions were played back
+      #  when allow_episode_skipping is off.
+      def assert_no_unused_interactions!
+        raise Errors::SkippedHTTPRequestError if has_unused_interactions?
+      end
+
+    private
+
       # @return [Boolean] Whether or not there are unused interactions left in the list.
       def has_unused_interactions?
         @interactions.size > 0
       end
-
-      # Checks if we can stop using this interaction list without consequences.
-      # @raise [VCR::Errors::SkippedHTTPRequestError] when not all interactions were played back
-      #  when allow_episode_skipping is off.
-      def assert_finished!
-        raise Errors::SkippedHTTPRequestError if !allow_episode_skipping && has_unused_interactions?
-      end
-
-    private
 
       def request_summary(request)
         super(request, @request_matchers)

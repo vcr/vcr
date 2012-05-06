@@ -337,14 +337,6 @@ describe VCR::Cassette do
           end
         end
 
-        [true, false].each do |value|
-          it "instantiates the http_interactions with allow_episode_skipping = #{value} if given :allow_episode_skipping => #{value}" do
-            VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
-            cassette = VCR::Cassette.new('example', :record => record_mode, :allow_episode_skipping => value)
-            cassette.http_interactions.allow_episode_skipping.should eq(value)
-          end
-        end
-
         it "instantiates the http_interactions with parent_list set to a null list if given :exclusive => true" do
           VCR.stub(:http_interactions => stub)
           VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
