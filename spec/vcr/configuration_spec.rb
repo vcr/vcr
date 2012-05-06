@@ -25,6 +25,7 @@ describe VCR::Configuration do
     it 'has a hash with some defaults' do
       subject.default_cassette_options.should eq({
         :match_requests_on => VCR::RequestMatcherRegistry::DEFAULT_MATCHERS,
+        :allow_unused_http_interactions => true,
         :record            => :once,
         :serialize_with    => :yaml,
         :persist_with      => :file_system
