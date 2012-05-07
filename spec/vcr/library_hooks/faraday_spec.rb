@@ -40,5 +40,15 @@ describe "Faraday hook" do
       Faraday::Adapter::NetHttp
     ])
   end
+
+  it 'prints a warning if the faraday connection stack contains a middleware after the HTTP adapter' do
+    conn = Faraday.new(:url => 'http://sushi.com') do |builder|
+      builder.use Faraday::Adapter::NetHttp
+      builder.use Faraday::Response::Logger
+    end
+
+    conn.builder.should_receive(:warn).with(/Faraday::Response::Logger/)
+    conn.builder.lock!
+  end
 end
 
