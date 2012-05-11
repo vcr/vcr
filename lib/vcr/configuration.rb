@@ -164,7 +164,7 @@ module VCR
     #   end
     #
     # @param placeholder [String] The placeholder string.
-    # @param tag [Symbol] Set this apply this to only to cassettes
+    # @param tag [Symbol] Set this to apply this only to cassettes
     #  with a matching tag; otherwise it will apply to every cassette.
     # @yield block that determines what string to replace
     # @yieldparam interaction [(optional) VCR::HTTPInteraction::HookAware] the HTTP interaction
