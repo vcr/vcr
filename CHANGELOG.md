@@ -20,6 +20,12 @@
   `WebMock.net_connect_allowed?` with arguments. Thanks to
   [Gordon Wilson](https://github.com/gordoncww) for reporting the bug and
   providing a fix.
+* Print a warning when VCR is used with a poorly behaved Faraday
+  connection stack that has a middleware after the HTTP adapter.
+  VCR may work improperly in this case.
+* Raise an error if a response object is recorded with a non-string
+  body. This fails early and indicates the problem rather than failing
+  later with a strange error.
 * Fix `filter_sensitive_data`/`define_cassette_placeholder` so that they
   handle non-strings gracefully (e.g. the port number as a Fixnum).
 * Gracefully handle Faraday connection stacks that do not explicitly
