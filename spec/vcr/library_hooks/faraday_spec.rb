@@ -50,5 +50,19 @@ describe "Faraday hook" do
     conn.builder.should_receive(:warn).with(/Faraday::Response::Logger/)
     conn.builder.lock!
   end
+
+  it 'gracefully handles the case where there is no explicit HTTP adapter' do
+    conn = Faraday.new(:url => 'http://sushi.com') do |builder|
+      builder.request  :url_encoded
+      builder.response :logger
+    end
+
+    conn.builder.lock!
+    conn.builder.handlers.map(&:klass).should eq([
+      Faraday::Request::UrlEncoded,
+      Faraday::Response::Logger,
+      VCR::Middleware::Faraday
+    ])
+  end
 end
 

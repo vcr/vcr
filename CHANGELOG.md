@@ -22,6 +22,9 @@
   providing a fix.
 * Fix `filter_sensitive_data`/`define_cassette_placeholder` so that they
   handle non-strings gracefully (e.g. the port number as a Fixnum).
+* Gracefully handle Faraday connection stacks that do not explicitly
+  specify an HTTP adapter. Thanks to [Patrick Roby](https://github.com/proby)
+  for reporting the bug.
 
 ## 2.1.1 (April 24, 2012)
 
