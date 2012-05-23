@@ -502,10 +502,11 @@ module VCR
       # Replaces a string in any part of the HTTP interaction (headers, request body,
       # response body, etc) with the given replacement text.
       #
-      # @param [String] text the text to replace
-      # @param [String] replacement_text the text to put in its place
+      # @param [#to_s] text the text to replace
+      # @param [#to_s] replacement_text the text to put in its place
       def filter!(text, replacement_text)
-        return self if [text, replacement_text].any? { |t| t.to_s.empty? }
+        text, replacement_text = text.to_s, replacement_text.to_s
+        return self if [text, replacement_text].any? { |t| t.empty? }
         filter_object!(self, text, replacement_text)
       end
 

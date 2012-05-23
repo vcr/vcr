@@ -354,6 +354,12 @@ module VCR
       it 'replaces sensitive text in the request URI' do
         filtered.request.uri.should eq('http://example-AAA.com/AAA/')
       end
+
+      it 'handles numbers (such as the port) properly' do
+        request.uri = "http://foo.com:9000/bar"
+        subject.filter!(9000, "<PORT>")
+        request.uri.should eq("http://foo.com:<PORT>/bar")
+      end
     end
   end
 

@@ -20,6 +20,8 @@
   `WebMock.net_connect_allowed?` with arguments. Thanks to
   [Gordon Wilson](https://github.com/gordoncww) for reporting the bug and
   providing a fix.
+* Fix `filter_sensitive_data`/`define_cassette_placeholder` so that they
+  handle non-strings gracefully (e.g. the port number as a Fixnum).
 
 ## 2.1.1 (April 24, 2012)
 
