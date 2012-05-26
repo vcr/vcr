@@ -46,7 +46,7 @@ module VCR
         end
 
         def typed_request_for(webmock_request, remove = false)
-          if webmock_request.instance_variables.include?(:@__typed_vcr_request)
+          if webmock_request.instance_variables.find { |v| v.to_sym == :@__typed_vcr_request }
             meth = remove ? :remove_instance_variable : :instance_variable_get
             return webmock_request.send(meth, :@__typed_vcr_request)
           end
