@@ -8,7 +8,61 @@ module VCR
   class LibraryHooks
     # @private
     module WebMock
+      # @private
+      module Helpers
+        def vcr_request_for(webmock_request)
+          VCR::Request.new \
+            webmock_request.method,
+            webmock_request.uri.to_s,
+            webmock_request.body,
+            request_headers_for(webmock_request)
+        end
+
+        # @private
+        def vcr_response_for(webmock_response)
+          VCR::Response.new \
+            VCR::ResponseStatus.new(*webmock_response.status),
+            webmock_response.headers,
+            webmock_response.body,
+            nil
+        end
+
+        if defined?(::Excon)
+          # @private
+          def request_headers_for(webmock_request)
+            return nil unless webmock_request.headers
+
+            # WebMock hooks deeply into a Excon at a place where it manually adds a "Host"
+            # header, but this isn't a header we actually care to store...
+            webmock_request.headers.dup.tap do |headers|
+              headers.delete("Host")
+            end
+          end
+        else
+          # @private
+          def request_headers_for(webmock_request)
+            webmock_request.headers
+          end
+        end
+
+        def typed_request_for(webmock_request, remove = false)
+          if webmock_request.instance_variables.include?(:@__typed_vcr_request)
+            meth = remove ? :remove_instance_variable : :instance_variable_get
+            return webmock_request.send(meth, :@__typed_vcr_request)
+          end
+
+          warn <<-EOS.gsub(/^\s+\|/, '')
+            |WARNING: There appears to be a bug in WebMock's after_request hook
+            |         and VCR is attempting to work around it. Some VCR features
+            |         may not work properly.
+          EOS
+
+          Request::Typed.new(vcr_request_for(webmock_request), :unknown)
+        end
+      end
+
       class RequestHandler < ::VCR::RequestHandler
+        include Helpers
 
         attr_reader :request
         def initialize(request)
@@ -23,29 +77,7 @@ module VCR
         end
 
         def vcr_request
-          @vcr_request ||= VCR::Request.new \
-            request.method,
-            request.uri.to_s,
-            request.body,
-            request_headers
-        end
-
-        if defined?(::Excon)
-          # @private
-          def request_headers
-            return nil unless request.headers
-
-            # WebMock hooks deeply into a Excon at a place where it manually adds a "Host"
-            # header, but this isn't a header we actually care to store...
-            request.headers.dup.tap do |headers|
-              headers.delete("Host")
-            end
-          end
-        else
-          # @private
-          def request_headers
-            request.headers
-          end
+          @vcr_request ||= vcr_request_for(request)
         end
 
         def on_unhandled_request
@@ -62,22 +94,14 @@ module VCR
         end
       end
 
-      # @private
-      def self.vcr_response_from(response)
-        VCR::Response.new \
-          VCR::ResponseStatus.new(response.status.first, response.status.last),
-          response.headers,
-          response.body,
-          nil
-      end
+      extend Helpers
 
       ::WebMock.globally_stub_request { |req| RequestHandler.new(req).handle }
 
       ::WebMock.after_request(:real_requests_only => true) do |request, response|
         unless VCR.library_hooks.disabled?(:webmock)
           http_interaction = VCR::HTTPInteraction.new \
-            request.send(:instance_variable_get, :@__typed_vcr_request),
-            vcr_response_from(response)
+            typed_request_for(request), vcr_response_for(response)
 
           VCR.record_http_interaction(http_interaction)
         end
@@ -85,8 +109,10 @@ module VCR
 
       ::WebMock.after_request do |request, response|
         unless VCR.library_hooks.disabled?(:webmock)
-          typed_vcr_request = request.send(:remove_instance_variable, :@__typed_vcr_request)
-          VCR.configuration.invoke_hook(:after_http_request, typed_vcr_request, vcr_response_from(response))
+          VCR.configuration.invoke_hook \
+            :after_http_request,
+            typed_request_for(request),
+            vcr_response_for(response)
         end
       end
     end

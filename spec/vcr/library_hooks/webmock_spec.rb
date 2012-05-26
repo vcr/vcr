@@ -18,6 +18,47 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
     ::WebMock.stub_request(method, url).to_return(:body => response_body)
   end
 
+  context 'when WebMock has a bug and the request does not have the @__typed_vcr_request in the after_request callbacks' do
+    let(:webmock_request) { ::WebMock::RequestSignature.new(:get, "http://foo.com/", :body => "", :headers => {}) }
+    let(:webmock_response) { ::WebMock::Response.new(:body => 'OK', :status => [200, '']) }
+    let(:warner) { VCR::LibraryHooks::WebMock }
+
+    before { warner.stub(:warn) }
+
+    def run_after_request_callback
+      ::WebMock::CallbackRegistry.invoke_callbacks(
+        { :real_request => true },
+        webmock_request,
+        webmock_response)
+    end
+
+    it 'records the HTTP interaction properly' do
+      VCR.should_receive(:record_http_interaction) do |i|
+        i.request.uri.should eq("http://foo.com/")
+        i.response.body.should eq("OK")
+      end
+
+      run_after_request_callback
+    end
+
+    it 'invokes the after_http_request hook with an :unknown request' do
+      request = nil
+      VCR.configuration.after_http_request do |req, res|
+        request = req
+      end
+
+      run_after_request_callback
+      request.uri.should eq("http://foo.com/")
+      request.type.should eq(:unknown)
+    end
+
+    it 'prints a warning' do
+      warner.should_receive(:warn).at_least(:once).with(/bug.*after_request/)
+
+      run_after_request_callback
+    end
+  end
+
   %w[net/http patron httpclient em-http-request curb typhoeus excon].each do |lib|
     other = []
     other << :status_message_not_exposed if lib == 'excon'

@@ -31,6 +31,14 @@
 * Gracefully handle Faraday connection stacks that do not explicitly
   specify an HTTP adapter. Thanks to [Patrick Roby](https://github.com/proby)
   for reporting the bug.
+* Work around a bug in WebMock's em-http-request adapter that prevented
+  VCR from working when using the `:redirects` option with
+  em-http-request. This change is just a work around. It fixes the main
+  problem, but some features (such as the http request hooks) may not
+  work properly for this case. The bug will ultimately need to be
+  [fixed in WebMock](https://github.com/bblimke/webmock/pull/185).
+  Thanks to [Mark Abramov](https://github.com/markiz) for reporting
+  the bug and providing a great example test case.
 
 ## 2.1.1 (April 24, 2012)
 
