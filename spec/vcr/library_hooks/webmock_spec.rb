@@ -18,12 +18,9 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
     ::WebMock.stub_request(method, url).to_return(:body => response_body)
   end
 
-  context 'when WebMock has a bug and the request does not have the @__typed_vcr_request in the after_request callbacks' do
+  describe "our WebMock.after_request hook" do
     let(:webmock_request) { ::WebMock::RequestSignature.new(:get, "http://foo.com/", :body => "", :headers => {}) }
     let(:webmock_response) { ::WebMock::Response.new(:body => 'OK', :status => [200, '']) }
-    let(:warner) { VCR::LibraryHooks::WebMock }
-
-    before { warner.stub(:warn) }
 
     def run_after_request_callback
       ::WebMock::CallbackRegistry.invoke_callbacks(
@@ -32,30 +29,43 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
         webmock_response)
     end
 
-    it 'records the HTTP interaction properly' do
-      VCR.should_receive(:record_http_interaction) do |i|
-        i.request.uri.should eq("http://foo.com/")
-        i.response.body.should eq("OK")
-      end
+    it 'removes the @__typed_vcr_request instance variable so as not to pollute the webmock object' do
+      request = VCR::Request::Typed.new(VCR::Request, :ignored?)
+      webmock_request.instance_variable_set(:@__typed_vcr_request, request)
 
       run_after_request_callback
+      webmock_request.instance_variables.map(&:to_sym).should_not include(:@__typed_vcr_request)
     end
 
-    it 'invokes the after_http_request hook with an :unknown request' do
-      request = nil
-      VCR.configuration.after_http_request do |req, res|
-        request = req
+    context "when there'ss a bug and the request does not have the @__typed_vcr_request in the after_request callbacks" do
+      let(:warner) { VCR::LibraryHooks::WebMock }
+      before { warner.stub(:warn) }
+
+      it 'records the HTTP interaction properly' do
+        VCR.should_receive(:record_http_interaction) do |i|
+          i.request.uri.should eq("http://foo.com/")
+          i.response.body.should eq("OK")
+        end
+
+        run_after_request_callback
       end
 
-      run_after_request_callback
-      request.uri.should eq("http://foo.com/")
-      request.type.should eq(:unknown)
-    end
+      it 'invokes the after_http_request hook with an :unknown request' do
+        request = nil
+        VCR.configuration.after_http_request do |req, res|
+          request = req
+        end
 
-    it 'prints a warning' do
-      warner.should_receive(:warn).at_least(:once).with(/bug.*after_request/)
+        run_after_request_callback
+        request.uri.should eq("http://foo.com/")
+        request.type.should eq(:unknown)
+      end
 
-      run_after_request_callback
+      it 'prints a warning' do
+        warner.should_receive(:warn).at_least(:once).with(/bug.*after_request/)
+
+        run_after_request_callback
+      end
     end
   end
 

@@ -111,7 +111,7 @@ module VCR
         unless VCR.library_hooks.disabled?(:webmock)
           VCR.configuration.invoke_hook \
             :after_http_request,
-            typed_request_for(request),
+            typed_request_for(request, :remove),
             vcr_response_for(response)
         end
       end
