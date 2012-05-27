@@ -1,5 +1,6 @@
 language: ruby
 env: CUCUMBER_FORMAT=progress
+before_install: "gem uninstall json -a -I"
 bundler_args: --without extras
 script: "script/ci.sh"
 rvm:
