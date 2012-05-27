@@ -28,7 +28,14 @@ end
 
 require 'rspec'
 
-Dir['./spec/support/**/*.rb'].each { |f| require f }
+require "support/fixnum_extension.rb"
+require "support/http_library_adapters.rb"
+require "support/ruby_interpreter.rb"
+require "support/shared_example_groups/hook_into_http_library.rb"
+require "support/shared_example_groups/request_hooks.rb"
+require "support/sinatra_app.rb"
+require "support/vcr_localhost_server.rb"
+require "support/vcr_stub_helpers.rb"
 
 require 'vcr'
 require 'monkey_patches'
