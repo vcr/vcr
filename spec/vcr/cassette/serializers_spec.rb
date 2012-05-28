@@ -1,3 +1,4 @@
+require 'support/ruby_interpreter'
 require 'vcr/cassette/serializers'
 require 'multi_json'
 begin
@@ -75,7 +76,7 @@ module VCR
         end
 
         engines.each do |engine, error|
-          context "when MultiJson is configured to use #{engine.inspect}" do
+          context "when MultiJson is configured to use #{engine.inspect}", :unless => (RUBY_INTERPRETER == :jruby) do
             before { MultiJson.engine = engine }
             it_behaves_like "encoding error handling", :json, error do
               let(:string) { "\xFA" }
@@ -159,7 +160,7 @@ module VCR
           ::YAML::ENGINE.yamler = 'psych'
           serialized = subject[:syck].serialize(problematic_syck_string)
           subject[:syck].deserialize(serialized).should_not eq(problematic_syck_string)
-        end if defined?(::Psych)
+        end if defined?(::Psych) && (RUBY_INTERPRETER != :jruby)
       end
     end
   end

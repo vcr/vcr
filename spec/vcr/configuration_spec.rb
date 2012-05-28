@@ -132,7 +132,7 @@ describe VCR::Configuration do
 
       before_record_req.should_not respond_to(:type)
       before_request_req.should respond_to(:type)
-    end unless RUBY_VERSION =~ /^1\.8/
+    end unless (RUBY_VERSION =~ /^1\.8/ || RUBY_INTERPRETER == :jruby)
 
     specify 'the filter_sensitive_data option works even when it modifies the URL in a way that makes it an invalid URI' do
       VCR.configure do |c|
