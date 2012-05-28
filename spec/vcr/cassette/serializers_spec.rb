@@ -16,7 +16,7 @@ module VCR
               result = serializer.serialize("a" => string)
               serializer.deserialize(result)
             }.to raise_error(error_class, /preserve_exact_body_bytes/)
-          end
+          end unless (RUBY_INTERPRETER == :rubinius && RUBY_VERSION =~ /^1.9/)
         end
       end
 
