@@ -198,13 +198,20 @@ module VCR
         end
 
         context 'when the string cannot be encoded as the original encoding' do
+          def verify_encoding_error
+            pending "rubinius 1.9 mode does not raise an encoding error", :if => (RUBY_INTERPRETER == :rubinius && RUBY_VERSION =~ /^1.9/) do
+              expect { "\xFAbc".encode("ISO-8859-1") }.to raise_error(EncodingError)
+            end
+          end
+
           before do
             Request.stub(:warn)
             Response.stub(:warn)
 
             hash['request']['body']  = { 'string' => "\xFAbc", 'encoding' => 'ISO-8859-1' }
             hash['response']['body']  = { 'string' => "\xFAbc", 'encoding' => 'ISO-8859-1' }
-            expect { "\xFAbc".encode("ISO-8859-1") }.to raise_error(EncodingError)
+
+            verify_encoding_error
           end
 
           it 'does not force the encoding' do
