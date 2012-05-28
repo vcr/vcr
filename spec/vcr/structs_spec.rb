@@ -15,12 +15,10 @@ shared_examples_for "a header normalizer" do
   end
 
   it 'ensures header keys are serialized to yaml as raw strings' do
-    pending "this is failing due to a weird new rubinius issue on travis", :if => (RUBY_INTERPRETER == :rubinius) do
-      key = 'my-key'
-      key.instance_variable_set(:@foo, 7)
-      instance = with_headers(key => ['value1'])
-      YAML.dump(instance.headers).should eq(YAML.dump('my-key' => ['value1']))
-    end
+    key = 'my-key'
+    key.instance_variable_set(:@foo, 7)
+    instance = with_headers(key => ['value1'])
+    YAML.dump(instance.headers).should eq(YAML.dump('my-key' => ['value1']))
   end
 
   it 'ensures header values are serialized to yaml as raw strings' do
