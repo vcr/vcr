@@ -123,6 +123,19 @@ Then /^it should (pass|fail) with "([^"]*)"$/ do |pass_fail, partial_output|
   assert_exit_status_and_partial_output(pass_fail == 'pass', partial_output)
 end
 
+Then /^it should (pass|fail) with an error like:$/ do |pass_fail, partial_output|
+  assert_success(pass_fail == 'pass')
+
+  # Rubinius includes extra leading spaces on some errors for some reason...
+  first_line_re = Regexp.escape(partial_output.split("\n").first)
+  leading_whitespace = all_output[/^(\s*)#{first_line_re}/, 1]
+  unless leading_whitespace.to_s == ''
+    partial_output.gsub!(/^/, leading_whitespace)
+  end
+
+  assert_partial_output(partial_output, all_output)
+end
+
 Then /^the output should contain each of the following:$/ do |table|
   table.raw.flatten.each do |string|
     assert_partial_output(string, all_output)

@@ -65,7 +65,7 @@ Feature: Ignore Request
       puts response_body_for(:get, "http://localhost:8888/")
       """
     When I run `ruby ignore_request.rb`
-    Then it should fail with:
+    Then it should fail with an error like:
       """
       An HTTP request has been made that VCR does not know how to handle:
         GET http://localhost:8888/
