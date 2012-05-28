@@ -582,22 +582,24 @@ module VCR
           end
 
           it "unzips gzipped response" do
-            io = StringIO.new
+            pending "rubinius 1.9 mode has a Gzip issue", :if => (RUBY_INTERPRETER == :rubinius && RUBY_VERSION =~ /^1.9/) do
+              io = StringIO.new
 
-            writer = Zlib::GzipWriter.new(io)
-            writer << content
-            writer.close
+              writer = Zlib::GzipWriter.new(io)
+              writer << content
+              writer.close
 
-            gzipped = io.string
-            resp = instance(gzipped, 'gzip')
-            resp.should be_compressed
-            expect {
-              resp.decompress.should equal(resp)
-              resp.should_not be_compressed
-              resp.body.should eq(content)
-            }.to change { resp.headers['content-length'] }.
-              from([gzipped.bytesize.to_s]).
-              to([content.bytesize.to_s])
+              gzipped = io.string
+              resp = instance(gzipped, 'gzip')
+              resp.should be_compressed
+              expect {
+                resp.decompress.should equal(resp)
+                resp.should_not be_compressed
+                resp.body.should eq(content)
+              }.to change { resp.headers['content-length'] }.
+                from([gzipped.bytesize.to_s]).
+                to([content.bytesize.to_s])
+            end
           end
 
           it "inflates deflated response" do
