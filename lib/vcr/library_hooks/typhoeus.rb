@@ -25,6 +25,10 @@ module VCR
 
       private
 
+        def externally_stubbed?
+          ::Typhoeus::Hydra.stubs.detect { |stub| stub.matches?(request) }
+        end
+
         def set_typed_request_for_after_hook(*args)
           super
           request.instance_variable_set(:@__typed_vcr_request, @after_hook_typed_request)
@@ -35,7 +39,7 @@ module VCR
           super
         end
 
-        def on_stubbed_request
+        def on_stubbed_by_vcr_request
           ::Typhoeus::Response.new \
             :http_version   => stubbed_response.http_version,
             :code           => stubbed_response.status.code,

@@ -213,8 +213,8 @@ describe VCR::Configuration do
 
     it 'handles symbol request predicate filters properly' do
       yielded = false
-      subject.after_http_request(:stubbed?) { |req| yielded = true }
-      subject.invoke_hook(:after_http_request, request(:stubbed), response)
+      subject.after_http_request(:stubbed_by_vcr?) { |req| yielded = true }
+      subject.invoke_hook(:after_http_request, request(:stubbed_by_vcr), response)
       yielded.should be_true
 
       yielded = false

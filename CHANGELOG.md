@@ -39,6 +39,8 @@
   [fixed in WebMock](https://github.com/bblimke/webmock/pull/185).
   Thanks to [Mark Abramov](https://github.com/markiz) for reporting
   the bug and providing a great example test case.
+* Allow requests to be stubbed by external libraries (e.g. WebMock,
+  FakeWeb or Typhoeus) without needing to turn VCR off.
 
 ## 2.1.1 (April 24, 2012)
 

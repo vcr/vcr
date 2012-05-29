@@ -386,7 +386,8 @@ module VCR
       end
     end
 
-    [:ignored, :stubbed, :recordable, :unhandled].each do |type|
+    valid_types = [:ignored, :stubbed_by_vcr, :externally_stubbed, :recordable, :unhandled]
+    valid_types.each do |type|
       describe "##{type}?" do
         it "returns true if the type is set to :#{type}" do
           Request::Typed.new(stub, type).send("#{type}?").should be_true
@@ -399,15 +400,31 @@ module VCR
     end
 
     describe "#real?" do
-      [:ignored, :recordable].each do |type|
+      real_types = [:ignored, :recordable]
+      real_types.each do |type|
         it "returns true if the type is set to :#{type}" do
           Request::Typed.new(stub, type).should be_real
         end
       end
 
-      [:stubbed, :unhandled].each do |type|
+      (valid_types - real_types).each do |type|
         it "returns false if the type is set to :#{type}" do
           Request::Typed.new(stub, type).should_not be_real
+        end
+      end
+    end
+
+    describe "#stubbed?" do
+      stubbed_types = [:externally_stubbed, :stubbed_by_vcr]
+      stubbed_types.each do |type|
+        it "returns true if the type is set to :#{type}" do
+          Request::Typed.new(stub, type).should be_stubbed
+        end
+      end
+
+      (valid_types - stubbed_types).each do |type|
+        it "returns false if the type is set to :#{type}" do
+          Request::Typed.new(stub, type).should_not be_stubbed
         end
       end
     end

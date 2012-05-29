@@ -32,8 +32,9 @@ module VCR
 
     def request_type(consume_stub = false)
       case
+        when externally_stubbed?                then :externally_stubbed
         when should_ignore?                     then :ignored
-        when has_response_stub?(consume_stub)   then :stubbed
+        when has_response_stub?(consume_stub)   then :stubbed_by_vcr
         when VCR.real_http_connections_allowed? then :recordable
         else                                         :unhandled
       end
@@ -48,6 +49,10 @@ module VCR
     def invoke_after_request_hook(vcr_response)
       return if disabled?
       VCR.configuration.invoke_hook(:after_http_request, @after_hook_typed_request, vcr_response)
+    end
+
+    def externally_stubbed?
+      false
     end
 
     def should_ignore?
@@ -76,10 +81,13 @@ module VCR
     end
 
     # Subclasses can implement these
+    def on_externally_stubbed_request
+    end
+
     def on_ignored_request
     end
 
-    def on_stubbed_request
+    def on_stubbed_by_vcr_request
     end
 
     def on_recordable_request

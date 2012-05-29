@@ -144,6 +144,28 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
           directly_stub_request(:get, request_url, "stubbed response")
           get_body_string(make_http_request(:get, request_url)).should eq("stubbed response")
         end
+
+        it 'can directly stub the request when VCR is turned on and no cassette is in use' do
+          directly_stub_request(:get, request_url, "stubbed response")
+          get_body_string(make_http_request(:get, request_url)).should eq("stubbed response")
+        end
+
+        it 'can directly stub the request when VCR is turned on and a cassette is in use' do
+          VCR.use_cassette("temp") do
+            directly_stub_request(:get, request_url, "stubbed response")
+            get_body_string(make_http_request(:get, request_url)).should eq("stubbed response")
+          end
+        end
+
+        it 'does not record requests that are directly stubbed' do
+          VCR.should respond_to(:record_http_interaction)
+          VCR.should_not_receive(:record_http_interaction)
+
+          VCR.use_cassette("temp") do
+            directly_stub_request(:get, request_url, "stubbed response")
+            get_body_string(make_http_request(:get, request_url)).should eq("stubbed response")
+          end
+        end
       end
     end
 
@@ -306,6 +328,14 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
         it_behaves_like "request hooks", library_hook_name, :ignored
       end
 
+      context "when the request is directly stubbed" do
+        before(:each) do
+          directly_stub_request(:get, request_url, "FOO!")
+        end
+
+        it_behaves_like "request hooks", library_hook_name, :externally_stubbed
+      end if method_defined?(:directly_stub_request)
+
       context 'when the request is recorded' do
         let!(:inserted_cassette) { VCR.insert_cassette('new_cassette') }
 
@@ -341,7 +371,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
           stub_requests([http_interaction(request_url)], [:method, :uri])
         end
 
-        it_behaves_like "request hooks", library_hook_name, :stubbed
+        it_behaves_like "request hooks", library_hook_name, :stubbed_by_vcr
       end
 
       context 'when the request is not allowed' do

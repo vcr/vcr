@@ -23,7 +23,7 @@ module VCR
 
       private
 
-        def on_stubbed_request
+        def on_stubbed_by_vcr_request
           @vcr_response = stubbed_response
           {
             :body     => stubbed_response.body,

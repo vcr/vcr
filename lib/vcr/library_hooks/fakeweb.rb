@@ -40,6 +40,10 @@ module VCR
 
       private
 
+        def externally_stubbed?
+          ::FakeWeb.registered_uri?(request_method, uri)
+        end
+
         def request_type(*args)
           @request_type || super
         end
@@ -64,11 +68,16 @@ module VCR
           super
         end
 
+        def on_externally_stubbed_request
+          # just perform the request--FakeWeb will handle it
+          perform_request(:started)
+        end
+
         def on_recordable_request
           perform_request(net_http.started?, :record_interaction)
         end
 
-        def on_stubbed_request
+        def on_stubbed_by_vcr_request
           with_exclusive_fakeweb_stub(stubbed_response) do
             # force it to be considered started since it doesn't
             # recurse in this case like the others.
@@ -124,9 +133,13 @@ module VCR
           end
         end
 
+        def request_method
+          request.method.downcase.to_sym
+        end
+
         def vcr_request
           @vcr_request ||= VCR::Request.new \
-            request.method.downcase.to_sym,
+            request_method,
             uri,
             (request_body || request.body),
             request.to_hash

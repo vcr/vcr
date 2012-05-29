@@ -47,6 +47,6 @@ Feature: Debug Logging
           [Cassette: 'example'] method (matched): current request [get http://localhost:7777/] vs [get http://localhost:7777/]
           [Cassette: 'example'] uri (matched): current request [get http://localhost:7777/] vs [get http://localhost:7777/]
         [Cassette: 'example'] Found matching interaction for [get http://localhost:7777/] at index 0: [200 "Hello World"]
-      [fakeweb] Identified request type (stubbed) for [get http://localhost:7777/]
+      [fakeweb] Identified request type (stubbed_by_vcr) for [get http://localhost:7777/]
 
       """

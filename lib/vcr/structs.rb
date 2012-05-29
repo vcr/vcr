@@ -254,9 +254,19 @@ module VCR
         type == :ignored
       end
 
-      # @return [Boolean] whether or not this request will be stubbed
-      def stubbed?
-        type == :stubbed
+      # @return [Boolean] whether or not this request is being stubbed by VCR
+      # @see #externally_stubbed?
+      # @see #stubbed?
+      def stubbed_by_vcr?
+        type == :stubbed_by_vcr
+      end
+
+      # @return [Boolean] whether or not this request is being stubbed by an
+      #  external library (such as WebMock or FakeWeb).
+      # @see #stubbed_by_vcr?
+      # @see #stubbed?
+      def externally_stubbed?
+        type == :externally_stubbed
       end
 
       # @return [Boolean] whether or not this request will be recorded.
@@ -273,6 +283,14 @@ module VCR
       # @note VCR allows `:ignored` and `:recordable` requests to be made for real.
       def real?
         ignored? || recordable?
+      end
+
+      # @return [Boolean] whether or not this request will be stubbed.
+      #  It may be stubbed by an external library or by VCR.
+      # @see #stubbed_by_vcr?
+      # @see #externally_stubbed?
+      def stubbed?
+        stubbed_by_vcr? || externally_stubbed?
       end
 
       undef method
