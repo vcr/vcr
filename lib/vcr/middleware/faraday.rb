@@ -54,18 +54,19 @@ module VCR
         end
 
         def vcr_request
-          if env[:body].respond_to?(:read)
-            body = env[:body].read
-            env[:body].rewind if env[:body].respond_to?(:rewind)
-          else
-            body = env[:body]
-          end
-
           @vcr_request ||= VCR::Request.new \
             env[:method],
             env[:url].to_s,
-            body,
+            raw_body_from(env[:body]),
             env[:request_headers]
+        end
+
+        def raw_body_from(body)
+          return body unless body.respond_to?(:read)
+
+          body.read.tap do |b|
+            body.rewind if body.respond_to?(:rewind)
+          end
         end
 
         def response_for(env)
@@ -75,7 +76,7 @@ module VCR
           VCR::Response.new(
             VCR::ResponseStatus.new(response.status, nil),
             response.headers,
-            response.body,
+            raw_body_from(response.body),
             nil
           )
         end

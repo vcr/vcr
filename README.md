@@ -160,6 +160,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [playupchris](https://github.com/playupchris)
 * [Ryan Bates](https://github.com/ryanb)
 * [Sathya Sekaran](https://github.com/sfsekaran)
+* [Tyler Hunt](https://github.com/tylerhunt)
 * [Wesley Beary](https://github.com/geemus)
 
 ## Ports in other languages

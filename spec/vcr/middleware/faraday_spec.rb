@@ -9,6 +9,38 @@ describe VCR::Middleware::Faraday do
       :not_disableable
   end
 
+  context 'when performing a multipart upload' do
+    let(:connection) do
+      ::Faraday.new("http://localhost:#{VCR::SinatraApp.port}/") do |b|
+        b.request :multipart
+      end
+    end
+
+    def self.test_recording
+      it 'records the request body correctly' do
+        payload = { :file => Faraday::UploadIO.new(__FILE__, 'text/plain') }
+
+        VCR.should_receive(:record_http_interaction) do |i|
+          i.request.headers['Content-Type'].first.should include("multipart")
+          i.request.body.should include(File.read(__FILE__))
+        end
+
+        VCR.use_cassette("upload") do
+          connection.post '/files', payload
+        end
+      end
+    end
+
+    context 'when the net_http adapter is used' do
+      before { connection.builder.adapter :net_http }
+      test_recording
+    end
+
+    context 'when no adapter is used' do
+      test_recording
+    end
+  end
+
   context 'when making parallel requests' do
     include VCRStubHelpers
     let(:connection)         { ::Faraday.new { |b| b.adapter :typhoeus } }

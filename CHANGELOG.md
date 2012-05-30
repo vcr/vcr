@@ -41,6 +41,9 @@
   the bug and providing a great example test case.
 * Allow requests to be stubbed by external libraries (e.g. WebMock,
   FakeWeb or Typhoeus) without needing to turn VCR off.
+* Fix bug in handling of Faraday requests with multipart uploads.
+  Thanks to [Tyler Hunt](https://github.com/tylerhunt) for reporting
+  and fixing the bug.
 
 ## 2.1.1 (April 24, 2012)
 
