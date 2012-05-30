@@ -86,6 +86,21 @@ module VCR
         end
       end
 
+      describe "#assert_no_unused_interactions?" do
+        it 'should raise a SkippedHTTPRequestError when there are unused interactions left' do
+           expect { list.assert_no_unused_interactions! }.to raise_error Errors::SkippedHTTPRequestError
+           list.response_for(request_with(:method => :put))
+           expect { list.assert_no_unused_interactions! }.to raise_error Errors::SkippedHTTPRequestError
+        end
+
+        it 'should raise nothing when there are no unused interactions left' do
+          [:put, :post, :post].each do |method|
+            list.response_for(request_with(:method => method))
+          end
+          list.assert_no_unused_interactions! # should not raise an error.
+        end
+      end
+
       describe "has_interaction_matching?" do
         it 'returns false when the list is empty' do
           HTTPInteractionList.new([], [:method]).should_not have_interaction_matching(stub)
