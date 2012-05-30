@@ -394,6 +394,26 @@ describe VCR::Cassette do
   describe '#eject' do
     let(:custom_persister) { stub("custom persister", :[] => nil) }
 
+    it 'asserts that there are no unused interactions if allow_unused_http_interactions is set to false' do
+      cassette = VCR.insert_cassette("foo", :allow_unused_http_interactions => false)
+
+      interaction_list = cassette.http_interactions
+      interaction_list.should respond_to(:assert_no_unused_interactions!).with(0).arguments
+      interaction_list.should_receive(:assert_no_unused_interactions!)
+
+      cassette.eject
+    end
+
+    it 'does not assert that there are no unused interactions if allow_unused_http_interactions is set to true' do
+      cassette = VCR.insert_cassette("foo", :allow_unused_http_interactions => true)
+
+      interaction_list = cassette.http_interactions
+      interaction_list.should respond_to(:assert_no_unused_interactions!)
+      interaction_list.should_not_receive(:assert_no_unused_interactions!)
+
+      cassette.eject
+    end
+
     it 'stores the cassette content using the configured persister' do
       VCR.configuration.cassette_library_dir = nil
       VCR.cassette_persisters[:foo] = custom_persister

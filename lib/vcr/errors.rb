@@ -45,11 +45,11 @@ module VCR
     # @see VCR::Response#decompress
     class UnknownContentEncodingError < Error; end
 
-    # Error raised when you eject a cassette when not all HTTP
-    # interactions were already played back.
+    # Error raised when you eject a cassette before all previously
+    # recorded HTTP interactions are played back.
     # @note Only applicable when :allow_episode_skipping is false.
-    # @see VCR::HTTPInteractionList#assert_finished!
-    class SkippedHTTPRequestError < Error; end
+    # @see VCR::HTTPInteractionList#assert_no_unused_interactions!
+    class UnusedHTTPInteractionError < Error; end
 
     # Error raised when an HTTP request is made that VCR is unable to handle.
     # @note VCR will raise this to force you to do something about the

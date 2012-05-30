@@ -88,9 +88,9 @@ module VCR
 
       describe "#assert_no_unused_interactions?" do
         it 'should raise a SkippedHTTPRequestError when there are unused interactions left' do
-           expect { list.assert_no_unused_interactions! }.to raise_error Errors::SkippedHTTPRequestError
+           expect { list.assert_no_unused_interactions! }.to raise_error(Errors::UnusedHTTPInteractionError)
            list.response_for(request_with(:method => :put))
-           expect { list.assert_no_unused_interactions! }.to raise_error Errors::SkippedHTTPRequestError
+           expect { list.assert_no_unused_interactions! }.to raise_error(Errors::UnusedHTTPInteractionError)
         end
 
         it 'should raise nothing when there are no unused interactions left' do

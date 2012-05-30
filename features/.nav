@@ -14,6 +14,7 @@
   - update_content_length_header.feature
   - decompress.feature
   - persistence.feature
+  - allow_unused_http_interactions.feature
 - record_modes:
   - once.feature
   - new_episodes.feature

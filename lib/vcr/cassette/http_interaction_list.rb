@@ -55,10 +55,16 @@ module VCR
       end
 
       # Checks if there are no unused interactions left.
-      # @raise [VCR::Errors::SkippedHTTPRequestError] when not all interactions were played back
-      #  when allow_episode_skipping is off.
+      #
+      # @raise [VCR::Errors::UnusedHTTPInteractionError] if not all interactions were played back.
       def assert_no_unused_interactions!
-        raise Errors::SkippedHTTPRequestError if has_unused_interactions?
+        return unless has_unused_interactions?
+
+        descriptions = @interactions.map do |i|
+          "  - #{request_summary(i.request)} => #{response_summary(i.response)}"
+        end.join("\n")
+
+        raise Errors::UnusedHTTPInteractionError, "There are unused HTTP interactions left in the cassette:\n#{descriptions}"
       end
 
     private

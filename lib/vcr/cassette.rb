@@ -58,6 +58,7 @@ module VCR
     # disk.
     def eject
       write_recorded_interactions_to_disk
+      http_interactions.assert_no_unused_interactions! unless @allow_unused_http_interactions
     end
 
     # @private
@@ -124,7 +125,7 @@ module VCR
       end
     end
 
-  def extract_options
+    def extract_options
       [:erb, :match_requests_on, :re_record_interval,
        :allow_playback_repeats, :allow_unused_http_interactions, :exclusive].each do |name|
         instance_variable_set("@#{name}", @options[name])

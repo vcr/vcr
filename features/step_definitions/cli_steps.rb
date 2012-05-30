@@ -196,3 +196,7 @@ Then /^the value stored at the redis key "([^"]*)" should include "([^"]*)"$/ do
   redis.get(key).should include(value_fragment)
 end
 
+Then /^it should (pass|fail)$/ do |pass_fail|
+  assert_success(pass_fail == 'pass')
+end
+

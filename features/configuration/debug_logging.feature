@@ -30,7 +30,7 @@ Feature: Debug Logging
     When I run `ruby debug_logger.rb record.log --with-server`
     Then the file "record.log" should contain exactly:
       """
-      [Cassette: 'example'] Initialized with options: {:record=>:once, :match_requests_on=>[:method, :uri], :serialize_with=>:yaml, :persist_with=>:file_system}
+      [Cassette: 'example'] Initialized with options: {:record=>:once, :match_requests_on=>[:method, :uri], :allow_unused_http_interactions=>true, :serialize_with=>:yaml, :persist_with=>:file_system}
       [fakeweb] Handling request: [get http://localhost:7777/] (disabled: false)
         [Cassette: 'example'] Initialized HTTPInteractionList with request matchers [:method, :uri] and 0 interaction(s): {  }
       [fakeweb] Identified request type (recordable) for [get http://localhost:7777/]
@@ -40,7 +40,7 @@ Feature: Debug Logging
     When I run `ruby debug_logger.rb playback.log`
     Then the file "playback.log" should contain exactly:
       """
-      [Cassette: 'example'] Initialized with options: {:record=>:once, :match_requests_on=>[:method, :uri], :serialize_with=>:yaml, :persist_with=>:file_system}
+      [Cassette: 'example'] Initialized with options: {:record=>:once, :match_requests_on=>[:method, :uri], :allow_unused_http_interactions=>true, :serialize_with=>:yaml, :persist_with=>:file_system}
       [fakeweb] Handling request: [get http://localhost:7777/] (disabled: false)
         [Cassette: 'example'] Initialized HTTPInteractionList with request matchers [:method, :uri] and 1 interaction(s): { [get http://localhost:7777/] => [200 "Hello World"] }
         [Cassette: 'example'] Checking if [get http://localhost:7777/] matches [get http://localhost:7777/] using [:method, :uri]
