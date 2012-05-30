@@ -2,11 +2,18 @@
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v2.1.1...master)
 
+Enhancements:
+
 * Add new `:persist_with` cassette option. It allows you to provide a
   customized persistence implementation so you can persist it to
   something other than disk (i.e. a key-value store or a database).
   Thanks to [Chris Le](https://github.com/chrisle) for the idea and
   help with the implementation.
+* Allow requests to be stubbed by external libraries (e.g. WebMock,
+  FakeWeb or Typhoeus) without needing to turn VCR off.
+
+Bug Fixes:
+
 * Fix `after_http_request` to handle symbol request predicate filters
   (e.g. `:ignored?`, `:stubbed?`, `:recordable?`, `:unhandled?`, `:real?`)
   properly. Previously using one of these would raise an ArgumentError.
@@ -39,8 +46,6 @@
   [fixed in WebMock](https://github.com/bblimke/webmock/pull/185).
   Thanks to [Mark Abramov](https://github.com/markiz) for reporting
   the bug and providing a great example test case.
-* Allow requests to be stubbed by external libraries (e.g. WebMock,
-  FakeWeb or Typhoeus) without needing to turn VCR off.
 * Fix bug in handling of Faraday requests with multipart uploads.
   Thanks to [Tyler Hunt](https://github.com/tylerhunt) for reporting
   and fixing the bug.
