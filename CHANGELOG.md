@@ -11,6 +11,11 @@ Enhancements:
   help with the implementation.
 * Allow requests to be stubbed by external libraries (e.g. WebMock,
   FakeWeb or Typhoeus) without needing to turn VCR off.
+* Add new `:allow_unused_http_interactions` cassette option. When set
+  to false, an error will be raised when a cassette is ejected and
+  there are remaining unused HTTP interactions. Thanks to
+  [Mattias Putman](https://github.com/challengee) for the idea
+  and initial implementation.
 
 Bug Fixes:
 
