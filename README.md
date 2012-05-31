@@ -171,6 +171,8 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [NSURLConnectionVCR](https://bitbucket.org/martijnthe/nsurlconnectionvcr) (Objective C)
 * [TapeDeck.js](https://github.com/EndangeredMassa/TapeDeck.js) (JavaScript)
 * [VCR.js](https://github.com/elcuervo/vcr.js) (JavaScript)
+* [VCR.py](https://github.com/kevin1024/vcrpy) (Python)
+* [vcr-clj](https://github.com/ifesdjeen/vcr-clj) (Clojure)
 
 ## Similar Libraries in Ruby
 
