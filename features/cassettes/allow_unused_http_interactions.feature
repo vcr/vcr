@@ -66,9 +66,9 @@ Feature: Allow Unused HTTP Interactions
       end
       """
     When I run `ruby disallowed_with_no_requests.rb`
-    Then it should fail with:
+    Then it should fail with an error like:
       """
-      There are unused HTTP interactions left in the cassette: (VCR::Errors::UnusedHTTPInteractionError)
+      There are unused HTTP interactions left in the cassette:
         - [get http://example.com/foo] => [200 "Hello"]
       """
 

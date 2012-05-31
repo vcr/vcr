@@ -126,14 +126,15 @@ end
 Then /^it should (pass|fail) with an error like:$/ do |pass_fail, partial_output|
   assert_success(pass_fail == 'pass')
 
-  # Rubinius includes extra leading spaces on some errors for some reason...
-  first_line_re = Regexp.escape(partial_output.split("\n").first)
-  leading_whitespace = all_output[/^(\s*)#{first_line_re}/, 1]
-  unless leading_whitespace.to_s == ''
-    partial_output.gsub!(/^/, leading_whitespace)
-  end
+  # different implementations place the exception class at different
+  # places relative to the message (i.e. with a multiline error message)
+  process_output = all_output.gsub(/\s*\(VCR::Errors::\w+\)/, '')
 
-  assert_partial_output(partial_output, all_output)
+  # Some implementations include extra leading spaces, for some reason...
+  process_output.gsub!(/^\s*/, '')
+  partial_output.gsub!(/^\s*/, '')
+
+  assert_partial_output(partial_output, process_output)
 end
 
 Then /^the output should contain each of the following:$/ do |table|
