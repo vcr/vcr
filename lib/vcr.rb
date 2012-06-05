@@ -81,7 +81,7 @@ module VCR
   # @option options :allow_playback_repeats [Boolean] Whether or not to
   #  allow a single HTTP interaction to be played back multiple times.
   #  Defaults to false.
-  # @options options :allow_unused_http_interactions [Boolean] If set to
+  # @option options :allow_unused_http_interactions [Boolean] If set to
   #  false, an error will be raised if a cassette is ejected before all
   #  previously recorded HTTP interactions have been used.
   #  Defaults to true.

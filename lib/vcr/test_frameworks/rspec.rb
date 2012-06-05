@@ -14,7 +14,7 @@ module VCR
     #
     module Macros
 
-      # Sets up a +before+ and +after+ hook that will insert and eject a
+      # Sets up a `before` and `after` hook that will insert and eject a
       # cassette, respectively.
       #
       # @example
