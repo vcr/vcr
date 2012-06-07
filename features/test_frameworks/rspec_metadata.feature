@@ -76,7 +76,8 @@ Feature: Usage with RSpec metadata
       """ruby
       require 'spec_helper'
 
-      describe "Using an options hash", :vcr => { :cassette_name => "example", :record => :new_episodes } do
+      vcr_options = { :cassette_name => "example", :record => :new_episodes }
+      describe "Using an options hash", :vcr => vcr_options do
         it 'uses the provided cassette name' do
           VCR.current_cassette.name.should == "example"
         end

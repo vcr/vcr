@@ -9,7 +9,10 @@ Feature: URI without param(s)
   common need to match on a URI and ignore particular query parameters, VCR
   provides an easier way:
 
-      :match_requests_on => [:method, VCR.request_matchers.uri_without_param(:timestamp)]
+      :match_requests_on => [
+        :method,
+        VCR.request_matchers.uri_without_param(:timestamp)
+      ]
 
   `uri_without_param` also has a plural alias (i.e. `uri_without_params(:timestamp, :session)`)
 
@@ -70,7 +73,8 @@ Feature: URI without param(s)
         c.hook_into :fakeweb
         c.cassette_library_dir = 'cassettes'
         c.default_cassette_options = {
-          :match_requests_on => [:method, VCR.request_matchers.uri_without_param(:timestamp)]
+          :match_requests_on => [:method,
+            VCR.request_matchers.uri_without_param(:timestamp)]
         }
       end
 
@@ -79,11 +83,13 @@ Feature: URI without param(s)
       end
 
       VCR.use_cassette('example') do
-        puts "Response for bar: " + response_body_for(:get, search_uri("bar"))
+        puts "Response for bar: " +
+             response_body_for(:get, search_uri("bar"))
       end
 
       VCR.use_cassette('example') do
-        puts "Response for foo: " + response_body_for(:get, search_uri("foo"))
+        puts "Response for foo: " +
+             response_body_for(:get, search_uri("foo"))
       end
       """
     When I run `ruby uri_without_param_matcher.rb`

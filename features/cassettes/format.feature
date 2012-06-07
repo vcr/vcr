@@ -40,9 +40,9 @@ Feature: Cassette format
 
   You can also register a custom serializer using:
 
-     VCR.configure do |config|
-       config.cassette_serializers[:my_custom_serializer] = my_serializer
-     end
+       VCR.configure do |config|
+         config.cassette_serializers[:my_custom_serializer] = my_serializer
+       end
 
   Your serializer must implement the following methods:
 
