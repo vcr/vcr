@@ -34,6 +34,10 @@ module VCR
       'header set'
     end
 
+    get '/204' do
+      status 204
+    end
+
     # we use a global counter so that every response is different;
     # this ensures that the test demonstrates that the response
     # is being played back (and not running a 2nd real request)

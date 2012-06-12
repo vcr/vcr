@@ -16,6 +16,7 @@ HTTP_LIBRARY_ADAPTERS['net/http'] = Module.new do
   def self.http_library_name; 'Net::HTTP'; end
 
   def get_body_string(response); response.body; end
+  alias get_body_object get_body_string
 
   def get_header(header_key, response)
     response.get_fields(header_key)
@@ -46,6 +47,7 @@ HTTP_LIBRARY_ADAPTERS['patron'] = Module.new do
   def self.http_library_name; 'Patron'; end
 
   def get_body_string(response); response.body; end
+  alias get_body_object get_body_string
 
   def get_header(header_key, response)
     response.headers[header_key]
@@ -69,6 +71,10 @@ HTTP_LIBRARY_ADAPTERS['httpclient'] = Module.new do
     string.respond_to?(:read) ? string.read : string
   end
 
+  def get_body_object(response)
+    response.body
+  end
+
   def get_header(header_key, response)
     response.header[header_key]
   end
@@ -88,6 +94,7 @@ HTTP_LIBRARY_ADAPTERS['em-http-request'] = Module.new do
   def get_body_string(response)
     response.response
   end
+  alias get_body_object get_body_string
 
   def get_header(header_key, response)
     values = response.response_header[header_key.upcase.gsub('-', '_')]
@@ -114,6 +121,7 @@ HTTP_LIBRARY_ADAPTERS['curb'] = Module.new do
   def get_body_string(response)
     response.body_str
   end
+  alias get_body_object get_body_string
 
   def get_header(header_key, response)
     headers = response.header_str.split("\r\n")[1..-1]
@@ -149,6 +157,7 @@ HTTP_LIBRARY_ADAPTERS['typhoeus'] = Module.new do
   def get_body_string(response)
     response.body
   end
+  alias get_body_object get_body_string
 
   def get_header(header_key, response)
     response.headers_hash[header_key]
@@ -169,6 +178,7 @@ HTTP_LIBRARY_ADAPTERS['excon'] = Module.new do
   def get_body_string(response)
     response.body
   end
+  alias get_body_object get_body_string
 
   def get_header(header_key, response)
     response.headers[header_key]
@@ -198,6 +208,7 @@ end
     def get_body_string(response)
       response.body
     end
+    alias get_body_object get_body_string
 
     def get_header(header_key, response)
       value = response.headers[header_key]
