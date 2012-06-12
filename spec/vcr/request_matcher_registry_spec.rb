@@ -134,6 +134,13 @@ module VCR
             request_with(:uri => 'http://example.com/search')
           ).should be_true
         end
+
+        it 'does not match two requests with URIs that have no params but different paths' do
+          subject[subject.send(meth, :foo, :bar)].matches?(
+            request_with(:uri => 'http://example.com/foo'),
+            request_with(:uri => 'http://example.com/bar')
+          ).should be_false
+        end
       end
     end
 
