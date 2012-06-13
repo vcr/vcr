@@ -11,7 +11,7 @@ module VCR
     # Faraday.
     #
     # @note You can either insert this middleware into the Faraday middleware stack
-    #  yourself or configure {VCR::Configuration#hook_into} to hook into +:faraday+.
+    #  yourself or configure {VCR::Configuration#hook_into} to hook into `:faraday`.
     class Faraday
       include VCR::Deprecations::Middleware::Faraday
 
