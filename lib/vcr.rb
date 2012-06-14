@@ -237,7 +237,8 @@ module VCR
   # @raise [ArgumentError] if you pass an invalid option
   def turn_off!(options = {})
     if VCR.current_cassette
-      raise CassetteInUseError.new("A VCR cassette is currently in use.  You must eject it before you can turn VCR off.")
+      raise CassetteInUseError, "A VCR cassette is currently in use (#{VCR.current_cassette.name}). " +
+                                "You must eject it before you can turn VCR off."
     end
 
     @ignore_cassettes = options[:ignore_cassettes]

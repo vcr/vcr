@@ -259,7 +259,7 @@ describe VCR do
       VCR.insert_cassette('foo')
       expect {
         VCR.turn_off!
-      }.to raise_error(VCR::CassetteInUseError)
+      }.to raise_error(VCR::CassetteInUseError, /foo/)
     end
 
     it 'causes an error to be raised if you insert a cassette while VCR is turned off' do
