@@ -2,7 +2,7 @@ require 'vcr/util/version_checker'
 require 'vcr/request_handler'
 require 'typhoeus'
 
-VCR::VersionChecker.new('Typhoeus', Typhoeus::VERSION, '0.3.2', '0.3').check_version!
+VCR::VersionChecker.new('Typhoeus', Typhoeus::VERSION, '0.3.2', '0.4').check_version!
 
 module VCR
   class LibraryHooks
