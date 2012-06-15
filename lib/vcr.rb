@@ -134,6 +134,8 @@ module VCR
   def eject_cassette
     cassette = cassettes.last
     cassette.eject if cassette
+    cassette
+  ensure
     cassettes.pop
   end
 

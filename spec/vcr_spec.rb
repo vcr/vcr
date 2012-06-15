@@ -52,6 +52,13 @@ describe VCR do
       current.should be(cassette)
       VCR.current_cassette.should_not be(cassette)
     end
+
+    it 'properly pops the cassette off the stack even if an error occurs' do
+      cassette = insert_cassette
+      cassette.stub(:eject) { raise "boom" }
+      expect { VCR.eject_cassette }.to raise_error("boom")
+      VCR.current_cassette.should be_nil
+    end
   end
 
   describe '.use_cassette' do

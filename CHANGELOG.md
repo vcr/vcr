@@ -1,6 +1,13 @@
 ## In git
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.0...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.1...master)
+
+Bug Fixes:
+
+* Fix `VCR.eject_cassette` so that it always pops a cassette off the
+  cassette stack even if an error occurs while ejecting the cassette.
+  This is important to keep things consistent, so that a cassette for
+  one test doesn't remain in place for another test.
 
 ## 2.2.1 (June 13, 2012)
 
