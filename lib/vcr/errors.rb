@@ -31,7 +31,7 @@ module VCR
     # Error raised when a VCR 1.x cassette is used with VCR 2.
     class InvalidCassetteFormatError < Error; end
 
-    # Error raised when an +around_http_request+ hook is used improperly.
+    # Error raised when an `around_http_request` hook is used improperly.
     # @see VCR::Configuration#around_http_request
     class AroundHTTPRequestHookError < Error; end
 

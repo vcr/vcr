@@ -229,7 +229,7 @@ module VCR
   #
   # @param options [Hash] hash of options
   # @option options :ignore_cassettes [Boolean] controls what happens when a cassette is
-  #  inserted while VCR is turned off. If +true+ is passed, the cassette insertion
+  #  inserted while VCR is turned off. If `true` is passed, the cassette insertion
   #  will be ignored; otherwise a {VCR::Errors::TurnedOffError} will be raised.
   #
   # @return [void]

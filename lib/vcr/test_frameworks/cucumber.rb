@@ -20,11 +20,13 @@ module VCR
       @main_object = main_object
     end
 
-    # Adds +Before+ and +After+ cucumber hooks for the named tags that
+    # Adds `Before` and `After` cucumber hooks for the named tags that
     # will cause a VCR cassette to be used for scenarios with matching tags.
     #
     # @param [Array<String>] tag_names the cucumber scenario tags
-    # @param [(optional) Hash] options the cassette options. Specify :use_scenario_name => true to automatically name the cassette according to the scenario name.
+    # @param [(optional) Hash] options the cassette options. Specify
+    #   `:use_scenario_name => true` to automatically name the
+    #   cassette according to the scenario name.
     def tags(*tag_names)
       original_options = tag_names.last.is_a?(::Hash) ? tag_names.pop : {}
       tag_names.each do |tag_name|
