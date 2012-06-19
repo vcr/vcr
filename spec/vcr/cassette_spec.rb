@@ -9,14 +9,14 @@ describe VCR::Cassette do
   end
 
   describe '#file' do
-    it 'delegates the file resolution to the FileSystem persister' do
-      fs = VCR::Cassette::Persisters::FileSystem
-      fs.should respond_to(:absolute_path_to_file).with(1).argument
-      fs.should_receive(:absolute_path_to_file).with("cassette name.yml") { "f.yml" }
-      VCR::Cassette.new("cassette name").file.should eq("f.yml")
+    it 'delegates the file resolution to the persisters that support resolving file paths' do
+      foo_persister = stub(:foo_persister)
+      foo_persister.stub(:absolute_path_to_file).with("cassette name.yml") { "f.yml" }
+      VCR.cassette_persisters[:foo_persister] = foo_persister
+      VCR::Cassette.new("cassette name", :persist_with => :foo_persister).file.should eq("f.yml")
     end
 
-    it 'raises a NotImplementedError when a different persister is used' do
+    it 'raises a NotImplementedError when the persister used does not support resolving file paths' do
       VCR.cassette_persisters[:a] = stub
       cassette = VCR::Cassette.new("f", :persist_with => :a)
       expect { cassette.file }.to raise_error(NotImplementedError)
