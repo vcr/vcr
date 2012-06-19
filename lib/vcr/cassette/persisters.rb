@@ -3,6 +3,7 @@ module VCR
     # Keeps track of the cassette persisters in a hash-like object.
     class Persisters
       autoload :FileSystem, 'vcr/cassette/persisters/file_system'
+      autoload :FileSystemGzipped, 'vcr/cassette/persisters/file_system_gzipped'
 
       # @private
       def initialize
@@ -18,6 +19,7 @@ module VCR
         @persisters.fetch(name) do |_|
           @persisters[name] = case name
             when :file_system then FileSystem
+            when :file_system_gzipped then FileSystemGzipped
             else raise ArgumentError, "The requested VCR cassette persister " +
                                       "(#{name.inspect}) is not registered."
           end

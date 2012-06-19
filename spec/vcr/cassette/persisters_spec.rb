@@ -29,8 +29,12 @@ module VCR
           expect { subject[:foo] }.to raise_error(ArgumentError)
         end
 
-        it 'returns the named persister' do
+        it 'returns named :file_system persister' do
           subject[:file_system].should be(VCR::Cassette::Persisters::FileSystem)
+        end
+
+        it 'returns named :file_system_gzipped persister' do
+          subject[:file_system_gzipped].should be(VCR::Cassette::Persisters::FileSystemGzipped)
         end
       end
     end
