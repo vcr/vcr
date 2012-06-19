@@ -23,7 +23,7 @@ module VCR
         def [](file_name)
           path = absolute_path_to_file(file_name)
           return nil unless File.exist?(path)
-          File.read(path)
+          read_file(path)
         end
 
         # Sets the cassette for the given storage key (file name).
@@ -34,7 +34,7 @@ module VCR
           path = absolute_path_to_file(file_name)
           directory = File.dirname(path)
           FileUtils.mkdir_p(directory) unless File.exist?(directory)
-          File.open(path, 'w') { |f| f.write(content) }
+          write_file(path, content)
         end
 
         # @private
@@ -53,6 +53,14 @@ module VCR
           parts = file_name.to_s.split('.')
           file_extension = '.' + parts.pop if parts.size > 1
           parts.join('.').gsub(/[^\w\-\/]+/, '_') + file_extension.to_s
+        end
+
+        def read_file(path)
+          File.read(path)
+        end
+
+        def write_file(path, content)
+          File.open(path, 'w') { |f| f.write(content) }
         end
       end
     end
