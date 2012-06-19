@@ -8,6 +8,10 @@ module VCR
         extend FileSystem
         extend self
 
+        def storage_location
+          @storage_location || FileSystem.storage_location
+        end
+
         # @private
         def absolute_path_to_file(file_name)
           path = super

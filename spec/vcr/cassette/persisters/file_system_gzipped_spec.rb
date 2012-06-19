@@ -5,7 +5,6 @@ module VCR
   class Cassette
     class Persisters
       describe FileSystemGzipped do
-        before { FileSystemGzipped.storage_location = VCR.configuration.cassette_library_dir }
 
         describe "#[]" do
           it 'reads from the given compressed file, stored with .gz extension' do
@@ -46,6 +45,29 @@ module VCR
           end
         end
 
+        describe "#storage_location" do
+          before do
+            @previous_file_system_location = FileSystem.storage_location
+            @previous_file_system_gzipped_location = FileSystemGzipped.storage_location
+          end
+
+          after do
+            FileSystem.storage_location = @previous_file_system_location
+            FileSystemGzipped.storage_location = @previous_file_system_gzipped_location
+          end
+
+          it "is delegated to FileSystem storage_location" do
+            FileSystem.storage_location.should_not be_empty
+            FileSystemGzipped.storage_location.should == FileSystem.storage_location
+          end
+
+          it "can be set specifically for FileSystemGzipped persister" do
+            location = FileSystem.storage_location + '/gzipped'
+            FileSystemGzipped.storage_location = location
+            FileSystemGzipped.storage_location.should == location
+          end
+        end
+
         describe "#absolute_path_to_file" do
           it "returns the absolute path to file relative to the storage location with .gz extension" do
             expected = File.join(FileSystemGzipped.storage_location, "bar/bazz.json.gz")
@@ -53,6 +75,7 @@ module VCR
           end
 
           it "returns nil if the storage_location is not set" do
+            FileSystem.storage_location = nil
             FileSystemGzipped.storage_location = nil
             FileSystemGzipped.absolute_path_to_file("bar/bazz.json").should be_nil
           end
