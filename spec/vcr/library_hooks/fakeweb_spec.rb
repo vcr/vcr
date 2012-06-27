@@ -95,6 +95,21 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
       ignored_body.should_not eq(recorded_body)
       ignored_body.should match(/Response \d+/)
     end
+    
+    it "Make request twice against cassette using the same http request object" do
+      uri = URI.parse("http://localhost:#{VCR::SinatraApp.port}/foo")
+      http = Net::HTTP.new(uri.host, uri.port)
+      VCR.use_cassette("new_cassette", :record => :once) do
+        request = Net::HTTP::Get.new(uri.request_uri)
+        http.request(request)
+      end
+
+      VCR.use_cassette("new_cassette", :record => :once) do
+        request = Net::HTTP::Get.new(uri.request_uri)
+        http.request(request)
+        http.request(request)
+      end
+    end
   end
 
   describe "VCR.configuration.after_library_hooks_loaded hook" do
