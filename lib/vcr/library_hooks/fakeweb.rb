@@ -49,7 +49,7 @@ module VCR
         end
 
         def set_typed_request_for_after_hook(request_type)
-          @request.instance_variable_set(:@__vcr_request_type, request_type)
+          @request.instance_variable_set(:@__vcr_request_type, request_type) unless request_type == :stubbed_by_vcr
           super
         end
 

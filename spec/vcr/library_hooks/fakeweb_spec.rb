@@ -95,7 +95,7 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
       ignored_body.should_not eq(recorded_body)
       ignored_body.should match(/Response \d+/)
     end
-    
+
     it "Make request twice against cassette using the same http request object" do
       uri = URI.parse("http://localhost:#{VCR::SinatraApp.port}/foo")
       http = Net::HTTP.new(uri.host, uri.port)
