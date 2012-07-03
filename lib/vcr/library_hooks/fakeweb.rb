@@ -18,12 +18,6 @@ module VCR
           @net_http, @request, @request_body, @response_block =
            net_http,  request,  request_body,  response_block
           @vcr_response, @recursing = nil, false
-
-          if ([:@__vcr_request_type, "@__vcr_request_type"] & request.instance_variables).any?
-            @request_type = request.instance_variable_get(:@__vcr_request_type)
-          else
-            @request_type = nil
-          end
         end
 
         def handle
@@ -34,7 +28,7 @@ module VCR
 
         class << self
           def already_seen_requests
-            @already_seen_requests ||= Set.new
+            @@already_seen_requests ||= Set.new
           end
         end
 
@@ -42,15 +36,6 @@ module VCR
 
         def externally_stubbed?
           ::FakeWeb.registered_uri?(request_method, uri)
-        end
-
-        def request_type(*args)
-          @request_type || super
-        end
-
-        def set_typed_request_for_after_hook(request_type)
-          @request.instance_variable_set(:@__vcr_request_type, request_type)
-          super
         end
 
         def invoke_before_request_hook
@@ -95,6 +80,7 @@ module VCR
           # that is the final time through #request.
           unless started
             @recursing = true
+            request.instance_variable_set(:@__vcr_request_handler, recursive_request_handler)
             return net_http.request_without_vcr(request, request_body, &response_block)
           end
 
@@ -152,6 +138,34 @@ module VCR
             response.body,
             response.http_version
         end
+
+        def recursive_request_handler
+          @recursive_request_handler ||= RecursiveRequestHandler.new(
+            @after_hook_typed_request.type, @stubbed_response, @vcr_request,
+            @net_http, @request, @request_body, &@response_block
+          )
+        end
+      end
+
+      class RecursiveRequestHandler < RequestHandler
+        attr_reader :stubbed_response
+
+        def initialize(request_type, stubbed_response, vcr_request, *args, &response_block)
+          @request_type, @stubbed_response, @vcr_request =
+           request_type,  stubbed_response,  vcr_request
+          super(*args)
+        end
+
+        def handle
+          set_typed_request_for_after_hook(@request_type)
+          send "on_#{@request_type}_request"
+        ensure
+          invoke_after_request_hook(@vcr_response)
+        end
+
+        def request_type(*args)
+          @request_type
+        end
       end
     end
   end
@@ -162,13 +176,15 @@ module Net
   # @private
   class HTTP
     unless method_defined?(:request_with_vcr)
-      def request_with_vcr(*args, &block)
+      def request_with_vcr(request, *args, &block)
         if VCR.turned_on?
-          VCR::LibraryHooks::FakeWeb::RequestHandler.new(
-            self, *args, &block
-          ).handle
+          handler = request.instance_eval do
+            remove_instance_variable(:@__vcr_request_handler) if defined?(@__vcr_request_handler)
+          end || VCR::LibraryHooks::FakeWeb::RequestHandler.new(self, request, *args, &block)
+
+          handler.handle
         else
-          request_without_vcr(*args, &block)
+          request_without_vcr(request, *args, &block)
         end
       end
 

@@ -95,19 +95,22 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
       ignored_body.should_not eq(recorded_body)
       ignored_body.should match(/Response \d+/)
     end
-    
-    it "Make request twice against cassette using the same http request object" do
-      uri = URI.parse("http://localhost:#{VCR::SinatraApp.port}/foo")
-      http = Net::HTTP.new(uri.host, uri.port)
-      VCR.use_cassette("new_cassette", :record => :once) do
-        request = Net::HTTP::Get.new(uri.request_uri)
-        http.request(request)
-      end
 
-      VCR.use_cassette("new_cassette", :record => :once) do
-        request = Net::HTTP::Get.new(uri.request_uri)
-        http.request(request)
-        http.request(request)
+    context 'when the same Net::HTTP request object is used twice' do
+      let(:uri)  { URI("http://localhost:#{VCR::SinatraApp.port}/foo") }
+      let(:http) { Net::HTTP.new(uri.host, uri.port) }
+
+      it 'raises an UnhandledHTTPRequestError when using a cassette that only recorded one request' do
+        VCR.use_cassette("new_cassette", :record => :once) do
+          request = Net::HTTP::Get.new(uri.request_uri)
+          http.request(request)
+        end
+
+        VCR.use_cassette("new_cassette", :record => :once) do
+          request = Net::HTTP::Get.new(uri.request_uri)
+          http.request(request)
+          http.request(request)
+        end
       end
     end
   end
