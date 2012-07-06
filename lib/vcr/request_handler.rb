@@ -15,10 +15,10 @@ module VCR
       # (i.e. by inserting a cassette), so we need to query the
       # request type again.
       #
-      # Likewise, the main handler logic an modify what
+      # Likewise, the main handler logic can modify what
       # #request_type would return (i.e. when a response stub is
       # used), so we need to store the request type for the
-      # the after_request hook.
+      # after_request hook.
       set_typed_request_for_after_hook(req_type)
 
       send "on_#{req_type}_request"
