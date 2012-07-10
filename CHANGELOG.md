@@ -2,6 +2,14 @@
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.2...master)
 
+Bug Fixes:
+
+* Fix FakeWeb library hook so that it properly handles the case where
+  multiple requests are made using the same Net::HTTP request object.
+  Previously, a `NoMethodError` was raised. Thanks to [Jacob
+  Green](https://github.com/Jacobkg) for helping to troubleshoot
+  this bug!
+
 ## 2.2.2 (June 15, 2012)
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.1...v2.2.2)
