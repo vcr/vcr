@@ -17,7 +17,7 @@ module VCR
         def initialize(net_http, request, request_body = nil, &response_block)
           @net_http, @request, @request_body, @response_block =
            net_http,  request,  request_body,  response_block
-          @vcr_response, @recursing = nil, false
+          @stubbed_response, @vcr_response, @recursing = nil, nil, false
         end
 
         def handle
