@@ -25,7 +25,7 @@ describe VCR::Net::HTTPResponse do
 
     it 'raises an ArgumentError if both a destination string and a block is given to #read_body' do
       dest = ''
-      expect { response { |r| r.read_body(dest) { |s| } } }.should raise_error(ArgumentError, 'both arg and block given for HTTP method')
+      expect { response { |r| r.read_body(dest) { |s| } } }.to raise_error(ArgumentError, 'both arg and block given for HTTP method')
     end
 
     it 'raises an IOError when #read_body is called twice with a block' do
