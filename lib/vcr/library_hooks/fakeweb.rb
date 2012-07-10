@@ -26,31 +26,10 @@ module VCR
           invoke_after_request_hook(@vcr_response) unless @recursing
         end
 
-        class << self
-          def already_seen_requests
-            @@already_seen_requests ||= Set.new
-          end
-        end
-
       private
 
         def externally_stubbed?
           ::FakeWeb.registered_uri?(request_method, uri)
-        end
-
-        def invoke_before_request_hook
-          unless self.class.already_seen_requests.include?(request.object_id)
-            super
-            # we use the object_id so that if there is bug that causes
-            # us not to fully cleanup, we'll only be leaking the memory
-            # of one integer, not the whole request object.
-            self.class.already_seen_requests << request.object_id
-          end
-        end
-
-        def invoke_after_request_hook(vcr_response)
-          self.class.already_seen_requests.delete(request.object_id)
-          super
         end
 
         def on_externally_stubbed_request

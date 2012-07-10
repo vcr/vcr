@@ -18,16 +18,7 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
     ::FakeWeb.register_uri(method, url, :body => response_body)
   end
 
-  it_behaves_like 'a hook into an HTTP library', :fakeweb, 'net/http' do
-    before(:each) do
-      VCR::LibraryHooks::FakeWeb::RequestHandler.already_seen_requests.clear
-    end
-
-    after(:each) do
-      # assert that we are cleaning up the global state after every request
-      VCR::LibraryHooks::FakeWeb::RequestHandler.already_seen_requests.to_a.should eq([])
-    end
-  end
+  it_behaves_like 'a hook into an HTTP library', :fakeweb, 'net/http'
 
   describe "some specific Net::HTTP edge cases" do
     before(:each) do
