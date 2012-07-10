@@ -14,6 +14,14 @@ RSpec.configure do |config|
 
     vcr_warnings, other_warnings = lines.partition { |line| line.include?(current_dir) }
 
+    # After upgrading to curb 0.8.1, I started to get a circular require
+    # warning from spec_helper and monkey_patches.rb even though there doesn't
+    # appear to be a circular require going on...
+    vcr_warnings.reject! do |line|
+      line.include?("#{current_dir}/spec/spec_helper.rb") ||
+      line.include?("#{current_dir}/spec/monkey_patches.rb")
+    end
+
     # For some weird reason, JRuby is giving me some warnings about
     # `@proxy` not being initialized, and putting a vcr file/line number
     # in the warning, but it's really happening in excon.
