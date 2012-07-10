@@ -1,10 +1,6 @@
 require 'spec_helper'
 
-RSpec.configure do |config|
-  config.before(:suite) do
-    VCR.configuration.configure_rspec_metadata!
-  end
-end
+VCR.configuration.configure_rspec_metadata!
 
 describe VCR::RSpec::Metadata, :skip_vcr_reset do
   before(:all) { VCR.reset! }
