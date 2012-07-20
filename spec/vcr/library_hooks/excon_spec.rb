@@ -25,6 +25,44 @@ describe "Excon hook", :with_monkey_patches => :excon do
     end
   end
 
+  context 'when the request overrides the connection params' do
+    let!(:excon) { ::Excon.new("http://localhost:#{VCR::SinatraApp.port}/") }
+
+    def deep_dup(hash)
+      Marshal.load(Marshal.dump hash)
+    end
+
+    def intercept_request(&interception)
+      orig_new = ::Excon::Connection.method(:new)
+
+      ::Excon::Connection.stub(:new) do |*args1|
+        orig_new.call(*args1).tap do |inst|
+
+          meth = inst.method(:request)
+          inst.stub(:request) do |*args2|
+            interception.call(inst, *args2)
+            meth.call(*args2)
+          end
+        end
+      end
+    end
+
+    it 'runs the real request with the same connection params' do
+      connection_params_1 = deep_dup(excon.connection)
+      connection_params_2 = nil
+
+      intercept_request do |instance, *args|
+        connection_params_2 = deep_dup(instance.connection)
+      end
+
+      VCR.use_cassette("excon") do
+        excon.request(:method => :get, :path => '/foo')
+      end
+
+      connection_params_2.should eq(connection_params_1)
+    end
+  end
+
   context "when Excon's streaming API is used" do
     it 'properly records and plays back the response' do
       VCR.stub(:real_http_connections_allowed? => true)
@@ -63,8 +101,7 @@ describe "Excon hook", :with_monkey_patches => :excon do
     it 'performs the right number of retries' do
       connection = Excon.new("http://localhost:#{VCR::SinatraApp.port}/not_found")
 
-      # Excon define's .stub so we can't use RSpec's here...
-      Excon.should_receive(:new).at_least(:once).and_return(connection)
+      Excon::Connection.stub(:new => connection)
 
       connection.extend Module.new {
         def request_kernel_call_counts

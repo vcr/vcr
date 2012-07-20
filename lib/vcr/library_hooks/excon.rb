@@ -58,9 +58,15 @@ module VCR
           end
         end
 
+        def new_connection
+          # Ensure the connection is constructed with the exact same args
+          # that the orginal connection was constructed with.
+          ::Excon::Connection.new(*params.fetch(:__construction_args))
+        end
+
         def perform_real_request
           begin
-            response = ::Excon.new(uri).request(real_request_params)
+            response = new_connection.request(real_request_params)
           rescue ::Excon::Errors::Error => excon_error
             response = response_from_excon_error(excon_error)
           end
@@ -151,7 +157,24 @@ module VCR
   end
 end
 
-Excon.defaults[:mock] = true
+::Excon.defaults[:mock] = true
+
+# We want to get at the Excon::Connection class but WebMock does
+# some constant-replacing stuff to it, so we need to take that into
+# account.
+excon_connection = if defined?(::WebMock::HttpLibAdapters::ExconConnection)
+  ::WebMock::HttpLibAdapters::ExconConnection.superclass
+else
+  ::Excon::Connection
+end
+
+excon_connection.class_eval do
+  def self.new(*args)
+    super.tap do |instance|
+      instance.connection[:__construction_args] = args
+    end
+  end
+end
 
 VCR.configuration.after_library_hooks_loaded do
   # ensure WebMock's Excon adapter does not conflict with us here
