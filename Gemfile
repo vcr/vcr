@@ -11,7 +11,7 @@ gem 'yard'
 
 # Additional gems that are useful, but not required for development.
 group :extras do
-  gem 'relish', '~> 0.5.0'
+  gem 'relish', '~> 0.6'
   gem 'fuubar'
   gem 'fuubar-cucumber'
 
