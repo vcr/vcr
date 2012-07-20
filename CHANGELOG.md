@@ -1,6 +1,15 @@
-## In git
+## 2.2.4 (July 19, 2012)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.2...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.3...v2.2.4)
+
+Bug Fixes:
+
+* Fix excon so real requests are made with a connection constructed with
+  same args as the original connection.
+
+## 2.2.3 (July 9, 2012)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.2...v2.2.3)
 
 Bug Fixes:
 
