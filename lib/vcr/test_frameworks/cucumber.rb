@@ -57,7 +57,6 @@ module VCR
                             "cucumber_tags/#{tag_name.gsub(/\A~?@/, '')}"
                           end
 
-          File.open('/tmp/argh.txt', 'a') {|f| f.write("#{cassette_name}\n") }
           VCR.insert_cassette(cassette_name, options)
         end
 
