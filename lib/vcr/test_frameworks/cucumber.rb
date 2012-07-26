@@ -40,11 +40,24 @@ module VCR
           options = original_options.dup
 
           cassette_name = if options.delete(:use_scenario_name)
-            "#{scenario.feature.name.split("\n").first}/#{scenario.name}"
-          else
-            "cucumber_tags/#{tag_name.gsub(/\A@/, '')}"
-          end
+                            case scenario
+                            when Cucumber::Ast::Scenario
+                              File.join(scenario.feature.name.split("\n").first, scenario.name)
+                            when Cucumber::Ast::ScenarioOutline
+                              # This happens if we trigger a Scenario Outline
+                              # in isolation. First example row is not accessible.
+                              File.join(scenario.feature.name.split("\n").first, scenario.name, 'first_example')
+                            when Cucumber::Ast::OutlineTable::ExampleRow
+                              # ExampleRow's scenario.name holds the example itself
+                              File.join(scenario.scenario_outline.feature.name.split("\n").first, scenario.scenario_outline.name, scenario.name)
+                            else
+                              raise "Unhandled class: #{scenario.class.name}"
+                            end
+                          else
+                            "cucumber_tags/#{tag_name.gsub(/\A~?@/, '')}"
+                          end
 
+          File.open('/tmp/argh.txt', 'a') {|f| f.write("#{cassette_name}\n") }
           VCR.insert_cassette(cassette_name, options)
         end
 
