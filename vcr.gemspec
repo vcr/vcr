@@ -29,7 +29,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'fakeweb', '~> 1.3.0'
   s.add_development_dependency 'webmock', '~> 1.8.3'
 
-  s.add_development_dependency 'faraday', '~> 0.8.0.rc2'
+  s.add_development_dependency 'faraday', '~> 0.8'
   s.add_development_dependency 'httpclient', '~> 2.2'
   s.add_development_dependency 'excon', '>= 0.11.0', '< 1.0'
 
