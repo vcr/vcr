@@ -6,6 +6,10 @@ Feature: Error for HTTP request made when no cassette is in use
   use.  The error is helpful to pinpoint where HTTP requests are
   made so you can use a VCR cassette at that point in your code.
 
+  If you want insight about how VCR attempted to handle the request,
+  you can use the [debug\_logger](../configuration/debug-logging)
+  configuration option to log more details.
+
   If you want to allow an HTTP request to proceed as normal, you can
   set the [allow\_http\_connections\_when\_no\_cassette](../configuration/allow-http-connections-when-no-cassette)
   configuration option or you can temporarily turn VCR off:

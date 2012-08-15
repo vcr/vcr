@@ -183,6 +183,13 @@ module VCR
            "change your :match_requests_on cassette option to be more lenient",
            "or use a custom request matcher to allow it to match"],
            "https://www.relishapp.com/myronmarston/vcr/v/%s/docs/request-matching"
+        ],
+
+        :try_debug_logger => [
+          ["If you're surprised VCR is raising this error",
+           "and want insight about how VCR attempted to handle the request,",
+           "you can use the debug_logger configuraiton option to log more details"],
+          "https://www.relishapp.com/myronmarston/vcr/v/%s/docs/configuration/debug-logging"
         ]
       }
 
@@ -196,7 +203,7 @@ module VCR
       def suggestions
         return no_cassette_suggestions unless cassette = VCR.current_cassette
 
-        [:use_new_episodes, :ignore_request].tap do |suggestions|
+        [:try_debug_logger, :use_new_episodes, :ignore_request].tap do |suggestions|
           suggestions.push(*record_mode_suggestion)
           suggestions << :allow_playback_repeats if cassette.http_interactions.has_used_interaction_matching?(request)
           suggestions.map! { |k| suggestion_for(k) }
