@@ -212,7 +212,7 @@ module VCR
       end
 
       def no_cassette_suggestions
-        [:use_a_cassette, :allow_http_connections_when_no_cassette, :ignore_request].map do |key|
+        [:try_debug_logger, :use_a_cassette, :allow_http_connections_when_no_cassette, :ignore_request].map do |key|
           suggestion_for(key)
         end
       end
