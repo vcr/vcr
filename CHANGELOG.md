@@ -2,6 +2,12 @@
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.3...v2.2.4)
 
+Enhancements:
+
+* Include note about `debug_logger` option in error message for
+  unhandled HTTP requests. Thanks to [Jacob Green](https://github.com/Jacobkg)
+  for implementing this.
+
 Bug Fixes:
 
 * Fix excon so real requests are made with a connection constructed with
