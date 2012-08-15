@@ -42,6 +42,10 @@ module VCR
         it 'does not double-insert the asterisks for the bullet points' do
           message.should_not match(/\s+\*\s+\*/)
         end
+        
+        it 'mentions the debug logging configuration option' do
+          message.should include('debug_logger')
+        end
       end
 
       context 'when there is a current cassette' do
@@ -120,6 +124,12 @@ module VCR
             cassette.http_interactions.should respond_to(:remaining_unused_interaction_count)
             cassette.http_interactions.stub(:remaining_unused_interaction_count => 2)
             message.should include('2 HTTP interactions ')
+          end
+        end
+
+        it 'mentions the debug logging configuration option' do
+          VCR.use_cassette('example', :record => :new_episodes) do
+            message.should include('debug_logger')
           end
         end
       end
