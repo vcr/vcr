@@ -46,22 +46,30 @@ module VCR
           end
         end
 
+        PARAMS_TO_DELETE = [:expects, :idempotent,
+                            :instrumentor_name, :instrumentor,
+                            :response_block, :request_block]
+
         def real_request_params
           # Excon supports a variety of options that affect how it handles failure
           # and retry; we don't want to use any options here--we just want to get
           # a raw response, and then the main request (with :mock => true) can
           # handle failure/retry on its own with its set options.
-          params.merge(:mock => false, :retry_limit => 0).tap do |p|
-            [:expects, :idempotent, :instrumentor_name, :instrumentor, :response_block, :request_block].each do |key|
-              p.delete(key)
-            end
-          end
+          scrub_params_from params.merge(:mock => false, :retry_limit => 0)
         end
 
         def new_connection
           # Ensure the connection is constructed with the exact same args
           # that the orginal connection was constructed with.
-          ::Excon::Connection.new(*params.fetch(:__construction_args))
+          *args, options = params.fetch(:__construction_args)
+          options = scrub_params_from(options) if options.is_a?(Hash)
+          ::Excon::Connection.new(*args, options)
+        end
+
+        def scrub_params_from(hash)
+          hash = hash.dup
+          PARAMS_TO_DELETE.each { |key| hash.delete(key) }
+          hash
         end
 
         def perform_real_request
