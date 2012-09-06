@@ -61,6 +61,15 @@ describe VCR::CucumberTags do
           test_tag(:name, 'tag1', 'My feature name/My scenario name')
         end
 
+        it "makes a unique name for each element of scenario outline" do
+          subject.send(tag_method, 'tag1', :use_scenario_name => true)
+
+          scenario_with_outline = stub(:name => "My row name", 
+                                       :scenario_outline => stub(:feature => stub(:name => "My feature name\nThe preamble text is not included"),
+                                                                 :name => "My scenario outline name"))
+          test_tag(:name, 'tag1', 'My feature name/My scenario outline name/My row name', scenario_with_outline)
+        end
+
         it 'does not pass :use_scenario_name along the given options to the cassette' do
           subject.send(tag_method, 'tag1', :use_scenario_name => true)
 
