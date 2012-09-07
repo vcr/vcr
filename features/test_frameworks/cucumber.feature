@@ -27,6 +27,8 @@ Feature: Usage with Cucumber
   You can also have VCR name your cassettes automatically according to the feature
   and scenario name by providing :use_scenario_name => true to '#tag' or '#tags'.
   In this case, the cassette will be named "<feature_name>/<scenario_name>".
+  For scenario outlines, VCR will record one cassette per row, and the cassettes
+  will be named "<feature_name>/<scenario_name>/<row_name>.
 
   @exclude-jruby
   Scenario: Record HTTP interactions in a scenario by tagging it
@@ -93,6 +95,14 @@ Feature: Usage with Cucumber
           When a request is made to "http://localhost:7777/localhost_request_1"
           Then the response should be "Hello localhost_request_1"
 
+        @vcr
+        Scenario Outline: tagged scenario outline
+          When a request is made to "http://localhost:7777/localhost_request_1"
+          Then the response should be "Hello localhost_request_1"
+          Examples:
+            | key  | value |
+            | foo  | bar   |
+
         @disallowed_1
         Scenario: tagged scenario
           When a request is made to "http://localhost:7777/allowed" within a cassette named "allowed"
@@ -105,7 +115,7 @@ Feature: Usage with Cucumber
       """
     And the directory "features/cassettes" does not exist
     When I run `cucumber WITH_SERVER=true features/vcr_example.feature`
-    Then it should fail with "4 scenarios (2 failed, 2 passed)"
+    Then it should fail with "5 scenarios (2 failed, 3 passed)"
     And the output should contain each of the following:
       | An HTTP request has been made that VCR does not know how to handle:               |
       |   GET http://localhost:7777/disallowed_1                                          |
@@ -116,11 +126,12 @@ Feature: Usage with Cucumber
     And the file "features/cassettes/nested_cassette.yml" should contain "Hello nested_cassette"
     And the file "features/cassettes/allowed.yml" should contain "Hello allowed"
     And the file "features/cassettes/VCR_example/tagged_scenario.yml" should contain "Hello localhost_request_1"
+    And the file "features/cassettes/VCR_example/tagged_scenario_outline/_foo_bar_.yml" should contain "Hello localhost_request_1"
 
     # Run again without the server; we'll get the same responses because VCR
     # will replay the recorded responses.
     When I run `cucumber features/vcr_example.feature`
-    Then it should fail with "4 scenarios (2 failed, 2 passed)"
+    Then it should fail with "5 scenarios (2 failed, 3 passed)"
     And the output should contain each of the following:
       | An HTTP request has been made that VCR does not know how to handle:               |
       |   GET http://localhost:7777/disallowed_1                                          |
@@ -131,3 +142,4 @@ Feature: Usage with Cucumber
     And the file "features/cassettes/nested_cassette.yml" should contain "Hello nested_cassette"
     And the file "features/cassettes/allowed.yml" should contain "Hello allowed"
     And the file "features/cassettes/VCR_example/tagged_scenario.yml" should contain "Hello localhost_request_1"
+    And the file "features/cassettes/VCR_example/tagged_scenario_outline/_foo_bar_.yml" should contain "Hello localhost_request_1"
