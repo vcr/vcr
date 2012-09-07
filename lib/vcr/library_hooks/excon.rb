@@ -61,9 +61,9 @@ module VCR
         def new_connection
           # Ensure the connection is constructed with the exact same args
           # that the orginal connection was constructed with.
-          *args, options = params.fetch(:__construction_args)
+          args, options = params.fetch(:__construction_args)
           options = scrub_params_from(options) if options.is_a?(Hash)
-          ::Excon::Connection.new(*args, options)
+          ::Excon::Connection.new(*[args, options].compact)
         end
 
         def scrub_params_from(hash)
