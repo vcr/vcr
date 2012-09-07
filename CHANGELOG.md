@@ -1,12 +1,26 @@
-## 2.2.4 (July 19, 2012)
+## Dev
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.3...v2.2.4)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.4...master)
 
 Enhancements:
 
 * Include note about `debug_logger` option in error message for
   unhandled HTTP requests. Thanks to [Jacob Green](https://github.com/Jacobkg)
   for implementing this.
+
+Bug Fixes:
+
+* Fix another edge case bug on the excon adapter that was causing it
+  to mis-record in certain situations that used Excon's :expects option.
+* Fix the `:use_scenario_name` cucumber tags option to work properly
+  with scenario outlines. Thanks to [Joe
+  Nelson](https://github.com/begriffs) and [Stephen
+  Anderson](https://github.com/bendycode) for the initial bug fixes and
+  [Jacob Green](https://github.com/Jacobkg) for some further improvements.
+
+## 2.2.4 (July 19, 2012)
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.3...v2.2.4)
 
 Bug Fixes:
 

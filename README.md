@@ -151,6 +151,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Ingemar](https://github.com/ingemar)
 * [Jacob Green](https://github.com/Jacobkg)
 * [Jeff Pollard](https://github.com/Fluxx)
+* [Joe Nelson](https://github.com/begriffs)
 * [Jonathan Tron](https://github.com/JonathanTron)
 * [Justin Smestad](https://github.com/jsmestad)
 * [Karl Baum](https://github.com/kbaum)
@@ -163,6 +164,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [playupchris](https://github.com/playupchris)
 * [Ryan Bates](https://github.com/ryanb)
 * [Sathya Sekaran](https://github.com/sfsekaran)
+* [Steven Anderson](https://github.com/bendycode)
 * [Tyler Hunt](https://github.com/tylerhunt)
 * [Wesley Beary](https://github.com/geemus)
 
