@@ -132,6 +132,8 @@ yard server --reload
   support.
 * [Wesley Beary](https://github.com/geemus) for help with [Excon](https://github.com/geemus/excon)
   support.
+* [Jacob Green](https://github.com/Jacobkg) for help with ongoing VCR
+  maintenance.
 
 Thanks also to the following people who have contributed patches or helpful suggestions:
 
