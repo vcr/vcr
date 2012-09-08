@@ -1,6 +1,6 @@
-## Dev
+## 2.2.5 (September 7, 2012)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.4...master)
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.4...v2.2.5)
 
 Enhancements:
 
