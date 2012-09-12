@@ -160,15 +160,17 @@ HTTP_LIBRARY_ADAPTERS['typhoeus'] = Module.new do
   alias get_body_object get_body_string
 
   def get_header(header_key, response)
-    response.headers_hash[header_key]
+    response.headers[header_key]
   end
 
   def make_http_request(method, url, body = nil, headers = {})
-    Typhoeus::Request.send(method, url, :body => body, :headers => headers)
+    request = Typhoeus::Request.new(url, :method => method, :body => body, :headers => headers)
+    request.run
+    request.response
   end
 
   def normalize_request_headers(headers)
-    headers
+    headers.merge("User-Agent"=>["Typhoeus - https://github.com/typhoeus/typhoeus"])
   end
 end
 

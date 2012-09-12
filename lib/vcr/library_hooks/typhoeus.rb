@@ -13,20 +13,21 @@ module VCR
         attr_reader :request
         def initialize(request)
           @request = request
+          request.block_connection = false if VCR.turned_on?
         end
 
         def vcr_request
           @vcr_request ||= VCR::Request.new \
-            request.method,
+            request.options.fetch(:method, :get),
             request.url,
-            request.body,
-            request.headers
+            request.options.fetch(:body, ""),
+            request.options.fetch(:headers, {})
         end
 
       private
 
         def externally_stubbed?
-          ::Typhoeus::Hydra.stubs.detect { |stub| stub.matches?(request) }
+          ::Typhoeus::Expectation.find_by(request)
         end
 
         def set_typed_request_for_after_hook(*args)
@@ -44,8 +45,9 @@ module VCR
             :http_version   => stubbed_response.http_version,
             :code           => stubbed_response.status.code,
             :status_message => stubbed_response.status.message,
-            :headers_hash   => stubbed_response_headers,
-            :body           => stubbed_response.body
+            :headers        => stubbed_response_headers,
+            :body           => stubbed_response.body,
+            :mock           => true
         end
 
         def stubbed_response_headers
@@ -61,17 +63,18 @@ module VCR
       def self.vcr_response_from(response)
         VCR::Response.new \
           VCR::ResponseStatus.new(response.code, response.status_message),
-          response.headers_hash,
+          response.headers,
           response.body,
           response.http_version
       end
 
-      ::Typhoeus::Hydra.after_request_before_on_complete do |request|
+      ::Typhoeus.on_complete do |response|
+        request = response.request
         unless VCR.library_hooks.disabled?(:typhoeus)
-          vcr_response = vcr_response_from(request.response)
+          vcr_response = vcr_response_from(response)
           typed_vcr_request = request.send(:remove_instance_variable, :@__typed_vcr_request)
 
-          unless request.response.mock?
+          unless request.response.mock
             http_interaction = VCR::HTTPInteraction.new(typed_vcr_request, vcr_response)
             VCR.record_http_interaction(http_interaction)
           end
@@ -80,25 +83,15 @@ module VCR
         end
       end
 
-      ::Typhoeus::Hydra.register_stub_finder do |request|
-        VCR::LibraryHooks::Typhoeus::RequestHandler.new(request).handle
+      ::Typhoeus.before do |request|
+        if response = VCR::LibraryHooks::Typhoeus::RequestHandler.new(request).handle
+          request.finish(response)
+        else
+          true
+        end
       end
     end
   end
-end
-
-# @private
-module Typhoeus
-  class << Hydra
-    # ensure HTTP requests are always allowed; VCR takes care of disallowing
-    # them at the appropriate times in its hook
-    def allow_net_connect_with_vcr?(*args)
-      VCR.turned_on? ? true : allow_net_connect_without_vcr?
-    end
-
-    alias allow_net_connect_without_vcr? allow_net_connect?
-    alias allow_net_connect? allow_net_connect_with_vcr?
-  end unless Hydra.respond_to?(:allow_net_connect_with_vcr?)
 end
 
 VCR.configuration.after_library_hooks_loaded do
