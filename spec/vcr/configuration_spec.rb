@@ -250,6 +250,18 @@ describe VCR::Configuration do
     end
   end
 
+  describe "#uri_parser=" do
+    let(:custom_parser) { stub }
+    it 'allows a custom uri parser to be set' do
+      subject.uri_parser = custom_parser
+      subject.uri_parser.should == custom_parser
+    end
+
+    it "uses Ruby's standard library `URI` as a default" do
+      subject.uri_parser.should == URI
+    end
+  end
+
   describe "#preserve_exact_body_bytes_for?" do
     def message_for(body)
       stub(:body => body)

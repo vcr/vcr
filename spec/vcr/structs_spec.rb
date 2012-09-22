@@ -235,6 +235,7 @@ module VCR
     describe "#to_hash" do
       before(:each) do
         VCR.stub_chain(:configuration, :preserve_exact_body_bytes_for?).and_return(false)
+        VCR.stub_chain(:configuration, :uri_parser).and_return(URI)
       end
 
       let(:hash) { interaction.to_hash }
