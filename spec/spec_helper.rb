@@ -29,6 +29,7 @@ end
 require 'rspec'
 
 require "support/fixnum_extension.rb"
+require "support/limited_uri.rb"
 require "support/http_library_adapters.rb"
 require "support/ruby_interpreter.rb"
 require "support/shared_example_groups/hook_into_http_library.rb"
@@ -62,6 +63,7 @@ RSpec.configure do |config|
     unless example.metadata[:skip_vcr_reset]
       VCR.reset!
       VCR.configuration.cassette_library_dir = tmp_dir
+      VCR.configuration.uri_parser = LimitedURI
     end
   end
 
