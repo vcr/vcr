@@ -75,7 +75,7 @@ module VCR
       end
 
       def remove_unnecessary_standard_port(interaction)
-        uri = URI(interaction.request.uri)
+        uri = VCR.configuration.uri_parser.parse(interaction.request.uri)
         if uri.scheme == 'http'  && uri.port == 80 ||
            uri.scheme == 'https' && uri.port == 443
           uri.port = nil

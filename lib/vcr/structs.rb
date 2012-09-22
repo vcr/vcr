@@ -321,7 +321,7 @@ module VCR
 
     def without_standard_port(uri)
       return uri if uri.nil?
-      u = URI(uri)
+      u = VCR.configuration.uri_parser.parse(uri)
       return uri unless [['http', 80], ['https', 443]].include?([u.scheme, u.port])
       u.port = nil
       u.to_s

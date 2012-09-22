@@ -123,6 +123,29 @@ module VCR
       !!@allow_http_connections_when_no_cassette
     end
 
+    # Sets a parser for VCR to use when parsing URIs. The new parser
+    # must implement a method `parse` that returns an instance of the
+    # URI object. This URI object must implement the following
+    # interface:
+    #
+    # * `scheme # => String`
+    # * `host   # => String`
+    # * `port   # => Fixnum`
+    # * `path   # => String`
+    # * `query  # => String`
+    # * `#port=`
+    # * `#query=`
+    # * `#==`   # => Boolean
+    #
+    # The `#==` must return true if both URI objects represent the
+    # same URI
+    #
+    # @overload uri_parser
+    #  @return [#parse] the current URI parser object
+    # @overload uri_parser=
+    #  @param value [#parse] sets the uri_parser
+    attr_accessor :uri_parser
+
     # Registers a request matcher for later use.
     #
     # @example
@@ -424,6 +447,7 @@ module VCR
         :persist_with      => :file_system
       }
 
+      self.uri_parser = URI
       self.debug_logger = NullDebugLogger
 
       register_built_in_hooks
