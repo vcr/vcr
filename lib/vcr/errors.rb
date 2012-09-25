@@ -188,7 +188,7 @@ module VCR
         :try_debug_logger => [
           ["If you're surprised VCR is raising this error",
            "and want insight about how VCR attempted to handle the request,",
-           "you can use the debug_logger configuraiton option to log more details"],
+           "you can use the debug_logger configuration option to log more details"],
           "https://www.relishapp.com/myronmarston/vcr/v/%s/docs/configuration/debug-logging"
         ]
       }
