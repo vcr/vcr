@@ -102,10 +102,12 @@ describe VCR::Configuration do
   end
 
   describe '#ignore_request' do
+    let(:uri){ URI('http://foo.com') }
+
     it 'registers the given block with the request ignorer' do
       block_called = false
       subject.ignore_request { |r| block_called = true }
-      VCR.request_ignorer.ignore?(stub(:uri => 'http://foo.com/'))
+      VCR.request_ignorer.ignore?(stub(:parsed_uri => uri))
       block_called.should be_true
     end
   end
