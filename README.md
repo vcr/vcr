@@ -157,6 +157,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Jonathan Tron](https://github.com/JonathanTron)
 * [Justin Smestad](https://github.com/jsmestad)
 * [Karl Baum](https://github.com/kbaum)
+* [Mark Burns](https://github.com/markburns)
 * [Michael Lavrisha](https://github.com/vrish88)
 * [Mislav Marohnić](https://github.com/mislav)
 * [Nathaniel Bibler](https://github.com/nbibler)
