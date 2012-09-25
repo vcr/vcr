@@ -22,8 +22,7 @@ module VCR
 
     # Error raised when the version of one of the libraries that VCR hooks into
     # is too low for VCR to support.
-    # @see VCR::
-    ration#hook_into
+    # @see VCR::Configuration#hook_into
     class LibraryVersionTooLowError < Error; end
 
     # Error raised when a request matcher is requested that is not registered.
