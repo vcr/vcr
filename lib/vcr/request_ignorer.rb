@@ -13,7 +13,7 @@ module VCR
 
     def initialize
       ignore_request do |request|
-        host = VCR.configuration.uri_parser.parse(request.uri).host
+        host = request.parsed_uri.host
         ignored_hosts.include?(host)
       end
     end

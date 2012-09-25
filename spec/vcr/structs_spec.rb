@@ -290,6 +290,25 @@ module VCR
         assert_yielded_keys hash['response']['status'], 'code', 'message'
       end
     end
+
+    describe "#parsed_uri" do
+      before :each do
+        uri_parser.stub(:parse).and_return(uri)
+        VCR.stub_chain(:configuration, :uri_parser).and_return(uri_parser)
+      end
+
+      let(:uri_parser){ mock('parser') }
+      let(:uri){ mock('uri').as_null_object }
+
+      it "parses the uri using the current uri_parser" do
+        uri_parser.should_receive(:parse).with(request.uri)
+        request.parsed_uri
+      end
+
+      it "returns the parsed uri" do
+        request.parsed_uri.should == uri
+      end
+    end
   end
 
   describe HTTPInteraction::HookAware do

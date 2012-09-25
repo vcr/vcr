@@ -18,7 +18,7 @@ module VCR
     # @private
     class URIWithoutParamsMatcher < Struct.new(:params_to_ignore)
       def partial_uri_from(request)
-        VCR.configuration.uri_parser.parse(request.uri).tap do |uri|
+        request.parsed_uri.tap do |uri|
           return request.uri unless uri.query # ignore uris without params, e.g. "http://example.com/"
 
           uri.query = uri.query.split('&').tap { |params|
@@ -113,15 +113,11 @@ module VCR
       register(:headers) { |r1, r2| r1.headers == r2.headers }
 
       register(:host) do |r1, r2|
-        uri_parser.parse(r1.uri).host == uri_parser.parse(r2.uri).host
+        r1.parsed_uri.host == r2.parsed_uri.host
       end
       register(:path) do |r1, r2|
-        uri_parser.parse(r1.uri).path == uri_parser.parse(r2.uri).path
+        r1.parsed_uri.path == r2.parsed_uri.path
       end
-    end
-
-    def uri_parser
-      VCR.configuration.uri_parser
     end
   end
 end

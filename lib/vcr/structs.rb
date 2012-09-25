@@ -231,6 +231,10 @@ module VCR
           :skip_port_stripping
     end
 
+    def parsed_uri
+      VCR.configuration.uri_parser.parse(uri)
+    end
+
     @@object_method = Object.instance_method(:method)
     def method(*args)
       return super if args.empty?
@@ -321,7 +325,7 @@ module VCR
 
     def without_standard_port(uri)
       return uri if uri.nil?
-      u = VCR.configuration.uri_parser.parse(uri)
+      u = parsed_uri
       return uri unless [['http', 80], ['https', 443]].include?([u.scheme, u.port])
       u.port = nil
       u.to_s
