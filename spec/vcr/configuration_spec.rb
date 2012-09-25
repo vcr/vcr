@@ -102,10 +102,12 @@ describe VCR::Configuration do
   end
 
   describe '#ignore_request' do
+    let(:uri){ URI('http://foo.com') }
+
     it 'registers the given block with the request ignorer' do
       block_called = false
       subject.ignore_request { |r| block_called = true }
-      VCR.request_ignorer.ignore?(stub(:uri => 'http://foo.com/'))
+      VCR.request_ignorer.ignore?(stub(:parsed_uri => uri))
       block_called.should be_true
     end
   end
@@ -247,6 +249,18 @@ describe VCR::Configuration do
       expect { subject.cassette_persisters[:custom] }.to raise_error(ArgumentError)
       subject.cassette_persisters[:custom] = custom_persister
       subject.cassette_persisters[:custom].should be(custom_persister)
+    end
+  end
+
+  describe "#uri_parser=" do
+    let(:custom_parser) { stub }
+    it 'allows a custom uri parser to be set' do
+      subject.uri_parser = custom_parser
+      subject.uri_parser.should == custom_parser
+    end
+
+    it "uses Ruby's standard library `URI` as a default" do
+      subject.uri_parser.should == URI
     end
   end
 

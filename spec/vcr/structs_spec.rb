@@ -235,6 +235,7 @@ module VCR
     describe "#to_hash" do
       before(:each) do
         VCR.stub_chain(:configuration, :preserve_exact_body_bytes_for?).and_return(false)
+        VCR.stub_chain(:configuration, :uri_parser).and_return(URI)
       end
 
       let(:hash) { interaction.to_hash }
@@ -287,6 +288,25 @@ module VCR
         assert_yielded_keys hash['request'], 'method', 'uri', 'body', 'headers'
         assert_yielded_keys hash['response'], 'status', 'headers', 'body', 'http_version'
         assert_yielded_keys hash['response']['status'], 'code', 'message'
+      end
+    end
+
+    describe "#parsed_uri" do
+      before :each do
+        uri_parser.stub(:parse).and_return(uri)
+        VCR.stub_chain(:configuration, :uri_parser).and_return(uri_parser)
+      end
+
+      let(:uri_parser){ mock('parser') }
+      let(:uri){ mock('uri').as_null_object }
+
+      it "parses the uri using the current uri_parser" do
+        uri_parser.should_receive(:parse).with(request.uri)
+        request.parsed_uri
+      end
+
+      it "returns the parsed uri" do
+        request.parsed_uri.should == uri
       end
     end
   end
