@@ -22,7 +22,8 @@ module VCR
 
     # Error raised when the version of one of the libraries that VCR hooks into
     # is too low for VCR to support.
-    # @see VCR::Configuration#hook_into
+    # @see VCR::
+    ration#hook_into
     class LibraryVersionTooLowError < Error; end
 
     # Error raised when a request matcher is requested that is not registered.
@@ -188,7 +189,7 @@ module VCR
         :try_debug_logger => [
           ["If you're surprised VCR is raising this error",
            "and want insight about how VCR attempted to handle the request,",
-           "you can use the debug_logger configuraiton option to log more details"],
+           "you can use the debug_logger configuration option to log more details"],
           "https://www.relishapp.com/myronmarston/vcr/v/%s/docs/configuration/debug-logging"
         ]
       }
