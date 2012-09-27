@@ -231,6 +231,9 @@ module VCR
           :skip_port_stripping
     end
 
+    # Parses the URI using the configured `uri_parser`.
+    #
+    # @return [#schema, #host, #port, #path, #query] A parsed URI object.
     def parsed_uri
       VCR.configuration.uri_parser.parse(uri)
     end
