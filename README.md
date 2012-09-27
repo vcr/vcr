@@ -166,6 +166,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Paco Guzmán](https://github.com/pacoguzman)
 * [playupchris](https://github.com/playupchris)
 * [Ryan Bates](https://github.com/ryanb)
+* [Ryan Burrows](https://github.com/rhburrows)
 * [Sathya Sekaran](https://github.com/sfsekaran)
 * [Steven Anderson](https://github.com/bendycode)
 * [Tyler Hunt](https://github.com/tylerhunt)

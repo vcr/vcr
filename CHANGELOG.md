@@ -1,3 +1,14 @@
+## dev
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.5...master)
+
+Enhancements:
+
+* Add `uri_parser` configuration option. It defaults to `URI` but can
+  be set to something like `Addressable::URI` to handle non-standard
+  URIs that stdlib `URI` doesn't handle. Thanks to [Ryan
+  Burrows](https://github.com/rhburrows) for contributing this feature.
+
 ## 2.2.5 (September 7, 2012)
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.4...v2.2.5)
