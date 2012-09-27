@@ -135,10 +135,13 @@ module VCR
     # * `query  # => String`
     # * `#port=`
     # * `#query=`
-    # * `#==`   # => Boolean
+    # * `#to_s  # => String`
+    # * `#==    # => Boolean`
     #
-    # The `#==` must return true if both URI objects represent the
-    # same URI
+    # The `#==` method must return true if both URI objects represent the
+    # same URI.
+    #
+    # This defaults to `URI` from the ruby standard library.
     #
     # @overload uri_parser
     #  @return [#parse] the current URI parser object

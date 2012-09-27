@@ -1,12 +1,14 @@
 Feature: uri_parser
 
   By default, VCR will parse URIs using `URI` from the Ruby standard
-  library. The `uri_parser` configuration option will override this
-  parser.
+  library. There are some URIs seen out in the wild that `URI` cannot
+  parse properly. You can set the `uri_parser` configuration option
+  to use a different parser (such as `Addressable::URI`) to work with
+  these URIs.
 
   The configured URI parser needs to expose a `.parse` class method
-  that returns an instance of the uri. This uri needs to implement the
-  folllowing API:
+  that returns an instance of the uri. This uri instance needs to
+  implement the folllowing API:
 
     * `#scheme` => a string
     * `#host`   => a string
@@ -86,3 +88,4 @@ Feature: uri_parser
      """
      URI::InvalidURIError
      """
+
