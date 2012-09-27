@@ -256,11 +256,11 @@ describe VCR::Configuration do
     let(:custom_parser) { stub }
     it 'allows a custom uri parser to be set' do
       subject.uri_parser = custom_parser
-      subject.uri_parser.should == custom_parser
+      subject.uri_parser.should eq(custom_parser)
     end
 
     it "uses Ruby's standard library `URI` as a default" do
-      subject.uri_parser.should == URI
+      subject.uri_parser.should eq(URI)
     end
   end
 
