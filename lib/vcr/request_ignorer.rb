@@ -1,4 +1,3 @@
-require 'uri'
 require 'set'
 require 'vcr/util/hooks'
 

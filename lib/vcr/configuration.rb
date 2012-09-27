@@ -1,4 +1,5 @@
 require 'vcr/util/hooks'
+require 'uri'
 
 module VCR
   # Stores the VCR configuration.

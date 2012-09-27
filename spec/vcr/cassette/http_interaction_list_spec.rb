@@ -2,7 +2,6 @@ require 'vcr/util/logger'
 require 'vcr/cassette/http_interaction_list'
 require 'vcr/request_matcher_registry'
 require 'vcr/structs'
-require 'uri'
 
 module VCR
   class Cassette

@@ -7,7 +7,7 @@ require 'vcr/structs'
 require 'vcr/errors'
 require 'zlib'
 require 'stringio'
-require 'uri'
+require 'support/limited_uri'
 
 shared_examples_for "a header normalizer" do
   let(:instance) do
@@ -61,6 +61,8 @@ end
 
 module VCR
   describe HTTPInteraction do
+    before { VCR.stub_chain(:configuration, :uri_parser) { LimitedURI } }
+
     if ''.respond_to?(:encoding)
       def body_hash(key, value)
         { key => value, 'encoding' => 'UTF-8' }
@@ -312,6 +314,8 @@ module VCR
   end
 
   describe HTTPInteraction::HookAware do
+    before { VCR.stub_chain(:configuration, :uri_parser) { LimitedURI } }
+
     let(:response_status) { VCR::ResponseStatus.new(200, "OK foo") }
     let(:body) { "The body foo this is (foo-Foo)" }
     let(:headers) do {
@@ -451,6 +455,8 @@ module VCR
   end
 
   describe Request do
+    before { VCR.stub_chain(:configuration, :uri_parser) { LimitedURI } }
+
     describe '#method' do
       subject { VCR::Request.new(:get) }
 

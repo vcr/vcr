@@ -1,9 +1,11 @@
 require 'vcr/request_matcher_registry'
 require 'vcr/structs'
-require 'uri'
+require 'support/limited_uri'
 
 module VCR
   describe RequestMatcherRegistry do
+    before { VCR.stub_chain(:configuration, :uri_parser) { LimitedURI } }
+
     def request_with(values)
       VCR::Request.new.tap do |request|
         values.each do |name, value|
