@@ -4,6 +4,7 @@ if using_git
   require 'bundler'
   require 'bundler/setup'
   Bundler::GemHelper.install_tasks
+  require 'appraisal'
 end
 
 require 'rake'

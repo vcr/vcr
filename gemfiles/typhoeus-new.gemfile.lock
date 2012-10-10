@@ -1,0 +1,183 @@
+GIT
+  remote: https://github.com/i0rek/faraday.git
+  revision: 69a2fa65e3a37e1fe9e8a2e4c900d79a3bc0546a
+  branch: typhoeus_0.5.0
+  specs:
+    faraday (0.9.0.pre)
+      multipart-post (~> 1.1)
+
+GIT
+  remote: https://github.com/i0rek/webmock.git
+  revision: aeac5cc6a1ac7a313c138514d66cd536802b9dc4
+  branch: typhoeus_0.5.0
+  specs:
+    webmock (1.8.9)
+      addressable (>= 2.2.7)
+      crack (>= 0.1.7)
+
+GIT
+  remote: https://github.com/typhoeus/typhoeus.git
+  revision: 73ef1a00c2615cf77e92591c1efd885ffafb16b6
+  specs:
+    typhoeus (0.5.0.rc)
+      ethon (= 0.5.0)
+
+PATH
+  remote: /Users/myron/code/vcr
+  specs:
+    vcr (2.2.5)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    addressable (2.3.2)
+    appraisal (0.4.1)
+      bundler
+      rake
+    archive-tar-minitar (0.5.2)
+    aruba (0.4.11)
+      childprocess (>= 0.2.3)
+      cucumber (>= 1.1.1)
+      ffi (>= 1.0.11)
+      rspec (>= 2.7.0)
+    builder (3.1.3)
+    childprocess (0.3.5)
+      ffi (~> 1.0, >= 1.0.6)
+    columnize (0.3.6)
+    cookiejar (0.3.0)
+    crack (0.3.1)
+    cucumber (1.1.9)
+      builder (>= 2.1.2)
+      diff-lcs (>= 1.1.2)
+      gherkin (~> 2.9.0)
+      json (>= 1.4.6)
+      term-ansicolor (>= 1.0.6)
+    curb (0.8.1)
+    diff-lcs (1.1.3)
+    em-http-request (1.0.3)
+      addressable (>= 2.2.3)
+      cookiejar
+      em-socksify
+      eventmachine (>= 1.0.0.beta.4)
+      http_parser.rb (>= 0.5.3)
+    em-socksify (0.2.1)
+      eventmachine (>= 1.0.0.beta.4)
+    ethon (0.5.0)
+      ffi (~> 1.0.11)
+      mime-types (~> 1.18)
+    eventmachine (1.0.0)
+    excon (0.16.4)
+    fakeweb (1.3.0)
+    ffi (1.0.11)
+    fuubar (1.0.0)
+      rspec (~> 2.0)
+      rspec-instafail (~> 0.2.0)
+      ruby-progressbar (~> 0.0.10)
+    fuubar-cucumber (0.0.15)
+      cucumber (>= 1.0.2)
+      ruby-progressbar (~> 0.0.10)
+    gherkin (2.9.3)
+      json (>= 1.4.6)
+    github-markup (0.7.4)
+    http_parser.rb (0.5.3)
+    httpclient (2.3.0.1)
+    json (1.6.7)
+    linecache (0.46)
+      rbx-require-relative (> 0.0.4)
+    linecache19 (0.5.12)
+      ruby_core_source (>= 0.1.4)
+    mime-types (1.19)
+    multi_json (1.0.4)
+    multipart-post (1.1.5)
+    patron (0.4.18)
+    rack (1.3.6)
+    rack-protection (1.2.0)
+      rack
+    rake (0.9.2.2)
+    rbx-require-relative (0.0.9)
+    redcarpet (1.17.2)
+    redis (2.2.2)
+    relish (0.6)
+      archive-tar-minitar (>= 0.5.2)
+      json (>= 1.4.6)
+      rest-client (>= 1.6.1)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
+    rspec (2.11.0)
+      rspec-core (~> 2.11.0)
+      rspec-expectations (~> 2.11.0)
+      rspec-mocks (~> 2.11.0)
+    rspec-core (2.11.1)
+    rspec-expectations (2.11.3)
+      diff-lcs (~> 1.1.3)
+    rspec-instafail (0.2.4)
+    rspec-mocks (2.11.3)
+    ruby-debug (0.10.4)
+      columnize (>= 0.1)
+      ruby-debug-base (~> 0.10.4.0)
+    ruby-debug-base (0.10.4)
+      linecache (>= 0.3)
+    ruby-debug-base19 (0.11.25)
+      columnize (>= 0.3.1)
+      linecache19 (>= 0.5.11)
+      ruby_core_source (>= 0.1.4)
+    ruby-debug19 (0.11.6)
+      columnize (>= 0.3.1)
+      linecache19 (>= 0.5.11)
+      ruby-debug-base19 (>= 0.11.19)
+    ruby-progressbar (0.0.10)
+    ruby_core_source (0.1.5)
+      archive-tar-minitar (>= 0.5.2)
+    shoulda (2.9.2)
+    simplecov (0.5.4)
+      multi_json (~> 1.0.3)
+      simplecov-html (~> 0.5.3)
+    simplecov-html (0.5.3)
+    sinatra (1.3.3)
+      rack (~> 1.3, >= 1.3.6)
+      rack-protection (~> 1.2)
+      tilt (~> 1.3, >= 1.3.3)
+    term-ansicolor (1.0.7)
+    tilt (1.3.3)
+    timecop (0.3.5)
+    yajl-ruby (1.1.0)
+    yard (0.8.2.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  appraisal
+  aruba (~> 0.4.11)
+  bundler (>= 1.0.7)
+  cucumber (~> 1.1.4)
+  curb (~> 0.8.0)
+  em-http-request (~> 1.0.2)
+  excon (>= 0.11.0, < 1.0)
+  fakeweb (~> 1.3.0)
+  faraday!
+  fuubar
+  fuubar-cucumber
+  github-markup
+  httpclient (~> 2.2)
+  jruby-openssl
+  json (~> 1.6.5)
+  multi_json (~> 1.0.3)
+  patron (~> 0.4.15)
+  rack (~> 1.3.6)
+  rake (~> 0.9.2)
+  redcarpet (~> 1.17.2)
+  redis (~> 2.2.2)
+  relish (~> 0.6)
+  rspec (~> 2.11)
+  ruby-debug
+  ruby-debug19
+  shoulda (~> 2.9.2)
+  simplecov (~> 0.5.3)
+  sinatra (~> 1.3.2)
+  timecop (~> 0.3.5)
+  typhoeus!
+  vcr!
+  webmock!
+  yajl-ruby (~> 1.1.0)
+  yard

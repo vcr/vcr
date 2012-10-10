@@ -35,6 +35,12 @@ module MonkeyPatches
         $original_typhoeus_before_hooks.each do |hook|
           ::Typhoeus.before << hook
         end
+      when :typhoeus_0_4
+        ::Typhoeus::Hydra.global_hooks = $original_typhoeus_global_hooks
+        ::Typhoeus::Hydra.stub_finders.clear
+        $original_typhoeus_stub_finders.each do |finder|
+          ::Typhoeus::Hydra.stub_finders << finder
+        end
       when :excon
         $original_excon_stubs.each do |stub|
           ::Excon.stubs << stub
@@ -57,9 +63,12 @@ module MonkeyPatches
       ::WebMock::StubRegistry.instance.request_stubs = []
     end
 
-    if defined?(::Typhoeus)
+    if defined?(::Typhoeus.before)
       ::Typhoeus.on_complete.clear
       ::Typhoeus.before.clear
+    else
+      ::Typhoeus::Hydra.clear_global_hooks
+      ::Typhoeus::Hydra.stub_finders.clear
     end
 
     if defined?(::Excon)
@@ -132,12 +141,20 @@ unless RUBY_INTERPRETER == :jruby
   require 'patron'
   require 'em-http-request'
   require 'curb'
+  require 'typhoeus'
 end
 
-require 'vcr/library_hooks/typhoeus'
-$typhoeus_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].last
-$original_typhoeus_global_hooks = Typhoeus.on_complete.dup
-$original_typhoeus_before_hooks = Typhoeus.before.dup
+if defined?(::Typhoeus.before)
+  require 'vcr/library_hooks/typhoeus'
+  $typhoeus_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].last
+  $original_typhoeus_global_hooks = Typhoeus.on_complete.dup
+  $original_typhoeus_before_hooks = Typhoeus.before.dup
+elsif defined?(::Typhoeus::Hydra.global_hooks)
+  require 'vcr/library_hooks/typhoeus'
+  $typhoeus_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].last
+  $original_typhoeus_global_hooks = Typhoeus::Hydra.global_hooks.dup
+  $original_typhoeus_stub_finders = Typhoeus::Hydra.stub_finders.dup
+end
 
 require 'vcr/library_hooks/fakeweb'
 $fakeweb_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].last
@@ -161,7 +178,7 @@ $original_excon_stubs = ::Excon.stubs.dup
 MonkeyPatches.disable_all!
 
 RSpec.configure do |config|
-  [:fakeweb, :webmock, :vcr, :typhoeus, :excon].each do |scope|
+  [:fakeweb, :webmock, :vcr, :typhoeus, :typhoeus_0_4, :excon].each do |scope|
     config.before(:all, :with_monkey_patches => scope) { MonkeyPatches.enable!(scope) }
     config.after(:all,  :with_monkey_patches => scope) { MonkeyPatches.disable_all!   }
   end
