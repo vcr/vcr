@@ -6,29 +6,19 @@ gem 'faraday',  :git => "https://github.com/i0rek/faraday.git", :branch => "typh
 
 gemspec
 
-group :development do
-  platforms :jruby do
-    gem 'jruby-openssl'
-  end
-end
+gem 'jruby-openssl', :platforms => :jruby
 
 gem 'yard'
 
 # Additional gems that are useful, but not required for development.
-group :extras do
-  gem 'relish', '~> 0.6'
-  gem 'fuubar'
-  gem 'fuubar-cucumber'
+gem 'relish', '~> 0.6'
+gem 'fuubar'
+gem 'fuubar-cucumber'
 
-  gem 'redcarpet', '~> 1.17.2'
-  gem 'github-markup'
+gem 'redcarpet', '~> 1.17.2'
+gem 'github-markup'
 
-  platforms :mri_18, :jruby do
-    gem 'ruby-debug'
-  end
+gem 'ruby-debug', :platforms => [:mri_18, :jruby]
 
-  platforms :mri_19 do
-    gem 'ruby-debug19'
-  end unless RUBY_VERSION == '1.9.3'
-end
+gem 'ruby-debug19', :platforms => :mri_19
 
