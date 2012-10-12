@@ -2,7 +2,7 @@ require 'faraday'
 require 'vcr/util/version_checker'
 require 'vcr/request_handler'
 
-VCR::VersionChecker.new('Faraday', Faraday::VERSION, '0.7.0', '0.8').check_version!
+VCR::VersionChecker.new('Faraday', Faraday::VERSION, '0.7.0', '0.9').check_version!
 
 module VCR
   # Contains middlewares for use with different libraries.
