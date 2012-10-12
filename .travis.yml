@@ -12,11 +12,6 @@ rvm:
   - jruby-19mode
   - rbx-18mode
   - rbx-19mode
-branches:
-  only:
-    - master
-    - 1-x-stable
-    - travis-testing
 matrix:
   allow_failures:
     - rvm: jruby-18mode
