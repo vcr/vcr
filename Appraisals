@@ -1,5 +1,5 @@
 appraise "typhoeus-new" do
-  gem 'typhoeus', git: "https://github.com/typhoeus/typhoeus.git"
+  gem 'typhoeus', :git => "https://github.com/typhoeus/typhoeus.git"
 end
 
 appraise "typhoeus-old" do
