@@ -8,6 +8,8 @@ Enhancements:
   be set to something like `Addressable::URI` to handle non-standard
   URIs that stdlib `URI` doesn't handle. Thanks to [Ryan
   Burrows](https://github.com/rhburrows) for contributing this feature.
+* Add support for Typhoeus 0.5. Thanks to [Hans
+  Hasselberg](https://github.com/i0rek) for making the needed changes.
 
 ## 2.2.5 (September 7, 2012)
 

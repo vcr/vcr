@@ -128,8 +128,8 @@ yard server --reload
 * [Chris Kampmeier](http://github.com/chrisk) for [FakeWeb](http://github.com/chrisk/fakeweb).
 * [Chris Young](http://github.com/chrisyoung) for [NetRecorder](http://github.com/chrisyoung/netrecorder),
   the inspiration for VCR.
-* [David Balatero](https://github.com/dbalatero) for help with [Typhoeus](https://github.com/typhoeus/typhoeus)
-  support.
+* [David Balatero](https://github.com/dbalatero) and [Hans Hasselberg](https://github.com/i0rek)
+  for help with [Typhoeus](https://github.com/typhoeus/typhoeus) support.
 * [Wesley Beary](https://github.com/geemus) for help with [Excon](https://github.com/geemus/excon)
   support.
 * [Jacob Green](https://github.com/Jacobkg) for help with ongoing VCR
@@ -150,6 +150,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Ezekiel Templin](https://github.com/ezkl)
 * [Flaviu Simihaian](https://github.com/closedbracket)
 * [Gordon Wilson](https://github.com/gordoncww)
+* [Hans Hasselberg](https://github.com/i0rek)
 * [Ingemar](https://github.com/ingemar)
 * [Jacob Green](https://github.com/Jacobkg)
 * [Jeff Pollard](https://github.com/Fluxx)
