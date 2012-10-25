@@ -31,6 +31,16 @@ RSpec.configure do |config|
       end
     end
 
+    # For some reason, I get a strange warning on 1.9.2 on Travis-CI but
+    # I can't repro locally:
+    # from /home/travis/builds/myronmarston/vcr/spec/monkey_pnet/http:
+    # warning: Content-Type did not set; using application/x-www-form-urlencoded
+    if RUBY_VERSION == '1.9.2' && ENV['CI']
+      vcr_warnings.reject! do |line|
+        line.include?('monkey_pnet')
+      end
+    end
+
     if vcr_warnings.any?
       puts
       puts "-" * 30 + " VCR Warnings: " + "-" * 30
