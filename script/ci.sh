@@ -1,5 +1,5 @@
 # Kill the whole script on error
-set -e
+set -e -x
 
 echo "-------- Running Typhoeus 0.4 Specs ---------"
 bundle install --gemfile=gemfiles/typhoeus-old.gemfile
