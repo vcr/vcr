@@ -36,6 +36,11 @@ features/LICENSE.md
 features/Upgrade.md
 features/CONTRIBUTING.md
 
+## PROJECT::TOOLS
+
 .rvmrc
 .yardoc
 doc
+
+## PROJECT::EDITORS
+.idea/
