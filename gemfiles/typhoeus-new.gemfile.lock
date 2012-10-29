@@ -1,12 +1,4 @@
 GIT
-  remote: https://github.com/i0rek/faraday.git
-  revision: 69a2fa65e3a37e1fe9e8a2e4c900d79a3bc0546a
-  branch: typhoeus_0.5.0
-  specs:
-    faraday (0.9.0.pre)
-      multipart-post (~> 1.1)
-
-GIT
   remote: https://github.com/i0rek/webmock.git
   revision: aeac5cc6a1ac7a313c138514d66cd536802b9dc4
   branch: typhoeus_0.5.0
@@ -17,10 +9,10 @@ GIT
 
 GIT
   remote: https://github.com/typhoeus/typhoeus.git
-  revision: 73ef1a00c2615cf77e92591c1efd885ffafb16b6
+  revision: 6f4e9079ade2f90c20341dddd022ab1d153400ec
   specs:
     typhoeus (0.5.0.rc)
-      ethon (= 0.5.0)
+      ethon (= 0.5.1)
 
 PATH
   remote: /Users/myron/code/vcr
@@ -40,8 +32,8 @@ GEM
       cucumber (>= 1.1.1)
       ffi (>= 1.0.11)
       rspec (>= 2.7.0)
-    builder (3.1.3)
-    childprocess (0.3.5)
+    builder (3.1.4)
+    childprocess (0.3.6)
       ffi (~> 1.0, >= 1.0.6)
     columnize (0.3.6)
     cookiejar (0.3.0)
@@ -69,12 +61,14 @@ GEM
       http_parser.rb (>= 0.5.3)
     em-socksify (0.2.1)
       eventmachine (>= 1.0.0.beta.4)
-    ethon (0.5.0)
+    ethon (0.5.1)
       ffi (~> 1.0.11)
       mime-types (~> 1.18)
     eventmachine (1.0.0)
-    excon (0.16.4)
+    excon (0.16.7)
     fakeweb (1.3.0)
+    faraday (0.8.4)
+      multipart-post (~> 1.1)
     ffi (1.0.11)
     fuubar (1.0.0)
       rspec (~> 2.0)
@@ -136,7 +130,7 @@ GEM
     tilt (1.3.3)
     timecop (0.3.5)
     yajl-ruby (1.1.0)
-    yard (0.8.2.1)
+    yard (0.8.3)
 
 PLATFORMS
   ruby
@@ -151,7 +145,7 @@ DEPENDENCIES
   em-http-request (~> 1.0.2)
   excon (>= 0.11.0, < 1.0)
   fakeweb (~> 1.3.0)
-  faraday!
+  faraday (~> 0.8)
   fuubar
   fuubar-cucumber
   github-markup

@@ -56,7 +56,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
     test_record_and_playback "with a complex escaped query param", "q=#{CGI.escape("A&(! 234k !@ kasdj232\#$ kjw35")}"
 
     it 'plays back an empty body response exactly as it was recorded (e.g. nil vs empty string)' do
-      pending "awaiting an external fix", :if => library_hook_name == :fakeweb do
+      pending "awaiting an external fix", :if => library.gsub('_', '/').include?('net/http') && library_hook_name != :webmock do
         get_body = lambda do
           VCR.use_cassette('empty_body', :record => :once) do
             get_body_object make_http_request(:get, "http://localhost:#{VCR::SinatraApp.port}/204")

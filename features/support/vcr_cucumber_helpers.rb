@@ -23,8 +23,9 @@ if ENV['DATE_STRING']
 end
 
 def include_http_adapter_for(lib)
-  require 'support/http_library_adapters'
   require (lib =~ /faraday/ ? 'faraday' : lib)
+  require 'typhoeus' if lib.include?('typhoeus') # for faraday-typhoeus
+  require 'support/http_library_adapters'
   include HTTP_LIBRARY_ADAPTERS[lib]
 end
 

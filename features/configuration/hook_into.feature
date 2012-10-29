@@ -96,6 +96,7 @@ Feature: hook_into
       require 'excon'
       require 'faraday'
       require 'vcr'
+      <extra_require>
 
       VCR.configure { |c| c.ignore_localhost = true }
 
@@ -167,8 +168,8 @@ Feature: hook_into
       | Faraday 2: Hello faraday      |
 
     Examples:
-      | hook_into | faraday_adapter |
-      | :fakeweb  | net_http        |
-      | :webmock  | net_http        |
-      | :fakeweb  | typhoeus        |
-      | :webmock  | typhoeus        |
+      | hook_into | faraday_adapter | extra_require                       |
+      | :fakeweb  | net_http        |                                     |
+      | :webmock  | net_http        |                                     |
+      | :fakeweb  | typhoeus        | require 'typhoeus/adapters/faraday' |
+      | :webmock  | typhoeus        | require 'typhoeus/adapters/faraday' |

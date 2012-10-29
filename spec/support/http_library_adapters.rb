@@ -219,6 +219,12 @@ HTTP_LIBRARY_ADAPTERS['excon'] = Module.new do
 end
 
 %w[ net_http typhoeus patron ].each do |_faraday_adapter|
+  if _faraday_adapter == 'typhoeus' &&
+     defined?(::Typhoeus::VERSION) &&
+     ::Typhoeus::VERSION.to_f >= 0.5
+    require 'typhoeus/adapters/faraday'
+  end
+
   HTTP_LIBRARY_ADAPTERS["faraday (w/ #{_faraday_adapter})"] = Module.new do
     class << self; self; end.class_eval do
       define_method(:http_library_name) do
