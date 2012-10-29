@@ -2,7 +2,9 @@ require 'spec_helper'
 require 'vcr/library_hooks/faraday'
 
 describe VCR::Middleware::Faraday do
-  %w[ typhoeus net_http patron ].each do |lib|
+  http_libs = %w[ typhoeus net_http patron ]
+  http_libs.delete('patron') if RUBY_VERSION == '1.8.7'
+  http_libs.each do |lib|
     it_behaves_like 'a hook into an HTTP library', :faraday, "faraday (w/ #{lib})",
       :status_message_not_exposed,
       :does_not_support_rotating_responses,

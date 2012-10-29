@@ -69,7 +69,9 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
     end
   end
 
-  %w[net/http patron httpclient em-http-request curb typhoeus excon].each do |lib|
+  http_libs = %w[net/http patron httpclient em-http-request curb typhoeus excon]
+  http_libs.delete('patron') if RUBY_VERSION == '1.8.7'
+  http_libs.each do |lib|
     other = []
     other << :status_message_not_exposed if lib == 'excon'
     it_behaves_like 'a hook into an HTTP library', :webmock, lib, *other do
