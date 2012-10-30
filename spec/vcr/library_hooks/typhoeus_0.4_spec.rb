@@ -27,5 +27,5 @@ describe "Typhoeus 0.4 hook", :with_monkey_patches => :typhoeus_0_4 do
       $typhoeus_after_loaded_hook.conditionally_invoke
     end
   end
-end if defined?(::Typhoeus::VERSION) && Float(::Typhoeus::VERSION[/^\d+\.\d+/]) < 0.5
+end if RUBY_INTERPRETER == :mri && ::Typhoeus::VERSION.to_f < 0.5
 

@@ -1,4 +1,4 @@
-require 'typhoeus' unless RUBY_INTERPRETER == :jruby
+require 'typhoeus' if RUBY_INTERPRETER == :mri
 
 module MonkeyPatches
   extend self
@@ -66,7 +66,7 @@ module MonkeyPatches
     if defined?(::Typhoeus.before)
       ::Typhoeus.on_complete.clear
       ::Typhoeus.before.clear
-    else
+    elsif defined?(::Typhoeus::Hydra)
       ::Typhoeus::Hydra.clear_global_hooks
       ::Typhoeus::Hydra.stub_finders.clear
     end
@@ -141,7 +141,6 @@ unless RUBY_INTERPRETER == :jruby
   require 'patron'
   require 'em-http-request'
   require 'curb'
-  require 'typhoeus'
 end
 
 if defined?(::Typhoeus.before)
