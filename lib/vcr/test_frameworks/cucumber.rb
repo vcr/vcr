@@ -43,7 +43,7 @@ module VCR
             feature = scenario.respond_to?(:scenario_outline) ? scenario.scenario_outline.feature : scenario.feature
             name = feature.name.split("\n").first
             name << "/#{scenario.scenario_outline.name}" if scenario.respond_to?(:scenario_outline)
-            name << "/#{scenario.name}"
+            name << "/#{scenario.name.split("\n").first}"
             name
           else
             "cucumber_tags/#{tag_name.gsub(/\A@/, '')}"

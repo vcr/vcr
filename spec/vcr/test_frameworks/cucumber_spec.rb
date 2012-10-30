@@ -9,7 +9,7 @@ describe VCR::CucumberTags do
     stub(:name => name, :feature => stub(:name => "My feature name\nThe preamble text is not included"))
   end
 
-  let(:current_scenario) { scenario "My scenario name" }
+  let(:current_scenario) { scenario "My scenario name\nThe preamble text is not included" }
 
   # define our own Before/After so we can test this in isolation from cucumber's implementation.
   def Before(tag, &block)
