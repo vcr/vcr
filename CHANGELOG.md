@@ -11,6 +11,14 @@ Enhancements:
 * Add support for Typhoeus 0.5. Thanks to [Hans
   Hasselberg](https://github.com/i0rek) for making the needed changes.
 
+Bug Fixes:
+
+* Fix `:use_scenario_name` cucumber tag option so that it only uses the
+  first line of the scenario name. Scenarios can include a long preamble
+  that Cucumber includes as part of the scenario name. Thanks to
+  [Pascal Van Hecke](https://github.com/pascalvanhecke) for providing
+  this fix.
+
 ## 2.2.5 (September 7, 2012)
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.4...v2.2.5)
