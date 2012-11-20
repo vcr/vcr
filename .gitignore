@@ -28,7 +28,6 @@ features/fixtures/vcr_cassettes/**/temp/
 .bundle
 tmp
 rerun.txt
-Gemfile.lock
 
 features/README.md
 features/CHANGELOG.md
