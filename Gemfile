@@ -2,9 +2,6 @@ source :rubygems
 
 gem 'appraisal'
 
-gem 'typhoeus', :git => "https://github.com/typhoeus/typhoeus.git"
-gem 'webmock',  :git => "https://github.com/i0rek/webmock.git", :branch => "typhoeus_0.5.0"
-
 gemspec
 
 gem 'jruby-openssl', :platforms => :jruby

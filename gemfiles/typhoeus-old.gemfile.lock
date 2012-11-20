@@ -1,7 +1,7 @@
 PATH
   remote: /Users/myron/code/vcr
   specs:
-    vcr (2.2.5)
+    vcr (2.3.0)
 
 GEM
   remote: http://rubygems.org/
