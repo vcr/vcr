@@ -28,15 +28,15 @@ end
 
 require 'rspec'
 
-require "support/fixnum_extension.rb"
-require "support/limited_uri.rb"
-require "support/http_library_adapters.rb"
-require "support/ruby_interpreter.rb"
-require "support/shared_example_groups/hook_into_http_library.rb"
-require "support/shared_example_groups/request_hooks.rb"
-require "support/sinatra_app.rb"
-require "support/vcr_localhost_server.rb"
-require "support/vcr_stub_helpers.rb"
+require "support/fixnum_extension"
+require "support/limited_uri"
+require "support/http_library_adapters"
+require "support/ruby_interpreter"
+require "support/shared_example_groups/hook_into_http_library"
+require "support/shared_example_groups/request_hooks"
+require "support/sinatra_app"
+require "support/vcr_localhost_server"
+require "support/vcr_stub_helpers"
 
 require 'vcr'
 require 'monkey_patches'
