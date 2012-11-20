@@ -160,7 +160,15 @@ HTTP_LIBRARY_ADAPTERS['typhoeus'] = Module.new do
   alias get_body_object get_body_string
 
   def get_header(header_key, response)
-    response.headers[header_key]
+    # Due to https://github.com/typhoeus/typhoeus/commit/256c95473d5d40d7ec2f5db603687323ddd73689
+    # headers are now downcased.
+    # ...except when they're not.  I'm not 100% why (I haven't had time to dig into it yet)
+    # but in some situations the headers aren't downcased.  I think it has to do with playback; VCR
+    # isn't sending the headers in downcased to typhoeus. It gets complicated with the interaction
+    # w/ WebMock, and the fact that webmock normalizes headers in a different fashion.
+    #
+    # For now this hack works.
+    response.headers.fetch(header_key.downcase) { response.headers[header_key] }
   end
 
   def make_http_request(method, url, body = nil, headers = {})
