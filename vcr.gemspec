@@ -45,7 +45,7 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'patron', '~> 0.4.15'
     s.add_development_dependency 'em-http-request', '~> 1.0.2'
     s.add_development_dependency 'curb', '~> 0.8.0'
-    s.add_development_dependency 'typhoeus', '~> 0.5'
+    s.add_development_dependency 'typhoeus', '~> 0.5.3'
     s.add_development_dependency 'yajl-ruby', '~> 1.1.0'
   end
 end
