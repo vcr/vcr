@@ -30,7 +30,6 @@ require 'rspec'
 
 require "support/fixnum_extension"
 require "support/limited_uri"
-require "support/http_library_adapters"
 require "support/ruby_interpreter"
 require "support/shared_example_groups/hook_into_http_library"
 require "support/shared_example_groups/request_hooks"
@@ -40,6 +39,7 @@ require "support/vcr_stub_helpers"
 
 require 'vcr'
 require 'monkey_patches'
+require "support/http_library_adapters"
 
 module VCR
   SPEC_ROOT = File.dirname(__FILE__)
