@@ -74,6 +74,8 @@ else
         ::Typhoeus.on_complete do |response|
           request = response.request
           unless VCR.library_hooks.disabled?(:typhoeus)
+            next if request.instance_variable_get(:@__vcr_on_completed)
+
             vcr_response = vcr_response_from(response)
             typed_vcr_request = request.send(:remove_instance_variable, :@__typed_vcr_request)
 
@@ -83,6 +85,8 @@ else
             end
 
             VCR.configuration.invoke_hook(:after_http_request, typed_vcr_request, vcr_response)
+
+            request.instance_variable_set(:@__vcr_on_completed, true)
           end
         end
 

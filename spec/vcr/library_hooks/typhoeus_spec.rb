@@ -27,5 +27,42 @@ describe "Typhoeus hook", :with_monkey_patches => :typhoeus do
       $typhoeus_after_loaded_hook.conditionally_invoke
     end
   end
+
+  context 'when there are nested hydra queues' do
+    def make_requests
+      VCR.use_cassette("nested") do
+        response_1 = response_2 = nil
+
+        hydra   = Typhoeus::Hydra.new
+        request = Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/")
+
+        request.on_success do |r1|
+          response_1 = r1
+
+          nested = Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/foo")
+          nested.on_success { |r2| response_2 = r2 }
+
+          hydra.queue(nested)
+        end
+
+        hydra.queue(request)
+        hydra.run
+
+        return body_for(response_1), body_for(response_2)
+      end
+    end
+
+    def body_for(response)
+      return :no_response if response.nil?
+      response.body
+    end
+
+    it 'records and plays back properly' do
+      recorded = make_requests
+      played_back = make_requests
+
+      played_back.should eq(recorded)
+    end
+  end
 end
 
