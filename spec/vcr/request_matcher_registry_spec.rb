@@ -1,10 +1,12 @@
 require 'vcr/request_matcher_registry'
 require 'vcr/structs'
 require 'support/limited_uri'
+require 'cgi'
 
 module VCR
   describe RequestMatcherRegistry do
     before { VCR.stub_chain(:configuration, :uri_parser) { LimitedURI } }
+    before { VCR.stub_chain(:configuration, :query_parser) { CGI.method(:parse) } }
 
     def request_with(values)
       VCR::Request.new.tap do |request|
@@ -239,6 +241,36 @@ module VCR
           subject[:headers].matches?(
             request_with(:headers => { 'a' => 3, 'b' => 2 }),
             request_with(:headers => { 'b' => 2, 'a' => 1 })
+          ).should be_false
+        end
+      end
+
+      describe ":query" do
+        it 'matches when it is identical' do
+          subject[:query].matches?(
+            request_with(:uri => 'http://foo.com/bar?a=8'),
+            request_with(:uri => 'http://goo.com/car?a=8')
+          ).should be_true
+        end
+
+        it 'matches when empty' do
+          subject[:query].matches?(
+            request_with(:uri => 'http://foo.com/bar'),
+            request_with(:uri => 'http://goo.com/car')
+          ).should be_true
+        end
+
+        it 'matches when parameters are reordered' do
+          subject[:query].matches?(
+            request_with(:uri => 'http://foo.com/bar?a=8&b=9'),
+            request_with(:uri => 'http://goo.com/car?b=9&a=8')
+          ).should be_true
+        end
+
+        it 'does not match when it is not the same' do
+          subject[:query].matches?(
+            request_with(:uri => 'http://foo.com/bar?a=8'),
+            request_with(:uri => 'http://goo.com/car?b=8')
           ).should be_false
         end
       end
