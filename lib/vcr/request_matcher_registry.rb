@@ -118,6 +118,11 @@ module VCR
       register(:path) do |r1, r2|
         r1.parsed_uri.path == r2.parsed_uri.path
       end
+
+      register(:query) do |r1, r2|
+        VCR.configuration.query_parser.call(r1.parsed_uri.query.to_s) ==
+          VCR.configuration.query_parser.call(r2.parsed_uri.query.to_s)
+      end
     end
   end
 end
