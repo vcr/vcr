@@ -139,9 +139,9 @@ module VCR
     # This defaults to `CGI.parse` from the ruby standard library.
     #
     # @overload query_parser
-    #  @return [#parse] the current query string parser object
+    #  @return [#call] the current query string parser object
     # @overload query_parser=
-    #  @param value [#parse] sets the query_parser
+    #  @param value [#call] sets the query_parser
     attr_accessor :query_parser
 
     # Sets a parser for VCR to use when parsing URIs. The new parser
