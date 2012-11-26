@@ -10,7 +10,6 @@ Feature: query_parser
   object which is comparable. This instance needs to implement the following
   API:
 
-    * `#to_s`   => a string
     * `#==`     => boolean
 
   Background:
