@@ -1,3 +1,13 @@
+## dev
+
+[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.3.0...master)
+
+Enhancements:
+
+* Add `:query` request matcher. The new `query_parser` config option can
+  bet set to change how the query is parsed. Thanks to [Nathaniel
+  Bibler](https://github.com/nbibler) for implementing this.
+
 ## 2.3.0 (October 29, 2012)
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.5...v2.3.0)
