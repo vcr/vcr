@@ -1,5 +1,6 @@
 require 'vcr/util/hooks'
 require 'uri'
+require 'cgi'
 
 module VCR
   # Stores the VCR configuration.
@@ -123,6 +124,24 @@ module VCR
     def allow_http_connections_when_no_cassette?
       !!@allow_http_connections_when_no_cassette
     end
+
+    # Sets a parser for VCR to use when parsing query strings for request
+    # comparisons.  The new parser must implement a method `call` that returns
+    # an object which is both equalivant and consistent when given an HTTP
+    # query string of possibly differing value ordering.
+    #
+    # * `#==    # => Boolean`
+    #
+    # The `#==` method must return true if both objects represent the
+    # same query string.
+    #
+    # This defaults to `CGI.parse` from the ruby standard library.
+    #
+    # @overload query_parser
+    #  @return [#call] the current query string parser object
+    # @overload query_parser=
+    #  @param value [#call] sets the query_parser
+    attr_accessor :query_parser
 
     # Sets a parser for VCR to use when parsing URIs. The new parser
     # must implement a method `parse` that returns an instance of the
@@ -452,6 +471,7 @@ module VCR
       }
 
       self.uri_parser = URI
+      self.query_parser = CGI.method(:parse)
       self.debug_logger = NullDebugLogger
 
       register_built_in_hooks
