@@ -4,6 +4,7 @@ require "vcr/version"
 Gem::Specification.new do |s|
   s.name = "vcr"
   s.homepage = "http://github.com/myronmarston/vcr"
+  s.license = "MIT"
   s.authors = ["Myron Marston"]
   s.summary = "Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests."
   s.description = "VCR provides a simple API to record and replay your test suite's HTTP interactions.  It works with a variety of HTTP client libraries, HTTP stubbing libraries and testing frameworks."
