@@ -43,3 +43,5 @@ doc
 
 ## PROJECT::EDITORS
 .idea/
+
+.rbenv-version
