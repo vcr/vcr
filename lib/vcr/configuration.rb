@@ -130,7 +130,6 @@ module VCR
     # an object which is both equalivant and consistent when given an HTTP
     # query string of possibly differing value ordering.
     #
-    # * `#to_s  # => String`
     # * `#==    # => Boolean`
     #
     # The `#==` method must return true if both objects represent the
