@@ -53,7 +53,7 @@ Feature: Matching on Query string
       recorded_with: VCR 2.0.0
       """
 
-  Scenario Outline: Replay interaction that matches the path
+  Scenario Outline: Replay interaction that matches the query string
     And a file named "query_matching.rb" with:
       """ruby
       include_http_adapter_for("<http_lib>")
