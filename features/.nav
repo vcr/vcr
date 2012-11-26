@@ -29,6 +29,8 @@
   - allow_http_connections_when_no_cassette.feature
   - debug_logging.feature
   - preserve_exact_body_bytes.feature
+  - uri_parser.feature
+  - query_parser.feature
 - hooks:
   - before_record.feature
   - before_playback.feature
@@ -40,6 +42,7 @@
   - uri.feature
   - host.feature
   - path.feature
+  - query.feature
   - body.feature
   - headers.feature
   - identical_request_sequence.feature
