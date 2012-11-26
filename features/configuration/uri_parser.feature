@@ -8,7 +8,7 @@ Feature: uri_parser
 
   The configured URI parser needs to expose a `.parse` class method
   that returns an instance of the uri. This uri instance needs to
-  implement the folllowing API:
+  implement the following API:
 
     * `#scheme` => a string
     * `#host`   => a string
