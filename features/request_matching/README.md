@@ -14,6 +14,8 @@ Specify an array of attributes to match on.  Supported attributes are:
   - `:path` - The path of the URI. You can use this (alone, or in combination
     with `:host`) as an alternative to `:uri` to cause VCR to match using a regex
     that matches the path.
+  - `:query` - The query string values of the URI. The query string ordering does
+    not affect matching results (it's order-agnostic).
   - `:body` - The body of the request.
   - `:headers` - The request headers.
 
