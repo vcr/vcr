@@ -19,4 +19,5 @@ gem 'github-markup'
 gem 'ruby-debug', :platforms => [:mri_18, :jruby]
 
 gem 'debugger', :platforms => :mri_19
+gem 'pry'
 
