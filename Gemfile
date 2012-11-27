@@ -13,7 +13,7 @@ gem 'relish', '~> 0.6'
 gem 'fuubar'
 gem 'fuubar-cucumber'
 
-gem 'redcarpet', '~> 1.17.2'
+gem 'redcarpet', '~> 1.17.2', :platforms => :ruby
 gem 'github-markup'
 
 gem 'ruby-debug', :platforms => [:mri_18, :jruby]
