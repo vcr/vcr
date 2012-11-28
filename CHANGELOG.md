@@ -8,6 +8,14 @@ Enhancements:
   bet set to change how the query is parsed. Thanks to [Nathaniel
   Bibler](https://github.com/nbibler) for implementing this.
 
+Bug Fixes:
+
+* Fix previously recorded requests not matching when using the URIWithoutParams
+  builtin matcher. In the case where the original request was recorded without
+  parameters and subsequent requests filter out all parameters, the subsequent
+  requests were failing to match the originally recorded request. Thanks to
+  [Dmitry Jemerov](https://github.com/yole) for reporting the issue.
+
 ## 2.3.0 (October 29, 2012)
 
 [Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.5...v2.3.0)

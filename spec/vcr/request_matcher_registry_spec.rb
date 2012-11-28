@@ -145,6 +145,13 @@ module VCR
             request_with(:uri => 'http://example.com/bar')
           ).should be_false
         end
+
+        it 'matches a second request when all parameters are filtered' do
+          subject[subject.send(meth, :q, :oq)].matches?(
+            request_with(:uri => 'http://example.com/search'),
+            request_with(:uri => 'http://example.com/search?q=vcr&oq=vcr')
+          ).should be_true
+        end
       end
     end
 
