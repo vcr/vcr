@@ -1,4 +1,4 @@
-require 'typhoeus' if RUBY_INTERPRETER == :mri
+require 'typhoeus'
 
 module MonkeyPatches
   extend self
