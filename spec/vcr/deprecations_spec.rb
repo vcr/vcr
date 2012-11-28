@@ -79,5 +79,14 @@ describe VCR, 'deprecations', :disable_warnings do
       VCR::Middleware::Faraday.new(stub) { }
     end
   end
+
+  describe "VCR::RSpec::Macros" do
+    include VCR::RSpec::Macros
+
+    it 'prints a deprecation warning' do
+      Kernel.should_receive(:warn).with(/VCR::RSpec::Macros#use_vcr_cassette` is deprecated/)
+      use_vcr_cassette "foo_cassette"
+    end
+  end
 end
 

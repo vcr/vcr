@@ -42,6 +42,51 @@ module VCR
         end
       end
     end
+
+    module Macros
+      # Sets up a `before` and `after` hook that will insert and eject a
+      # cassette, respectively.
+      #
+      # @example
+      #   describe "Some API Client" do
+      #     use_vcr_cassette "some_api", :record => :new_episodes
+      #   end
+      #
+      # @param [(optional) String] name the cassette name; it will be inferred by the example
+      #  group descriptions if not given.
+      # @param [(optional) Hash] options the cassette options
+      def use_vcr_cassette(*args)
+        Kernel.warn "WARNING: Specifying a cassette with VCR::RSpec::Macros#use_vcr_cassette` is deprecated. \n" +
+          "Use RSpec metadata vcr options instead `:vcr => vcr_options`"
+        options = args.last.is_a?(Hash) ? args.pop : {}
+        name    = args.first || infer_cassette_name
+
+        before(:each) do
+          VCR.insert_cassette(name, options)
+        end
+
+        after(:each) do
+          VCR.eject_cassette
+        end
+      end
+
+      private
+
+      def infer_cassette_name
+        # RSpec 1 exposes #description_parts; use that if its available
+        return description_parts.join("/") if respond_to?(:description_parts)
+
+        # Otherwise use RSpec 2 metadata...
+        group_descriptions = []
+        klass = self
+
+        while klass.respond_to?(:metadata) && klass.metadata
+          group_descriptions << klass.metadata[:example_group][:description]
+          klass = klass.superclass
+        end
+
+        group_descriptions.compact.reverse.join('/')
+      end
+    end
   end
 end
-
