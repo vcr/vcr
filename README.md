@@ -2,7 +2,7 @@
 
 Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests.
 
-[![Build Status](https://secure.travis-ci.org/myronmarston/vcr.png?branch=master)](http://travis-ci.org/myronmarston/vcr)
+[![Build Status](https://secure.travis-ci.org/vcr/vcr.png?branch=master)](http://travis-ci.org/vcr/vcr)
 
 ## Synopsis
 
@@ -79,7 +79,7 @@ The docs come in two flavors:
   API documentation. The API docs contain detailed info about all of VCR's
   public API.
 
-See the [Upgrade](https://github.com/myronmarston/vcr/blob/master/Upgrade.md) doc
+See the [Upgrade](https://github.com/vcr/vcr/blob/master/Upgrade.md) doc
 for info about what's new and changed in VCR 2.0.
 
 ## Release Policy
@@ -105,13 +105,13 @@ Note that as of VCR 2, 1.8.6 and 1.9.1 are not supported.
 
 ## Development
 
-* Source hosted on [GitHub](http://github.com/myronmarston/vcr).
+* Source hosted on [GitHub](http://github.com/vcr/vcr).
 * Direct questions and discussions to the [IRC channel](irc://irc.freenode.net/vcr) or
   the [mailing list](http://groups.google.com/group/vcr-ruby).
-* Report issues on [GitHub Issues](http://github.com/myronmarston/vcr/issues).
+* Report issues on [GitHub Issues](http://github.com/vcr/vcr/issues).
 * Pull requests are very welcome! Please include spec and/or feature coverage for every patch,
   and create a topic branch for every separate change you make.
-* See the [Contributing](https://github.com/myronmarston/vcr/blob/master/CONTRIBUTING.md)
+* See the [Contributing](https://github.com/vcr/vcr/blob/master/CONTRIBUTING.md)
   guide for instructions on running the specs and features.
 * Code quality metrics are checked by [Code Climate](https://codeclimate.com/github/myronmarston/vcr).
 * Documentation is generated with [YARD](http://yardoc.org/) ([cheat sheet](http://cheat.errtheblog.com/s/yard/)).
