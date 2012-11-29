@@ -14,7 +14,8 @@ Bug Fixes:
   builtin matcher. In the case where the original request was recorded without
   parameters and subsequent requests filter out all parameters, the subsequent
   requests were failing to match the originally recorded request. Thanks to
-  [Dmitry Jemerov](https://github.com/yole) for reporting the issue.
+  [Dmitry Jemerov](https://github.com/yole) for reporting the issue and
+  [Nathaniel Bibler](https://github.com/nbibler) for implementing the fix.
 
 ## 2.3.0 (October 29, 2012)
 
