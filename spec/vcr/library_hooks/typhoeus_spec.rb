@@ -64,5 +64,28 @@ describe "Typhoeus hook", :with_monkey_patches => :typhoeus do
       played_back.should eq(recorded)
     end
   end
-end
 
+  context '#effective_url' do
+    def make_single_request
+      VCR.use_cassette('single') do
+        response = Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/").run
+
+        response.effective_url
+      end
+    end
+
+    it 'recorded and played back properly' do
+      recorded = make_single_request
+      played_back = make_single_request
+
+      played_back.should eq(recorded)
+    end
+
+    it 'is not nil' do
+      recorded = make_single_request
+      played_back = make_single_request
+
+      played_back.should_not eq nil
+    end
+  end
+end
