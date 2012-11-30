@@ -16,6 +16,10 @@ Bug Fixes:
   requests were failing to match the originally recorded request. Thanks to
   [Dmitry Jemerov](https://github.com/yole) for reporting the issue and
   [Nathaniel Bibler](https://github.com/nbibler) for implementing the fix.
+* Set `effective_url` on Typhoeus response when playing back. Thanks to
+  [Shay Frendt](https://github.com/shayfrendt) and
+  [Ryan Castillo](https://github.com/rmcastil) for providing the fix and
+  corresponding test.
 
 ## 2.3.0 (October 29, 2012)
 
