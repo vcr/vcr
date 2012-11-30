@@ -1,6 +1,6 @@
 ## dev
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.3.0...master)
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.3.0...master)
 
 Enhancements:
 
@@ -23,7 +23,7 @@ Bug Fixes:
 
 ## 2.3.0 (October 29, 2012)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.5...v2.3.0)
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.2.5...v2.3.0)
 
 Enhancements:
 
@@ -44,7 +44,7 @@ Bug Fixes:
 
 ## 2.2.5 (September 7, 2012)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.4...v2.2.5)
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.2.4...v2.2.5)
 
 Enhancements:
 
@@ -64,7 +64,7 @@ Bug Fixes:
 
 ## 2.2.4 (July 19, 2012)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.3...v2.2.4)
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.2.3...v2.2.4)
 
 Bug Fixes:
 
@@ -73,7 +73,7 @@ Bug Fixes:
 
 ## 2.2.3 (July 9, 2012)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.2...v2.2.3)
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.2.2...v2.2.3)
 
 Bug Fixes:
 
@@ -85,7 +85,7 @@ Bug Fixes:
 
 ## 2.2.2 (June 15, 2012)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.1...v2.2.2)
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.2.1...v2.2.2)
 
 Bug Fixes:
 
@@ -96,7 +96,7 @@ Bug Fixes:
 
 ## 2.2.1 (June 13, 2012)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.2.0...v2.2.1)
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.2.0...v2.2.1)
 
 Bug Fixes:
 
@@ -107,7 +107,7 @@ Bug Fixes:
 
 ## 2.2.0 (May 31, 2012)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.1.1...v2.2.0)
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.1.1...v2.2.0)
 
 Enhancements:
 
@@ -164,7 +164,7 @@ Bug Fixes:
 
 ## 2.1.1 (April 24, 2012)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.1.0...v2.1.1)
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.1.0...v2.1.1)
 
 * Fix `:use_scenario_name` cucumber tag option so that it works properly
   with multiple scenarios. Thanks to [Brent Snook](https://github.com/brentsnook)
@@ -177,7 +177,7 @@ Bug Fixes:
 
 ## 2.1.0 (April 19, 2012)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.1...v.2.1.0)
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.0.1...v.2.1.0)
 
 * Add new `:use_scenario_name` option to the cucumber tags API. This
   allows you to use a generic tag (such as `@vcr`) and have the
@@ -193,7 +193,7 @@ Bug Fixes:
 
 ## 2.0.1 (March 30, 2012)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0...v2.0.1)
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.0.0...v2.0.1)
 
 * Fix encoding logic to not attempt to encode the request or response
   body on deserialization if there is no encoding specified. This should
@@ -208,7 +208,7 @@ Bug Fixes:
 
 ## 2.0.0 (March 2, 2012)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.rc2...v2.0.0)
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.0.0.rc2...v2.0.0)
 
 * Add some additional logged events for the `debug_logger`.
 * Don't worry about stripping the standard port from the request URI on
@@ -225,7 +225,7 @@ Bug Fixes:
 
 ## 2.0.0 RC 2 (February 23, 2012)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.rc1...v2.0.0.rc2)
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.0.0.rc1...v2.0.0.rc2)
 
 ## New Features
 
@@ -275,7 +275,7 @@ Bug Fixes:
 
 ## 2.0.0 RC 1 (December 8, 2011)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.beta2...v2.0.0.rc1)
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.0.0.beta2...v2.0.0.rc1)
 
 * Add Faraday hook that automatically inserts the VCR middleware so that
   you can use VCR with Faraday without needing to insert the middleware
@@ -296,7 +296,7 @@ Bug Fixes:
 
 ## 2.0.0 Beta 2 (November 6, 2011)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v2.0.0.beta1...v2.0.0.beta2)
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.0.0.beta1...v2.0.0.beta2)
 
 * Update to (and require) Typhoeus 0.3.2.
 * Fix a bug with `VCR.request_matchers.uri_without_param(:some_param)`
@@ -331,7 +331,7 @@ upgrade notes for more info.
 
 ## 2.0.0 Beta 1 (October 8, 2011)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.11.3...v2.0.0.beta1)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.11.3...v2.0.0.beta1)
 
 ### Changed
 
@@ -379,48 +379,48 @@ upgrade notes for more info.
 
 ## 1.11.3 (August 31, 2011)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.11.2...v1.11.3)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.11.2...v1.11.3)
 
 * Fix cassette serialization so that it does not include extra `ignored`
   instance variable.
 
 ## 1.11.2 (August 28, 2011)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.11.1...v1.11.2)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.11.1...v1.11.2)
 
 * Updated rake, cucumber and aruba dev dependencies to latest releases.
 * Fix all warnings originating from VCR.  VCR is now warning-free!
 
 ## 1.11.1 (August 18, 2011)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.11.0...v1.11.1)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.11.0...v1.11.1)
 
 * Yanked 1.11.0 and rebuilt gem on 1.8.7 to deal with syck/psych
   incompatibilties in gemspec.
 
 ## 1.11.0 (August 18, 2011)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.10.3...v1.11.0)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.10.3...v1.11.0)
 
 * Updates to work with WebMock 1.7.0.
 
 ## 1.10.3 (July 21, 2011)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.10.2...v1.10.3)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.10.2...v1.10.3)
 
 * Fix `:update_content_length_header` option so no error is raised if
   a response body is nil. Bug reported by [jg](https://github.com/jg).
 
 ## 1.10.2 (July 16, 2011)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.10.1...v1.10.2)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.10.1...v1.10.2)
 
 * Yanked 1.10.1 and rebuilt gem on 1.8.7 to deal with syck/psych
   incompatibilties in gemspec.
 
 ## 1.10.1 (July 16, 2011)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.10.0...v1.10.1)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.10.0...v1.10.1)
 
 * Fix typo in error message.  Fix provided by [Bradley](https://github.com/bradleyisotope).
 * Fix excon adapter to properly handle queries specified as a hash.
@@ -431,7 +431,7 @@ upgrade notes for more info.
 
 ## 1.10.0 (May 18, 2011)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.9.0...v1.10.0)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.9.0...v1.10.0)
 
 * Fix header normalization so that it properly handles nested arrays and
   non-string values.
@@ -445,19 +445,19 @@ upgrade notes for more info.
 
 ## 1.9.0 (April 14, 2011)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.8.0...v1.9.0)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.8.0...v1.9.0)
 
 * Add support for [Excon](https://github.com/geemus/excon).
 
 ## 1.8.0 (March 31, 2011)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.7.2...v1.8.0)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.7.2...v1.8.0)
 
 * Updated Faraday middleware to work with newly released Faraday 0.6.0.
 
 ## 1.7.2 (March 26, 2011)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.7.1...v1.7.2)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.7.1...v1.7.2)
 
 * Fixed Typhoeus adapter so headers are returned in the same form during
   playback as they would be without VCR.  Bug reported by
@@ -467,14 +467,14 @@ upgrade notes for more info.
 
 ## 1.7.1 (March 19, 2011)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.7.0...v1.7.1)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.7.0...v1.7.1)
 
 * Fix Faraday adapter so that it properly normalizes query parameters
   in the same way that Faraday itself does.
 
 ## 1.7.0 (March 1, 2011)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.6.0...v1.7.0)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.6.0...v1.7.0)
 
 * Use Psych for YAML serialization/deserialization when it is available.
   Syck, Ruby's old YAML engine, will remove whitespace from some
@@ -501,7 +501,7 @@ upgrade notes for more info.
 
 ## 1.6.0 (February 3, 2011)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.5.1...v1.6.0)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.5.1...v1.6.0)
 
 * Add new `ignore_hosts` configuration option that allows you to ignore
   any host (not just localhost aliases, as the `ignore_localhost` option
@@ -511,7 +511,7 @@ upgrade notes for more info.
 
 ## 1.5.1 (January 12, 2011)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.5.0...v1.5.1)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.5.0...v1.5.1)
 
 * Fix response and request serialization so that the headers are raw
   strings.  This fixes intermittent YAML seg faults for paperclip
@@ -519,7 +519,7 @@ upgrade notes for more info.
 
 ## 1.5.0 (January 12, 2011)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.4.0...v1.5.0)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.4.0...v1.5.0)
 
 * Fix VCR::Cassette so it does not raise an error when a cassette file is
   empty.  Bug reported and fixed by [Karl Baum](https://github.com/kbaum).
@@ -538,7 +538,7 @@ upgrade notes for more info.
 
 ## 1.4.0 (December 3, 2010)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.3.3...v1.4.0)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.3.3...v1.4.0)
 
 * Added support for making HTTP requests without a cassette (i.e. if you don't
   want to use VCR for all of your test suite).  There are a few ways to
@@ -554,7 +554,7 @@ upgrade notes for more info.
 
 ## 1.3.3 (November 21, 2010)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.3.2...v1.3.3)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.3.2...v1.3.3)
 
 * In specs, hit a local sinatra server rather than example.com.  This makes
   the specs faster and removes an external dependency.  The specs can pass
@@ -566,7 +566,7 @@ upgrade notes for more info.
 
 ## 1.3.2 (November 16, 2010)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.3.1...v1.3.2)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.3.1...v1.3.2)
 
 * Fix serialized structs so that they are normalized andthey will be the same
   regardless of which HTTP library made the request.
@@ -578,15 +578,15 @@ upgrade notes for more info.
 
 ## 1.3.1 (November 11, 2010)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.3.0...v1.3.1)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.3.0...v1.3.1)
 
 * Update WebMock adapter to work with (and require) newly released WebMock 1.6.0.
 
 ## 1.3.0 (November 11, 2010)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.2.0...v1.3.0)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.2.0...v1.3.0)
 
-* Moved documentation from README to [Wiki](http://github.com/myronmarston/vcr/wiki).
+* Moved documentation from README to [Wiki](http://github.com/vcr/vcr/wiki).
 * Refactoring and code cleanup.
 * Fix InternetConnection.available? so that it memoizes correctly when a connection is not available.
 * Fix WebMock version checking to allow newly released 1.5.0 to be used without a warning.
@@ -598,7 +598,7 @@ upgrade notes for more info.
 
 ## 1.2.0 (October 13, 2010)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.1.2...v1.2.0)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.1.2...v1.2.0)
 
 * Improved the `:all` record mode so that it keeps previously recorded interactions that do not match the
   new recorded interactions.  Previously, all of the previously recorded interactions were deleted.
@@ -608,7 +608,7 @@ upgrade notes for more info.
   example group.
 * Fixed VCR/Net::HTTP/WebMock integration so that VCR no longer loads its Net::HTTP monkey patch when
   WebMock is used, and relies upon WebMock's after_request callback to record Net::HTTP instead.  This
-  fixes [a bug](http://github.com/myronmarston/vcr/issues/14) when using WebMock and Open URI.
+  fixes [a bug](http://github.com/vcr/vcr/issues/14) when using WebMock and Open URI.
 * Consider 0.0.0.0 to be a localhost alias (previously only "localhost" and 127.0.0.1 were considered).
 * Added spec and feature coverage for Curb integration.  Works out of the box with no changes required
   to VCR due to [Pete Higgins'](http://github.com/phiggins) great work to add Curb support to WebMock.
@@ -617,7 +617,7 @@ upgrade notes for more info.
 
 ## 1.1.2 (September 9, 2010)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.1.1...v1.1.2)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.1.1...v1.1.2)
 
 * Fixed a minor bug with the WebMock integration: WebMock extends each `Net::HTTPResponse` with an extension
   module after reading the body, and VCR was doing the same thing, leading to some slight deviance from
@@ -631,7 +631,7 @@ upgrade notes for more info.
 
 ## 1.1.1 (August 26, 2010)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.1.0...v1.1.1)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.1.0...v1.1.1)
 
 * Updated to use and require FakeWeb 1.3.0. It includes a fix for a bug related to multiple values for the
   same response header.
@@ -646,7 +646,7 @@ upgrade notes for more info.
 
 ## 1.1.0 (August 22, 2010)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.0.3...v1.1.0)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.0.3...v1.1.0)
 
 * Added `:match_requests_on` cassette option, which determines how VCR matches requests.
 * Removed VCR::TaskRunner and the corresponding rake task definition.  The rake task migrated cassettes from the
@@ -661,7 +661,7 @@ upgrade notes for more info.
 
 ## 1.0.3 (August 5, 2010)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.0.2...v1.0.3)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.0.2...v1.0.3)
 
 * Upgraded VCR specs to RSpec 2.
 * Updated `VCR::CucumberTags` so that it uses an `around` hook rather than a `before` hook and an `after` hook.
@@ -673,7 +673,7 @@ upgrade notes for more info.
 
 ## 1.0.2 (July 6, 2010)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.0.1...v1.0.2)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.0.1...v1.0.2)
 
 * Fixed VCR to work with [rest-client](http://github.com/archiloque/rest-client).  Rest-client extends the Net::HTTP
   response body string with a module containing additional data, which got serialized to the cassette file YAML
@@ -683,7 +683,7 @@ upgrade notes for more info.
 
 ## 1.0.1 (July 1, 2010)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v1.0.0...v1.0.1)
+[Full Changelog](http://github.com/vcr/vcr/compare/v1.0.0...v1.0.1)
 
 * Fixed specs and features so they pass on MRI 1.9.2-preview3 and JRuby 1.5.1.
 * Normalized response and request headers so that they are stored the same (i.e. lower case keys, arrays of values)
@@ -695,7 +695,7 @@ upgrade notes for more info.
 
 ## 1.0.0 (June 22, 2010)
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v0.4.1...v1.0.0)
+[Full Changelog](http://github.com/vcr/vcr/compare/v0.4.1...v1.0.0)
 
 * New Features
   * Added support for [HTTPClient](http://github.com/nahi/httpclient), [Patron](http://github.com/toland/patron) and
@@ -731,7 +731,7 @@ upgrade notes for more info.
 
 ## 0.4.1 May 11, 2010
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v0.4.0...v0.4.1)
+[Full Changelog](http://github.com/vcr/vcr/compare/v0.4.0...v0.4.1)
 
 * Fixed a bug: when `Net::HTTPResponse#read_body` was called after VCR had read the body to record a new request,
   it raised an error (`IOError: Net::HTTPResponse#read_body called twice`).  My fix extends Net::HTTPResponse
@@ -739,7 +739,7 @@ upgrade notes for more info.
 
 ## 0.4.0 April 28, 2010
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v0.3.1...v0.4.0)
+[Full Changelog](http://github.com/vcr/vcr/compare/v0.3.1...v0.4.0)
 
 * Added support for webmock.  All the fakeweb-specific code is now in an adapter (as is the webmock code).
 
@@ -767,13 +767,13 @@ upgrade notes for more info.
 
 ## 0.3.1 April 10, 2010
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v0.3.0...v0.3.1)
+[Full Changelog](http://github.com/vcr/vcr/compare/v0.3.0...v0.3.1)
 
 * Fixed a bug: when `Net::HTTP#request` was called with a block that had a return statement, the response was not being recorded.
 
 ## 0.3.0 March 24, 2010
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v0.2.0...v0.3.0)
+[Full Changelog](http://github.com/vcr/vcr/compare/v0.2.0...v0.3.0)
 
 * Renamed a bunch of methods, replacing them with method names that more clearly fit the VCR/cassette metaphor:
   * `VCR.create_cassette!` => `VCR.insert_cassette`
@@ -788,7 +788,7 @@ upgrade notes for more info.
 
 ## 0.2.0 March 9, 2010
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v0.1.2...v0.2.0)
+[Full Changelog](http://github.com/vcr/vcr/compare/v0.1.2...v0.2.0)
 
 * Added `:allow_real_http` cassette option, which allows VCR to work with capybara and a javascript driver.
   Bug reported by [Ben Hutton](http://github.com/benhutton).
@@ -797,7 +797,7 @@ upgrade notes for more info.
 
 ## 0.1.2 March 4, 2010
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v0.1.1...v0.1.2)
+[Full Changelog](http://github.com/vcr/vcr/compare/v0.1.1...v0.1.2)
 
 * Added explanatory note about VCR to `FakeWeb::NetConnectNotAllowedError#message`.
 
@@ -809,12 +809,12 @@ upgrade notes for more info.
 
 ## 0.1.1 February 25, 2010
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/v0.1.0...v0.1.1)
+[Full Changelog](http://github.com/vcr/vcr/compare/v0.1.0...v0.1.1)
 
 * Handle asynchronous HTTP requests (such as for mechanize).  Bug reported by [Thibaud Guillaume-Gentil](http://github.com/thibaudgg).
 
 ## 0.1.0 February 25, 2010
 
-[Full Changelog](http://github.com/myronmarston/vcr/compare/d2577f79247d7db60bf160881b1b64e9fa10e4fd...v0.1.0)
+[Full Changelog](http://github.com/vcr/vcr/compare/d2577f79247d7db60bf160881b1b64e9fa10e4fd...v0.1.0)
 
 * Initial release.  Basic recording and replaying of responses works.
