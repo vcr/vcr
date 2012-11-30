@@ -50,6 +50,7 @@ else
               :status_message => stubbed_response.status.message,
               :headers        => stubbed_response_headers,
               :body           => stubbed_response.body,
+              :effective_url  => request.url,
               :mock           => true
           end
 
