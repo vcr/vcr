@@ -132,41 +132,41 @@ module VCR
         :use_new_episodes => [
           ["You can use the :new_episodes record mode to allow VCR to",
            "record this new request to the existing cassette"],
-          "https://www.relishapp.com/myronmarston/vcr/v/%s/docs/record-modes/new-episodes"
+          "https://www.relishapp.com/vcr/vcr/v/%s/docs/record-modes/new-episodes"
         ],
 
         :delete_cassette_for_once => [
           ["The current record mode (:once) does not allow new requests to be recorded",
            "to a previously recorded cassette. You can delete the cassette file and re-run",
            "your tests to allow the cassette to be recorded with this request"],
-           "https://www.relishapp.com/myronmarston/vcr/v/%s/docs/record-modes/once"
+           "https://www.relishapp.com/vcr/vcr/v/%s/docs/record-modes/once"
         ],
 
         :deal_with_none => [
           ["The current record mode (:none) does not allow requests to be recorded. You",
            "can temporarily change the record mode to :once, delete the cassette file ",
            "and re-run your tests to allow the cassette to be recorded with this request"],
-           "https://www.relishapp.com/myronmarston/vcr/v/%s/docs/record-modes/none"
+           "https://www.relishapp.com/vcr/vcr/v/%s/docs/record-modes/none"
         ],
 
         :use_a_cassette => [
           ["If you want VCR to record this request and play it back during future test",
            "runs, you should wrap your test (or this portion of your test) in a",
            "`VCR.use_cassette` block"],
-          "https://www.relishapp.com/myronmarston/vcr/v/%s/docs/getting-started"
+          "https://www.relishapp.com/vcr/vcr/v/%s/docs/getting-started"
         ],
 
         :allow_http_connections_when_no_cassette => [
           ["If you only want VCR to handle requests made while a cassette is in use,",
            "configure `allow_http_connections_when_no_cassette = true`. VCR will",
            "ignore this request since it is made when there is no cassette"],
-          "https://www.relishapp.com/myronmarston/vcr/v/%s/docs/configuration/allow-http-connections-when-no-cassette"
+          "https://www.relishapp.com/vcr/vcr/v/%s/docs/configuration/allow-http-connections-when-no-cassette"
         ],
 
         :ignore_request => [
           ["If you want VCR to ignore this request (and others like it), you can",
            "set an `ignore_request` callback"],
-          "https://www.relishapp.com/myronmarston/vcr/v/%s/docs/configuration/ignore-request"
+          "https://www.relishapp.com/vcr/vcr/v/%s/docs/configuration/ignore-request"
         ],
 
         :allow_playback_repeats => [
@@ -174,7 +174,7 @@ module VCR
            "but it has already been played back. If you wish to allow a single HTTP",
            "interaction to be played back multiple times, set the `:allow_playback_repeats`",
            "cassette option"],
-          "https://www.relishapp.com/myronmarston/vcr/v/%s/docs/request-matching/playback-repeats"
+          "https://www.relishapp.com/vcr/vcr/v/%s/docs/request-matching/playback-repeats"
         ],
 
         :match_requests_on => [
@@ -182,14 +182,14 @@ module VCR
            "played back. If your request is non-deterministic, you may need to",
            "change your :match_requests_on cassette option to be more lenient",
            "or use a custom request matcher to allow it to match"],
-           "https://www.relishapp.com/myronmarston/vcr/v/%s/docs/request-matching"
+           "https://www.relishapp.com/vcr/vcr/v/%s/docs/request-matching"
         ],
 
         :try_debug_logger => [
           ["If you're surprised VCR is raising this error",
            "and want insight about how VCR attempted to handle the request,",
            "you can use the debug_logger configuration option to log more details"],
-          "https://www.relishapp.com/myronmarston/vcr/v/%s/docs/configuration/debug-logging"
+          "https://www.relishapp.com/vcr/vcr/v/%s/docs/configuration/debug-logging"
         ]
       }
 
