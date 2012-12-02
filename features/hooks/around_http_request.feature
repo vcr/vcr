@@ -1,4 +1,4 @@
-@exclude-18
+@exclude-18 @exclude-1.9.3p327
 Feature: around_http_request hook
 
   The `around_http_request` hook wraps each HTTP request. It can be used

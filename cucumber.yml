@@ -4,9 +4,11 @@ std_opts = "--format #{ENV['CUCUMBER_FORMAT'] || 'Cucumber::Formatter::Fuubar'} 
 rerun = File.file?('rerun.txt') ? IO.read('rerun.txt') : ""
 rerun_opts = rerun.to_s.strip.empty? ? "--format #{ENV['CUCUMBER_FORMAT'] || 'Cucumber::Formatter::Fuubar'} features" : "--format #{ENV['CUCUMBER_FORMAT'] || 'pretty'} #{rerun}"
 
-exclusions = ["--tags ~@exclude-#{RUBY_VERSION.split('.').first(2).join}"].tap do |a|
-  a << "--tags ~@exclude-#{RUBY_ENGINE}" if defined?(RUBY_ENGINE)
-end.join(' ')
+exclusions = []
+exclusions << "--tags ~@exclude-#{RUBY_VERSION.split('.').first(2).join}"
+exclusions << "--tags ~@exclude-#{RUBY_VERSION}p#{RUBY_PATCHLEVEL}"
+exclusions << "--tags ~@exclude-#{RUBY_ENGINE}" if defined?(RUBY_ENGINE)
+exclusions = exclusions.join(' ')
 %>
 default: <%= base_opts %> <%= std_opts %> --tags ~@wip <%= exclusions %> features
 wip:     <%= base_opts %> --tags @wip <%= exclusions %> features
