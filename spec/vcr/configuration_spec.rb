@@ -66,25 +66,37 @@ describe VCR::Configuration do
     end
   end
 
-  describe '#hook_into' do
+  shared_examples 'http_client' do |http_client|
     it 'requires the named library hook' do
       subject.should_receive(:require).with("vcr/library_hooks/fakeweb")
       subject.should_receive(:require).with("vcr/library_hooks/excon")
-      subject.hook_into :fakeweb, :excon
+      subject.send(http_client,  :fakeweb, :excon)
     end
 
     it 'raises an error for unsupported stubbing libraries' do
       expect {
-        subject.hook_into :unsupported_library
+        subject.send(http_client, :unsupported_library)
       }.to raise_error(ArgumentError, /unsupported_library is not a supported VCR HTTP library hook/i)
     end
 
     it 'invokes the after_library_hooks_loaded hooks' do
       called = false
       subject.after_library_hooks_loaded { called = true }
-      subject.hook_into :fakeweb
+      subject.send(http_client, :fakeweb)
       called.should be_true
     end
+  end
+
+  describe "#hook_into" do
+    it_should_behave_like "http_client", :hook_into
+  end
+
+  describe "#http_client" do
+    it_should_behave_like "http_client", :http_client
+  end
+
+  describe "#http_clients" do
+    it_should_behave_like "http_client", :http_clients
   end
 
   describe '#ignore_hosts' do
