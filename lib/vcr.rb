@@ -24,7 +24,11 @@ module VCR
 
   autoload :CucumberTags,       'vcr/test_frameworks/cucumber'
   autoload :InternetConnection, 'vcr/util/internet_connection'
-  autoload :RSpec,              'vcr/test_frameworks/rspec'
+
+  module RSpec
+    autoload :Metadata,              'vcr/test_frameworks/rspec'
+    autoload :Macros,                'vcr/deprecations'
+  end
 
   module Middleware
     autoload :Faraday,           'vcr/middleware/faraday'
