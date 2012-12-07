@@ -50,11 +50,11 @@ module VCR
       @default_cassette_options.merge!(overrides)
     end
 
-    # Configures which libraries VCR will hook into to intercept HTTP requests.
+    # Configures which http_client(s) VCR will hook into to intercept HTTP requests.
     #
     # @example
     #   VCR.configure do |c|
-    #     c.hook_into :fakeweb, :typhoeus
+    #     c.http_clients :fakeweb, :typhoeus
     #   end
     #
     # @param hooks [Array<Symbol>] List of libraries. Valid values are
@@ -64,10 +64,12 @@ module VCR
     #  of a library you are using is too low for VCR to support.
     # @note `:fakeweb` and `:webmock` cannot both be used since they both monkey patch
     #  `Net::HTTP`. Otherwise, you can use any combination of these.
-    def hook_into(*hooks)
+    def http_client(*hooks)
       hooks.each { |a| load_library_hook(a) }
       invoke_hook(:after_library_hooks_loaded)
     end
+    alias_method :hook_into, :http_client
+    alias_method :http_clients, :http_client
 
     # Specifies host(s) that VCR should ignore.
     #

@@ -13,7 +13,7 @@ require 'vcr'
 
 VCR.configure do |c|
   c.cassette_library_dir = 'fixtures/vcr_cassettes'
-  c.hook_into :webmock # or :fakeweb
+  c.http_client :webmock # takes an array of one or more of :fakeweb, :webmock, :typhoeus, :excon, :faraday
 end
 
 class VCRTest < Test::Unit::TestCase
@@ -34,7 +34,7 @@ maintenance) and accurate (the response will contain the same headers and body y
 ## Features
 
 * Automatically records and replays your HTTP interactions with minimal setup/configuration code.
-* Supports and works with the HTTP stubbing facilities of multiple libraries.  Currently, the
+* Supports the HTTP stubbing facilities of many ruby HTTP client libraries.  Currently, the
   following are supported:
   * [FakeWeb](https://github.com/chrisk/fakeweb)
   * [WebMock](https://github.com/bblimke/webmock)
