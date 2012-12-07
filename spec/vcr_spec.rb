@@ -5,6 +5,25 @@ describe VCR do
     VCR.insert_cassette(name)
   end
 
+  describe '.cassette_exists?' do
+    context 'when the given cassette exists' do
+      it 'should return true' do
+        cassette_path = File.join(
+          described_class.configuration.cassette_library_dir,
+          'test.yml'
+        )
+        FileUtils.touch(cassette_path)
+        described_class.cassette_exists?('test').should be_true
+      end
+    end
+
+    context 'when the given cassette does not exist' do
+      it 'should return false' do
+        described_class.cassette_exists?('test').should be_false
+      end
+    end
+  end
+
   describe '.insert_cassette' do
     it 'creates a new cassette' do
       insert_cassette.should be_instance_of(VCR::Cassette)
