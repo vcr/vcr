@@ -172,6 +172,17 @@ module VCR
     end
   end
 
+  # Checks if a cassette exists in the cassette library directory.
+  #
+  # @example
+  #   VCR.cassette_exists?('my_cassette_name')
+  #
+  # @return boolean
+  def cassette_exists?(name)
+    file_path = File.join(self.configuration.cassette_library_dir, "#{name}.yml")
+    File.exists? file_path
+  end
+
   # Used to configure VCR.
   #
   # @example
