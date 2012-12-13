@@ -21,6 +21,15 @@ Bug Fixes:
   [Ryan Castillo](https://github.com/rmcastil) for providing the fix and
   corresponding test.
 
+Deprecations:
+
+* Deprecate the `use_vcr_cassette` matcher for RSpec. It has confusing
+  semantics (e.g. calling it multiple times in the same example group
+  can cause problems and it uses the same cassette for all examples
+  in a group even though they may make different HTTP requests) and
+  VCR's integration with RSpec metadata works much better. Thanks to
+  [Austen Ito](https://github.com/austenito) for implementing this.
+
 ## 2.3.0 (October 29, 2012)
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v2.2.5...v2.3.0)
