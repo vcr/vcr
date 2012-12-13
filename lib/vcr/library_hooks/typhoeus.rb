@@ -19,10 +19,29 @@ else
             request.block_connection = false if VCR.turned_on?
           end
 
+          # Typhoeus 0.5.0 and above does not include the query string in .url -BK
+          def url
+            url = request.url
+            if request.options[:params]
+              # Strip off trailing ampersands
+              url.chomp!('&')
+              url += (url.include?('?') ? '&' : '?') + Rack::Utils.build_query(request.options[:params])
+            end
+
+            # Now break out and re-add parameters in alphabetical order. Easier to do this here in case
+            # the URL contained parameters, along with 
+            (host_path,params) = url.split('?',2)
+            unless params.nil? || params.empty?
+              params = params.split('&').sort{|a,b| a.split('=').first <=> b.split('=').first }.join('&')
+              url = "#{host_path}?#{params}"
+            end
+            url
+          end
+
           def vcr_request
             @vcr_request ||= VCR::Request.new \
               request.options.fetch(:method, :get),
-              request.url,
+              url,
               request.options.fetch(:body, ""),
               request.options.fetch(:headers, {})
           end
@@ -50,7 +69,7 @@ else
               :status_message => stubbed_response.status.message,
               :headers        => stubbed_response_headers,
               :body           => stubbed_response.body,
-              :effective_url  => request.url,
+              :effective_url  => url,
               :mock           => true
           end
 
