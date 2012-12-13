@@ -65,6 +65,29 @@ describe "Typhoeus hook", :with_monkey_patches => :typhoeus do
     end
   end
 
+  context '#url' do
+    it "properly creates urls with parameters" do
+      VCR.use_cassette('single') do
+        response = Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/", :params => {:foo => 123, :bar => '!! test !!'}).run
+      end
+      saved_stuff = YAML.load_file(VCR::Cassette.new("single").file)
+      saved_stuff['http_interactions'].count.should eq(1)
+      expected = "http://localhost:#{VCR::SinatraApp.port}/?bar=%21%21+test+%21%21&foo=123"
+      saved_stuff['http_interactions'].first['request']['uri'].should eq expected
+    end
+
+    it "properly creates urls with parameters when the url already has a query string" do
+      VCR.use_cassette('single') do
+        response = Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/?xyz=456&", :params => {:foo => 123, :bar => '!! test !!'}).run
+      end
+      saved_stuff = YAML.load_file(VCR::Cassette.new("single").file)
+      saved_stuff['http_interactions'].count.should eq(1)
+      expected = "http://localhost:#{VCR::SinatraApp.port}/?bar=%21%21+test+%21%21&foo=123&xyz=456"
+      saved_stuff['http_interactions'].first['request']['uri'].should eq expected
+    end
+
+  end
+
   context '#effective_url' do
     def make_single_request
       VCR.use_cassette('single') do
