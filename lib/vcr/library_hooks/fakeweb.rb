@@ -191,5 +191,6 @@ VCR.configuration.after_library_hooks_loaded do
   if defined?(WebMock)
     raise ArgumentError.new("You have configured VCR to hook into both :fakeweb and :webmock. You cannot use both.")
   end
+  ::Kernel.warn "WARNING: VCR's FakeWeb integration is deprecated and will be removed in VCR 3.0."
 end
 

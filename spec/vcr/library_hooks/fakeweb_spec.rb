@@ -125,6 +125,11 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
       it 'does not raise an error' do
         run_hook # should not raise an error
       end
+
+      it "warns about FakeWeb deprecation" do
+        ::Kernel.should_receive(:warn).with("WARNING: VCR's FakeWeb integration is deprecated and will be removed in VCR 3.0.")
+        run_hook
+      end
     end
   end
 
