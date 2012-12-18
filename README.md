@@ -182,10 +182,11 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Betamax](https://github.com/robfletcher/betamax) (Groovy)
 * [Mimic](https://github.com/acoulton/mimic) (PHP/Kohana)
 * [Nock](https://github.com/flatiron/nock) (JavaScript/Node)
-* [NSURLConnectionVCR](https://bitbucket.org/martijnthe/nsurlconnectionvcr) (Objective C)
+* [NSURLConnectionVCR](https://bitbucket.org/martijnthe/nsurlconnectionvcr) (Objective-C)
 * [TapeDeck.js](https://github.com/EndangeredMassa/TapeDeck.js) (JavaScript)
 * [VCR.js](https://github.com/elcuervo/vcr.js) (JavaScript)
 * [VCR.py](https://github.com/kevin1024/vcrpy) (Python)
+* [VCRURLConnection](https://github.com/dstnbrkr/VCRURLConnection) (Objective-C)
 * [vcr-clj](https://github.com/ifesdjeen/vcr-clj) (Clojure)
 
 ## Similar Libraries in Ruby
