@@ -29,6 +29,10 @@ Deprecations:
   in a group even though they may make different HTTP requests) and
   VCR's integration with RSpec metadata works much better. Thanks to
   [Austen Ito](https://github.com/austenito) for implementing this.
+* Deprecate integration with FakeWeb. FakeWeb appears to be no longer
+  maintained (0 commits in 2012 and it has pull requests that are
+  2 years old) and WebMock is a far better option. Thanks to [Steve
+  Faulkner](https://github.com/southpolesteve) for implementing this.
 
 ## 2.3.0 (October 29, 2012)
 

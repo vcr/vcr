@@ -173,6 +173,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Ryan Castillo](https://github.com/rmcastil)
 * [Sathya Sekaran](https://github.com/sfsekaran)
 * [Shay Frendt](https://github.com/shayfrendt)
+* [Steve Faulkner](https://github.com/southpolesteve)
 * [Steven Anderson](https://github.com/bendycode)
 * [Tyler Hunt](https://github.com/tylerhunt)
 * [Wesley Beary](https://github.com/geemus)
