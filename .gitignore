@@ -45,3 +45,5 @@ doc
 .idea/
 
 .rbenv-version
+bin/*
+bundle/*
