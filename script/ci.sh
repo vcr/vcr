@@ -2,7 +2,7 @@
 set -e -x
 
 echo "-------- Running Typhoeus 0.4 Specs ---------"
-bundle install --gemfile=gemfiles/typhoeus_old.gemfile
+bundle install --gemfile=gemfiles/typhoeus_old.gemfile --without extras
 BUNDLE_GEMFILE=gemfiles/typhoeus_old.gemfile bundle exec rspec spec/vcr/library_hooks/typhoeus_0.4_spec.rb --format progress --backtrace
 
 # Setup vendored rspec-1
