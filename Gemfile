@@ -16,8 +16,10 @@ gem 'fuubar-cucumber'
 gem 'redcarpet', '~> 1.17.2', :platforms => :ruby
 gem 'github-markup'
 
-gem 'ruby-debug', :platforms => [:mri_18, :jruby]
+group :extras do
+  gem 'ruby-debug', :platforms => [:mri_18, :jruby]
 
-gem 'debugger', :platforms => :mri_19
-gem 'pry'
+  gem 'debugger', :platforms => :mri_19
+  gem 'pry'
+end
 
