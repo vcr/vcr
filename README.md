@@ -172,6 +172,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Ryan Burrows](https://github.com/rhburrows)
 * [Ryan Castillo](https://github.com/rmcastil)
 * [Sathya Sekaran](https://github.com/sfsekaran)
+* [Scott Carleton](https://github.com/ScotterC)
 * [Shay Frendt](https://github.com/shayfrendt)
 * [Steve Faulkner](https://github.com/southpolesteve)
 * [Steven Anderson](https://github.com/bendycode)
