@@ -14,8 +14,7 @@ describe VCR, 'deprecations', :disable_warnings do
     end
 
     it 'prints a deprecation warning' do
-      VCR.should_receive(:warn).with \
-        "WARNING: `VCR.config` is deprecated.  Use VCR.configure instead."
+      VCR.should_receive(:warn).with(/VCR.config.*deprecated/i)
 
       VCR.config { }
     end
@@ -27,8 +26,7 @@ describe VCR, 'deprecations', :disable_warnings do
     end
 
     it 'prints a deprecation warning' do
-      VCR.should_receive(:warn).with \
-        "WARNING: `VCR::Config` is deprecated.  Use VCR.configuration instead."
+      VCR.should_receive(:warn).with(/VCR::Config.*deprecated/i)
 
       VCR::Config
     end
@@ -46,8 +44,7 @@ describe VCR, 'deprecations', :disable_warnings do
     end
 
     it 'prints a deprecation warning' do
-      VCR::Cassette.should_receive(:warn).with \
-        "WARNING: `VCR::Cassette::MissingERBVariableError` is deprecated.  Use `VCR::Errors::MissingERBVariableError` instead."
+      VCR::Cassette.should_receive(:warn).with(/VCR::Cassette::MissingERBVariableError.*deprecated/i)
 
       VCR::Cassette::MissingERBVariableError
     end
@@ -66,8 +63,7 @@ describe VCR, 'deprecations', :disable_warnings do
     end
 
     it 'prints a deprecation warning' do
-      VCR.configuration.should_receive(:warn).with \
-        "WARNING: `VCR.config { |c| c.stub_with ... }` is deprecated. Use `VCR.configure { |c| c.hook_into ... }` instead."
+      VCR.configuration.should_receive(:warn).with(/stub_with.*deprecated/i)
 
       VCR.configure { |c| c.stub_with :fakeweb, :excon }
     end
