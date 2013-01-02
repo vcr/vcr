@@ -67,7 +67,7 @@ describe VCR, 'deprecations', :disable_warnings do
 
     it 'prints a deprecation warning' do
       VCR.configuration.should_receive(:warn).with \
-        "WARNING: `VCR.config { |c| c.stub_with ... }` is deprecated. Use `VCR.configure { |c| c.hook_into ... }` instead."
+        "WARNING: `VCR.configure { |c| c.stub_with ... }` is deprecated. Use `VCR.configure { |c| c.hook_into ... }` instead."
 
       VCR.configure { |c| c.stub_with :fakeweb, :excon }
     end

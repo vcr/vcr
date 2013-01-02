@@ -24,7 +24,7 @@ module VCR
     # @deprecated Use #hook_into instead.
     # @see #hook_into
     def stub_with(*adapters)
-      warn "WARNING: `VCR.config { |c| c.stub_with ... }` is deprecated. Use `VCR.configure { |c| c.hook_into ... }` instead."
+      warn "WARNING: `VCR.configure { |c| c.stub_with ... }` is deprecated. Use `VCR.configure { |c| c.hook_into ... }` instead."
       hook_into(*adapters)
     end
   end
