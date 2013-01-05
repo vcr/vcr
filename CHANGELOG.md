@@ -1,6 +1,6 @@
-## dev
+## 2.4.0 (January 4, 2013)
 
-[Full Changelog](http://github.com/vcr/vcr/compare/v2.3.0...master)
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.3.0...v2.4.0)
 
 Enhancements:
 
@@ -23,7 +23,7 @@ Bug Fixes:
 
 Deprecations:
 
-* Deprecate the `use_vcr_cassette` matcher for RSpec. It has confusing
+* Deprecate the `use_vcr_cassette` macro for RSpec. It has confusing
   semantics (e.g. calling it multiple times in the same example group
   can cause problems and it uses the same cassette for all examples
   in a group even though they may make different HTTP requests) and
