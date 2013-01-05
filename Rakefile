@@ -88,13 +88,15 @@ end
 
 desc "Push cukes to relishapp using the relish-client-gem"
 task :relish do
-  %w[ README.md CHANGELOG.md Upgrade.md LICENSE CONTRIBUTING.md].each do |file|
-    ensure_relish_doc_symlinked(file)
-  end
+  unless ENV['SKIP_RELISH']
+    %w[ README.md CHANGELOG.md Upgrade.md LICENSE CONTRIBUTING.md].each do |file|
+      ensure_relish_doc_symlinked(file)
+    end
 
-  require 'vcr/version'
-  sh "relish versions:add vcr/vcr:#{VCR.version}" if ENV['NEW_RELISH_RELEASE']
-  sh "relish push vcr:#{VCR.version}"
+    require 'vcr/version'
+    sh "relish versions:add vcr/vcr:#{VCR.version}" if ENV['NEW_RELISH_RELEASE']
+    sh "relish push vcr/vcr:#{VCR.version}"
+  end
 end
 
 task :prep_relish_release do
