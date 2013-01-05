@@ -202,5 +202,5 @@ Thanks also to the following people who have contributed patches or helpful sugg
 
 ## Copyright
 
-Copyright (c) 2010-2012 Myron Marston. Released under the terms of the
+Copyright (c) 2010-2013 Myron Marston. Released under the terms of the
 MIT license. See LICENSE for details.
