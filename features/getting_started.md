@@ -1,7 +1,7 @@
 ### Install it
 
     [sudo] gem install vcr
-    [sudo] gem install fakeweb
+    [sudo] gem install webmock
 
 ### Configure it
 
@@ -11,7 +11,7 @@ Create a file named `vcr_setup.rb` with content like:
 
     VCR.configure do |c|
       c.cassette_library_dir = 'vcr_cassettes'
-      c.hook_into :fakeweb
+      c.hook_into :webmock
     end
 
 Ensure this file is required by your test suite before any
