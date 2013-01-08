@@ -36,11 +36,11 @@ maintenance) and accurate (the response will contain the same headers and body y
 * Automatically records and replays your HTTP interactions with minimal setup/configuration code.
 * Supports and works with the HTTP stubbing facilities of multiple libraries.  Currently, the
   following are supported:
-  * [FakeWeb](https://github.com/chrisk/fakeweb)
   * [WebMock](https://github.com/bblimke/webmock)
   * [Typhoeus](https://github.com/typhoeus/typhoeus)
   * [Faraday](https://github.com/technoweenie/faraday)
   * [Excon](https://github.com/geemus/excon)
+  * [FakeWeb](https://github.com/chrisk/fakeweb) (deprecated)
 * Supports multiple HTTP libraries:
   * [Patron](http://github.com/toland/patron) (when using WebMock)
   * [Curb](http://github.com/taf2/curb) (when using WebMock -- only supports Curl::Easy at the moment)
