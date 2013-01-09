@@ -4,7 +4,6 @@ Feature: hook_into
   HTTP requests to record and replay them.  There are currently 4 valid
   options which support many different HTTP libraries:
 
-    - :fakeweb can be used to hook into Net::HTTP requests.
     - :webmock can be used to hook into requests from:
       - Net::HTTP
       - HTTPClient
@@ -17,17 +16,15 @@ Feature: hook_into
       but not Typhoeus::Easy or Typhoeus::Multi).
     - :excon can be used to hook into itself.
     - :faraday can be used to hook into itself.
+    - :fakeweb (deprecated) can be used to hook into Net::HTTP requests.
 
   There are some addiitonal trade offs to consider when deciding which
   option to use:
 
-    - FakeWeb is currently about 4 times faster than WebMock for hooking into
-      Net::HTTP (see benchmarks/http_stubbing_libraries.rb for details).
-    - FakeWeb and WebMock both use extensive monkey patching to hook into their
-      supported HTTP libraries.  No monkey patching is used for Typhoeus, Excon or
-      Faraday.
-    - FakeWeb and WebMock cannot both be used at the same time.
+    - WebMock uses extensive monkey patching to hook into supported HTTP 
+      libraries.  No monkey patching is used for Typhoeus, Excon or Faraday.
     - Typhoeus, Excon, Faraday can be used together, and with either FakeWeb or WebMock.
+    - FakeWeb and WebMock cannot both be used at the same time.
 
   Regardless of which library you use, VCR takes care of all of the configuration
   for you.  You should not need to interact directly with FakeWeb, WebMock or the

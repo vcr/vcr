@@ -18,7 +18,7 @@ Feature: Debug Logging
       require 'vcr'
 
       VCR.configure do |c|
-        c.hook_into :fakeweb
+        c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
         c.debug_logger = File.open(ARGV.first, 'w')
       end
@@ -31,9 +31,9 @@ Feature: Debug Logging
     Then the file "record.log" should contain exactly:
       """
       [Cassette: 'example'] Initialized with options: {:record=>:once, :match_requests_on=>[:method, :uri], :allow_unused_http_interactions=>true, :serialize_with=>:yaml, :persist_with=>:file_system}
-      [fakeweb] Handling request: [get http://localhost:7777/] (disabled: false)
+      [webmock] Handling request: [get http://localhost:7777/] (disabled: false)
         [Cassette: 'example'] Initialized HTTPInteractionList with request matchers [:method, :uri] and 0 interaction(s): {  }
-      [fakeweb] Identified request type (recordable) for [get http://localhost:7777/]
+      [webmock] Identified request type (recordable) for [get http://localhost:7777/]
       [Cassette: 'example'] Recorded HTTP interaction [get http://localhost:7777/] => [200 "Hello World"]
 
       """
@@ -41,12 +41,12 @@ Feature: Debug Logging
     Then the file "playback.log" should contain exactly:
       """
       [Cassette: 'example'] Initialized with options: {:record=>:once, :match_requests_on=>[:method, :uri], :allow_unused_http_interactions=>true, :serialize_with=>:yaml, :persist_with=>:file_system}
-      [fakeweb] Handling request: [get http://localhost:7777/] (disabled: false)
+      [webmock] Handling request: [get http://localhost:7777/] (disabled: false)
         [Cassette: 'example'] Initialized HTTPInteractionList with request matchers [:method, :uri] and 1 interaction(s): { [get http://localhost:7777/] => [200 "Hello World"] }
         [Cassette: 'example'] Checking if [get http://localhost:7777/] matches [get http://localhost:7777/] using [:method, :uri]
           [Cassette: 'example'] method (matched): current request [get http://localhost:7777/] vs [get http://localhost:7777/]
           [Cassette: 'example'] uri (matched): current request [get http://localhost:7777/] vs [get http://localhost:7777/]
         [Cassette: 'example'] Found matching interaction for [get http://localhost:7777/] at index 0: [200 "Hello World"]
-      [fakeweb] Identified request type (stubbed_by_vcr) for [get http://localhost:7777/]
+      [webmock] Identified request type (stubbed_by_vcr) for [get http://localhost:7777/]
 
       """

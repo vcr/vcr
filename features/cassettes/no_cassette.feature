@@ -63,7 +63,7 @@ Feature: Error for HTTP request made when no cassette is in use
       require 'vcr'
 
       VCR.configure do |c|
-        c.hook_into :fakeweb
+        c.hook_into :fakeweb # using :webmock currently breaks test
       end
 
       def make_request(context)
@@ -113,7 +113,7 @@ Feature: Error for HTTP request made when no cassette is in use
       require 'vcr'
 
       VCR.configure do |c|
-        c.hook_into :fakeweb
+        c.hook_into :webmock
       end
 
       VCR.turn_off!
@@ -133,7 +133,7 @@ Feature: Error for HTTP request made when no cassette is in use
 
       VCR.configure do |c|
         c.cassette_library_dir = 'cassettes'
-        c.hook_into :fakeweb
+        c.hook_into :fakeweb # using :webmock currently breaks test
       end
 
       VCR.turn_off!(:ignore_cassettes => true)

@@ -14,7 +14,7 @@ Feature: cassette_library_dir
 
       VCR.configure do |c|
         c.cassette_library_dir = 'vcr/cassettes'
-        c.hook_into :fakeweb
+        c.hook_into :webmock
       end
 
       VCR.use_cassette('localhost') do
