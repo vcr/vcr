@@ -58,7 +58,7 @@ Feature: before_playback hook
       require 'vcr'
 
       VCR.configure do |c|
-        c.hook_into :fakeweb
+        c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
 
         c.before_playback do |interaction|
@@ -80,7 +80,7 @@ Feature: before_playback hook
       require 'vcr'
 
       VCR.configure do |c|
-        c.hook_into :fakeweb
+        c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
 
         c.before_playback do |interaction, cassette|
@@ -106,7 +106,7 @@ Feature: before_playback hook
       require 'vcr'
 
       VCR.configure do |c|
-        c.hook_into :fakeweb
+        c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
         c.before_playback { |i| i.ignore! }
       end
@@ -125,7 +125,7 @@ Feature: before_playback hook
       require 'vcr'
 
       VCR.configure do |c|
-        c.hook_into :fakeweb
+        c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
 
         c.before_playback { puts "In before_playback hook 1" }
@@ -151,7 +151,7 @@ Feature: before_playback hook
       require 'vcr'
 
       VCR.configure do |c|
-        c.hook_into :fakeweb
+        c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
 
         c.before_playback(:tag_2) do |i|

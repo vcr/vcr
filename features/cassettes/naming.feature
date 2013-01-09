@@ -16,7 +16,7 @@ Feature: Naming
 
       VCR.configure do |c|
         c.cassette_library_dir = 'cassettes'
-        c.hook_into :fakeweb
+        c.hook_into :webmock
       end
 
       VCR.use_cassette('Fee, Fi Fo Fum') do

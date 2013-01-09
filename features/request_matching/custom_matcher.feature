@@ -111,7 +111,7 @@ Feature: Register and use a custom matcher
       require 'vcr'
 
       VCR.configure do |c|
-        c.hook_into :fakeweb
+        c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
         c.register_request_matcher :port do |request_1, request_2|
           URI(request_1.uri).port == URI(request_2.uri).port

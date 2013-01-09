@@ -67,7 +67,7 @@ Feature: Usage with RSpec macro
 
       VCR.configure do |c|
         c.cassette_library_dir = 'spec/cassettes'
-        c.hook_into :fakeweb
+        c.hook_into :webmock
       end
 
       RSpec.configure do |c|
@@ -92,7 +92,7 @@ Feature: Usage with RSpec macro
 
       VCR.configure do |c|
         c.cassette_library_dir = 'spec/cassettes'
-        c.hook_into :fakeweb
+        c.hook_into :webmock
       end
 
       Spec::Runner.configure do |c|

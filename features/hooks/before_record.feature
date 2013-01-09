@@ -33,7 +33,7 @@ Feature: before_record hook
       require 'vcr'
 
       VCR.configure do |c|
-        c.hook_into :fakeweb
+        c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
 
         c.before_record do |i|
@@ -59,7 +59,7 @@ Feature: before_record hook
       require 'vcr'
 
       VCR.configure do |c|
-        c.hook_into :fakeweb
+        c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
 
         c.before_record do |interaction, cassette|
@@ -84,7 +84,7 @@ Feature: before_record hook
       require 'vcr'
 
       VCR.configure do |c|
-        c.hook_into :fakeweb
+        c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
         c.before_record { |i| i.ignore! }
       end
@@ -108,7 +108,7 @@ Feature: before_record hook
       require 'vcr'
 
       VCR.configure do |c|
-        c.hook_into :fakeweb
+        c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
 
         c.before_record { puts "In before_record hook 1" }
@@ -138,7 +138,7 @@ Feature: before_record hook
       require 'vcr'
 
       VCR.configure do |c|
-        c.hook_into :fakeweb
+        c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
 
         c.before_record(:tag_1) do

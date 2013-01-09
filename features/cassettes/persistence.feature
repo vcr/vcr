@@ -45,7 +45,7 @@ Feature: Cassette Persistence
       require 'vcr'
 
       VCR.configure do |c|
-        c.hook_into :fakeweb
+        c.hook_into :webmock
         c.cassette_persisters[:redis] = RedisCassettePersister.new(Redis.connect)
         c.default_cassette_options = { :persist_with => :redis }
       end
