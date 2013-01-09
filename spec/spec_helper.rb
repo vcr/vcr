@@ -1,5 +1,8 @@
 require 'rubygems'
 
+using_git = File.exist?(File.expand_path('../../.git/', __FILE__))
+require 'bundler/setup' if using_git
+
 if RUBY_VERSION =~ /1.9/ && RUBY_ENGINE == 'ruby'
   require 'simplecov'
 
@@ -21,9 +24,6 @@ if RUBY_VERSION =~ /1.9/ && RUBY_ENGINE == 'ruby'
     SimpleCov.result.format!
   end
 end
-
-using_git = File.exist?(File.expand_path('../../.git/', __FILE__))
-require 'bundler/setup' if using_git
 
 require 'rspec'
 
