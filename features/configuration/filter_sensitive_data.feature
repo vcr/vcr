@@ -38,7 +38,7 @@ Feature: Filter sensitive data
       require 'vcr'
 
       VCR.configure do |c|
-        c.hook_into :fakeweb
+        c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
         c.filter_sensitive_data('<GREETING>') { 'Hello' }
         c.filter_sensitive_data('<LOCATION>') { 'World' }
@@ -71,7 +71,7 @@ Feature: Filter sensitive data
       require 'vcr'
 
       VCR.configure do |c|
-        c.hook_into :fakeweb
+        c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
         c.filter_sensitive_data('<LOCATION>', :my_tag) { 'World' }
       end

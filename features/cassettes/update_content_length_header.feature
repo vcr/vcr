@@ -52,7 +52,7 @@ Feature: Update content_length header
 
       VCR.configure do |c|
         c.cassette_library_dir = 'cassettes'
-        c.hook_into :fakeweb
+        c.hook_into :webmock
       end
 
       def make_request_and_print_results

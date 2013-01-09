@@ -113,7 +113,7 @@ Feature: Error for HTTP request made when no cassette is in use
       require 'vcr'
 
       VCR.configure do |c|
-        c.hook_into :fakeweb
+        c.hook_into :webmock
       end
 
       VCR.turn_off!
