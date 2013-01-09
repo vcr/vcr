@@ -47,3 +47,4 @@ doc
 .rbenv-version
 bin/*
 bundle/*
+.rspec-local
