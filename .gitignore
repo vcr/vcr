@@ -21,6 +21,7 @@ rdoc
 pkg
 
 ## PROJECT::SPECIFIC
+Gemfile.lock
 features/fixtures/vcr_cassettes/**/temp/
 *.rbc
 .rbc
