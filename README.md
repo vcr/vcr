@@ -138,6 +138,7 @@ yard server --reload
 Thanks also to the following people who have contributed patches or helpful suggestions:
 
 * [Aaron Brethorst](http://github.com/aaronbrethorst)
+* [Alexander Wenzowski](https://github.com/wenzowski)
 * [Austen Ito](https://github.com/austenito)
 * [Avdi Grimm](https://github.com/avdi)
 * [Bartosz Blimke](http://github.com/bblimke)
