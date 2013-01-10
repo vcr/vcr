@@ -61,7 +61,7 @@ describe "Typhoeus hook", :with_monkey_patches => :typhoeus do
       recorded = make_requests
       played_back = make_requests
 
-      played_back.should eq(recorded)
+      expect(played_back).to eq(recorded)
     end
   end
 
@@ -77,9 +77,9 @@ describe "Typhoeus hook", :with_monkey_patches => :typhoeus do
     it 'recorded and played back properly' do
       recorded = make_single_request
       played_back = make_single_request
-      recorded.should_not be_nil
+      expect(recorded).not_to be_nil
 
-      played_back.should eq(recorded)
+      expect(played_back).to eq(recorded)
     end
   end
 end
