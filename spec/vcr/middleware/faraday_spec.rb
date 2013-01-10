@@ -23,8 +23,8 @@ describe VCR::Middleware::Faraday do
         payload = { :file => Faraday::UploadIO.new(__FILE__, 'text/plain') }
 
         VCR.should_receive(:record_http_interaction) do |i|
-          i.request.headers['Content-Type'].first.should include("multipart")
-          i.request.body.should include(File.read(__FILE__))
+          expect(i.request.headers['Content-Type'].first).to include("multipart")
+          expect(i.request.body).to include(File.read(__FILE__))
         end
 
         VCR.use_cassette("upload") do
@@ -63,8 +63,8 @@ describe VCR::Middleware::Faraday do
       end
 
       # there should be no blanks
-      recorded.select { |r| r.to_s == '' }.should eq([])
-      played_back.should eq(recorded)
+      expect(recorded.select { |r| r.to_s == '' }).to eq([])
+      expect(played_back).to eq(recorded)
     end
 
     shared_examples_for "exclusive library hook" do
@@ -73,17 +73,17 @@ describe VCR::Middleware::Faraday do
       end
 
       it 'makes the faraday middleware exclusively enabled for the duration of the request' do
-        VCR.library_hooks.should_not be_disabled(:fakeweb)
+        expect(VCR.library_hooks).not_to be_disabled(:fakeweb)
 
         hook_called = false
         VCR.configuration.after_http_request do
           hook_called = true
-          VCR.library_hooks.should be_disabled(:fakeweb)
+          expect(VCR.library_hooks).to be_disabled(:fakeweb)
         end
 
         make_request
-        VCR.library_hooks.should_not be_disabled(:fakeweb)
-        hook_called.should be_true
+        expect(VCR.library_hooks).not_to be_disabled(:fakeweb)
+        expect(hook_called).to be_true
       end
     end
 
@@ -133,11 +133,11 @@ describe VCR::Middleware::Faraday do
         VCR.configuration.after_http_request { |request| VCR.eject_cassette }
 
         VCR.should_receive(:record_http_interaction) do |interaction|
-          VCR.current_cassette.should be(inserted_cassette)
+          expect(VCR.current_cassette).to be(inserted_cassette)
         end
 
         make_request
-        VCR.current_cassette.should be_nil
+        expect(VCR.current_cassette).to be_nil
       end
     end
   end if defined?(::Typhoeus)

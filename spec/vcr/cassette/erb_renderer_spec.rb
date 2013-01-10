@@ -11,14 +11,14 @@ describe VCR::Cassette::ERBRenderer do
 
     context 'when ERB is disabled' do
       it 'returns the given template' do
-        render(no_vars_content, false).should eq(no_vars_content)
-        render(no_vars_content, nil).should eq(no_vars_content)
+        expect(render(no_vars_content, false)).to eq(no_vars_content)
+        expect(render(no_vars_content, nil)).to eq(no_vars_content)
       end
     end
 
     context 'when ERB is enabled but no variables are passed' do
       it 'renders the file content as ERB' do
-        render(no_vars_content, true).should eq("7. Some ERB")
+        expect(render(no_vars_content, true)).to eq("7. Some ERB")
       end
 
       it 'raises an appropriate error when the ERB template needs variables' do
@@ -31,13 +31,13 @@ describe VCR::Cassette::ERBRenderer do
       end
 
       it 'gracefully handles the template being nil' do
-        render(nil, true).should be_nil
+        expect(render(nil, true)).to be_nil
       end
     end
 
     context 'when ERB is enabled and variables are passed' do
       it 'renders the file content as ERB with the passed variables' do
-        render(vars_content, :var1 => 'foo', :var2 => 'bar').should eq('foo. ERB with Vars! bar')
+        expect(render(vars_content, :var1 => 'foo', :var2 => 'bar')).to eq('foo. ERB with Vars! bar')
       end
 
       it 'raises an appropriate error when one or more of the needed variables are not passed' do

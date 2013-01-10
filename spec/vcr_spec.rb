@@ -7,14 +7,14 @@ describe VCR do
 
   describe '.insert_cassette' do
     it 'creates a new cassette' do
-      insert_cassette.should be_instance_of(VCR::Cassette)
+      expect(insert_cassette).to be_instance_of(VCR::Cassette)
     end
 
     it 'takes over as the #current_cassette' do
       orig_cassette = VCR.current_cassette
       new_cassette = insert_cassette
-      new_cassette.should_not eq(orig_cassette)
-      VCR.current_cassette.should eq(new_cassette)
+      expect(new_cassette).not_to eq(orig_cassette)
+      expect(VCR.current_cassette).to eq(new_cassette)
     end
 
     it 'raises an error if the stack of inserted cassettes already contains a cassette with the same name' do
@@ -34,7 +34,7 @@ describe VCR do
 
     it 'returns the ejected cassette' do
       cassette = insert_cassette
-      VCR.eject_cassette.should eq(cassette)
+      expect(VCR.eject_cassette).to eq(cassette)
     end
 
     it 'returns the #current_cassette to the previous one' do
@@ -49,15 +49,15 @@ describe VCR do
 
       VCR.eject_cassette
 
-      current.should be(cassette)
-      VCR.current_cassette.should_not be(cassette)
+      expect(current).to be(cassette)
+      expect(VCR.current_cassette).not_to be(cassette)
     end
 
     it 'properly pops the cassette off the stack even if an error occurs' do
       cassette = insert_cassette
       cassette.stub(:eject) { raise "boom" }
       expect { VCR.eject_cassette }.to raise_error("boom")
-      VCR.current_cassette.should be_nil
+      expect(VCR.current_cassette).to be_nil
     end
   end
 
@@ -71,19 +71,19 @@ describe VCR do
     it 'yields' do
       yielded = false
       VCR.use_cassette(:cassette_test, &lambda { yielded = true })
-      yielded.should be_true
+      expect(yielded).to be_true
     end
 
     it 'yields the cassette instance if the block expects an argument' do
       VCR.use_cassette('name', :record => :new_episodes, &lambda do |cassette|
-        cassette.should equal(VCR.current_cassette)
+        expect(cassette).to equal(VCR.current_cassette)
       end)
     end
 
     it 'yields the cassette instance if the block expects a variable number of args' do
       VCR.use_cassette('name', :record => :new_episodes) do |*args|
-        args.size.should eq(1)
-        args.first.should equal(VCR.current_cassette)
+        expect(args.size).to eq(1)
+        expect(args.first).to equal(VCR.current_cassette)
       end
     end
 
@@ -113,12 +113,12 @@ describe VCR do
   describe '.http_interactions' do
     it 'returns the current_cassette.http_interactions when there is a current cassette' do
       cassette = VCR.insert_cassette("a cassette")
-      VCR.http_interactions.should be(cassette.http_interactions)
+      expect(VCR.http_interactions).to be(cassette.http_interactions)
     end
 
     it 'returns a null list when there is no current cassette' do
-      VCR.current_cassette.should be_nil
-      VCR.http_interactions.should be(VCR::Cassette::HTTPInteractionList::NullList)
+      expect(VCR.current_cassette).to be_nil
+      expect(VCR.http_interactions).to be(VCR::Cassette::HTTPInteractionList::NullList)
     end
   end
 
@@ -126,82 +126,84 @@ describe VCR do
     context 'when a cassette is inserted' do
       it 'returns true if the cassette is recording' do
         VCR.insert_cassette('foo', :record => :all)
-        VCR.current_cassette.should be_recording
-        VCR.real_http_connections_allowed?.should be_true
+        expect(VCR.current_cassette).to be_recording
+        expect(VCR.real_http_connections_allowed?).to be_true
       end
 
       it 'returns false if the cassette is not recording' do
         VCR.insert_cassette('foo', :record => :none)
-        VCR.current_cassette.should_not be_recording
-        VCR.real_http_connections_allowed?.should be_false
+        expect(VCR.current_cassette).not_to be_recording
+        expect(VCR.real_http_connections_allowed?).to be_false
       end
     end
 
     context 'when no cassette is inserted' do
-      before(:each) { VCR.current_cassette.should be_nil }
+      before(:each) do
+        expect(VCR.current_cassette).to be_nil
+      end
 
       it 'returns true if the allow_http_connections_when_no_cassette option is set to true' do
-        VCR.should be_turned_on
+        expect(VCR).to be_turned_on
         VCR.configure { |c| c.allow_http_connections_when_no_cassette = true }
-        VCR.real_http_connections_allowed?.should be_true
+        expect(VCR.real_http_connections_allowed?).to be_true
       end
 
       it 'returns true if VCR is turned off' do
         VCR.turn_off!
         VCR.configure { |c| c.allow_http_connections_when_no_cassette = false }
-        VCR.real_http_connections_allowed?.should be_true
+        expect(VCR.real_http_connections_allowed?).to be_true
       end
 
       it 'returns false if the allow_http_connections_when_no_cassette option is set to false and VCR is turned on' do
-        VCR.should be_turned_on
+        expect(VCR).to be_turned_on
         VCR.configure { |c| c.allow_http_connections_when_no_cassette = false }
-        VCR.real_http_connections_allowed?.should be_false
+        expect(VCR.real_http_connections_allowed?).to be_false
       end
     end
   end
 
   describe '.request_matchers' do
     it 'always returns the same memoized request matcher registry instance' do
-      VCR.request_matchers.should be_a(VCR::RequestMatcherRegistry)
-      VCR.request_matchers.should be(VCR.request_matchers)
+      expect(VCR.request_matchers).to be_a(VCR::RequestMatcherRegistry)
+      expect(VCR.request_matchers).to be(VCR.request_matchers)
     end
   end
 
   describe '.request_ignorer' do
     it 'always returns the same memoized request ignorer instance' do
-      VCR.request_ignorer.should be_a(VCR::RequestIgnorer)
-      VCR.request_ignorer.should be(VCR.request_ignorer)
+      expect(VCR.request_ignorer).to be_a(VCR::RequestIgnorer)
+      expect(VCR.request_ignorer).to be(VCR.request_ignorer)
     end
   end
 
   describe '.library_hooks' do
     it 'always returns the same memoized LibraryHooks instance' do
-      VCR.library_hooks.should be_a(VCR::LibraryHooks)
-      VCR.library_hooks.should be(VCR.library_hooks)
+      expect(VCR.library_hooks).to be_a(VCR::LibraryHooks)
+      expect(VCR.library_hooks).to be(VCR.library_hooks)
     end
   end
 
   describe '.cassette_serializers' do
     it 'always returns the same memoized cassette serializers instance' do
-      VCR.cassette_serializers.should be_a(VCR::Cassette::Serializers)
-      VCR.cassette_serializers.should be(VCR.cassette_serializers)
+      expect(VCR.cassette_serializers).to be_a(VCR::Cassette::Serializers)
+      expect(VCR.cassette_serializers).to be(VCR.cassette_serializers)
     end
   end
 
   describe ".cassette_persisters" do
     it "always returns the same memoized Cassette::Persisters instance" do
-      VCR.cassette_persisters.should be_a(VCR::Cassette::Persisters)
-      VCR.cassette_persisters.should be(VCR.cassette_persisters)
+      expect(VCR.cassette_persisters).to be_a(VCR::Cassette::Persisters)
+      expect(VCR.cassette_persisters).to be(VCR.cassette_persisters)
     end
   end
 
   describe '.configuration' do
     it 'returns the configuration object' do
-      VCR.configuration.should be_a(VCR::Configuration)
+      expect(VCR.configuration).to be_a(VCR::Configuration)
     end
 
     it 'memoizes the instance' do
-      VCR.configuration.should be(VCR.configuration)
+      expect(VCR.configuration).to be(VCR.configuration)
     end
   end
 
@@ -211,7 +213,7 @@ describe VCR do
       VCR.configure do |obj|
         yielded_object = obj
       end
-      yielded_object.should eq(VCR.configuration)
+      expect(yielded_object).to eq(VCR.configuration)
     end
   end
 
@@ -221,7 +223,7 @@ describe VCR do
       VCR.cucumber_tags do |obj|
         yielded_object = obj
       end
-      yielded_object.should be_instance_of(VCR::CucumberTags)
+      expect(yielded_object).to be_instance_of(VCR::CucumberTags)
     end
   end
 
@@ -259,7 +261,7 @@ describe VCR do
   describe '.turn_off!' do
     it 'indicates it is turned off' do
       VCR.turn_off!
-      VCR.should_not be_turned_on
+      expect(VCR).not_to be_turned_on
     end
 
     it 'raises an error if a cassette is in use' do
@@ -287,7 +289,7 @@ describe VCR do
 
       it 'ignores cassette insertions' do
         VCR.insert_cassette('foo')
-        VCR.current_cassette.should be_nil
+        expect(VCR.current_cassette).to be_nil
       end
 
       it 'still runs a block passed to use_cassette' do
@@ -295,10 +297,10 @@ describe VCR do
 
         VCR.use_cassette('foo') do
           yielded = true
-          VCR.current_cassette.should be_nil
+          expect(VCR.current_cassette).to be_nil
         end
 
-        yielded.should be_true
+        expect(yielded).to be_true
       end
     end
   end
@@ -308,22 +310,22 @@ describe VCR do
 
     it 'indicates it is turned on' do
       VCR.turn_on!
-      VCR.should be_turned_on
+      expect(VCR).to be_turned_on
     end
   end
 
   describe '.turned_off' do
     it 'yields with VCR turned off' do
-      VCR.should be_turned_on
+      expect(VCR).to be_turned_on
       yielded = false
 
       VCR.turned_off do
         yielded = true
-        VCR.should_not be_turned_on
+        expect(VCR).not_to be_turned_on
       end
 
-      yielded.should eq(true)
-      VCR.should be_turned_on
+      expect(yielded).to eq(true)
+      expect(VCR).to be_turned_on
     end
 
     it 'passes options through to .turn_off!' do
@@ -335,7 +337,7 @@ describe VCR do
   describe '.turned_on?' do
     it 'is on by default' do
       VCR.send(:initialize_ivars) # clear internal state
-      VCR.should be_turned_on
+      expect(VCR).to be_turned_on
     end
   end
 end

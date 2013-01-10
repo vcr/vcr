@@ -21,7 +21,7 @@ module VCR
         matcher_called = false
         subject.register(:my_matcher) { |*a| matcher_called = true }
         subject[:my_matcher].matches?(stub, stub)
-        matcher_called.should be_true
+        expect(matcher_called).to be_true
       end
 
       context 'when there is already a matcher for the given name' do
@@ -32,7 +32,7 @@ module VCR
 
         it 'overrides the existing matcher' do
           subject.register(:foo) { |*a| true }
-          subject[:foo].matches?(stub, stub).should be_true
+          expect(subject[:foo].matches?(stub, stub)).to be_true
         end
 
         it 'warns that there is a name collision' do
@@ -49,7 +49,7 @@ module VCR
       it 'returns a previously registered matcher' do
         matcher = lambda { }
         subject.register(:my_matcher, &matcher)
-        subject[:my_matcher].should eq(RequestMatcherRegistry::Matcher.new(matcher))
+        expect(subject[:my_matcher]).to eq(RequestMatcherRegistry::Matcher.new(matcher))
       end
 
       it 'raises an ArgumentError when no matcher has been registered for the given name' do
@@ -60,15 +60,15 @@ module VCR
 
       it 'returns an object that calls the named block when #matches? is called on it' do
         subject.register(:foo) { |r1, r2| r1 == 5 || r2 == 10 }
-        subject[:foo].matches?(5, 0).should be_true
-        subject[:foo].matches?(0, 10).should be_true
-        subject[:foo].matches?(7, 7).should be_false
+        expect(subject[:foo].matches?(5, 0)).to be_true
+        expect(subject[:foo].matches?(0, 10)).to be_true
+        expect(subject[:foo].matches?(7, 7)).to be_false
       end
 
       it 'returns an object that calls the given callable when #matches? is called on it' do
         block_called = false
         subject[lambda { |r1, r2| block_called = true }].matches?(5, 0)
-        block_called.should be_true
+        expect(block_called).to be_true
       end
     end
 
@@ -77,80 +77,91 @@ module VCR
         it 'returns a matcher that can be registered for later use' do
           matcher = subject.send(meth, :foo)
           subject.register(:uri_without_foo, &matcher)
-          subject[:uri_without_foo].matches?(
+          matches = subject[:uri_without_foo].matches?(
             request_with(:uri => 'http://example.com/search?foo=123'),
             request_with(:uri => 'http://example.com/search?foo=123')
-          ).should be_true
+          )
+          expect(matches).to be_true
         end
 
         it 'matches two requests with URIs that are identical' do
-          subject[subject.send(meth, :foo)].matches?(
+          matches = subject[subject.send(meth, :foo)].matches?(
             request_with(:uri => 'http://example.com/search?foo=123'),
             request_with(:uri => 'http://example.com/search?foo=123')
-          ).should be_true
+          )
+          expect(matches).to be_true
         end
 
         it 'does not match two requests with different path parts' do
-          subject[subject.send(meth, :foo)].matches?(
+          matches = subject[subject.send(meth, :foo)].matches?(
             request_with(:uri => 'http://example.com/search?foo=123'),
             request_with(:uri => 'http://example.com/find?foo=123')
-          ).should be_false
+          )
+          expect(matches).to be_false
         end
 
         it 'ignores the given query parameters when it is at the start' do
-          subject[subject.send(meth, :foo)].matches?(
+          matches = subject[subject.send(meth, :foo)].matches?(
             request_with(:uri => 'http://example.com/search?foo=123&bar=r'),
             request_with(:uri => 'http://example.com/search?foo=124&bar=r')
-          ).should be_true
+          )
+          expect(matches).to be_true
         end
 
         it 'ignores the given query parameters when it is at the end' do
-          subject[subject.send(meth, :bar)].matches?(
+          matches = subject[subject.send(meth, :bar)].matches?(
             request_with(:uri => 'http://example.com/search?foo=124&bar=r'),
             request_with(:uri => 'http://example.com/search?foo=124&bar=q')
-          ).should be_true
+          )
+          expect(matches).to be_true
         end
 
         it 'still takes into account other query params' do
-          subject[subject.send(meth, :bar)].matches?(
+          matches = subject[subject.send(meth, :bar)].matches?(
             request_with(:uri => 'http://example.com/search?foo=123&bar=r'),
             request_with(:uri => 'http://example.com/search?foo=124&bar=q')
-          ).should be_false
+          )
+          expect(matches).to be_false
         end
 
         it 'handles multiple query params of the same name' do
-          subject[subject.send(meth, :tag)].matches?(
+          matches = subject[subject.send(meth, :tag)].matches?(
             request_with(:uri => 'http://example.com/search?foo=124&tag[]=a&tag[]=b'),
             request_with(:uri => 'http://example.com/search?foo=124&tag[]=d&tag[]=e')
-          ).should be_true
+          )
+          expect(matches).to be_true
         end
 
         it 'can ignore multiple named parameters' do
-          subject[subject.send(meth, :foo, :bar)].matches?(
+          matches = subject[subject.send(meth, :foo, :bar)].matches?(
             request_with(:uri => 'http://example.com/search?foo=123&bar=r&baz=9'),
             request_with(:uri => 'http://example.com/search?foo=124&baz=9&bar=q')
-          ).should be_true
+          )
+          expect(matches).to be_true
         end
 
         it 'matches two requests with URIs that have no params' do
-          subject[subject.send(meth, :foo, :bar)].matches?(
+          matches = subject[subject.send(meth, :foo, :bar)].matches?(
             request_with(:uri => 'http://example.com/search'),
             request_with(:uri => 'http://example.com/search')
-          ).should be_true
+          )
+          expect(matches).to be_true
         end
 
         it 'does not match two requests with URIs that have no params but different paths' do
-          subject[subject.send(meth, :foo, :bar)].matches?(
+          matches = subject[subject.send(meth, :foo, :bar)].matches?(
             request_with(:uri => 'http://example.com/foo'),
             request_with(:uri => 'http://example.com/bar')
-          ).should be_false
+          )
+          expect(matches).to be_false
         end
 
         it 'matches a second request when all parameters are filtered' do
-          subject[subject.send(meth, :q, :oq)].matches?(
+          matches = subject[subject.send(meth, :q, :oq)].matches?(
             request_with(:uri => 'http://example.com/search'),
             request_with(:uri => 'http://example.com/search?q=vcr&oq=vcr')
-          ).should be_true
+          )
+          expect(matches).to be_true
         end
       end
     end
@@ -158,127 +169,143 @@ module VCR
     describe "built-ins" do
       describe ":method" do
         it 'matches when it is the same' do
-          subject[:method].matches?(
+          matches = subject[:method].matches?(
             request_with(:method => :get),
             request_with(:method => :get)
-          ).should be_true
+          )
+          expect(matches).to be_true
         end
 
         it 'does not match when it is not the same' do
-          subject[:method].matches?(
+          matches = subject[:method].matches?(
             request_with(:method => :get),
             request_with(:method => :post)
-          ).should be_false
+          )
+          expect(matches).to be_false
         end
       end
 
       describe ":uri" do
         it 'matches when it is exactly the same' do
-          subject[:uri].matches?(
+          matches = subject[:uri].matches?(
             request_with(:uri => 'http://foo.com/bar?baz=7'),
             request_with(:uri => 'http://foo.com/bar?baz=7')
-          ).should be_true
+          )
+          expect(matches).to be_true
         end
 
         it 'does not match when it is different' do
-          subject[:uri].matches?(
+          matches = subject[:uri].matches?(
             request_with(:uri => 'http://foo1.com/bar?baz=7'),
             request_with(:uri => 'http://foo2.com/bar?baz=7')
-          ).should be_false
+          )
+          expect(matches).to be_false
         end
       end
 
       describe ":host" do
         it 'matches when it is the same' do
-          subject[:host].matches?(
+          matches = subject[:host].matches?(
             request_with(:uri => 'http://foo.com/bar'),
             request_with(:uri => 'http://foo.com/car')
-          ).should be_true
+          )
+          expect(matches).to be_true
         end
 
         it 'does not match when it is not the same' do
-          subject[:host].matches?(
+          matches = subject[:host].matches?(
             request_with(:uri => 'http://foo.com/bar'),
             request_with(:uri => 'http://goo.com/bar')
-          ).should be_false
+          )
+          expect(matches).to be_false
         end
       end
 
       describe ":path" do
         it 'matches when it is the same' do
-          subject[:path].matches?(
+          matches = subject[:path].matches?(
             request_with(:uri => 'http://foo.com/bar?a=8'),
             request_with(:uri => 'http://goo.com/bar?a=9')
-          ).should be_true
+          )
+          expect(matches).to be_true
         end
 
         it 'does not match when it is not the same' do
-          subject[:path].matches?(
+          matches = subject[:path].matches?(
             request_with(:uri => 'http://foo.com/bar?a=8'),
             request_with(:uri => 'http://foo.com/car?a=8')
-          ).should be_false
+          )
+          expect(matches).to be_false
         end
       end
 
       describe ":body" do
         it 'matches when it is the same' do
-          subject[:body].matches?(
+          matches = subject[:body].matches?(
             request_with(:body => 'foo'),
             request_with(:body => 'foo')
-          ).should be_true
+          )
+          expect(matches).to be_true
         end
 
         it 'does not match when it is not the same' do
-          subject[:body].matches?(
+          matches = subject[:body].matches?(
             request_with(:body => 'foo'),
             request_with(:body => 'bar')
-          ).should be_false
+          )
+          expect(matches).to be_false
         end
       end
 
       describe ":headers" do
         it 'matches when it is the same' do
-          subject[:headers].matches?(
+          matches = subject[:headers].matches?(
             request_with(:headers => { 'a' => 1, 'b' => 2 }),
             request_with(:headers => { 'b' => 2, 'a' => 1 })
-          ).should be_true
+          )
+          expect(matches).to be_true
         end
 
         it 'does not match when it is not the same' do
-          subject[:headers].matches?(
+          matches = subject[:headers].matches?(
             request_with(:headers => { 'a' => 3, 'b' => 2 }),
             request_with(:headers => { 'b' => 2, 'a' => 1 })
-          ).should be_false
+          )
+          expect(matches).to be_false
         end
       end
 
       describe ":query" do
         it 'matches when it is identical' do
-          subject[:query].matches?(
+          matches = subject[:query].matches?(
             request_with(:uri => 'http://foo.com/bar?a=8'),
             request_with(:uri => 'http://goo.com/car?a=8')
-          ).should be_true
+          )
+          expect(matches).to be_true
         end
 
         it 'matches when empty' do
-          subject[:query].matches?(
+          matches = subject[:query].matches?(
             request_with(:uri => 'http://foo.com/bar'),
             request_with(:uri => 'http://goo.com/car')
-          ).should be_true
+          )
+          expect(matches).to be_true
         end
 
         it 'matches when parameters are reordered' do
-          subject[:query].matches?(
+          matches = subject[:query].matches?(
             request_with(:uri => 'http://foo.com/bar?a=8&b=9'),
             request_with(:uri => 'http://goo.com/car?b=9&a=8')
-          ).should be_true
+          )
+          expect(matches).to be_true
         end
 
         it 'does not match when it is not the same' do
-          subject[:query].matches?(
+          matches = subject[:query].matches?(
             request_with(:uri => 'http://foo.com/bar?a=8'),
             request_with(:uri => 'http://goo.com/car?b=8')
-          ).should be_false
+          )
+          expect(matches).to be_false
         end
       end
     end

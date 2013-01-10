@@ -13,7 +13,7 @@ describe VCR::InternetConnection do
     context 'when pinging example.com succeeds' do
       it 'returns true' do
         stub_pingecho_with(true)
-        described_class.should be_available
+        expect(described_class).to be_available
       end
 
       it 'memoizes the value so no extra pings are made' do
@@ -25,7 +25,7 @@ describe VCR::InternetConnection do
     context 'when pinging example.com fails' do
       it 'returns false' do
         stub_pingecho_with(false)
-        described_class.should_not be_available
+        expect(described_class).not_to be_available
       end
 
       it 'memoizes the value so no extra pings are made' do

@@ -34,7 +34,7 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
       webmock_request.instance_variable_set(:@__typed_vcr_request, request)
 
       run_after_request_callback
-      webmock_request.instance_variables.map(&:to_sym).should_not include(:@__typed_vcr_request)
+      expect(webmock_request.instance_variables.map(&:to_sym)).not_to include(:@__typed_vcr_request)
     end
 
     context "when there'ss a bug and the request does not have the @__typed_vcr_request in the after_request callbacks" do
@@ -43,8 +43,8 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
 
       it 'records the HTTP interaction properly' do
         VCR.should_receive(:record_http_interaction) do |i|
-          i.request.uri.should eq("http://foo.com/")
-          i.response.body.should eq("OK")
+          expect(i.request.uri).to eq("http://foo.com/")
+          expect(i.response.body).to eq("OK")
         end
 
         run_after_request_callback
@@ -57,8 +57,8 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
         end
 
         run_after_request_callback
-        request.uri.should eq("http://foo.com/")
-        request.type.should eq(:unknown)
+        expect(request.uri).to eq("http://foo.com/")
+        expect(request.type).to eq(:unknown)
       end
 
       it 'prints a warning' do

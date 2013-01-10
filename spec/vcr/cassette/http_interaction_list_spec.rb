@@ -47,41 +47,41 @@ module VCR
 
       describe "#has_used_interaction_matching?" do
         it 'returns false when no interactions have been used' do
-          list.should_not have_used_interaction_matching(request_with(:method => :put))
+          expect(list).not_to have_used_interaction_matching(request_with(:method => :put))
         end
 
         it 'returns true when there is a matching used interaction (even if there is also an unused one that matches)' do
           list.response_for(request_with(:method => :post))
-          list.should have_used_interaction_matching(request_with(:method => :post))
+          expect(list).to have_used_interaction_matching(request_with(:method => :post))
         end
 
         it 'returns false when none of the used interactions match' do
           list.response_for(request_with(:method => :put))
-          list.should_not have_used_interaction_matching(request_with(:method => :post))
+          expect(list).not_to have_used_interaction_matching(request_with(:method => :post))
         end
       end
 
       describe "#remaining_unused_interaction_count" do
         it 'returns the number of unused interactions' do
-          list.remaining_unused_interaction_count.should eq(3)
+          expect(list.remaining_unused_interaction_count).to eq(3)
 
           list.response_for(request_with(:method => :get))
-          list.remaining_unused_interaction_count.should eq(3)
+          expect(list.remaining_unused_interaction_count).to eq(3)
 
           list.response_for(request_with(:method => :put))
-          list.remaining_unused_interaction_count.should eq(2)
+          expect(list.remaining_unused_interaction_count).to eq(2)
 
           list.response_for(request_with(:method => :put))
-          list.remaining_unused_interaction_count.should eq(2)
+          expect(list.remaining_unused_interaction_count).to eq(2)
 
           list.response_for(request_with(:method => :post))
-          list.remaining_unused_interaction_count.should eq(1)
+          expect(list.remaining_unused_interaction_count).to eq(1)
 
           list.response_for(request_with(:method => :post))
-          list.remaining_unused_interaction_count.should eq(0)
+          expect(list.remaining_unused_interaction_count).to eq(0)
 
           list.response_for(request_with(:method => :post))
-          list.remaining_unused_interaction_count.should eq(0)
+          expect(list.remaining_unused_interaction_count).to eq(0)
         end
       end
 
@@ -102,22 +102,22 @@ module VCR
 
       describe "has_interaction_matching?" do
         it 'returns false when the list is empty' do
-          HTTPInteractionList.new([], [:method]).should_not have_interaction_matching(stub)
+          expect(HTTPInteractionList.new([], [:method])).not_to have_interaction_matching(stub)
         end
 
         it 'returns false when there is no matching interaction' do
-          list.should_not have_interaction_matching(request_with(:method => :get))
+          expect(list).not_to have_interaction_matching(request_with(:method => :get))
         end
 
         it 'returns true when there is a matching interaction' do
-          list.should have_interaction_matching(request_with(:method => :post))
+          expect(list).to have_interaction_matching(request_with(:method => :post))
         end
 
         it 'does not consume the interactions when they match' do
-          list.should have_interaction_matching(request_with(:method => :post))
-          list.remaining_unused_interaction_count.should eq(3)
-          list.should have_interaction_matching(request_with(:method => :post))
-          list.remaining_unused_interaction_count.should eq(3)
+          expect(list).to have_interaction_matching(request_with(:method => :post))
+          expect(list.remaining_unused_interaction_count).to eq(3)
+          expect(list).to have_interaction_matching(request_with(:method => :post))
+          expect(list.remaining_unused_interaction_count).to eq(3)
         end
 
         it 'invokes each matcher block to find the matching interaction' do
@@ -131,15 +131,15 @@ module VCR
             interaction('response', :method => :put)
           ], [:foo, :bar, :baz])
 
-          list.should_not have_interaction_matching(request_with(:method => :post))
-          list.should     have_interaction_matching(request_with(:method => :post))
+          expect(list).not_to have_interaction_matching(request_with(:method => :post))
+          expect(list).to     have_interaction_matching(request_with(:method => :post))
         end
 
         it "delegates to the parent list when it can't find a matching interaction" do
           parent_list = mock(:has_interaction_matching? => true)
-          HTTPInteractionList.new( [], [:method], false, parent_list).should have_interaction_matching(stub)
+          expect(HTTPInteractionList.new( [], [:method], false, parent_list)).to have_interaction_matching(stub)
           parent_list = mock(:has_interaction_matching? => false)
-          HTTPInteractionList.new( [], [:method], false, parent_list).should_not have_interaction_matching(stub)
+          expect(HTTPInteractionList.new( [], [:method], false, parent_list)).not_to have_interaction_matching(stub)
         end
 
         context 'when allow_playback_repeats is set to true' do
@@ -148,9 +148,11 @@ module VCR
           it 'considers used interactions' do
             list.response_for(request_with(:method => :put))
 
-            10.times.map {
+            results = 10.times.map do
               list.has_interaction_matching?(request_with(:method => :put))
-            }.should eq([true] * 10)
+            end
+
+            expect(results).to eq([true] * 10)
           end
         end
 
@@ -160,25 +162,29 @@ module VCR
           it 'does not consider used interactions' do
             list.response_for(request_with(:method => :put))
 
-            10.times.map {
+            result = 10.times.map do
               list.has_interaction_matching?(request_with(:method => :put))
-            }.should eq([false] * 10)
+            end
+
+            expect(result).to eq([false] * 10)
           end
         end
       end
 
       describe "#response_for" do
         it 'returns nil when the list is empty' do
-          HTTPInteractionList.new([], [:method]).response_for(stub).should respond_with(nil)
+          expect(HTTPInteractionList.new([], [:method]).response_for(stub)).to respond_with(nil)
         end
 
         it 'returns nil when there is no matching interaction' do
-          HTTPInteractionList.new([
+          response = HTTPInteractionList.new([
             interaction('foo', :method => :post),
             interaction('foo', :method => :put)
           ], [:method]).response_for(
             request_with(:method => :get)
-          ).should respond_with(nil)
+          )
+
+          expect(response).to respond_with(nil)
         end
 
         it 'returns the first matching interaction' do
@@ -188,7 +194,7 @@ module VCR
             interaction('post response 2', :method => :post)
           ], [:method])
 
-          list.response_for(request_with(:method => :post)).should respond_with("post response 1")
+          expect(list.response_for(request_with(:method => :post))).to respond_with("post response 1")
         end
 
         it 'invokes each matcher block to find the matching interaction' do
@@ -202,20 +208,22 @@ module VCR
             interaction('response', :method => :put)
           ], [:foo, :bar, :baz])
 
-          list.response_for(request_with(:method => :post)).should respond_with(nil)
-          list.response_for(request_with(:method => :post)).should respond_with('response')
+          expect(list.response_for(request_with(:method => :post))).to respond_with(nil)
+          expect(list.response_for(request_with(:method => :post))).to respond_with('response')
         end
 
         it "delegates to the parent list when it can't find a matching interaction" do
           parent_list = mock(:response_for => response('parent'))
-          HTTPInteractionList.new(
+          result = HTTPInteractionList.new(
             [], [:method], false, parent_list
-          ).response_for(stub).should respond_with('parent')
+          ).response_for(stub)
+
+          expect(result).to respond_with('parent')
         end
 
         it 'consumes the first matching interaction so that it will not be used again' do
-          list.response_for(request_with(:method => :post)).body.should eq("post response 1")
-          list.response_for(request_with(:method => :post)).body.should eq("post response 2")
+          expect(list.response_for(request_with(:method => :post)).body).to eq("post response 1")
+          expect(list.response_for(request_with(:method => :post)).body).to eq("post response 2")
         end
 
         context 'when allow_playback_repeats is set to true' do
@@ -224,10 +232,12 @@ module VCR
           it 'continues to return the response from the last matching interaction when there are no more' do
             list.response_for(request_with(:method => :post))
 
-            10.times.map {
+            results = 10.times.map do
               response = list.response_for(request_with(:method => :post))
               response ? response.body : nil
-            }.should eq(["post response 2"] * 10)
+            end
+
+            expect(results).to eq(["post response 2"] * 10)
           end
         end
 
@@ -238,16 +248,18 @@ module VCR
             list.response_for(request_with(:method => :post))
             list.response_for(request_with(:method => :post))
 
-            10.times.map {
+            results = 10.times.map do
               list.response_for(request_with(:method => :post))
-            }.should eq([nil] * 10)
+            end
+
+            expect(results).to eq([nil] * 10)
           end
         end
 
         it 'does not modify the original interaction array the list was initialized with' do
           original_dup = original_list_array.dup
           list.response_for(request_with(:method => :post))
-          original_list_array.should == original_dup
+          expect(original_list_array).to eq original_dup
         end
       end
     end

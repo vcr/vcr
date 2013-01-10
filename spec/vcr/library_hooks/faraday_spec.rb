@@ -10,7 +10,7 @@ describe "Faraday hook" do
     end
 
     conn.builder.lock!
-    conn.builder.handlers.last(2).map(&:klass).should eq([
+    expect(conn.builder.handlers.last(2).map(&:klass)).to eq([
       VCR::Middleware::Faraday,
       Faraday::Adapter::NetHttp
     ])
@@ -20,7 +20,7 @@ describe "Faraday hook" do
     conn = Faraday.new
 
     conn.builder.lock!
-    conn.builder.handlers.last(2).map(&:klass).should eq([
+    expect(conn.builder.handlers.last(2).map(&:klass)).to eq([
       VCR::Middleware::Faraday,
       Faraday::Adapter::NetHttp
     ])
@@ -34,7 +34,7 @@ describe "Faraday hook" do
     end
 
     conn.builder.lock!
-    conn.builder.handlers.map(&:klass).should eq([
+    expect(conn.builder.handlers.map(&:klass)).to eq([
       VCR::Middleware::Faraday,
       Faraday::Response::Logger,
       Faraday::Adapter::NetHttp
@@ -58,7 +58,7 @@ describe "Faraday hook" do
     end
 
     conn.builder.lock!
-    conn.builder.handlers.map(&:klass).should eq([
+    expect(conn.builder.handlers.map(&:klass)).to eq([
       Faraday::Request::UrlEncoded,
       Faraday::Response::Logger,
       VCR::Middleware::Faraday

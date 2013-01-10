@@ -10,7 +10,7 @@ describe VCR, 'deprecations', :disable_warnings do
     it 'yields the configuration object' do
       config_object = nil
       VCR.config { |c| config_object = c }
-      config_object.should be(VCR.configuration)
+      expect(config_object).to be(VCR.configuration)
     end
 
     it 'prints a deprecation warning' do
@@ -22,7 +22,7 @@ describe VCR, 'deprecations', :disable_warnings do
 
   describe "Config" do
     it 'returns the same object referenced by VCR.configuration' do
-      VCR::Config.should be(VCR.configuration)
+      expect(VCR::Config).to be(VCR.configuration)
     end
 
     it 'prints a deprecation warning' do
@@ -40,7 +40,7 @@ describe VCR, 'deprecations', :disable_warnings do
 
   describe "Cassette::MissingERBVariableError" do
     it 'returns VCR::Errors::MissingERBVariableError' do
-      VCR::Cassette::MissingERBVariableError.should be(VCR::Errors::MissingERBVariableError)
+      expect(VCR::Cassette::MissingERBVariableError).to be(VCR::Errors::MissingERBVariableError)
     end
 
     it 'prints a deprecation warning' do

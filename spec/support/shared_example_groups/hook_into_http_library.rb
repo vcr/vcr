@@ -28,9 +28,9 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
         end
 
         it 'returns the same header value when recording and replaying' do
-          (recorded_val = get_set_cookie_header).should_not be_nil
+          expect((recorded_val = get_set_cookie_header)).not_to be_nil
           replayed_val = get_set_cookie_header
-          replayed_val.should eq(recorded_val)
+          expect(replayed_val).to eq(recorded_val)
         end
       end
     end
@@ -46,7 +46,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
         it "properly records and playsback a request with a URL #{description}" do
           recorded_body = get_body
           played_back_body = get_body
-          played_back_body.should eq(recorded_body)
+          expect(played_back_body).to eq(recorded_body)
         end
       end
     end
@@ -65,7 +65,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
 
         recorded = get_body.call
         played_back = get_body.call
-        played_back.should eq(recorded)
+        expect(played_back).to eq(recorded)
       end
     end
 
@@ -83,7 +83,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
         let(:response) { VCR::Response.new(status, nil, response_body, '1.1') }
 
         it 'returns the response for a matching request' do
-          get_body_string(make_http_request(:get, 'http://example.com/')).should eq(response_body)
+          expect(get_body_string(make_http_request(:get, 'http://example.com/'))).to eq(response_body)
         end
       end
 
@@ -93,7 +93,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
           let(:response)    { VCR::Response.new(status, nil, response_body, '1.1') }
 
           it 'returns the expected response for the same request' do
-            get_body_string(make_http_request(:get, url)).should eq(response_body)
+            expect(get_body_string(make_http_request(:get, url))).to eq(response_body)
           end
         end
       end
@@ -118,7 +118,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
       VCR.insert_cassette('foo')
       make_http_request(:get, "http://localhost:#{VCR::SinatraApp.port}/foo")
 
-      call_count.should eq(1)
+      expect(call_count).to eq(1)
     end
 
     describe "using the library's stubbing/disconnection APIs" do
@@ -128,7 +128,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
         it 'can make a real request when VCR is turned off' do
           enable_real_connections
           VCR.turn_off!
-          get_body_string(make_http_request(:get, request_url)).should eq("FOO!")
+          expect(get_body_string(make_http_request(:get, request_url))).to eq("FOO!")
         end
 
         it 'does not mess with VCR when real connections are disabled' do
@@ -136,7 +136,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
           disable_real_connections
 
           VCR.should_receive(:record_http_interaction) do |interaction|
-            interaction.request.uri.should eq(request_url)
+            expect(interaction.request.uri).to eq(request_url)
           end
 
           make_http_request(:get, request_url)
@@ -156,28 +156,28 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
         it 'can directly stub the request when VCR is turned off' do
           VCR.turn_off!
           directly_stub_request(:get, request_url, "stubbed response")
-          get_body_string(make_http_request(:get, request_url)).should eq("stubbed response")
+          expect(get_body_string(make_http_request(:get, request_url))).to eq("stubbed response")
         end
 
         it 'can directly stub the request when VCR is turned on and no cassette is in use' do
           directly_stub_request(:get, request_url, "stubbed response")
-          get_body_string(make_http_request(:get, request_url)).should eq("stubbed response")
+          expect(get_body_string(make_http_request(:get, request_url))).to eq("stubbed response")
         end
 
         it 'can directly stub the request when VCR is turned on and a cassette is in use' do
           VCR.use_cassette("temp") do
             directly_stub_request(:get, request_url, "stubbed response")
-            get_body_string(make_http_request(:get, request_url)).should eq("stubbed response")
+            expect(get_body_string(make_http_request(:get, request_url))).to eq("stubbed response")
           end
         end
 
         it 'does not record requests that are directly stubbed' do
-          VCR.should respond_to(:record_http_interaction)
+          expect(VCR).to respond_to(:record_http_interaction)
           VCR.should_not_receive(:record_http_interaction)
 
           VCR.use_cassette("temp") do
             directly_stub_request(:get, request_url, "stubbed response")
-            get_body_string(make_http_request(:get, request_url)).should eq("stubbed response")
+            expect(get_body_string(make_http_request(:get, request_url))).to eq("stubbed response")
           end
         end
       end
@@ -198,8 +198,8 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
             make_http_request(:get, request_url)
           end
 
-          yielded_request.method.should eq(:get)
-          yielded_request.uri.should eq(request_url)
+          expect(yielded_request.method).to eq(:get)
+          expect(yielded_request.uri).to eq(request_url)
         end
 
         it 'returns the response from request.proceed' do
@@ -212,7 +212,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
             make_http_request(:get, request_url)
           end
 
-          response.body.should eq("FOO!")
+          expect(response.body).to eq("FOO!")
         end
 
         it 'can be used to use a cassette for a request' do
@@ -221,12 +221,12 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
           end
 
           VCR.should_receive(:record_http_interaction) do
-            VCR.current_cassette.name.should eq('new_cassette')
+            expect(VCR.current_cassette.name).to eq('new_cassette')
           end
 
-          VCR.current_cassette.should be_nil
+          expect(VCR.current_cassette).to be_nil
           make_http_request(:get, request_url)
-          VCR.current_cassette.should be_nil
+          expect(VCR.current_cassette).to be_nil
         end
 
         it 'nests them inside each other, making the first declared hook the outermost' do
@@ -249,7 +249,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
 
           make_http_request(:get, request_url)
 
-          order.should eq([:before_1, :before_2, :after_2, :after_1])
+          expect(order).to eq([:before_1, :before_2, :after_2, :after_1])
         end
 
         it 'raises an appropriate error if the hook does not call request.proceed' do
@@ -260,8 +260,8 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
           expect {
             make_http_request(:get, request_url)
           }.to raise_error { |error|
-            error.message.should include('must call #proceed on the yielded request')
-            error.message.should include(hook_declaration)
+            expect(error.message).to include('must call #proceed on the yielded request')
+            expect(error.message).to include(hook_declaration)
           }
         end
 
@@ -291,7 +291,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
           end
 
           make_http_request(:get, request_url)
-          order.should eq([:before_foo, :after_foo])
+          expect(order).to eq([:before_foo, :after_foo])
         end
 
         it 'ensures that both around/before are invoked or neither' do
@@ -313,7 +313,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
           end
 
           make_http_request(:get, request_url)
-          order.should eq([:before_1, :after_1])
+          expect(order).to eq([:before_1, :after_1])
         end
       end if RUBY_VERSION >= '1.9'
 
@@ -330,8 +330,8 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
         end
 
         make_http_request(:get, "http://localhost:#{VCR::SinatraApp.port}/foo")
-        before_type.should be(:unhandled)
-        after_type.should be(:recordable)
+        expect(before_type).to be(:unhandled)
+        expect(after_type).to be(:recordable)
       end
 
       context "when the request is ignored" do
@@ -364,18 +364,18 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
                 VCR.insert_cassette('fake_example_responses', :record => :none)
               end
             end
-            get_body_string(make_http_request(:get, 'http://example.com/foo')).should eq(string_in_cassette)
+            expect(get_body_string(make_http_request(:get, 'http://example.com/foo'))).to eq(string_in_cassette)
           end
 
           specify 'the after_http_request hook can be used to eject a cassette after the request is recorded' do
             VCR.configuration.after_http_request { |request| VCR.eject_cassette }
 
             VCR.should_receive(:record_http_interaction) do |interaction|
-              VCR.current_cassette.should be(inserted_cassette)
+              expect(VCR.current_cassette).to be(inserted_cassette)
             end
 
             make_request
-            VCR.current_cassette.should be_nil
+            expect(VCR.current_cassette).to be_nil
           end
         end
       end
@@ -392,7 +392,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
         it_behaves_like "request hooks", library_hook_name, :unhandled do
           undef assert_expected_response
           def assert_expected_response(response)
-            response.should be_nil
+            expect(response).to be_nil
           end
 
           undef make_request
@@ -427,7 +427,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
 
           valid.each do |val, response|
             it "returns the expected response for a #{val.inspect} request" do
-              get_body_string(make_http_request(val)).should eq(response)
+              expect(get_body_string(make_http_request(val))).to eq(response)
             end
           end
 
@@ -480,7 +480,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
       if http_allowed
 
         it 'allows real http requests' do
-          get_body_string(make_http_request(:get, url)).should eq('FOO!')
+          expect(get_body_string(make_http_request(:get, url))).to eq('FOO!')
         end
 
         describe 'recording new http requests' do
@@ -499,37 +499,37 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
           end unless other.include?(:not_disableable)
 
           it 'records the request uri' do
-            recorded_interaction.request.uri.should eq(url)
+            expect(recorded_interaction.request.uri).to eq(url)
           end
 
           it 'records the request method' do
-            recorded_interaction.request.method.should eq(:post)
+            expect(recorded_interaction.request.method).to eq(:post)
           end
 
           it 'records the request body' do
-            recorded_interaction.request.body.should eq("the body")
+            expect(recorded_interaction.request.body).to eq("the body")
           end
 
           it 'records the request headers' do
             headers = downcase_headers(recorded_interaction.request.headers)
-            headers.should include('x-http-foo' => ['bar'])
+            expect(headers).to include('x-http-foo' => ['bar'])
           end
 
           it 'records the response status code' do
-            recorded_interaction.response.status.code.should eq(200)
+            expect(recorded_interaction.response.status.code).to eq(200)
           end
 
           it 'records the response status message' do
-            recorded_interaction.response.status.message.strip.should eq('OK')
+            expect(recorded_interaction.response.status.message.strip).to eq('OK')
           end unless other.include?(:status_message_not_exposed)
 
           it 'records the response body' do
-            recorded_interaction.response.body.should eq('FOO!')
+            expect(recorded_interaction.response.body).to eq('FOO!')
           end
 
           it 'records the response headers' do
             headers = downcase_headers(recorded_interaction.response.headers)
-            headers.should include('content-type' => ["text/html;charset=utf-8"])
+            expect(headers).to include('content-type' => ["text/html;charset=utf-8"])
           end
         end
       else
@@ -556,7 +556,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
 
             %w[ 127.0.0.1 localhost ].each do |localhost_alias|
               it "allows requests to #{localhost_alias}" do
-                get_body_string(make_http_request(:get, "http://#{localhost_alias}:#{VCR::SinatraApp.port}/localhost_test")).should eq(localhost_response)
+                expect(get_body_string(make_http_request(:get, "http://#{localhost_alias}:#{VCR::SinatraApp.port}/localhost_test"))).to eq(localhost_response)
               end
             end
 
@@ -574,18 +574,18 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
 
           it 'gets the stubbed responses when requests are made to http://example.com/foo, and does not record them' do
             VCR.should_receive(:record_http_interaction).never
-            get_body_string(make_http_request(:get, 'http://example.com/foo')).should =~ /example\.com get response \d with path=foo/
+            expect(get_body_string(make_http_request(:get, 'http://example.com/foo'))).to match(/example\.com get response \d with path=foo/)
           end
 
           it 'rotates through multiple responses for the same request' do
-            get_body_string(make_http_request(:get, 'http://example.com/foo')).should eq('example.com get response 1 with path=foo')
-            get_body_string(make_http_request(:get, 'http://example.com/foo')).should eq('example.com get response 2 with path=foo')
+            expect(get_body_string(make_http_request(:get, 'http://example.com/foo'))).to eq('example.com get response 1 with path=foo')
+            expect(get_body_string(make_http_request(:get, 'http://example.com/foo'))).to eq('example.com get response 2 with path=foo')
           end unless other.include?(:does_not_support_rotating_responses)
 
           it "correctly handles stubbing multiple values for the same header" do
             header = get_header('Set-Cookie', make_http_request(:get, 'http://example.com/two_set_cookie_headers'))
             header = header.split(', ') if header.respond_to?(:split)
-            header.should =~ ['bar=bazz', 'foo=bar']
+            expect(header).to match_array ['bar=bazz', 'foo=bar']
           end
         end
       end

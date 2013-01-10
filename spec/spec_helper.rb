@@ -56,6 +56,10 @@ RSpec.configure do |config|
   config.color_enabled = true
   config.treat_symbols_as_metadata_keys_with_true_values = true
 
+  config.expect_with :rspec do |expectations|
+    expectations.syntax = :expect
+  end
+
   tmp_dir = File.expand_path('../../tmp/cassette_library_dir', __FILE__)
   config.before(:each) do
     unless example.metadata[:skip_vcr_reset]
