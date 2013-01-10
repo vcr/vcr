@@ -318,15 +318,15 @@ describe VCR::Cassette do
 
           expect(i1.request.method).to eq(:get)
           expect(i1.request.uri).to eq('http://example.com/')
-          expect(i1.response.body).to match /You have reached this web page by typing.+example\.com/
+          expect(i1.response.body).to match(/You have reached this web page by typing.+example\.com/)
 
           expect(i2.request.method).to eq(:get)
           expect(i2.request.uri).to eq('http://example.com/foo')
-          expect(i2.response.body).to match /foo was not found on this server/
+          expect(i2.response.body).to match(/foo was not found on this server/)
 
           expect(i3.request.method).to eq(:get)
           expect(i3.request.uri).to eq('http://example.com/')
-          expect(i3.response.body).to match /Another example\.com response/
+          expect(i3.response.body).to match(/Another example\.com response/)
         end
 
         [true, false].each do |value|

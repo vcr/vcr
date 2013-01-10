@@ -574,7 +574,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
 
           it 'gets the stubbed responses when requests are made to http://example.com/foo, and does not record them' do
             VCR.should_receive(:record_http_interaction).never
-            expect(get_body_string(make_http_request(:get, 'http://example.com/foo'))).to match /example\.com get response \d with path=foo/
+            expect(get_body_string(make_http_request(:get, 'http://example.com/foo'))).to match(/example\.com get response \d with path=foo/)
           end
 
           it 'rotates through multiple responses for the same request' do
