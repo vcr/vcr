@@ -9,7 +9,7 @@ module VCR
 
     shared_examples_for "#ignore?" do |url, expected_value|
       it "returns #{expected_value} if given a request with a url like #{url}" do
-        subject.ignore?(request(url)).should eq(expected_value)
+        expect(subject.ignore?(request(url))).to eq(expected_value)
       end
     end
 
@@ -58,11 +58,11 @@ module VCR
       end
 
       it 'ignores requests for which the block returns true' do
-        subject.ignore?(request('http://foo.com:5/bar')).should be_true
+        expect(subject.ignore?(request('http://foo.com:5/bar'))).to be_true
       end
 
       it 'does not ignore requests for which the block returns false' do
-        subject.ignore?(request('http://foo.com:6/bar')).should be_false
+        expect(subject.ignore?(request('http://foo.com:6/bar'))).to be_false
       end
     end
   end

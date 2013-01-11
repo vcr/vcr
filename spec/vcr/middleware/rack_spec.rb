@@ -6,29 +6,29 @@ module VCR
     describe CassetteArguments do
       describe '#name' do
         it 'initially returns nil' do
-          subject.name.should be_nil
+          expect(subject.name).to be_nil
         end
 
         it 'stores the given value, returning it when no arg is given' do
           subject.name :value1
-          subject.name.should eq(:value1)
+          expect(subject.name).to eq(:value1)
 
           subject.name :value2
-          subject.name.should eq(:value2)
+          expect(subject.name).to eq(:value2)
         end
       end
 
       describe '#options' do
         it 'initially returns an empty hash' do
-          subject.options.should eq({})
+          expect(subject.options).to eq({})
         end
 
         it 'merges the given hash options, returning them when no arg is given' do
           subject.options :record => :new_episodes
-          subject.options.should eq({ :record => :new_episodes })
+          expect(subject.options).to eq({ :record => :new_episodes })
 
           subject.options :erb => true
-          subject.options.should eq({ :record => :new_episodes, :erb => true })
+          expect(subject.options).to eq({ :record => :new_episodes, :erb => true })
         end
       end
     end
@@ -48,25 +48,30 @@ module VCR
           rack_app = mock
           rack_app.should_receive(:call).with(env_hash).and_return(:response)
           instance = described_class.new(rack_app) { |c| c.name 'cassette_name' }
-          instance.call(env_hash).should eq(:response)
+          expect(instance.call(env_hash)).to eq(:response)
         end
 
         it 'uses a cassette when the rack app is called' do
-          VCR.current_cassette.should be_nil
-          rack_app = lambda { |env| VCR.current_cassette.should_not be_nil }
+          expect(VCR.current_cassette).to be_nil
+          rack_app = lambda { |env| expect(VCR.current_cassette).not_to be_nil }
           instance = described_class.new(rack_app) { |c| c.name 'cassette_name' }
           instance.call({})
-          VCR.current_cassette.should be_nil
+          expect(VCR.current_cassette).to be_nil
         end
 
         it 'sets the cassette name based on the provided block' do
-          rack_app = lambda { |env| VCR.current_cassette.name.should eq('rack_cassette') }
+          rack_app = lambda do |env|
+            expect(VCR.current_cassette.name).to eq('rack_cassette')
+          end
           instance = described_class.new(rack_app) { |c| c.name 'rack_cassette' }
           instance.call({})
         end
 
         it 'sets the cassette options based on the provided block' do
-          rack_app = lambda { |env| VCR.current_cassette.erb.should eq({ :foo => :bar }) }
+          rack_app = lambda do |env|
+            expect(VCR.current_cassette.erb).to eq({ :foo => :bar })
+          end
+
           instance = described_class.new(rack_app, &lambda do |c|
             c.name    'c'
             c.options :erb => { :foo => :bar }
@@ -77,7 +82,7 @@ module VCR
 
         it 'yields the rack env to the provided block when the block accepts 2 arguments' do
           instance = described_class.new(lambda { |env| }, &lambda do |c, env|
-            env.should eq(env_hash)
+            expect(env).to eq(env_hash)
             c.name    'c'
           end)
 
@@ -88,7 +93,7 @@ module VCR
       let(:threaded_app) do
         lambda do |env|
           sleep 0.15
-          VCR.send(:cassettes).should have(1).cassette
+          expect(VCR.send(:cassettes)).to have(1).cassette
           [200, {}, ['OK']]
         end
       end
@@ -102,7 +107,7 @@ module VCR
         stack.call({})
         thread.join
 
-        VCR.current_cassette.should be_nil
+        expect(VCR.current_cassette).to be_nil
       end
     end
   end

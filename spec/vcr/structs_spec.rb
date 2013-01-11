@@ -18,26 +18,26 @@ shared_examples_for "a header normalizer" do
     key = 'my-key'
     key.instance_variable_set(:@foo, 7)
     instance = with_headers(key => ['value1'])
-    YAML.dump(instance.headers).should eq(YAML.dump('my-key' => ['value1']))
+    expect(YAML.dump(instance.headers)).to eq(YAML.dump('my-key' => ['value1']))
   end
 
   it 'ensures header values are serialized to yaml as raw strings' do
     value = 'my-value'
     value.instance_variable_set(:@foo, 7)
     instance = with_headers('my-key' => [value])
-    YAML.dump(instance.headers).should eq(YAML.dump('my-key' => ['my-value']))
+    expect(YAML.dump(instance.headers)).to eq(YAML.dump('my-key' => ['my-value']))
   end
 
   it 'handles nested arrays' do
     accept_encoding = [["gzip", "1.0"], ["deflate", "1.0"], ["sdch", "1.0"]]
     instance = with_headers('accept-encoding' => accept_encoding)
-    instance.headers['accept-encoding'].should eq(accept_encoding)
+    expect(instance.headers['accept-encoding']).to eq(accept_encoding)
   end
 
   it 'handles nested arrays with floats' do
     accept_encoding = [["gzip", 1.0], ["deflate", 1.0], ["sdch", 1.0]]
     instance = with_headers('accept-encoding' => accept_encoding)
-    instance.headers['accept-encoding'].should eq(accept_encoding)
+    expect(instance.headers['accept-encoding']).to eq(accept_encoding)
   end
 end
 
@@ -45,11 +45,11 @@ shared_examples_for "a body normalizer" do
   it "ensures the body is serialized to yaml as a raw string" do
     body = "My String"
     body.instance_variable_set(:@foo, 7)
-    YAML.dump(instance(body).body).should eq(YAML.dump("My String"))
+    expect(YAML.dump(instance(body).body)).to eq(YAML.dump("My String"))
   end
 
   it 'converts nil to a blank string' do
-    instance(nil).body.should eq("")
+    expect(instance(nil).body).to eq("")
   end
 
   it 'raises an error if given another type of object as the body' do
@@ -78,7 +78,7 @@ module VCR
 
       it 'is initialized to the current time' do
         Time.stub(:now => now)
-        VCR::HTTPInteraction.new.recorded_at.should eq(now)
+        expect(VCR::HTTPInteraction.new.recorded_at).to eq(now)
       end
     end
 
@@ -111,23 +111,23 @@ module VCR
       end
 
       it 'constructs an HTTP interaction from the given hash' do
-        HTTPInteraction.from_hash(hash).should eq(interaction)
+        expect(HTTPInteraction.from_hash(hash)).to eq(interaction)
       end
 
       it 'initializes the recorded_at timestamp from the hash' do
-        HTTPInteraction.from_hash(hash).recorded_at.should eq(recorded_at)
+        expect(HTTPInteraction.from_hash(hash).recorded_at).to eq(recorded_at)
       end
 
       it 'uses a blank request when the hash lacks one' do
         hash.delete('request')
         i = HTTPInteraction.from_hash(hash)
-        i.request.should eq(Request.new)
+        expect(i.request).to eq(Request.new)
       end
 
       it 'uses a blank response when the hash lacks one' do
         hash.delete('response')
         i = HTTPInteraction.from_hash(hash)
-        i.response.should eq(Response.new(ResponseStatus.new))
+        expect(i.response).to eq(Response.new(ResponseStatus.new))
       end
 
       it 'decodes the base64 body string' do
@@ -135,34 +135,34 @@ module VCR
         hash['response']['body'] = body_hash('base64_string', Base64.encode64('res body'))
 
         i = HTTPInteraction.from_hash(hash)
-        i.request.body.should eq('req body')
-        i.response.body.should eq('res body')
+        expect(i.request.body).to eq('req body')
+        expect(i.response.body).to eq('res body')
       end
 
       if ''.respond_to?(:encoding)
         it 'force encodes the decoded base64 string as the original encoding' do
           string = "café"
           string.force_encoding("US-ASCII")
-          string.should_not be_valid_encoding
+          expect(string).not_to be_valid_encoding
 
           hash['request']['body']  = { 'base64_string' => Base64.encode64(string.dup), 'encoding' => 'US-ASCII' }
           hash['response']['body'] = { 'base64_string' => Base64.encode64(string.dup), 'encoding' => 'US-ASCII' }
 
           i = HTTPInteraction.from_hash(hash)
-          i.request.body.encoding.name.should eq("US-ASCII")
-          i.response.body.encoding.name.should eq("US-ASCII")
-          i.request.body.bytes.to_a.should eq(string.bytes.to_a)
-          i.response.body.bytes.to_a.should eq(string.bytes.to_a)
-          i.request.body.should_not be_valid_encoding
-          i.response.body.should_not be_valid_encoding
+          expect(i.request.body.encoding.name).to eq("US-ASCII")
+          expect(i.response.body.encoding.name).to eq("US-ASCII")
+          expect(i.request.body.bytes.to_a).to eq(string.bytes.to_a)
+          expect(i.response.body.bytes.to_a).to eq(string.bytes.to_a)
+          expect(i.request.body).not_to be_valid_encoding
+          expect(i.response.body).not_to be_valid_encoding
         end
 
         it 'does not attempt to force encode the decoded base64 string when there is no encoding given (i.e. if the cassette was recorded on ruby 1.8)' do
           hash['request']['body']  = { 'base64_string' => Base64.encode64('foo') }
 
           i = HTTPInteraction.from_hash(hash)
-          i.request.body.should eq('foo')
-          i.request.body.encoding.name.should eq("ASCII-8BIT")
+          expect(i.request.body).to eq('foo')
+          expect(i.request.body.encoding.name).to eq("ASCII-8BIT")
         end
 
         it 'tries to encode strings to the original encoding' do
@@ -170,10 +170,10 @@ module VCR
           hash['response']['body'] = { 'string' => "abc", 'encoding' => 'ISO-8859-1' }
 
           i = HTTPInteraction.from_hash(hash)
-          i.request.body.should eq("abc")
-          i.response.body.should eq("abc")
-          i.request.body.encoding.name.should eq("ISO-8859-1")
-          i.response.body.encoding.name.should eq("ISO-8859-1")
+          expect(i.request.body).to eq("abc")
+          expect(i.response.body).to eq("abc")
+          expect(i.request.body.encoding.name).to eq("ISO-8859-1")
+          expect(i.response.body.encoding.name).to eq("ISO-8859-1")
         end
 
         it 'does not attempt to encode the string when there is no encoding given (i.e. if the cassette was recorded on ruby 1.8)' do
@@ -182,21 +182,21 @@ module VCR
           hash['request']['body']  = { 'string' => string }
 
           i = HTTPInteraction.from_hash(hash)
-          i.request.body.should eq('foo')
-          i.request.body.encoding.name.should eq("ISO-8859-1")
+          expect(i.request.body).to eq('foo')
+          expect(i.request.body.encoding.name).to eq("ISO-8859-1")
         end
 
         it 'force encodes to ASCII-8BIT (since it just means "no encoding" or binary)' do
           string = "\u00f6"
           string.encode("UTF-8")
-          string.should be_valid_encoding
+          expect(string).to be_valid_encoding
           hash['request']['body']  = { 'string' => string, 'encoding' => 'ASCII-8BIT' }
 
           Request.should_not_receive(:warn)
           i = HTTPInteraction.from_hash(hash)
-          i.request.body.should eq(string)
-          i.request.body.bytes.to_a.should eq(string.bytes.to_a)
-          i.request.body.encoding.name.should eq("ASCII-8BIT")
+          expect(i.request.body).to eq(string)
+          expect(i.request.body.bytes.to_a).to eq(string.bytes.to_a)
+          expect(i.request.body.encoding.name).to eq("ASCII-8BIT")
         end
 
         context 'when the string cannot be encoded as the original encoding' do
@@ -218,10 +218,10 @@ module VCR
 
           it 'does not force the encoding' do
             i = HTTPInteraction.from_hash(hash)
-            i.request.body.should eq("\xFAbc")
-            i.response.body.should eq("\xFAbc")
-            i.request.body.encoding.name.should_not eq("ISO-8859-1")
-            i.response.body.encoding.name.should_not eq("ISO-8859-1")
+            expect(i.request.body).to eq("\xFAbc")
+            expect(i.response.body).to eq("\xFAbc")
+            expect(i.request.body.encoding.name).not_to eq("ISO-8859-1")
+            expect(i.response.body.encoding.name).not_to eq("ISO-8859-1")
           end
 
           it 'prints a warning and informs users of the :preserve_exact_body_bytes option' do
@@ -243,18 +243,18 @@ module VCR
       let(:hash) { interaction.to_hash }
 
       it 'returns a nested hash containing all of the pertinent details' do
-        hash.keys.should =~ %w[ request response recorded_at ]
+        expect(hash.keys).to match_array %w[ request response recorded_at ]
 
-        hash['recorded_at'].should eq(interaction.recorded_at.httpdate)
+        expect(hash['recorded_at']).to eq(interaction.recorded_at.httpdate)
 
-        hash['request'].should eq({
+        expect(hash['request']).to eq({
           'method'  => 'get',
           'uri'     => 'http://foo.com/',
           'body'    => body_hash('string', 'req body'),
           'headers' => { "bar" => ["foo"] }
         })
 
-        hash['response'].should eq({
+        expect(hash['response']).to eq({
           'status'       => {
             'code'       => 200,
             'message'    => 'OK'
@@ -267,22 +267,22 @@ module VCR
 
       it 'encodes the body as base64 when the configuration is so set' do
         VCR.stub_chain(:configuration, :preserve_exact_body_bytes_for?).and_return(true)
-        hash['request']['body'].should eq(body_hash('base64_string', Base64.encode64('req body')))
-        hash['response']['body'].should eq(body_hash('base64_string', Base64.encode64('res body')))
+        expect(hash['request']['body']).to eq(body_hash('base64_string', Base64.encode64('req body')))
+        expect(hash['response']['body']).to eq(body_hash('base64_string', Base64.encode64('res body')))
       end
 
       it "sets the string's original encoding", :if => ''.respond_to?(:encoding) do
         interaction.request.body.force_encoding('ISO-8859-10')
         interaction.response.body.force_encoding('ASCII-8BIT')
 
-        hash['request']['body']['encoding'].should eq('ISO-8859-10')
-        hash['response']['body']['encoding'].should eq('ASCII-8BIT')
+        expect(hash['request']['body']['encoding']).to eq('ISO-8859-10')
+        expect(hash['response']['body']['encoding']).to eq('ASCII-8BIT')
       end
 
       def assert_yielded_keys(hash, *keys)
         yielded_keys = []
         hash.each { |k, v| yielded_keys << k }
-        yielded_keys.should eq(keys)
+        expect(yielded_keys).to eq(keys)
       end
 
       it 'yields the entries in the expected order so the hash can be serialized in that order' do
@@ -308,7 +308,7 @@ module VCR
       end
 
       it "returns the parsed uri" do
-        request.parsed_uri.should == uri
+        expect(request.parsed_uri).to eq uri
       end
     end
   end
@@ -369,29 +369,29 @@ module VCR
 
       [:request, :response].each do |part|
         it "replaces the sensitive text in the #{part} header keys and values" do
-          filtered.send(part).headers.should eq({
+          expect(filtered.send(part).headers).to eq({
             'x-http-AAA' => ['bar23', '23AAA'],
             'x-http-bar' => ['AAA23', '18']
           })
         end
 
         it "replaces the sensitive text in the #{part} body" do
-          filtered.send(part).body.should eq("The body AAA this is (AAA-Foo)")
+          expect(filtered.send(part).body).to eq("The body AAA this is (AAA-Foo)")
         end
       end
 
       it 'replaces the sensitive text in the response status' do
-        filtered.response.status.message.should eq('OK AAA')
+        expect(filtered.response.status.message).to eq('OK AAA')
       end
 
       it 'replaces sensitive text in the request URI' do
-        filtered.request.uri.should eq('http://example-AAA.com/AAA/')
+        expect(filtered.request.uri).to eq('http://example-AAA.com/AAA/')
       end
 
       it 'handles numbers (such as the port) properly' do
         request.uri = "http://foo.com:9000/bar"
         subject.filter!(9000, "<PORT>")
-        request.uri.should eq("http://foo.com:<PORT>/bar")
+        expect(request.uri).to eq("http://foo.com:<PORT>/bar")
       end
     end
   end
@@ -400,13 +400,13 @@ module VCR
     [:uri, :method, :headers, :body].each do |method|
       it "delegates ##{method} to the request" do
         request = stub(method => "delegated value")
-        Request::Typed.new(request, :type).send(method).should eq("delegated value")
+        expect(Request::Typed.new(request, :type).send(method)).to eq("delegated value")
       end
     end
 
     describe "#type" do
       it 'returns the initialized type' do
-        Request::Typed.new(stub, :ignored).type.should be(:ignored)
+        expect(Request::Typed.new(stub, :ignored).type).to be(:ignored)
       end
     end
 
@@ -414,11 +414,11 @@ module VCR
     valid_types.each do |type|
       describe "##{type}?" do
         it "returns true if the type is set to :#{type}" do
-          Request::Typed.new(stub, type).send("#{type}?").should be_true
+          expect(Request::Typed.new(stub, type).send("#{type}?")).to be_true
         end
 
         it "returns false if the type is set to :other" do
-          Request::Typed.new(stub, :other).send("#{type}?").should be_false
+          expect(Request::Typed.new(stub, :other).send("#{type}?")).to be_false
         end
       end
     end
@@ -427,13 +427,13 @@ module VCR
       real_types = [:ignored, :recordable]
       real_types.each do |type|
         it "returns true if the type is set to :#{type}" do
-          Request::Typed.new(stub, type).should be_real
+          expect(Request::Typed.new(stub, type)).to be_real
         end
       end
 
       (valid_types - real_types).each do |type|
         it "returns false if the type is set to :#{type}" do
-          Request::Typed.new(stub, type).should_not be_real
+          expect(Request::Typed.new(stub, type)).not_to be_real
         end
       end
     end
@@ -442,13 +442,13 @@ module VCR
       stubbed_types = [:externally_stubbed, :stubbed_by_vcr]
       stubbed_types.each do |type|
         it "returns true if the type is set to :#{type}" do
-          Request::Typed.new(stub, type).should be_stubbed
+          expect(Request::Typed.new(stub, type)).to be_stubbed
         end
       end
 
       (valid_types - stubbed_types).each do |type|
         it "returns false if the type is set to :#{type}" do
-          Request::Typed.new(stub, type).should_not be_stubbed
+          expect(Request::Typed.new(stub, type)).not_to be_stubbed
         end
       end
     end
@@ -462,23 +462,23 @@ module VCR
 
       context 'when given no arguments' do
         it 'returns the HTTP method' do
-          subject.method.should eq(:get)
+          expect(subject.method).to eq(:get)
         end
       end
 
       context 'when given an argument' do
         it 'returns the method object for the named method' do
           m = subject.method(:class)
-          m.should be_a(Method)
-          m.call.should eq(described_class)
+          expect(m).to be_a(Method)
+          expect(m.call).to eq(described_class)
         end
       end
 
       it 'gets normalized to a lowercase symbol' do
-        VCR::Request.new("GET").method.should eq(:get)
-        VCR::Request.new(:GET).method.should eq(:get)
-        VCR::Request.new(:get).method.should eq(:get)
-        VCR::Request.new("get").method.should eq(:get)
+        expect(VCR::Request.new("GET").method).to eq(:get)
+        expect(VCR::Request.new(:GET).method).to eq(:get)
+        expect(VCR::Request.new(:get).method).to eq(:get)
+        expect(VCR::Request.new("get").method).to eq(:get)
       end
     end
 
@@ -488,19 +488,19 @@ module VCR
       end
 
       it 'removes the default http port' do
-        uri_for("http://foo.com:80/bar").should eq("http://foo.com/bar")
+        expect(uri_for("http://foo.com:80/bar")).to eq("http://foo.com/bar")
       end
 
       it 'removes the default https port' do
-        uri_for("https://foo.com:443/bar").should eq("https://foo.com/bar")
+        expect(uri_for("https://foo.com:443/bar")).to eq("https://foo.com/bar")
       end
 
       it 'does not remove a non-standard http port' do
-        uri_for("http://foo.com:81/bar").should eq("http://foo.com:81/bar")
+        expect(uri_for("http://foo.com:81/bar")).to eq("http://foo.com:81/bar")
       end
 
       it 'does not remove a non-standard https port' do
-        uri_for("https://foo.com:442/bar").should eq("https://foo.com:442/bar")
+        expect(uri_for("https://foo.com:442/bar")).to eq("https://foo.com:442/bar")
       end
     end
 
@@ -513,8 +513,8 @@ module VCR
           :done
         end
 
-        fiber.resume(subject).should be_nil
-        fiber.resume.should eq(:done)
+        expect(fiber.resume(subject)).to be_nil
+        expect(fiber.resume).to eq(:done)
       end
 
       it 'can be cast to a proc' do
@@ -603,23 +603,23 @@ module VCR
 
           it "does nothing when no compression" do
             resp = instance('Hello', nil)
-            resp.should_not be_compressed
+            expect(resp).not_to be_compressed
             expect {
-              resp.decompress.should equal(resp)
+              expect(resp.decompress).to equal(resp)
             }.to_not change { resp.headers['content-length'] }
           end
 
           it "does nothing when encoding is 'identity'" do
             resp = instance('Hello', 'identity')
-            resp.should_not be_compressed
+            expect(resp).not_to be_compressed
             expect {
-              resp.decompress.should equal(resp)
+              expect(resp.decompress).to equal(resp)
             }.to_not change { resp.headers['content-length'] }
           end
 
           it "raises error for unrecognized encoding" do
             resp = instance('Hello', 'flabbergaster')
-            resp.should_not be_compressed
+            expect(resp).not_to be_compressed
             expect { resp.decompress }.
               to raise_error(Errors::UnknownContentEncodingError, 'unknown content encoding: flabbergaster')
           end
@@ -634,11 +634,11 @@ module VCR
 
               gzipped = io.string
               resp = instance(gzipped, 'gzip')
-              resp.should be_compressed
+              expect(resp).to be_compressed
               expect {
-                resp.decompress.should equal(resp)
-                resp.should_not be_compressed
-                resp.body.should eq(content)
+                expect(resp.decompress).to equal(resp)
+                expect(resp).not_to be_compressed
+                expect(resp.body).to eq(content)
               }.to change { resp.headers['content-length'] }.
                 from([gzipped.bytesize.to_s]).
                 to([content.bytesize.to_s])
@@ -648,11 +648,11 @@ module VCR
           it "inflates deflated response" do
             deflated = Zlib::Deflate.deflate(content)
             resp = instance(deflated, 'deflate')
-            resp.should be_compressed
+            expect(resp).to be_compressed
             expect {
-              resp.decompress.should equal(resp)
-              resp.should_not be_compressed
-              resp.body.should eq(content)
+              expect(resp.decompress).to equal(resp)
+              expect(resp).not_to be_compressed
+              expect(resp.body).to eq(content)
             }.to change { resp.headers['content-length'] }.
               from([deflated.bytesize.to_s]).
               to([content.bytesize.to_s])

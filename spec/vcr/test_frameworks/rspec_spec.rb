@@ -9,7 +9,7 @@ describe VCR::RSpec::Metadata, :skip_vcr_reset do
   context 'an example group', :vcr do
     context 'with a nested example group' do
       it 'uses a cassette for any examples' do
-        VCR.current_cassette.name.split('/').should eq([
+        expect(VCR.current_cassette.name.split('/')).to eq([
           'VCR::RSpec::Metadata',
           'an example group',
           'with a nested example group',
@@ -21,20 +21,20 @@ describe VCR::RSpec::Metadata, :skip_vcr_reset do
 
   context 'with the cassette name overridden at the example group level', :vcr => { :cassette_name => 'foo' } do
     it 'overrides the cassette name for an example' do
-      VCR.current_cassette.name.should eq('foo')
+      expect(VCR.current_cassette.name).to eq('foo')
     end
 
     it 'overrides the cassette name for another example' do
-      VCR.current_cassette.name.should eq('foo')
+      expect(VCR.current_cassette.name).to eq('foo')
     end
   end
 
   it 'allows the cassette name to be overriden', :vcr => { :cassette_name => 'foo' } do
-    VCR.current_cassette.name.should eq('foo')
+    expect(VCR.current_cassette.name).to eq('foo')
   end
 
   it 'allows the cassette options to be set', :vcr => { :match_requests_on => [:method] } do
-    VCR.current_cassette.match_requests_on.should eq([:method])
+    expect(VCR.current_cassette.match_requests_on).to eq([:method])
   end
 end
 
@@ -46,18 +46,18 @@ describe VCR::RSpec::Macros do
       context context_name do
         after(:each) do
           if example.metadata[:test_ejection]
-            VCR.current_cassette.should be_nil
+            expect(VCR.current_cassette).to be_nil
           end
         end
 
         use_vcr_cassette(*args)
 
         it 'ejects the cassette in an after hook', :test_ejection do
-          VCR.current_cassette.should be_a(VCR::Cassette)
+          expect(VCR.current_cassette).to be_a(VCR::Cassette)
         end
 
         it "creates a cassette named '#{expected_cassette_name}" do
-          VCR.current_cassette.name.should eq(expected_cassette_name)
+          expect(VCR.current_cassette.name).to eq(expected_cassette_name)
         end
 
         module_eval(&block) if block
@@ -68,7 +68,7 @@ describe VCR::RSpec::Macros do
 
     perform_test 'when called with an explicit name and some options', 'explicit_name', 'explicit_name', :match_requests_on => [:method, :host] do
       it 'uses the provided cassette options' do
-        VCR.current_cassette.match_requests_on.should eq([:method, :host])
+        expect(VCR.current_cassette.match_requests_on).to eq([:method, :host])
       end
     end
 
@@ -76,7 +76,7 @@ describe VCR::RSpec::Macros do
 
     perform_test 'when called with some options', 'VCR::RSpec::Macros/#use_vcr_cassette/when called with some options', :match_requests_on => [:method, :host] do
       it 'uses the provided cassette options' do
-        VCR.current_cassette.match_requests_on.should eq([:method, :host])
+        expect(VCR.current_cassette.match_requests_on).to eq([:method, :host])
       end
     end
   end

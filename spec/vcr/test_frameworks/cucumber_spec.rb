@@ -21,13 +21,13 @@ describe VCR::CucumberTags do
   end
 
   def test_tag(cassette_attribute, tag, expected_value, scenario=current_scenario)
-    VCR.current_cassette.should be_nil
+    expect(VCR.current_cassette).to be_nil
 
     before_blocks_for_tags[tag].call(scenario)
-    VCR.current_cassette.send(cassette_attribute).should eq(expected_value)
+    expect(VCR.current_cassette.send(cassette_attribute)).to eq(expected_value)
     after_blocks_for_tags[tag].call(scenario)
 
-    VCR.current_cassette.should be_nil
+    expect(VCR.current_cassette).to be_nil
   end
 
   %w(tags tag).each do |tag_method|
@@ -82,9 +82,9 @@ describe VCR::CucumberTags do
           subject.send(tag_method, 'tag1', original_options)
           before_blocks_for_tags['tag1'].call(current_scenario)
 
-          original_options.should have(2).items
-          original_options[:use_scenario_name].should eq(true)
-          original_options[:record].should eq(:none)
+          expect(original_options).to have(2).items
+          expect(original_options[:use_scenario_name]).to eq(true)
+          expect(original_options[:record]).to eq(:none)
         end
 
         it "works properly when multiple scenarios use the tag" do
@@ -101,7 +101,7 @@ describe VCR::CucumberTags do
     it 'returns the list of cucumber tags' do
       subject.tags 'tag1', 'tag2'
       subject.tags 'tag3', 'tag4'
-      described_class.tags[-4, 4].should eq(%w(@tag1 @tag2 @tag3 @tag4))
+      expect(described_class.tags[-4, 4]).to eq(%w(@tag1 @tag2 @tag3 @tag4))
     end
   end
 end

@@ -11,9 +11,9 @@ describe VCR::Cassette do
   describe '#file' do
     it 'delegates the file resolution to the FileSystem persister' do
       fs = VCR::Cassette::Persisters::FileSystem
-      fs.should respond_to(:absolute_path_to_file).with(1).argument
+      expect(fs).to respond_to(:absolute_path_to_file).with(1).argument
       fs.should_receive(:absolute_path_to_file).with("cassette name.yml") { "f.yml" }
-      VCR::Cassette.new("cassette name").file.should eq("f.yml")
+      expect(VCR::Cassette.new("cassette name").file).to eq("f.yml")
     end
 
     it 'raises a NotImplementedError when a different persister is used' do
@@ -25,15 +25,15 @@ describe VCR::Cassette do
 
   describe '#tags' do
     it 'returns a blank array if no tag has been set' do
-      VCR::Cassette.new("name").tags.should eq([])
+      expect(VCR::Cassette.new("name").tags).to eq([])
     end
 
     it 'converts a single :tag to an array' do
-      VCR::Cassette.new("name", :tag => :foo).tags.should eq([:foo])
+      expect(VCR::Cassette.new("name", :tag => :foo).tags).to eq([:foo])
     end
 
     it 'accepts an array as the :tags option' do
-      VCR::Cassette.new("name", :tags => [:foo]).tags.should eq([:foo])
+      expect(VCR::Cassette.new("name", :tags => [:foo]).tags).to eq([:foo])
     end
   end
 
@@ -42,9 +42,9 @@ describe VCR::Cassette do
 
     it 'adds the interaction to #new_recorded_interactions' do
       cassette = VCR::Cassette.new(:test_cassette)
-      cassette.new_recorded_interactions.should eq([])
+      expect(cassette.new_recorded_interactions).to eq([])
       cassette.record_http_interaction(the_interaction)
-      cassette.new_recorded_interactions.should eq([the_interaction])
+      expect(cassette.new_recorded_interactions).to eq([the_interaction])
     end
   end
 
@@ -65,11 +65,11 @@ describe VCR::Cassette do
     it 'includes the hash form of all recorded interactions' do
       interaction_1.stub(:to_hash => { "i" => 1, 'body' => '' })
       interaction_2.stub(:to_hash => { "i" => 2, 'body' => '' })
-      subject.serializable_hash.should include('http_interactions' => [{ "i" => 1, 'body' => '' }, { "i" => 2, 'body' => '' }])
+      expect(subject.serializable_hash).to include('http_interactions' => [{ "i" => 1, 'body' => '' }, { "i" => 2, 'body' => '' }])
     end
 
     it 'includes additional metadata about the cassette' do
-      metadata.should eq("recorded_with" => "VCR #{VCR.version}")
+      expect(metadata).to eq("recorded_with" => "VCR #{VCR.version}")
     end
   end
 
@@ -77,13 +77,13 @@ describe VCR::Cassette do
     [:all, :new_episodes].each do |mode|
       it "returns true when the record mode is :#{mode}" do
         cassette = VCR::Cassette.new("foo", :record => mode)
-        cassette.should be_recording
+        expect(cassette).to be_recording
       end
     end
 
     it "returns false when the record mode is :none" do
       cassette = VCR::Cassette.new("foo", :record => :none)
-      cassette.should_not be_recording
+      expect(cassette).not_to be_recording
     end
 
     context 'when the record mode is :once' do
@@ -93,22 +93,22 @@ describe VCR::Cassette do
 
       it 'returns false when there is an existing cassette file with content' do
         cassette = VCR::Cassette.new("example", :record => :once)
-        File.should exist(cassette.file)
-        File.size?(cassette.file).should be_true
-        cassette.should_not be_recording
+        expect(File).to exist(cassette.file)
+        expect(File.size?(cassette.file)).to be_true
+        expect(cassette).not_to be_recording
       end
 
       it 'returns true when there is an empty existing cassette file' do
         cassette = VCR::Cassette.new("empty", :record => :once)
-        File.should exist(cassette.file)
-        File.size?(cassette.file).should be_false
-        cassette.should be_recording
+        expect(File).to exist(cassette.file)
+        expect(File.size?(cassette.file)).to be_false
+        expect(cassette).to be_recording
       end
 
       it 'returns true when there is no existing cassette file' do
         cassette = VCR::Cassette.new("non_existant_file", :record => :once)
-        File.should_not exist(cassette.file)
-        cassette.should be_recording
+        expect(File).not_to exist(cassette.file)
+        expect(cassette).to be_recording
       end
     end
   end
@@ -118,12 +118,12 @@ describe VCR::Cassette do
 
     it "returns the provided options" do
       c = VCR::Cassette.new('example', :match_requests_on => [:uri])
-      c.match_requests_on.should eq([:uri])
+      expect(c.match_requests_on).to eq([:uri])
     end
 
     it "returns a the default #match_requests_on when it has not been specified for the cassette" do
       c = VCR::Cassette.new('example')
-      c.match_requests_on.should eq([:uri, :method])
+      expect(c.match_requests_on).to eq([:uri, :method])
     end
   end
 
@@ -184,7 +184,7 @@ describe VCR::Cassette do
 
     it 'does not raise an error in the case of an empty file' do
       VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
-      VCR::Cassette.new('empty', :record => :none).send(:previously_recorded_interactions).should eq([])
+      expect(VCR::Cassette.new('empty', :record => :none).send(:previously_recorded_interactions)).to eq([])
     end
 
     let(:custom_persister) { stub("custom persister") }
@@ -204,7 +204,7 @@ describe VCR::Cassette do
 
         it "defaults the record mode to #{record_mode} when VCR.configuration.default_cassette_options[:record] is #{record_mode}" do
           cassette = VCR::Cassette.new(:test)
-          cassette.record_mode.should eq(record_mode)
+          expect(cassette.record_mode).to eq(record_mode)
         end
       end
 
@@ -249,7 +249,7 @@ describe VCR::Cassette do
               before(:each) { File.stub(:exist?).with(file_name).and_return(false) }
 
               it "has :#{record_mode} for the record mode" do
-                subject.record_mode.should eq(record_mode)
+                expect(subject.record_mode).to eq(record_mode)
               end
             end
 
@@ -273,7 +273,7 @@ describe VCR::Cassette do
                 ] end
 
                 it "has :#{record_mode} for the record mode" do
-                  subject.record_mode.should eq(record_mode)
+                  expect(subject.record_mode).to eq(record_mode)
                 end
               end
 
@@ -286,12 +286,12 @@ describe VCR::Cassette do
 
                 it "has :all for the record mode when there is an internet connection available" do
                   VCR::InternetConnection.stub(:available? => true)
-                  subject.record_mode.should eq(:all)
+                  expect(subject.record_mode).to eq(:all)
                 end
 
                 it "has :#{record_mode} for the record mode when there is no internet connection available" do
                   VCR::InternetConnection.stub(:available? => false)
-                  subject.record_mode.should eq(record_mode)
+                  expect(subject.record_mode).to eq(record_mode)
                 end
               end
             end
@@ -305,35 +305,35 @@ describe VCR::Cassette do
 
           VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
           cassette = VCR::Cassette.new('with_localhost_requests', :record => record_mode)
-          cassette.send(:previously_recorded_interactions).map { |i| URI.parse(i.request.uri).host }.should eq(%w[example.com])
+          expect(cassette.send(:previously_recorded_interactions).map { |i| URI.parse(i.request.uri).host }).to eq(%w[example.com])
         end
 
         it "loads the recorded interactions from the library yml file" do
           VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
           cassette = VCR::Cassette.new('example', :record => record_mode)
 
-          cassette.should have(3).previously_recorded_interactions
+          expect(cassette).to have(3).previously_recorded_interactions
 
           i1, i2, i3 = *cassette.send(:previously_recorded_interactions)
 
-          i1.request.method.should eq(:get)
-          i1.request.uri.should eq('http://example.com/')
-          i1.response.body.should =~ /You have reached this web page by typing.+example\.com/
+          expect(i1.request.method).to eq(:get)
+          expect(i1.request.uri).to eq('http://example.com/')
+          expect(i1.response.body).to match(/You have reached this web page by typing.+example\.com/)
 
-          i2.request.method.should eq(:get)
-          i2.request.uri.should eq('http://example.com/foo')
-          i2.response.body.should =~ /foo was not found on this server/
+          expect(i2.request.method).to eq(:get)
+          expect(i2.request.uri).to eq('http://example.com/foo')
+          expect(i2.response.body).to match(/foo was not found on this server/)
 
-          i3.request.method.should eq(:get)
-          i3.request.uri.should eq('http://example.com/')
-          i3.response.body.should =~ /Another example\.com response/
+          expect(i3.request.method).to eq(:get)
+          expect(i3.request.uri).to eq('http://example.com/')
+          expect(i3.response.body).to match(/Another example\.com response/)
         end
 
         [true, false].each do |value|
           it "instantiates the http_interactions with allow_playback_repeats = #{value} if given :allow_playback_repeats => #{value}" do
             VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
             cassette = VCR::Cassette.new('example', :record => record_mode, :allow_playback_repeats => value)
-            cassette.http_interactions.allow_playback_repeats.should eq(value)
+            expect(cassette.http_interactions.allow_playback_repeats).to eq(value)
           end
         end
 
@@ -341,14 +341,14 @@ describe VCR::Cassette do
           VCR.stub(:http_interactions => stub)
           VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
           cassette = VCR::Cassette.new('example', :record => record_mode, :exclusive => true)
-          cassette.http_interactions.parent_list.should be(VCR::Cassette::HTTPInteractionList::NullList)
+          expect(cassette.http_interactions.parent_list).to be(VCR::Cassette::HTTPInteractionList::NullList)
         end
 
         it "instantiates the http_interactions with parent_list set to VCR.http_interactions if given :exclusive => false" do
           VCR.stub(:http_interactions => stub)
           VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
           cassette = VCR::Cassette.new('example', :record => record_mode, :exclusive => false)
-          cassette.http_interactions.parent_list.should be(VCR.http_interactions)
+          expect(cassette.http_interactions.parent_list).to be(VCR.http_interactions)
         end
 
         if stub_requests
@@ -360,7 +360,7 @@ describe VCR::Cassette do
             ).exactly(3).times
 
             cassette = VCR::Cassette.new('example', :record => record_mode)
-            cassette.should have(3).previously_recorded_interactions
+            expect(cassette).to have(3).previously_recorded_interactions
           end
 
           it 'does not playback any interactions that are ignored in a before_playback hook' do
@@ -370,21 +370,21 @@ describe VCR::Cassette do
 
             VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
             cassette = VCR::Cassette.new('example', :record => record_mode)
-            cassette.should have(2).previously_recorded_interactions
+            expect(cassette).to have(2).previously_recorded_interactions
           end
 
           it 'instantiates the http_interactions with the loaded interactions and the request matchers' do
             VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
             cassette = VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:body, :headers])
-            cassette.http_interactions.interactions.should have(3).interactions
-            cassette.http_interactions.request_matchers.should eq([:body, :headers])
+            expect(cassette.http_interactions.interactions).to have(3).interactions
+            expect(cassette.http_interactions.request_matchers).to eq([:body, :headers])
           end
         else
           it 'instantiates the http_interactions with the no interactions and the request matchers' do
             VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
             cassette = VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:body, :headers])
-            cassette.http_interactions.interactions.should have(0).interactions
-            cassette.http_interactions.request_matchers.should eq([:body, :headers])
+            expect(cassette.http_interactions.interactions).to have(0).interactions
+            expect(cassette.http_interactions.request_matchers).to eq([:body, :headers])
           end
         end
       end
@@ -398,7 +398,7 @@ describe VCR::Cassette do
       cassette = VCR.insert_cassette("foo", :allow_unused_http_interactions => false)
 
       interaction_list = cassette.http_interactions
-      interaction_list.should respond_to(:assert_no_unused_interactions!).with(0).arguments
+      expect(interaction_list).to respond_to(:assert_no_unused_interactions!).with(0).arguments
       interaction_list.should_receive(:assert_no_unused_interactions!)
 
       cassette.eject
@@ -408,7 +408,7 @@ describe VCR::Cassette do
       cassette = VCR.insert_cassette("foo", :allow_unused_http_interactions => true)
 
       interaction_list = cassette.http_interactions
-      interaction_list.should respond_to(:assert_no_unused_interactions!)
+      expect(interaction_list).to respond_to(:assert_no_unused_interactions!)
       interaction_list.should_not_receive(:assert_no_unused_interactions!)
 
       cassette.eject
@@ -428,12 +428,12 @@ describe VCR::Cassette do
     it "writes the serializable_hash to disk as yaml" do
       cassette = VCR::Cassette.new(:eject_test)
       cassette.record_http_interaction http_interaction # so it has one
-      cassette.should respond_to(:serializable_hash)
+      expect(cassette).to respond_to(:serializable_hash)
       cassette.stub(:serializable_hash => { "http_interactions" => [1, 3, 5] })
 
       expect { cassette.eject }.to change { File.exist?(cassette.file) }.from(false).to(true)
       saved_stuff = YAML.load_file(cassette.file)
-      saved_stuff.should eq("http_interactions" => [1, 3, 5])
+      expect(saved_stuff).to eq("http_interactions" => [1, 3, 5])
     end
 
     it 'invokes the appropriately tagged before_record hooks' do
@@ -471,7 +471,7 @@ describe VCR::Cassette do
       cassette.eject
 
       saved_recorded_interactions = ::YAML.load_file(cassette.file)
-      saved_recorded_interactions["http_interactions"].should eq([interaction_2.to_hash])
+      expect(saved_recorded_interactions["http_interactions"]).to eq([interaction_2.to_hash])
     end
 
     it 'does not write the cassette to disk if all interactions have been ignored' do
@@ -485,7 +485,7 @@ describe VCR::Cassette do
       cassette.stub!(:new_recorded_interactions).and_return([interaction_1])
       cassette.eject
 
-      File.should_not exist(cassette.file)
+      expect(File).not_to exist(cassette.file)
     end
 
     it "writes the recorded interactions to a subdirectory if the cassette name includes a directory" do
@@ -495,7 +495,7 @@ describe VCR::Cassette do
 
       expect { cassette.eject }.to change { File.exist?(cassette.file) }.from(false).to(true)
       saved_recorded_interactions = YAML.load_file(cassette.file)
-      saved_recorded_interactions["http_interactions"].should eq(recorded_interactions.map(&:to_hash))
+      expect(saved_recorded_interactions["http_interactions"]).to eq(recorded_interactions.map(&:to_hash))
     end
 
     [:all, :none, :new_episodes].each do |record_mode|
@@ -540,16 +540,16 @@ describe VCR::Cassette do
 
           if record_mode == :all
             it 'replaces previously recorded interactions with new ones when the requests match' do
-              saved_recorded_interactions.first.should eq(interaction_foo_2)
-              saved_recorded_interactions.should_not include(interaction_foo_1)
+              expect(saved_recorded_interactions.first).to eq(interaction_foo_2)
+              expect(saved_recorded_interactions).not_to include(interaction_foo_1)
             end
 
             it 'appends new recorded interactions that do not match existing ones' do
-              saved_recorded_interactions.last.should eq(interaction_bar)
+              expect(saved_recorded_interactions.last).to eq(interaction_bar)
             end
           else
             it 'appends new recorded interactions after existing ones' do
-              saved_recorded_interactions.should eq([interaction_foo_1, interaction_foo_2, interaction_bar])
+              expect(saved_recorded_interactions).to eq([interaction_foo_1, interaction_foo_2, interaction_bar])
             end
           end
         end

@@ -1,6 +1,7 @@
 require 'support/ruby_interpreter'
 require 'vcr/cassette/serializers'
 require 'multi_json'
+
 begin
   require 'psych' # ensure psych is loaded for these tests if its available
 rescue LoadError
@@ -26,22 +27,22 @@ module VCR
         context "the #{name} serializer" do
           it 'lazily loads the serializer' do
             serializers = subject.instance_variable_get(:@serializers)
-            serializers.should_not have_key(name)
-            subject[name].should_not be_nil
-            serializers.should have_key(name)
+            expect(serializers).not_to have_key(name)
+            expect(subject[name]).not_to be_nil
+            expect(serializers).to have_key(name)
           end if lazily_loaded
 
           it "returns '#{file_extension}' as the file extension" do
-            serializer.file_extension.should eq(file_extension)
+            expect(serializer.file_extension).to eq(file_extension)
           end
 
           it "can serialize and deserialize a hash" do
             hash = { "a" => 7, "nested" => { "hash" => [1, 2, 3] }}
             serialized = serializer.serialize(hash)
-            serialized.should_not eq(hash)
-            serialized.should be_a(String)
+            expect(serialized).not_to eq(hash)
+            expect(serialized).to be_a(String)
             deserialized = serializer.deserialize(serialized)
-            deserialized.should eq(hash)
+            expect(deserialized).to eq(hash)
           end
         end
       end
@@ -118,7 +119,7 @@ module VCR
 
           it 'overrides the existing serializer' do
             subject[:foo] = :new_serializer
-            subject[:foo].should be(:new_serializer)
+            expect(subject[:foo]).to be(:new_serializer)
           end
 
           it 'warns that there is a name collision' do
@@ -136,7 +137,7 @@ module VCR
         end
 
         it 'returns the named serializer' do
-          subject[:yaml].should be(VCR::Cassette::Serializers::YAML)
+          expect(subject[:yaml]).to be(VCR::Cassette::Serializers::YAML)
         end
       end
 
@@ -147,7 +148,7 @@ module VCR
         it 'serializes things using pysch even if syck is configured as the default YAML engine' do
           ::YAML::ENGINE.yamler = 'syck'
           serialized = subject[:psych].serialize(problematic_syck_string)
-          subject[:psych].deserialize(serialized).should eq(problematic_syck_string)
+          expect(subject[:psych].deserialize(serialized)).to eq(problematic_syck_string)
         end if defined?(::Psych)
 
         it 'raises an error if psych cannot be loaded' do
@@ -159,7 +160,7 @@ module VCR
         it 'forcibly serializes things using syck even if psych is the currently configured YAML engine' do
           ::YAML::ENGINE.yamler = 'psych'
           serialized = subject[:syck].serialize(problematic_syck_string)
-          subject[:syck].deserialize(serialized).should_not eq(problematic_syck_string)
+          expect(subject[:syck].deserialize(serialized)).not_to eq(problematic_syck_string)
         end if defined?(::Psych) && (RUBY_INTERPRETER != :jruby)
       end
     end

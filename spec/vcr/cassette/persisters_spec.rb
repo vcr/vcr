@@ -12,7 +12,7 @@ module VCR
 
           it 'overrides the existing persister' do
             subject[:foo] = :new_persister
-            subject[:foo].should be(:new_persister)
+            expect(subject[:foo]).to be(:new_persister)
           end
 
           it 'warns that there is a name collision' do
@@ -30,7 +30,7 @@ module VCR
         end
 
         it 'returns the named persister' do
-          subject[:file_system].should be(VCR::Cassette::Persisters::FileSystem)
+          expect(subject[:file_system]).to be(VCR::Cassette::Persisters::FileSystem)
         end
       end
     end

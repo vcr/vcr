@@ -27,7 +27,7 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
 
     it 'records the request body when using #post_form' do
       VCR.should_receive(:record_http_interaction) do |interaction|
-        interaction.request.body.should eq("q=ruby")
+        expect(interaction.request.body).to eq("q=ruby")
       end
 
       uri = URI("http://localhost:#{VCR::SinatraApp.port}/foo")
@@ -36,16 +36,16 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
 
     it "does not record headers for which Net::HTTP sets defaults near the end of the real request" do
       VCR.should_receive(:record_http_interaction) do |interaction|
-        interaction.request.headers.should_not have_key('content-type')
-        interaction.request.headers.should_not have_key('host')
+        expect(interaction.request.headers).not_to have_key('content-type')
+        expect(interaction.request.headers).not_to have_key('host')
       end
       Net::HTTP.new('localhost', VCR::SinatraApp.port).send_request('POST', '/', '', { 'x-http-user' => 'me' })
     end
 
     it "records headers for which Net::HTTP usually sets defaults when the user manually sets their values" do
       VCR.should_receive(:record_http_interaction) do |interaction|
-        interaction.request.headers['content-type'].should eq(['foo/bar'])
-        interaction.request.headers['host'].should eq(['my-example.com'])
+        expect(interaction.request.headers['content-type']).to eq(['foo/bar'])
+        expect(interaction.request.headers['host']).to eq(['my-example.com'])
       end
       Net::HTTP.new('localhost', VCR::SinatraApp.port).send_request('POST', '/', '', { 'Content-Type' => 'foo/bar', 'Host' => 'my-example.com' })
     end
@@ -58,7 +58,7 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
 
     it 'records the interaction when Net::HTTP#request is called with a block with a return statement' do
       VCR.should_receive(:record_http_interaction).once
-      perform_get_with_returning_block.body.should eq("GET to root")
+      expect(perform_get_with_returning_block.body).to eq("GET to root")
     end
 
     def make_post_request
@@ -74,17 +74,17 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
       recorded_body = nil
       VCR.use_cassette("new_cassette", :record => :once) do
         recorded_body = make_post_request.body
-        recorded_body.should match(/Response \d+/)
+        expect(recorded_body).to match(/Response \d+/)
       end
 
       VCR.use_cassette("new_cassette", :record => :once) do
-        make_post_request.body.should eq(recorded_body)
+        expect(make_post_request.body).to eq(recorded_body)
       end
 
       VCR.configuration.ignore_request { |r| true }
       ignored_body = make_post_request.body
-      ignored_body.should_not eq(recorded_body)
-      ignored_body.should match(/Response \d+/)
+      expect(ignored_body).not_to eq(recorded_body)
+      expect(ignored_body).to match(/Response \d+/)
     end
 
     context 'when the same Net::HTTP request object is used twice' do
@@ -110,7 +110,9 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
     let(:run_hook) { $fakeweb_after_loaded_hook.conditionally_invoke }
 
     context 'when WebMock has been loaded' do
-      before(:each) { defined?(WebMock).should be_true }
+      before(:each) do
+        expect(defined?(WebMock)).to be_true
+      end
 
       it 'raises an error since FakeWeb and WebMock cannot both be used simultaneously' do
         expect { run_hook }.to raise_error(ArgumentError, /cannot use both/)
@@ -141,7 +143,7 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
     it_behaves_like "request hooks", :fakeweb, :ignored do
       undef assert_expected_response
       def assert_expected_response(response)
-        response.should be_nil
+        expect(response).to be_nil
       end
 
       undef make_request
@@ -161,7 +163,7 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
       VCR.turn_off!
 
       uri = URI("http://localhost:#{VCR::SinatraApp.port}/foo")
-      Net::HTTP.get(uri).should eq("FOO!")
+      expect(Net::HTTP.get(uri)).to eq("FOO!")
     end
   end
 end

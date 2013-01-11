@@ -136,36 +136,36 @@ EOF
   it 'migrates a cassette from the 1.x to 2.x format' do
     File.open(file_name, 'w') { |f| f.write(original_contents) }
     subject.migrate!
-    YAML.load_file(file_name).should eq(YAML.load(updated_contents))
-    output.should match(/Migrated example.yml/)
+    expect(YAML.load_file(file_name)).to eq(YAML.load(updated_contents))
+    expect(output).to match(/Migrated example.yml/)
   end
 
   it 'ignores files that do not contain arrays' do
     File.open(file_name, 'w') { |f| f.write(true.to_yaml) }
     subject.migrate!
-    File.read(file_name).should eq(true.to_yaml)
-    output.should match(/Ignored example.yml since it does not appear to be a valid VCR 1.x cassette/)
+    expect(File.read(file_name)).to eq(true.to_yaml)
+    expect(output).to match(/Ignored example.yml since it does not appear to be a valid VCR 1.x cassette/)
   end
 
   it 'ignores files that contain YAML arrays of other things' do
     File.open(file_name, 'w') { |f| f.write([{}, {}].to_yaml) }
     subject.migrate!
-    File.read(file_name).should eq([{}, {}].to_yaml)
-    output.should match(/Ignored example.yml since it does not appear to be a valid VCR 1.x cassette/)
+    expect(File.read(file_name)).to eq([{}, {}].to_yaml)
+    expect(output).to match(/Ignored example.yml since it does not appear to be a valid VCR 1.x cassette/)
   end
 
   it 'ignores URIs that have sensitive data substitutions' do
     modified_contents = original_contents.gsub('example.com', '<HOST>')
     File.open(file_name, 'w') { |f| f.write(modified_contents) }
     subject.migrate!
-    YAML.load_file(file_name).should eq(YAML.load(updated_contents.gsub('example.com', '<HOST>:80')))
+    expect(YAML.load_file(file_name)).to eq(YAML.load(updated_contents.gsub('example.com', '<HOST>:80')))
   end
 
   it 'ignores files that are empty' do
     File.open(file_name, 'w') { |f| f.write('') }
     subject.migrate!
-    File.read(file_name).should eq('')
-    output.should match(/Ignored example.yml since it could not be parsed as YAML/)
+    expect(File.read(file_name)).to eq('')
+    expect(output).to match(/Ignored example.yml since it could not be parsed as YAML/)
   end
 
   shared_examples_for "ignoring invalid YAML" do
@@ -174,8 +174,8 @@ EOF
       modified_contents = modified_contents.gsub(/\z/, "<% end %>")
       File.open(file_name, 'w') { |f| f.write(modified_contents) }
       subject.migrate!
-      File.read(file_name).should eq(modified_contents)
-      output.should match(/Ignored example.yml since it could not be parsed as YAML/)
+      expect(File.read(file_name)).to eq(modified_contents)
+      expect(output).to match(/Ignored example.yml since it could not be parsed as YAML/)
     end
   end
 

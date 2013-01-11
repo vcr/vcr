@@ -3,24 +3,24 @@ require 'spec_helper'
 describe VCR::Net::HTTPResponse do
   def self.it_allows_the_body_to_be_read(expected_regex)
     it 'allows the body to be read using #body' do
-      response.body.to_s.should =~ expected_regex
+      expect(response.body.to_s).to match expected_regex
     end
 
     it 'allows the body to be read using #read_body' do
-      response.read_body.to_s.should =~ expected_regex
+      expect(response.read_body.to_s).to match expected_regex
     end
 
     it 'allows the body to be read using #read_body with a block' do
       yielded_body = ''
       response { |r| r.read_body { |s| yielded_body << s.to_s } }
-      yielded_body.should =~ expected_regex
+      expect(yielded_body).to match expected_regex
     end
 
     it 'allows the body to be read by passing a destination string to #read_body' do
       dest = ''
       ret_val = response { |r| r.read_body(dest) }.body
-      dest.to_s.should =~ expected_regex
-      ret_val.to_s.should eq(dest)
+      expect(dest.to_s).to match expected_regex
+      expect(ret_val.to_s).to eq(dest)
     end
 
     it 'raises an ArgumentError if both a destination string and a block is given to #read_body' do
@@ -53,8 +53,8 @@ describe VCR::Net::HTTPResponse do
         @response ||= begin
           http = Net::HTTP.new('localhost', VCR::SinatraApp.port)
           res = http.send(http_verb_method, '/', &block)
-          res.should_not be_a(VCR::Net::HTTPResponse)
-          res.should_not be_a(::Net::WebMockHTTPResponse)
+          expect(res).not_to be_a(VCR::Net::HTTPResponse)
+          expect(res).not_to be_a(::Net::WebMockHTTPResponse)
           res
         end
       end

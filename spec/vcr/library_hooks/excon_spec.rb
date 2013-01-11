@@ -20,8 +20,8 @@ describe "Excon hook", :with_monkey_patches => :excon do
         end
       end
 
-      recorded.should eq(played_back)
-      recorded.should eq('query: Tolkien')
+      expect(recorded).to eq(played_back)
+      expect(recorded).to eq('query: Tolkien')
     end
   end
 
@@ -59,7 +59,7 @@ describe "Excon hook", :with_monkey_patches => :excon do
         excon.request(:method => :get, :path => '/foo')
       end
 
-      connection_params_2.should eq(connection_params_1)
+      expect(connection_params_2).to eq(connection_params_1)
     end
   end
 
@@ -78,8 +78,8 @@ describe "Excon hook", :with_monkey_patches => :excon do
         chunks.join
       end
 
-      recorded.should eq(played_back)
-      recorded.should eq("FOO!")
+      expect(recorded).to eq(played_back)
+      expect(recorded).to eq("FOO!")
     end
   end
 
@@ -90,7 +90,7 @@ describe "Excon hook", :with_monkey_patches => :excon do
 
     it 'still records properly' do
       VCR.should_receive(:record_http_interaction) do |interaction|
-        interaction.response.status.code.should eq(404)
+        expect(interaction.response.status.code).to eq(404)
       end
 
       expect {
@@ -118,7 +118,7 @@ describe "Excon hook", :with_monkey_patches => :excon do
         connection.get(:expects => 200, :idempotent => true, :retry_limit => 3)
       }.to raise_error(Excon::Errors::Error)
 
-      connection.request_kernel_call_counts.should eq(true => 3, false => 3)
+      expect(connection.request_kernel_call_counts).to eq(true => 3, false => 3)
     end
 
     def error_raised_by
@@ -138,7 +138,7 @@ describe "Excon hook", :with_monkey_patches => :excon do
         end
       end
 
-      stubbed_error.class.should be(real_error.class)
+      expect(stubbed_error.class).to be(real_error.class)
     end
 
     it_behaves_like "request hooks", :excon, :recordable do
@@ -153,7 +153,7 @@ describe "Excon hook", :with_monkey_patches => :excon do
 
   describe "VCR.configuration.after_library_hooks_loaded hook" do
     it 'disables the webmock excon adapter so it does not conflict with our typhoeus hook' do
-      ::WebMock::HttpLibAdapters::ExconAdapter.should respond_to(:disable!)
+      expect(::WebMock::HttpLibAdapters::ExconAdapter).to respond_to(:disable!)
       ::WebMock::HttpLibAdapters::ExconAdapter.should_receive(:disable!)
       $excon_after_loaded_hook.conditionally_invoke
     end
