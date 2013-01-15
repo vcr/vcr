@@ -162,6 +162,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Karl Baum](https://github.com/kbaum)
 * [Luke van der Hoeven](https://github.com/plukevdh)
 * [Mark Burns](https://github.com/markburns)
+* [Max Riveiro](https://github.com/kavu)
 * [Michael Lavrisha](https://github.com/vrish88)
 * [Mislav Marohnić](https://github.com/mislav)
 * [Nathaniel Bibler](https://github.com/nbibler)
