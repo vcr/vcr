@@ -71,7 +71,7 @@ maintenance) and accurate (the response will contain the same headers and body y
 
 The docs come in two flavors:
 
-* The [relish docs](http://relishapp.com/myronmarston/vcr) contain
+* The [relish docs](https://relishapp.com/vcr/vcr/docs) contain
   example-based documentation (VCR's cucumber suite, in fact). It's a
   good place to look when you are first getting started with VCR, or if
   you want to see an example of how to use a feature.
