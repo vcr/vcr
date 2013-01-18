@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'support/shared_example_groups/excon'
 
 describe "WebMock hook", :with_monkey_patches => :webmock do
   after(:each) do
@@ -111,4 +112,11 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
       end
     end
   end
+
+  it_behaves_like "Excon streaming" do
+    before(:each) do
+      pending "waiting on bblimke/webmock#246 for a fix"
+    end
+  end
 end
+

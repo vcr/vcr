@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'support/shared_example_groups/excon'
 
 describe "Excon hook", :with_monkey_patches => :excon do
   # TODO: figure out a way to get disabling VCR to work with Excon
@@ -63,25 +64,7 @@ describe "Excon hook", :with_monkey_patches => :excon do
     end
   end
 
-  context "when Excon's streaming API is used" do
-    it 'properly records and plays back the response' do
-      VCR.stub(:real_http_connections_allowed? => true)
-      recorded, played_back = [1, 2].map do
-        chunks = []
-
-        VCR.use_cassette('excon_streaming', :record => :once) do
-          Excon.get "http://localhost:#{VCR::SinatraApp.port}/foo", :response_block => lambda { |chunk, remaining_bytes, total_bytes|
-            chunks << chunk
-          }
-        end
-
-        chunks.join
-      end
-
-      expect(recorded).to eq(played_back)
-      expect(recorded).to eq("FOO!")
-    end
-  end
+  include_examples "Excon streaming"
 
   context 'when Excon raises an error due to an unexpected response status' do
     before(:each) do
