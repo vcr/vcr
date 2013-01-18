@@ -155,6 +155,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Hans Hasselberg](https://github.com/i0rek)
 * [Ingemar](https://github.com/ingemar)
 * [Jacob Green](https://github.com/Jacobkg)
+* [Jay Shepherd](https://github.com/jayshepherd)
 * [Jeff Pollard](https://github.com/Fluxx)
 * [Joe Nelson](https://github.com/begriffs)
 * [Jonathan Tron](https://github.com/JonathanTron)
