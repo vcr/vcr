@@ -32,7 +32,7 @@ Feature: Decode compressed response
 
       VCR.configure do |c|
         c.cassette_library_dir = 'cassettes'
-        c.hook_into :fakeweb # using :webmock currently breaks test
+        c.hook_into :webmock
         c.default_cassette_options = { :serialize_with => :syck }
       end
       """
@@ -47,7 +47,7 @@ Feature: Decode compressed response
     And I run `ruby decompress.rb`
     Then the file "cassettes/decompress.yml" should contain a YAML fragment like:
       """
-      content-encoding:
+      Content-Encoding:
       - gzip
       """
 
@@ -61,7 +61,7 @@ Feature: Decode compressed response
     And I run `ruby decompress.rb`
     Then the file "cassettes/decompress.yml" should contain a YAML fragment like:
       """
-      content-length:
+      Content-Length:
       - '43'
       """
     And the file "cassettes/decompress.yml" should contain:
