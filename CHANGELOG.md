@@ -1,3 +1,13 @@
+## Unreleased Changes
+
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.4.0...master)
+
+Bug Fixes:
+
+* Fix `around_http_request` so that it does not raise confusing
+  errors when requests are made in multiple threads.
+
+
 ## 2.4.0 (January 4, 2013)
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v2.3.0...v2.4.0)
