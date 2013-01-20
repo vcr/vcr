@@ -392,13 +392,16 @@ module VCR
         "VCR::Configuration#around_http_request requires fibers, " +
         "which are not available on your ruby intepreter."
     else
-      fiber, hook_allowed, hook_decaration = nil, false, caller.first
+      fibers = {}
+      hook_allowed, hook_decaration = false, caller.first
       before_http_request(*filters) do |request|
         hook_allowed = true
         fiber = start_new_fiber_for(request, block)
+        fibers[Thread.current] = fiber
       end
 
       after_http_request(lambda { hook_allowed }) do |request, response|
+        fiber = fibers.delete(Thread.current)
         resume_fiber(fiber, response, hook_decaration)
       end
     end
