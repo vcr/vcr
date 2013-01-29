@@ -10,6 +10,7 @@ Record your test suite's HTTP interactions and replay them during future test ru
 require 'rubygems'
 require 'test/unit'
 require 'vcr'
+require 'webkit'
 
 VCR.configure do |c|
   c.cassette_library_dir = 'fixtures/vcr_cassettes'
