@@ -468,6 +468,7 @@ module VCR
 
     def initialize
       @allow_http_connections_when_no_cassette = nil
+      @rspec_metadata_configured = false
       @default_cassette_options = {
         :record            => :once,
         :match_requests_on => RequestMatcherRegistry::DEFAULT_MATCHERS,
