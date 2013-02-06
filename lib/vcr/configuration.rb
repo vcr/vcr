@@ -409,7 +409,10 @@ module VCR
     # Configures RSpec to use a VCR cassette for any example
     # tagged with `:vcr`.
     def configure_rspec_metadata!
-      VCR::RSpec::Metadata.configure!
+      unless @rspec_metadata_configured
+        VCR::RSpec::Metadata.configure!
+        @rspec_metadata_configured = true
+      end
     end
 
     # An object to log debug output to.

@@ -311,4 +311,16 @@ describe VCR::Configuration do
       end
     end
   end
+
+  describe "#configure_rspec_metadata!" do
+    it "only configures the underlying metadata once, no matter how many times it is called" do
+      VCR::RSpec::Metadata.should_receive(:configure!).once
+      VCR.configure do |c|
+        c.configure_rspec_metadata!
+      end
+      VCR.configure do |c|
+        c.configure_rspec_metadata!
+      end
+    end
+  end
 end
