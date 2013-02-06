@@ -6,7 +6,8 @@ Bug Fixes:
 
 * Fix `around_http_request` so that it does not raise confusing
   errors when requests are made in multiple threads.
-
+* Fix `configure_rspec_metadata!` so that you can safely call it
+  more than once
 
 ## 2.4.0 (January 4, 2013)
 
