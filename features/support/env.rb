@@ -5,6 +5,7 @@ Bundler.setup
 require 'ruby-debug' if !defined?(RUBY_ENGINE) && RUBY_VERSION != '1.9.3' && !ENV['CI']
 
 require 'aruba/cucumber'
+require 'aruba/jruby' if RUBY_PLATFORM == 'java'
 
 additional_paths = []
 Before('@rspec-1') do
