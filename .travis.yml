@@ -6,6 +6,7 @@ rvm:
   - 1.8.7
   - 1.9.2
   - 1.9.3
+  - 2.0.0
   - ree
   - jruby-18mode
   - jruby-19mode
@@ -17,6 +18,7 @@ matrix:
     - rvm: jruby-19mode
     - rvm: rbx-19mode
     - rvm: rbx-18mode
+    - rvm: 2.0.0
 branches:
   except:
     - gh-pages
