@@ -102,7 +102,7 @@ module VCR
       end
 
       def normalize_body(object)
-        object.body = '' if object.body.nil?
+        object.body = ''.force_encoding("US-ASCII") if object.body.nil?
       end
     end
   end
