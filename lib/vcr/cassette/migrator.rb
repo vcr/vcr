@@ -102,8 +102,17 @@ module VCR
       end
 
       def normalize_body(object)
-        object.body = ''.force_encoding("US-ASCII") if object.body.nil?
+        object.body = empty_string if object.body.nil?
       end
+
+      def empty_string
+        if ''.respond_to? :force_encoding
+          ''.force_encoding("US-ASCII")
+        else
+          ''
+        end
+      end
+
     end
   end
 end
