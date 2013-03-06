@@ -161,7 +161,7 @@ module VCR
           ::YAML::ENGINE.yamler = 'psych'
           serialized = subject[:syck].serialize(problematic_syck_string)
           expect(subject[:syck].deserialize(serialized)).not_to eq(problematic_syck_string)
-        end if defined?(::Psych) && (RUBY_INTERPRETER != :jruby)
+        end if defined?(::Psych) && (RUBY_INTERPRETER != :jruby) && (RUBY_VERSION.to_f < 2.0)
       end
     end
   end
