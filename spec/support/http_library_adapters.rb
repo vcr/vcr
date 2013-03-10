@@ -278,7 +278,7 @@ end
     end
 
     def normalize_request_headers(headers)
-      headers
+      headers.merge("User-Agent" => ["Faraday v#{Faraday::VERSION}"])
     end
   end
 end
