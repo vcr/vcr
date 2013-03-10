@@ -11,8 +11,12 @@ Bug Fixes:
 
 Enhancements:
 
-* Relax WebMock version checker to allow WebMock 1.10 without
-  issueing warnings (Johannes Würbach).
+* Relax WebMock version checker to allow WebMock 1.10 and 1.11 without
+  issuing warnings (Johannes Würbach and Myron Marston).
+* Update Excon integration to take advantage of new Excon middleware
+  architecture. This is a more robust way to hook into Excon and will
+  be less prone to breakage due to internal Excon changes (Myron
+  Marston).
 
 Deprecations:
 

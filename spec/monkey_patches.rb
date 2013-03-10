@@ -42,10 +42,7 @@ module MonkeyPatches
           ::Typhoeus::Hydra.stub_finders << finder
         end
       when :excon
-        $original_excon_stubs.each do |stub|
-          ::Excon.stubs << stub
-        end
-        ::Excon.defaults[:mock] = true
+        ::Excon.defaults[:middlewares] << VCR::Middleware::Excon
       when :vcr
         realias Net::HTTP, :request, :with_vcr
       else raise ArgumentError.new("Unexpected scope: #{scope}")
@@ -72,8 +69,7 @@ module MonkeyPatches
     end
 
     if defined?(::Excon)
-      ::Excon.stubs.clear
-      ::Excon.defaults[:mock] = false
+      ::Excon.defaults[:middlewares].delete(VCR::Middleware::Excon)
     end
   end
 
@@ -172,7 +168,6 @@ $original_webmock_callbacks = ::WebMock::CallbackRegistry.callbacks
 
 require 'vcr/library_hooks/excon'
 $excon_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].last
-$original_excon_stubs = ::Excon.stubs.dup
 
 # disable all by default; we'll enable specific ones when we need them
 MonkeyPatches.disable_all!
