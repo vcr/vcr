@@ -87,9 +87,9 @@ module VCR
           invoke_after_request_hook(vcr_response)
         end
 
-      private
-
         attr_reader :request_params, :response_params, :response_body_reader
+
+      private
 
         def should_record?
           @should_record
