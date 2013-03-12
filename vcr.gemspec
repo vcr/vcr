@@ -41,7 +41,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'json', '~> 1.6.5'
   s.add_development_dependency 'simplecov', '~> 0.5.3'
   s.add_development_dependency 'redis', '~> 2.2.2'
-  s.add_development_dependency 'typhoeus', '~> 0.5.3'
+  s.add_development_dependency 'typhoeus', '~> 0.6'
 
   unless RUBY_PLATFORM == 'java'
     s.add_development_dependency 'patron', '~> 0.4.15'
