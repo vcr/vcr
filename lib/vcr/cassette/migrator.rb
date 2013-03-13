@@ -101,16 +101,14 @@ module VCR
           join('-')
       end
 
-      def normalize_body(object)
-        object.body = empty_string if object.body.nil?
+      EMPTY_STRING = if String.method_defined?(:force_encoding)
+        ''.force_encoding("US-ASCII")
+      else
+        ''
       end
 
-      def empty_string
-        if ''.respond_to? :force_encoding
-          ''.force_encoding("US-ASCII")
-        else
-          ''
-        end
+      def normalize_body(object)
+        object.body = EMPTY_STRING if object.body.nil?
       end
 
     end
