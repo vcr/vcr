@@ -20,15 +20,15 @@ Feature: Usage with Cucumber
   ```
 
   VCR will use a cassette named "cucumber_tags/<tag_name>" for scenarios
-  with each of these tags (Unless the :use_scenario_name option is provided. See below).
+  with each of these tags (Unless the `:use_scenario_name` option is provided. See below).
   The configured `default_cassette_options` will be used, or you can override specific
   options by passing a hash as the last argument to `#tag` or `#tags`.
 
   You can also have VCR name your cassettes automatically according to the feature
-  and scenario name by providing :use_scenario_name => true to '#tag' or '#tags'.
-  In this case, the cassette will be named "<feature_name>/<scenario_name>".
+  and scenario name by providing `:use_scenario_name => true` to `#tag` or `#tags`.
+  In this case, the cassette will be named `<feature_name>/<scenario_name>`.
   For scenario outlines, VCR will record one cassette per row, and the cassettes
-  will be named "<feature_name>/<scenario_name>/<row_name>.
+  will be named `<feature_name>/<scenario_name>/<row_name>`.
 
   @exclude-jruby
   Scenario: Record HTTP interactions in a scenario by tagging it
