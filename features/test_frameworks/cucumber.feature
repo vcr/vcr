@@ -14,7 +14,7 @@ Feature: Usage with Cucumber
     t.tags '@tag2', '@tag3'
 
     t.tag  '@tag3', :cassette => :options
-    t.tags '@tag4, '@tag5', :cassette => :options
+    t.tags '@tag4', '@tag5', :cassette => :options
     t.tag  '@vcr', :use_scenario_name => true
   end
   ```
