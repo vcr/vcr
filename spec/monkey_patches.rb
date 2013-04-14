@@ -150,6 +150,7 @@ if defined?(::Typhoeus.before)
   $original_typhoeus_before_hooks = Typhoeus.before.dup
 elsif defined?(::Typhoeus::Hydra.global_hooks)
   require 'vcr/library_hooks/typhoeus'
+  $typhoeus_0_4_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].first
   $typhoeus_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].last
   $original_typhoeus_global_hooks = Typhoeus::Hydra.global_hooks.dup
   $original_typhoeus_stub_finders = Typhoeus::Hydra.stub_finders.dup
