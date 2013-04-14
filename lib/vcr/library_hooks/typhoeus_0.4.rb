@@ -97,3 +97,7 @@ module Typhoeus
   end unless Hydra.respond_to?(:allow_net_connect_with_vcr?)
 end
 
+VCR.configuration.after_library_hooks_loaded do
+  ::Kernel.warn "WARNING: VCR's Typhoeus 0.4 integration is deprecated and will be removed in VCR 3.0."
+end
+
