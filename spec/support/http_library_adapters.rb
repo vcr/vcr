@@ -1,3 +1,5 @@
+require 'typhoeus/adapters/faraday'
+
 module HeaderDowncaser
   def downcase_headers(headers)
     {}.tap do |downcased|
@@ -183,27 +185,6 @@ HTTP_LIBRARY_ADAPTERS['typhoeus'] = Module.new do
   end
 end
 
-HTTP_LIBRARY_ADAPTERS['typhoeus 0.4'] = Module.new do
-  def self.http_library_name; "Typhoeus"; end
-
-  def get_body_string(response)
-    response.body
-  end
-  alias get_body_object get_body_string
-
-  def get_header(header_key, response)
-    response.headers_hash[header_key]
-  end
-
-  def make_http_request(method, url, body = nil, headers = {})
-    Typhoeus::Request.send(method, url, :body => body, :headers => headers)
-  end
-
-  def normalize_request_headers(headers)
-    headers
-  end
-end
-
 HTTP_LIBRARY_ADAPTERS['excon'] = Module.new do
   def self.http_library_name; "Excon"; end
 
@@ -228,12 +209,6 @@ HTTP_LIBRARY_ADAPTERS['excon'] = Module.new do
 end
 
 %w[ net_http typhoeus patron ].each do |_faraday_adapter|
-  if _faraday_adapter == 'typhoeus' &&
-     defined?(::Typhoeus::VERSION) &&
-     ::Typhoeus::VERSION.to_f >= 0.5
-    require 'typhoeus/adapters/faraday'
-  end
-
   HTTP_LIBRARY_ADAPTERS["faraday (w/ #{_faraday_adapter})"] = Module.new do
     class << self; self; end.class_eval do
       define_method(:http_library_name) do
