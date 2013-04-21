@@ -26,6 +26,11 @@ describe "Typhoeus 0.4 hook", :with_monkey_patches => :typhoeus_0_4 do
       ::WebMock::HttpLibAdapters::TyphoeusAdapter.should_receive(:disable!)
       $typhoeus_after_loaded_hook.conditionally_invoke
     end
+
+    it "warns about Typhoeus 0.4 deprecation" do
+      ::Kernel.should_receive(:warn).with("WARNING: VCR's Typhoeus 0.4 integration is deprecated and will be removed in VCR 3.0.")
+      $typhoeus_0_4_after_loaded_hook.conditionally_invoke
+    end
   end
 end if RUBY_INTERPRETER == :mri && ::Typhoeus::VERSION.to_f < 0.5
 
