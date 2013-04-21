@@ -14,6 +14,11 @@ Enhancements:
 * Relax WebMock version checker to allow WebMock 1.10 without
   issueing warnings (Johannes Würbach).
 
+Deprecations:
+
+* Deprecate support for Typhoeus < 0.5. It will be removed in
+  VCR 3.0 (Sheel Choksi).
+
 ## 2.4.0 (January 4, 2013)
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v2.3.0...v2.4.0)
