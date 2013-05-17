@@ -23,3 +23,5 @@ group :extras do
   gem 'pry'
 end
 
+gem 'excon', :git => 'git://github.com/geemus/excon.git'
+

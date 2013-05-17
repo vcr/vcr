@@ -101,8 +101,6 @@ module VCR
             :headers  => normalized_headers(stubbed_response.headers || {}),
             :status   => stubbed_response.status.code
           }
-
-          stream_response_if_needed(request_params[:response_block])
         end
 
         def on_recordable_request
@@ -115,27 +113,6 @@ module VCR
 
           StreamingResponseBodyReader.new(block).tap do |response_block_wrapper|
             request_params[:response_block] = response_block_wrapper
-          end
-        end
-
-        # Copied from the streaming logic in Excon's mock middleware:
-        # https://github.com/geemus/excon/blob/v0.20.0/lib/excon/middlewares/mock.rb#L63-L72
-        def stream_response_if_needed(block)
-          return unless block
-
-          body = request_params[:response].delete(:body)
-
-          content_length = remaining = body.bytesize
-          i = 0
-          while i < body.length
-            request_params[:response_block].call(
-              body[i, request_params[:chunk_size]],
-              [remaining - request_params[:chunk_size], 0].max,
-              content_length
-            )
-
-            remaining -= request_params[:chunk_size]
-            i += request_params[:chunk_size]
           end
         end
 
