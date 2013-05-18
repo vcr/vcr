@@ -45,6 +45,8 @@ doc
 .idea/
 
 .rbenv-version
+.ruby-version
+.ruby-gemset
 bin/*
 bundle/*
 .rspec-local
