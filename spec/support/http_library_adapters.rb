@@ -219,7 +219,7 @@ HTTP_LIBRARY_ADAPTERS['excon'] = Module.new do
   def make_http_request(method, url, body = nil, headers = {})
     # There are multiple ways to use Excon but this is how fog (the main user of excon) uses it:
     # https://github.com/fog/fog/blob/v1.1.1/lib/fog/aws/rds.rb#L139-147
-    Excon::Connection.new(url).request(:method => method.to_s.upcase, :body => body, :headers => headers)
+    Excon.new(url).request(:method => method.to_s.upcase, :body => body, :headers => headers)
   end
 
   def normalize_request_headers(headers)

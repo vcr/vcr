@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'faraday', '~> 0.8'
   s.add_development_dependency 'httpclient', '~> 2.2'
-  s.add_development_dependency 'excon', '>= 0.11.0', '< 1.0'
+  s.add_development_dependency 'excon', '~> 0.22'
 
   s.add_development_dependency 'timecop', '~> 0.3.5'
   s.add_development_dependency 'rack', '~> 1.3.6'
