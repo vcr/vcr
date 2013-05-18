@@ -22,6 +22,3 @@ group :extras do
   gem 'debugger', :platforms => :mri_19
   gem 'pry'
 end
-
-gem 'excon', :git => 'git://github.com/geemus/excon.git'
-

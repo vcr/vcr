@@ -2,10 +2,7 @@ require 'excon'
 require 'vcr/request_handler'
 require 'vcr/util/version_checker'
 
-# TODO: figure out if the middleware I've written below will work on prior
-# Excon versions (the middleware architecture has been present in a few recent
-# Excon releases).
-VCR::VersionChecker.new('Excon', Excon::VERSION, '0.20.0', '0.20').check_version!
+VCR::VersionChecker.new('Excon', Excon::VERSION, '0.22.0', '0.22').check_version!
 
 module VCR
   # Contains middlewares for use with different libraries.
