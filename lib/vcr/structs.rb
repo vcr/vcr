@@ -76,6 +76,11 @@ module VCR
     private
 
       def serializable_body
+        # Ensure it's just a string, and not a string with some
+        # extra state, as such strings serialize to YAML with
+        # all the extra state.
+        body = String.new(self.body.to_s)
+
         if VCR.configuration.preserve_exact_body_bytes_for?(self)
           base_body_hash(body).merge('base64_string' => Base64.encode64(body))
         else
