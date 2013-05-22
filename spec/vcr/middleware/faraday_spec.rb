@@ -43,6 +43,35 @@ describe VCR::Middleware::Faraday do
     end
   end
 
+  context 'when extending the response body with an extension module' do
+    let(:connection) { ::Faraday.new("http://localhost:#{VCR::SinatraApp.port}/") }
+
+    def process_response(response)
+      response.body.extend Module.new { attr_accessor :_response }
+      response.body._response = response
+    end
+
+    it 'does not record the body extensions to the cassette' do
+      3.times do |i|
+        VCR.use_cassette("hack", record: :new_episodes) do
+          response = connection.get("/foo")
+          process_response(response)
+
+          # Do something different after the first time to
+          # ensure new interactions are added to an existing
+          # cassette.
+          if i > 1
+            response = connection.get("/")
+            process_response(response)
+          end
+        end
+      end
+
+      contents = VCR::Cassette.new("hack").send(:raw_cassette_bytes)
+      expect(contents).not_to include("ruby/object:Faraday::Response")
+    end
+  end
+
   context 'when making parallel requests' do
     include VCRStubHelpers
     let(:connection)         { ::Faraday.new { |b| b.adapter :typhoeus } }
