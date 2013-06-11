@@ -5,7 +5,7 @@ Feature: Usage with RSpec metadata
 
   Once you've done that, you can have an example group or example use
   VCR by passing `:vcr` as an additional argument after the description
-  string. It will use set the cassette name based on the example's
+  string. It will set the cassette name based on the example's
   full description.
 
   If you need to override the cassette name or options, you can pass a
