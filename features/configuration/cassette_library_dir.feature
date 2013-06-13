@@ -3,6 +3,11 @@ Feature: cassette_library_dir
   The `cassette_library_dir` configuration option sets a directory
   where VCR saves each cassette.
 
+  Note: When using Rails, avoid using the `test/fixtures` directory 
+  to store the cassettes. Rails treats any YAML file in the fixtures 
+  directory as an ActiveRecord fixture.
+  This will cause an `ActiveRecord::Fixture::FormatError` to be raised.
+
   Scenario: cassette_library_dir
     Given a file named "cassette_library_dir.rb" with:
       """ruby
