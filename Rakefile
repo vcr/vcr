@@ -37,12 +37,12 @@ end
 
 desc "Checks the spec coverage and fails if it is less than 100%"
 task :check_code_coverage do
-  if RUBY_VERSION < '1.9' || RUBY_ENGINE != 'ruby'
+  if RUBY_VERSION.to_f < 1.9 || RUBY_ENGINE != 'ruby'
     puts "Cannot check code coverage--simplecov is not supported on this platform"
   else
     percent = File.read("./coverage/coverage_percent.txt").to_f
     if percent < 98.0
-      raise "Spec coverage was not high enough: #{percent.round(2)}%"
+      abort "Spec coverage was not high enough: #{percent.round(2)}%"
     else
       puts "Nice job! Spec coverage is still above 98%"
     end
