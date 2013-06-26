@@ -69,8 +69,8 @@ Feature: Cassette format
       end
 
       VCR.use_cassette('example') do
-        make_http_request(:get, "http://localhost:7777/foo")
-        make_http_request(:get, "http://localhost:7777/bar")
+        make_http_request(:get, "http://localhost:7777/foo", nil, 'Accept-Encoding' => 'identity')
+        make_http_request(:get, "http://localhost:7777/bar", nil, 'Accept-Encoding' => 'identity')
       end
       """
     When I run `ruby cassette_yaml.rb 'Hello'`
@@ -84,7 +84,9 @@ Feature: Cassette format
           body: 
             encoding: UTF-8
             string: ""
-          headers: {}
+          headers: 
+            Accept-Encoding: 
+            - identity
         response: 
           status: 
             code: 200
@@ -105,7 +107,9 @@ Feature: Cassette format
           body: 
             encoding: UTF-8
             string: ""
-          headers: {}
+          headers: 
+            Accept-Encoding: 
+            - identity
         response: 
           status: 
             code: 200
@@ -153,8 +157,8 @@ Feature: Cassette format
       end
 
       VCR.use_cassette('example', :serialize_with => :json) do
-        puts response_body_for(:get, "http://localhost:7777/foo")
-        puts response_body_for(:get, "http://localhost:7777/bar")
+        puts response_body_for(:get, "http://localhost:7777/foo", nil, 'Accept-Encoding' => 'identity')
+        puts response_body_for(:get, "http://localhost:7777/bar", nil, 'Accept-Encoding' => 'identity')
       end
       """
     When I run `ruby cassette_json.rb 'Hello'`
@@ -185,7 +189,9 @@ Feature: Cassette format
                 "string": ""
               },
               "method": "get",
-              "headers": { }
+              "headers": {
+                "Accept-Encoding": [ "identity" ]
+              }
             },
             "recorded_at": "Tue, 01 Nov 2011 04:58:44 GMT"
           },
@@ -212,7 +218,9 @@ Feature: Cassette format
                 "string": ""
               },
               "method": "get",
-              "headers": { }
+              "headers": {
+                "Accept-Encoding": [ "identity" ]
+              }
             },
             "recorded_at": "Tue, 01 Nov 2011 04:58:44 GMT"
           }
@@ -254,8 +262,8 @@ Feature: Cassette format
       end
 
       VCR.use_cassette('example', :serialize_with => :ruby) do
-        puts response_body_for(:get, "http://localhost:7777/foo")
-        puts response_body_for(:get, "http://localhost:7777/bar")
+        puts response_body_for(:get, "http://localhost:7777/foo", nil, 'Accept-Encoding' => 'identity')
+        puts response_body_for(:get, "http://localhost:7777/bar", nil, 'Accept-Encoding' => 'identity')
       end
       """
     When I run `ruby cassette_ruby.rb 'Hello'`
@@ -266,7 +274,7 @@ Feature: Cassette format
            {"method"=>"get",
             "uri"=>"http://localhost:7777/foo",
             "body"=>{"encoding"=>"UTF-8", "string"=>""},
-            "headers"=>{"Accept"=>["*/*"], "User-Agent"=>["Ruby"]}},
+            "headers"=>{"Accept"=>["*/*"], "Accept-Encoding"=>["identity"], "User-Agent"=>["Ruby"]}},
           "response"=>
            {"status"=>{"code"=>200, "message"=>"OK "},
             "headers"=>
@@ -280,7 +288,7 @@ Feature: Cassette format
            {"method"=>"get",
             "uri"=>"http://localhost:7777/bar",
             "body"=>{"encoding"=>"UTF-8", "string"=>""},
-            "headers"=>{"Accept"=>["*/*"], "User-Agent"=>["Ruby"]}},
+            "headers"=>{"Accept"=>["*/*"], "Accept-Encoding"=>["identity"], "User-Agent"=>["Ruby"]}},
           "response"=>
            {"status"=>{"code"=>200, "message"=>"OK "},
             "headers"=>
