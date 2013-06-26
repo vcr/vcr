@@ -41,7 +41,9 @@ Feature: Decode compressed response
     When I append to file "decompress.rb":
       """ruby
       VCR.use_cassette(:decompress) do
-        Net::HTTP.get_response('localhost', '/', 7777)
+        Net::HTTP.start('localhost', 7777) do |http|
+          http.get('/', 'accept-encoding' => 'identity')
+        end
       end
       """
     And I run `ruby decompress.rb`
@@ -55,7 +57,9 @@ Feature: Decode compressed response
     When I append to file "decompress.rb":
       """ruby
       VCR.use_cassette(:decompress, :decode_compressed_response => true) do
-        Net::HTTP.get_response('localhost', '/', 7777)
+        Net::HTTP.start('localhost', 7777) do |http|
+          http.get('/', 'accept-encoding' => 'identity')
+        end
       end
       """
     And I run `ruby decompress.rb`
