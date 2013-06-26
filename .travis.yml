@@ -18,7 +18,6 @@ matrix:
     - rvm: jruby-19mode
     - rvm: rbx-19mode
     - rvm: rbx-18mode
-    - rvm: 2.0.0
 branches:
   except:
     - gh-pages

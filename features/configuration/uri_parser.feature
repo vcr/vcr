@@ -59,9 +59,8 @@ Feature: uri_parser
         c.cassette_library_dir = 'cassettes'
       end
 
-      uri = Addressable::URI.parse('http://bad_url.example.com')
       VCR.use_cassette('example') do
-        puts Net::HTTP.get_response(uri).body
+        puts Net::HTTP.get_response('bad_url.example.com', '/').body
       end
       """
      When I run `ruby uri_parser.rb`
@@ -78,9 +77,8 @@ Feature: uri_parser
         c.cassette_library_dir = 'cassettes'
       end
 
-      uri = Addressable::URI.parse('http://bad_url.example.com')
       VCR.use_cassette('example') do
-        puts Net::HTTP.get_response(uri).body
+        puts Net::HTTP.get_response('bad_url.example.com', '/').body
       end
       """
      When I run `ruby uri_parser_default.rb`
