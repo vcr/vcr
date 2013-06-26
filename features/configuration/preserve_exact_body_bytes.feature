@@ -81,6 +81,11 @@ Feature: Preserve Exact Body Bytes
         c.cassette_library_dir = 'cassettes'
         c.hook_into :webmock
         c.default_cassette_options = { :serialize_with => :json }
+
+        c.before_record do |i|
+          # otherwise Ruby 2.0 will default to UTF-8:
+          i.response.body.force_encoding('US-ASCII')
+        end
       end
 
       VCR.use_cassette('preserve_bytes', :preserve_exact_body_bytes => true) do
