@@ -178,7 +178,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Scott Carleton](https://github.com/ScotterC)
 * [Shay Frendt](https://github.com/shayfrendt)
 * [Steve Faulkner](https://github.com/southpolesteve)
-* [Steven Anderson](https://github.com/bendycode)
+* [Stephen Anderson](https://github.com/bendycode)
 * [Tyler Hunt](https://github.com/tylerhunt)
 * [Wesley Beary](https://github.com/geemus)
 
