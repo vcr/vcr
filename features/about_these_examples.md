@@ -15,5 +15,4 @@ provided by `vcr_cucumber_helpers.rb`:
   library.
 
 If you have ideas to clarify or improve any of these cucumber features,
-please submit an [issue](https://github.com/myronmarston/vcr/issues) or
-pull request.
+please submit an [issue](https://github.com/vcr/vcr/issues) or pull request.
