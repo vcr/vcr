@@ -6,7 +6,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.3.3)
+    addressable (2.3.5)
     appraisal (0.5.1)
       bundler
       rake
@@ -23,7 +23,7 @@ GEM
     coderay (1.0.9)
     columnize (0.3.6)
     cookiejar (0.3.0)
-    crack (0.4.0)
+    crack (0.4.1)
       safe_yaml (~> 0.9.0)
     cucumber (1.1.9)
       builder (>= 2.1.2)
@@ -123,7 +123,7 @@ GEM
       linecache (>= 0.3)
     ruby-debug-base (0.10.4-java)
     ruby-progressbar (0.0.10)
-    safe_yaml (0.9.3)
+    safe_yaml (0.9.4)
     shoulda (2.9.2)
     simplecov (0.5.4)
       multi_json (~> 1.0.3)
@@ -140,7 +140,7 @@ GEM
     timecop (0.3.5)
     typhoeus (0.6.2)
       ethon (~> 0.5.10)
-    webmock (1.12.0)
+    webmock (1.13.0)
       addressable (>= 2.2.7)
       crack (>= 0.3.2)
     yajl-ruby (1.1.0)
@@ -183,6 +183,6 @@ DEPENDENCIES
   timecop (~> 0.3.5)
   typhoeus (~> 0.6)
   vcr!
-  webmock (~> 1.12)
+  webmock (~> 1.13)
   yajl-ruby (~> 1.1.0)
   yard
