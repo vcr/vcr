@@ -39,6 +39,7 @@ module VCR
 
       # @private
       def error_call(params)
+        @request_handler.reset_response_body_reader
         @request_handler.after_request(params)
         super
       end
@@ -82,6 +83,10 @@ module VCR
           end
 
           invoke_after_request_hook(vcr_response)
+        end
+
+        def reset_response_body_reader
+          @response_body_reader = NonStreamingResponseBodyReader if request_params[:response_block]
         end
 
         attr_reader :request_params, :response_params, :response_body_reader
