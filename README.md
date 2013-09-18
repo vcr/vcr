@@ -193,6 +193,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [VCR.py](https://github.com/kevin1024/vcrpy) (Python)
 * [VCRURLConnection](https://github.com/dstnbrkr/VCRURLConnection) (Objective-C)
 * [vcr-clj](https://github.com/ifesdjeen/vcr-clj) (Clojure)
+* [Betamax](https://github.com/sigmavirus24/betamax) (Python)
 
 ## Similar Libraries in Ruby
 
