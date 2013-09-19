@@ -11,11 +11,10 @@ GEM
       bundler
       rake
     archive-tar-minitar (0.5.2)
-    aruba (0.4.11)
-      childprocess (>= 0.2.3)
+    aruba (0.5.3)
+      childprocess (>= 0.3.6)
       cucumber (>= 1.1.1)
-      ffi (>= 1.0.11)
-      rspec (>= 2.7.0)
+      rspec-expectations (>= 2.7.0)
     bouncy-castle-java (1.5.0146.1)
     builder (3.2.0)
     childprocess (0.3.9)
@@ -152,7 +151,7 @@ PLATFORMS
 
 DEPENDENCIES
   appraisal
-  aruba (~> 0.4.11)
+  aruba (~> 0.5)
   bundler (>= 1.0.7)
   cucumber (~> 1.1.4)
   curb (~> 0.8.0)
