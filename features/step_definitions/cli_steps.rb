@@ -168,10 +168,6 @@ Then /^the file "([^"]*)" should contain each of these:$/ do |file_name, table|
   end
 end
 
-Then /^the file "([^"]*)" should contain:$/ do |file_name, expected_content|
-  check_file_content(file_name, expected_content, true)
-end
-
 Then /^the file "([^"]*)" should contain a YAML fragment like:$/ do |file_name, fragment|
   in_current_dir do
     file_content = File.read(file_name)
