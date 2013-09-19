@@ -5,14 +5,20 @@ require 'rspec/expectations'
 require 'tempfile'
 
 stderr_file = Tempfile.new("vcr.stderr")
-$stderr.reopen(stderr_file.path)
 current_dir = Dir.pwd
 
 RSpec.configure do |config|
+  config.before(:suite) do
+    $stderr.reopen(stderr_file.path)
+    $VERBOSE = true
+  end
+
   config.after(:suite) do
     stderr_file.rewind
     lines = stderr_file.read.split("\n").uniq
     stderr_file.close!
+
+    $stderr.reopen(STDERR)
 
     vcr_warnings, other_warnings = lines.partition { |line| line.include?(current_dir) }
 
