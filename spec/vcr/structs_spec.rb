@@ -265,6 +265,17 @@ module VCR
         })
       end
 
+      context "when the body is extended with a module and some state" do
+        it 'serializes to YAML w/o the extra state' do
+          interaction.request.body.extend Module.new { attr_accessor :foo }
+          interaction.response.body.extend Module.new { attr_accessor :foo }
+          interaction.request.body.foo = 98765
+          interaction.response.body.foo = 98765
+
+          expect(YAML.dump(interaction.to_hash)).not_to include("98765")
+        end
+      end
+
       it 'encodes the body as base64 when the configuration is so set' do
         VCR.stub_chain(:configuration, :preserve_exact_body_bytes_for?).and_return(true)
         expect(hash['request']['body']).to eq(body_hash('base64_string', Base64.encode64('req body')))
