@@ -2,7 +2,11 @@
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v2.5.0...master)
 
-* No significant changes.
+Bug Fixes:
+
+* Fix confusing errors that could result when using the YAML serializer
+  if the client code added some state (e.g. via an extension module)
+  onto a request or response body. (Myron Marston)
 
 ## 2.5.0 (May 18, 2013)
 
