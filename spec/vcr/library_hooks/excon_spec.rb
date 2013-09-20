@@ -36,10 +36,11 @@ describe "Excon hook", :with_monkey_patches => :excon do
     it 'still records properly' do
       VCR.should_receive(:record_http_interaction) do |interaction|
         expect(interaction.response.status.code).to eq(404)
+        expect(interaction.response.body).to eq('404 not 200')
       end
 
       expect {
-        Excon.get("http://localhost:#{VCR::SinatraApp.port}/not_found", :expects => 200)
+        Excon.get("http://localhost:#{VCR::SinatraApp.port}/404_not_200", :expects => 200)
       }.to raise_error(Excon::Errors::Error)
     end
 
