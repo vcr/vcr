@@ -201,9 +201,7 @@ module VCR
 
         context 'when the string cannot be encoded as the original encoding' do
           def verify_encoding_error
-            pending "rubinius 1.9 mode does not raise an encoding error", :if => (RUBY_INTERPRETER == :rubinius && RUBY_VERSION =~ /^1.9/) do
-              expect { "\xFAbc".encode("ISO-8859-1") }.to raise_error(EncodingError)
-            end
+            expect { "\xFAbc".encode("ISO-8859-1") }.to raise_error(EncodingError)
           end
 
           before do
@@ -636,24 +634,22 @@ module VCR
           end
 
           it "unzips gzipped response" do
-            pending "rubinius 1.9 mode has a Gzip issue", :if => (RUBY_INTERPRETER == :rubinius && RUBY_VERSION =~ /^1.9/) do
-              io = StringIO.new
+            io = StringIO.new
 
-              writer = Zlib::GzipWriter.new(io)
-              writer << content
-              writer.close
+            writer = Zlib::GzipWriter.new(io)
+            writer << content
+            writer.close
 
-              gzipped = io.string
-              resp = instance(gzipped, 'gzip')
-              expect(resp).to be_compressed
-              expect {
-                expect(resp.decompress).to equal(resp)
-                expect(resp).not_to be_compressed
-                expect(resp.body).to eq(content)
-              }.to change { resp.headers['content-length'] }.
-                from([gzipped.bytesize.to_s]).
-                to([content.bytesize.to_s])
-            end
+            gzipped = io.string
+            resp = instance(gzipped, 'gzip')
+            expect(resp).to be_compressed
+            expect {
+              expect(resp.decompress).to equal(resp)
+              expect(resp).not_to be_compressed
+              expect(resp.body).to eq(content)
+            }.to change { resp.headers['content-length'] }.
+              from([gzipped.bytesize.to_s]).
+              to([content.bytesize.to_s])
           end
 
           it "inflates deflated response" do
