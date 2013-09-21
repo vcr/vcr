@@ -7,6 +7,10 @@ Bug Fixes:
 * Fix confusing errors that could result when using the YAML serializer
   if the client code added some state (e.g. via an extension module)
   onto a request or response body. (Myron Marston)
+* Ensure response body is always recorded when hooking into `:excon`,
+  even when using a `:response_block` and an unexpected status is
+  returned. Excon doesn't invoke the `:response_block` in this case,
+  requiring special handling. (James Bence)
 
 ## 2.5.0 (May 18, 2013)
 
