@@ -39,7 +39,7 @@ module VCR
 
       # @private
       def error_call(params)
-        @request_handler.reset_response_body_reader
+        @request_handler.ensure_response_body_can_be_read_for_error_case
         @request_handler.after_request(params)
         super
       end
@@ -85,8 +85,11 @@ module VCR
           invoke_after_request_hook(vcr_response)
         end
 
-        def reset_response_body_reader
-          @response_body_reader = NonStreamingResponseBodyReader if request_params[:response_block]
+        def ensure_response_body_can_be_read_for_error_case
+          # Excon does not invoke the `:response_block` when an error
+          # has occurred, so we need to be sure to use the non-streaming
+          # body reader.
+          @response_body_reader = NonStreamingResponseBodyReader
         end
 
         attr_reader :request_params, :response_params, :response_body_reader
