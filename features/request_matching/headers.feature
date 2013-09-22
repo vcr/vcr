@@ -83,5 +83,4 @@ Feature: Matching on Headers
       | c.hook_into :webmock  | curb                  |
       | c.hook_into :webmock  | patron                |
       | c.hook_into :webmock  | em-http-request       |
-      | c.hook_into :excon    | excon                 |
 

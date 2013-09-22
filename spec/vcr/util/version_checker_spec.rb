@@ -19,25 +19,25 @@ module VCR
 
     it 'prints a warning if the major version is too high' do
       checker = VersionChecker.new('foo', '2.0.0', '1.0.0', '1.1')
-      Kernel.should_receive(:warn).with(/may not work with this version/)
+      expect(Kernel).to receive(:warn).with(/may not work with this version/)
       checker.check_version!
     end
 
     it 'prints a warning if the minor version is too high' do
       checker = VersionChecker.new('foo', '1.2.0', '1.0.0', '1.1')
-      Kernel.should_receive(:warn).with(/may not work with this version/)
+      expect(Kernel).to receive(:warn).with(/may not work with this version/)
       checker.check_version!
     end
 
     it 'does not raise an error or print a warning when the major version is between the min and max' do
       checker = VersionChecker.new('foo', '2.0.0', '1.0.0', '3.0')
-      Kernel.should_not_receive(:warn)
+      expect(Kernel).not_to receive(:warn)
       checker.check_version!
     end
 
     it 'does not raise an error or print a warning when the min_patch is 0.6.5, the max_minor is 0.7 and the version is 0.7.3' do
       checker = VersionChecker.new('foo', '0.7.3', '0.6.5', '0.7')
-      Kernel.should_not_receive(:warn)
+      expect(Kernel).not_to receive(:warn)
       checker.check_version!
     end
   end

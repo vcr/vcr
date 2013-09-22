@@ -6,7 +6,7 @@ describe VCR::CucumberTags do
   let(:after_blocks_for_tags) { {} }
 
   def scenario(name)
-    stub(:name => name, :feature => stub(:name => "My feature name\nThe preamble text is not included"))
+    double(:name => name, :feature => double(:name => "My feature name\nThe preamble text is not included"))
   end
 
   let(:current_scenario) { scenario "My scenario name\nThe preamble text is not included" }
@@ -64,8 +64,8 @@ describe VCR::CucumberTags do
         it "makes a unique name for each element of scenario outline" do
           subject.send(tag_method, 'tag1', :use_scenario_name => true)
 
-          scenario_with_outline = stub(:name => "My row name",
-                                       :scenario_outline => stub(:feature => stub(:name => "My feature name\nThe preamble text is not included"),
+          scenario_with_outline = double(:name => "My row name",
+                                       :scenario_outline => double(:feature => double(:name => "My feature name\nThe preamble text is not included"),
                                                                  :name => "My scenario outline name"))
           test_tag(:name, 'tag1', 'My feature name/My scenario outline name/My row name', scenario_with_outline)
         end
@@ -73,7 +73,7 @@ describe VCR::CucumberTags do
         it 'does not pass :use_scenario_name along the given options to the cassette' do
           subject.send(tag_method, 'tag1', :use_scenario_name => true)
 
-          VCR::Cassette.should_receive(:new).with(anything, hash_not_including(:use_scenario_name))
+          expect(VCR::Cassette).to receive(:new).with(anything, hash_not_including(:use_scenario_name))
           before_blocks_for_tags['tag1'].call(current_scenario)
         end
 

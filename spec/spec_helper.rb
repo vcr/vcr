@@ -41,7 +41,7 @@ require 'monkey_patches'
 require "support/http_library_adapters"
 
 module VCR
-  SPEC_ROOT = File.dirname(__FILE__)
+  SPEC_ROOT = File.dirname(File.expand_path('.', __FILE__))
 
   def reset!(hook = :fakeweb)
     instance_variables.each do |ivar|
@@ -58,6 +58,10 @@ RSpec.configure do |config|
 
   config.expect_with :rspec do |expectations|
     expectations.syntax = :expect
+  end
+
+  config.mock_with :rspec do |mocks|
+    mocks.syntax = :expect
   end
 
   tmp_dir = File.expand_path('../../tmp/cassette_library_dir', __FILE__)

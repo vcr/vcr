@@ -45,8 +45,8 @@ module VCR
       describe '#call' do
         let(:env_hash) { { :env => :hash } }
         it 'calls the provided rack app and returns its response' do
-          rack_app = mock
-          rack_app.should_receive(:call).with(env_hash).and_return(:response)
+          rack_app = double
+          expect(rack_app).to receive(:call).with(env_hash).and_return(:response)
           instance = described_class.new(rack_app) { |c| c.name 'cassette_name' }
           expect(instance.call(env_hash)).to eq(:response)
         end

@@ -5,7 +5,7 @@ module VCRStubHelpers
   end
 
   def stub_requests(*args)
-    VCR.stub(:http_interactions => VCR::Cassette::HTTPInteractionList.new(*args))
+    allow(VCR).to receive(:http_interactions).and_return(VCR::Cassette::HTTPInteractionList.new(*args))
   end
 
   def http_interaction(url, response_body = "FOO!", status_code = 200)
