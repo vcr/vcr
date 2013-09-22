@@ -41,7 +41,7 @@ require 'monkey_patches'
 require "support/http_library_adapters"
 
 module VCR
-  SPEC_ROOT = File.dirname(__FILE__)
+  SPEC_ROOT = File.dirname(File.expand_path('.', __FILE__))
 
   def reset!(hook = :fakeweb)
     instance_variables.each do |ivar|
