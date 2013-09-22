@@ -47,7 +47,7 @@ describe "Faraday hook" do
       builder.use Faraday::Response::Logger
     end
 
-    conn.builder.should_receive(:warn).with(/Faraday::Response::Logger/)
+    expect(conn.builder).to receive(:warn).with(/Faraday::Response::Logger/)
     conn.builder.lock!
   end
 

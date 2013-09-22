@@ -7,7 +7,7 @@ describe VCR::InternetConnection do
     end
 
     def stub_pingecho_with(value)
-      VCR::Ping.stub(:pingecho).with("example.com", anything, anything).and_return(value)
+      allow(VCR::Ping).to receive(:pingecho).with("example.com", anything, anything).and_return(value)
     end
 
     context 'when pinging example.com succeeds' do
@@ -17,7 +17,7 @@ describe VCR::InternetConnection do
       end
 
       it 'memoizes the value so no extra pings are made' do
-        VCR::Ping.should_receive(:pingecho).once.and_return(true)
+        expect(VCR::Ping).to receive(:pingecho).once.and_return(true)
         3.times { described_class.available? }
       end
     end
@@ -29,7 +29,7 @@ describe VCR::InternetConnection do
       end
 
       it 'memoizes the value so no extra pings are made' do
-        VCR::Ping.should_receive(:pingecho).once.and_return(false)
+        expect(VCR::Ping).to receive(:pingecho).once.and_return(false)
         3.times { described_class.available? }
       end
     end

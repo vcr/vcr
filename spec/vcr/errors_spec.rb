@@ -82,7 +82,7 @@ module VCR
         it 'mentions :allow_playback_repeats if the current cassette has a used matching interaction' do
           VCR.use_cassette('example') do |cassette|
             expect(cassette.http_interactions).to respond_to(:has_used_interaction_matching?)
-            cassette.http_interactions.stub(:has_used_interaction_matching? => true)
+            allow(cassette.http_interactions).to receive(:has_used_interaction_matching?).and_return(true)
             expect(message).to include('allow_playback_repeats')
           end
         end
@@ -90,7 +90,7 @@ module VCR
         it 'does not mention :allow_playback_repeats if the current cassette does not have a used matching interaction' do
           VCR.use_cassette('example') do |cassette|
             expect(cassette.http_interactions).to respond_to(:has_used_interaction_matching?)
-            cassette.http_interactions.stub(:has_used_interaction_matching? => false)
+            allow(cassette.http_interactions).to receive(:has_used_interaction_matching?).and_return(false)
             expect(message).not_to include('allow_playback_repeats')
           end
         end
@@ -98,7 +98,7 @@ module VCR
         it 'does not mention using a different :match_requests_on option when there are no remaining unused interactions' do
           VCR.use_cassette('example') do |cassette|
             expect(cassette.http_interactions).to respond_to(:remaining_unused_interaction_count)
-            cassette.http_interactions.stub(:remaining_unused_interaction_count => 0)
+            allow(cassette.http_interactions).to receive(:remaining_unused_interaction_count).and_return(0)
             expect(message).not_to include('match_requests_on cassette option')
           end
         end
@@ -106,7 +106,7 @@ module VCR
         it 'mentions using a different :match_requests_on option when there are some remaining unused interactions' do
           VCR.use_cassette('example') do |cassette|
             expect(cassette.http_interactions).to respond_to(:remaining_unused_interaction_count)
-            cassette.http_interactions.stub(:remaining_unused_interaction_count => 1)
+            allow(cassette.http_interactions).to receive(:remaining_unused_interaction_count).and_return(1)
             expect(message).to include('match_requests_on cassette option')
           end
         end
@@ -114,7 +114,7 @@ module VCR
         it 'uses the singular (HTTP interaction) when there is only 1 left' do
           VCR.use_cassette('example') do |cassette|
             expect(cassette.http_interactions).to respond_to(:remaining_unused_interaction_count)
-            cassette.http_interactions.stub(:remaining_unused_interaction_count => 1)
+            allow(cassette.http_interactions).to receive(:remaining_unused_interaction_count).and_return(1)
             expect(message).to include('1 HTTP interaction ')
           end
         end
@@ -122,7 +122,7 @@ module VCR
         it 'uses the plural (HTTP interactions) when there is more than 1 left' do
           VCR.use_cassette('example') do |cassette|
             expect(cassette.http_interactions).to respond_to(:remaining_unused_interaction_count)
-            cassette.http_interactions.stub(:remaining_unused_interaction_count => 2)
+            allow(cassette.http_interactions).to receive(:remaining_unused_interaction_count).and_return(2)
             expect(message).to include('2 HTTP interactions ')
           end
         end

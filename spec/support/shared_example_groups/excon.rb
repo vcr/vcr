@@ -1,7 +1,7 @@
 shared_examples "Excon streaming" do
   context "when Excon's streaming API is used" do
     it 'properly records and plays back the response' do
-      VCR.stub(:real_http_connections_allowed? => true)
+      allow(VCR).to receive(:real_http_connections_allowed?).and_return(true)
       recorded, played_back = [1, 2].map do
         chunks = []
 
@@ -19,7 +19,7 @@ shared_examples "Excon streaming" do
     end
 
     it 'properly records and plays back the response for unexpected status' do
-      VCR.stub(:real_http_connections_allowed? => true)
+      allow(VCR).to receive(:real_http_connections_allowed?).and_return(true)
       recorded, played_back = [1, 2].map do
         chunks = []
 

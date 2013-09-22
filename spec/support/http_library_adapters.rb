@@ -223,7 +223,7 @@ HTTP_LIBRARY_ADAPTERS['excon'] = Module.new do
   end
 
   def normalize_request_headers(headers)
-    headers
+    headers.merge('User-Agent' => [Excon::USER_AGENT])
   end
 end
 

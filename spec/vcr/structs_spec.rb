@@ -8,6 +8,7 @@ require 'vcr/errors'
 require 'zlib'
 require 'stringio'
 require 'support/limited_uri'
+require 'support/configuration_stubbing'
 
 shared_examples_for "a header normalizer" do
   let(:instance) do
@@ -61,7 +62,8 @@ end
 
 module VCR
   describe HTTPInteraction do
-    before { VCR.stub_chain(:configuration, :uri_parser) { LimitedURI } }
+    include_context "configuration stubbing"
+    before { allow(config).to receive(:uri_parser) { LimitedURI } }
 
     if ''.respond_to?(:encoding)
       def body_hash(key, value)
@@ -77,7 +79,7 @@ module VCR
       let(:now) { Time.now }
 
       it 'is initialized to the current time' do
-        Time.stub(:now => now)
+        allow(Time).to receive(:now).and_return(now)
         expect(VCR::HTTPInteraction.new.recorded_at).to eq(now)
       end
     end
@@ -192,7 +194,7 @@ module VCR
           expect(string).to be_valid_encoding
           hash['request']['body']  = { 'string' => string, 'encoding' => 'ASCII-8BIT' }
 
-          Request.should_not_receive(:warn)
+          expect(Request).not_to receive(:warn)
           i = HTTPInteraction.from_hash(hash)
           expect(i.request.body).to eq(string)
           expect(i.request.body.bytes.to_a).to eq(string.bytes.to_a)
@@ -205,8 +207,8 @@ module VCR
           end
 
           before do
-            Request.stub(:warn)
-            Response.stub(:warn)
+            allow(Request).to receive(:warn)
+            allow(Response).to receive(:warn)
 
             hash['request']['body']  = { 'string' => "\xFAbc", 'encoding' => 'ISO-8859-1' }
             hash['response']['body']  = { 'string' => "\xFAbc", 'encoding' => 'ISO-8859-1' }
@@ -223,8 +225,8 @@ module VCR
           end
 
           it 'prints a warning and informs users of the :preserve_exact_body_bytes option' do
-            Request.should_receive(:warn).with(/ISO-8859-1.*preserve_exact_body_bytes/)
-            Response.should_receive(:warn).with(/ISO-8859-1.*preserve_exact_body_bytes/)
+            expect(Request).to receive(:warn).with(/ISO-8859-1.*preserve_exact_body_bytes/)
+            expect(Response).to receive(:warn).with(/ISO-8859-1.*preserve_exact_body_bytes/)
 
             HTTPInteraction.from_hash(hash)
           end
@@ -233,9 +235,11 @@ module VCR
     end
 
     describe "#to_hash" do
+      include_context "configuration stubbing"
+
       before(:each) do
-        VCR.stub_chain(:configuration, :preserve_exact_body_bytes_for?).and_return(false)
-        VCR.stub_chain(:configuration, :uri_parser).and_return(URI)
+        allow(config).to receive(:preserve_exact_body_bytes_for?).and_return(false)
+        allow(config).to receive(:uri_parser).and_return(URI)
       end
 
       let(:hash) { interaction.to_hash }
@@ -275,7 +279,7 @@ module VCR
       end
 
       it 'encodes the body as base64 when the configuration is so set' do
-        VCR.stub_chain(:configuration, :preserve_exact_body_bytes_for?).and_return(true)
+        allow(config).to receive(:preserve_exact_body_bytes_for?).and_return(true)
         expect(hash['request']['body']).to eq(body_hash('base64_string', Base64.encode64('req body')))
         expect(hash['response']['body']).to eq(body_hash('base64_string', Base64.encode64('res body')))
       end
@@ -304,15 +308,15 @@ module VCR
 
     describe "#parsed_uri" do
       before :each do
-        uri_parser.stub(:parse).and_return(uri)
-        VCR.stub_chain(:configuration, :uri_parser).and_return(uri_parser)
+        allow(uri_parser).to receive(:parse).and_return(uri)
+        allow(config).to receive(:uri_parser).and_return(uri_parser)
       end
 
-      let(:uri_parser){ mock('parser') }
-      let(:uri){ mock('uri').as_null_object }
+      let(:uri_parser){ double('parser') }
+      let(:uri){ double('uri').as_null_object }
 
       it "parses the uri using the current uri_parser" do
-        uri_parser.should_receive(:parse).with(request.uri)
+        expect(uri_parser).to receive(:parse).with(request.uri)
         request.parsed_uri
       end
 
@@ -323,7 +327,11 @@ module VCR
   end
 
   describe HTTPInteraction::HookAware do
-    before { VCR.stub_chain(:configuration, :uri_parser) { LimitedURI } }
+    include_context "configuration stubbing"
+
+    before do
+      allow(config).to receive(:uri_parser) { LimitedURI }
+    end
 
     let(:response_status) { VCR::ResponseStatus.new(200, "OK foo") }
     let(:body) { "The body foo this is (foo-Foo)" }
@@ -408,14 +416,14 @@ module VCR
   describe Request::Typed do
     [:uri, :method, :headers, :body].each do |method|
       it "delegates ##{method} to the request" do
-        request = stub(method => "delegated value")
+        request = double(method => "delegated value")
         expect(Request::Typed.new(request, :type).send(method)).to eq("delegated value")
       end
     end
 
     describe "#type" do
       it 'returns the initialized type' do
-        expect(Request::Typed.new(stub, :ignored).type).to be(:ignored)
+        expect(Request::Typed.new(double, :ignored).type).to be(:ignored)
       end
     end
 
@@ -423,11 +431,11 @@ module VCR
     valid_types.each do |type|
       describe "##{type}?" do
         it "returns true if the type is set to :#{type}" do
-          expect(Request::Typed.new(stub, type).send("#{type}?")).to be_true
+          expect(Request::Typed.new(double, type).send("#{type}?")).to be_true
         end
 
         it "returns false if the type is set to :other" do
-          expect(Request::Typed.new(stub, :other).send("#{type}?")).to be_false
+          expect(Request::Typed.new(double, :other).send("#{type}?")).to be_false
         end
       end
     end
@@ -436,13 +444,13 @@ module VCR
       real_types = [:ignored, :recordable]
       real_types.each do |type|
         it "returns true if the type is set to :#{type}" do
-          expect(Request::Typed.new(stub, type)).to be_real
+          expect(Request::Typed.new(double, type)).to be_real
         end
       end
 
       (valid_types - real_types).each do |type|
         it "returns false if the type is set to :#{type}" do
-          expect(Request::Typed.new(stub, type)).not_to be_real
+          expect(Request::Typed.new(double, type)).not_to be_real
         end
       end
     end
@@ -451,20 +459,24 @@ module VCR
       stubbed_types = [:externally_stubbed, :stubbed_by_vcr]
       stubbed_types.each do |type|
         it "returns true if the type is set to :#{type}" do
-          expect(Request::Typed.new(stub, type)).to be_stubbed
+          expect(Request::Typed.new(double, type)).to be_stubbed
         end
       end
 
       (valid_types - stubbed_types).each do |type|
         it "returns false if the type is set to :#{type}" do
-          expect(Request::Typed.new(stub, type)).not_to be_stubbed
+          expect(Request::Typed.new(double, type)).not_to be_stubbed
         end
       end
     end
   end
 
   describe Request do
-    before { VCR.stub_chain(:configuration, :uri_parser) { LimitedURI } }
+    include_context "configuration stubbing"
+
+    before do
+      allow(config).to receive(:uri_parser) { LimitedURI }
+    end
 
     describe '#method' do
       subject { VCR::Request.new(:get) }
@@ -527,7 +539,7 @@ module VCR
       end
 
       it 'can be cast to a proc' do
-        Fiber.should_receive(:yield)
+        expect(Fiber).to receive(:yield)
         lambda(&subject).call
       end
     end if RUBY_VERSION > '1.9'

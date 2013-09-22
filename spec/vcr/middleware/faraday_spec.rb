@@ -22,7 +22,7 @@ describe VCR::Middleware::Faraday do
       it 'records the request body correctly' do
         payload = { :file => Faraday::UploadIO.new(__FILE__, 'text/plain') }
 
-        VCR.should_receive(:record_http_interaction) do |i|
+        expect(VCR).to receive(:record_http_interaction) do |i|
           expect(i.request.headers['Content-Type'].first).to include("multipart")
           expect(i.request.body).to include(File.read(__FILE__))
         end
@@ -131,7 +131,7 @@ describe VCR::Middleware::Faraday do
 
     context 'for a recorded request' do
       let!(:inserted_cassette) { VCR.insert_cassette('new_cassette') }
-      before(:each) { VCR.should_receive(:record_http_interaction) }
+      before(:each) { expect(VCR).to receive(:record_http_interaction) }
       it_behaves_like "exclusive library hook"
     end
 
@@ -161,7 +161,7 @@ describe VCR::Middleware::Faraday do
       it 'can be used to eject a cassette after the request is recorded' do
         VCR.configuration.after_http_request { |request| VCR.eject_cassette }
 
-        VCR.should_receive(:record_http_interaction) do |interaction|
+        expect(VCR).to receive(:record_http_interaction) do |interaction|
           expect(VCR.current_cassette).to be(inserted_cassette)
         end
 

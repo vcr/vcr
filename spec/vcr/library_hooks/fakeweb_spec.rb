@@ -22,11 +22,11 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
 
   describe "some specific Net::HTTP edge cases" do
     before(:each) do
-      VCR.stub(:real_http_connections_allowed? => true)
+      allow(VCR).to receive(:real_http_connections_allowed?).and_return(true)
     end
 
     it 'records the request body when using #post_form' do
-      VCR.should_receive(:record_http_interaction) do |interaction|
+      expect(VCR).to receive(:record_http_interaction) do |interaction|
         expect(interaction.request.body).to eq("q=ruby")
       end
 
@@ -35,7 +35,7 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
     end
 
     it "does not record headers for which Net::HTTP sets defaults near the end of the real request" do
-      VCR.should_receive(:record_http_interaction) do |interaction|
+      expect(VCR).to receive(:record_http_interaction) do |interaction|
         expect(interaction.request.headers).not_to have_key('content-type')
         expect(interaction.request.headers).not_to have_key('host')
       end
@@ -43,7 +43,7 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
     end
 
     it "records headers for which Net::HTTP usually sets defaults when the user manually sets their values" do
-      VCR.should_receive(:record_http_interaction) do |interaction|
+      expect(VCR).to receive(:record_http_interaction) do |interaction|
         expect(interaction.request.headers['content-type']).to eq(['foo/bar'])
         expect(interaction.request.headers['host']).to eq(['my-example.com'])
       end
@@ -57,7 +57,7 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
     end
 
     it 'records the interaction when Net::HTTP#request is called with a block with a return statement' do
-      VCR.should_receive(:record_http_interaction).once
+      expect(VCR).to receive(:record_http_interaction).once
       expect(perform_get_with_returning_block.body).to eq("GET to root")
     end
 
@@ -66,7 +66,7 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
     end
 
     it 'records the interaction only once, even when Net::HTTP internally recursively calls #request' do
-      VCR.should_receive(:record_http_interaction).once
+      expect(VCR).to receive(:record_http_interaction).once
       make_post_request
     end
 
@@ -129,7 +129,7 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
       end
 
       it "warns about FakeWeb deprecation" do
-        ::Kernel.should_receive(:warn).with("WARNING: VCR's FakeWeb integration is deprecated and will be removed in VCR 3.0.")
+        expect(::Kernel).to receive(:warn).with("WARNING: VCR's FakeWeb integration is deprecated and will be removed in VCR 3.0.")
         run_hook
       end
     end
@@ -148,7 +148,7 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
 
       undef make_request
       def make_request(disabled = false)
-        ::Net::HTTP.any_instance.stub(:request_without_vcr).and_raise(SocketError)
+        allow_any_instance_of(::Net::HTTP).to receive(:request_without_vcr).and_raise(SocketError)
         expect {
           ::Net::HTTP.get_response(URI(request_url))
         }.to raise_error(SocketError)

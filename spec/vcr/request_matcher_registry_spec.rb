@@ -2,11 +2,16 @@ require 'vcr/request_matcher_registry'
 require 'vcr/structs'
 require 'support/limited_uri'
 require 'cgi'
+require 'support/configuration_stubbing'
 
 module VCR
   describe RequestMatcherRegistry do
-    before { VCR.stub_chain(:configuration, :uri_parser) { LimitedURI } }
-    before { VCR.stub_chain(:configuration, :query_parser) { CGI.method(:parse) } }
+    include_context "configuration stubbing"
+
+    before do
+      allow(config).to receive(:uri_parser) { LimitedURI }
+      allow(config).to receive(:query_parser) { CGI.method(:parse) }
+    end
 
     def request_with(values)
       VCR::Request.new.tap do |request|
@@ -20,23 +25,23 @@ module VCR
       it 'registers a request matcher block that can be used later' do
         matcher_called = false
         subject.register(:my_matcher) { |*a| matcher_called = true }
-        subject[:my_matcher].matches?(stub, stub)
+        subject[:my_matcher].matches?(double, double)
         expect(matcher_called).to be_true
       end
 
       context 'when there is already a matcher for the given name' do
         before(:each) do
           subject.register(:foo) { |*a| false }
-          subject.stub :warn
+          allow(subject).to receive :warn
         end
 
         it 'overrides the existing matcher' do
           subject.register(:foo) { |*a| true }
-          expect(subject[:foo].matches?(stub, stub)).to be_true
+          expect(subject[:foo].matches?(double, double)).to be_true
         end
 
         it 'warns that there is a name collision' do
-          subject.should_receive(:warn).with(
+          expect(subject).to receive(:warn).with(
             /WARNING: There is already a VCR request matcher registered for :foo\. Overriding it/
           )
 

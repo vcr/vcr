@@ -109,7 +109,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
       call_count = 0
       [:has_interaction_matching?, :response_for].each do |method_name|
         orig_meth = VCR.http_interactions.method(method_name)
-        VCR.http_interactions.stub(method_name) do |*args|
+        allow(VCR.http_interactions).to receive(method_name) do |*args|
           call_count += 1
           orig_meth.call(*args)
         end
@@ -135,7 +135,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
           VCR.insert_cassette('example')
           disable_real_connections
 
-          VCR.should_receive(:record_http_interaction) do |interaction|
+          expect(VCR).to receive(:record_http_interaction) do |interaction|
             expect(interaction.request.uri).to eq(request_url)
           end
 
@@ -173,7 +173,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
 
         it 'does not record requests that are directly stubbed' do
           expect(VCR).to respond_to(:record_http_interaction)
-          VCR.should_not_receive(:record_http_interaction)
+          expect(VCR).not_to receive(:record_http_interaction)
 
           VCR.use_cassette("temp") do
             directly_stub_request(:get, request_url, "stubbed response")
@@ -220,7 +220,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
             VCR.use_cassette('new_cassette', &request)
           end
 
-          VCR.should_receive(:record_http_interaction) do
+          expect(VCR).to receive(:record_http_interaction) do
             expect(VCR.current_cassette.name).to eq('new_cassette')
           end
 
@@ -370,7 +370,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
           specify 'the after_http_request hook can be used to eject a cassette after the request is recorded' do
             VCR.configuration.after_http_request { |request| VCR.eject_cassette }
 
-            VCR.should_receive(:record_http_interaction) do |interaction|
+            expect(VCR).to receive(:record_http_interaction) do |interaction|
               expect(VCR.current_cassette).to be(inserted_cassette)
             end
 
@@ -408,7 +408,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
     end
 
     describe '.stub_requests using specific match_attributes' do
-      before(:each) { VCR.stub(:real_http_connections_allowed? => false) }
+      before(:each) { allow(VCR).to receive(:real_http_connections_allowed?).and_return(false) }
       let(:interactions) { interactions_from('match_requests_on.yml') }
 
       let(:normalized_interactions) do
@@ -486,14 +486,14 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
         describe 'recording new http requests' do
           let(:recorded_interaction) do
             interaction = nil
-            VCR.should_receive(:record_http_interaction) { |i| interaction = i }
+            expect(VCR).to receive(:record_http_interaction) { |i| interaction = i }
             make_http_request(:post, url, "the body", { 'X-Http-Foo' => 'bar' })
             interaction
           end
 
           it 'does not record the request if the hook is disabled' do
             VCR.library_hooks.exclusively_enabled :something_else do
-              VCR.should_not_receive(:record_http_interaction)
+              expect(VCR).not_to receive(:record_http_interaction)
               make_http_request(:get, url)
             end
           end unless other.include?(:not_disableable)
@@ -534,7 +534,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
         end
       else
         it 'does not allow real HTTP requests or record them' do
-          VCR.should_receive(:record_http_interaction).never
+          expect(VCR).to receive(:record_http_interaction).never
           expect { make_http_request(:get, url) }.to raise_error(NET_CONNECT_NOT_ALLOWED_ERROR)
         end
       end
@@ -542,7 +542,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
 
     [true, false].each do |http_allowed|
       context "when VCR.real_http_connections_allowed? is returning #{http_allowed}" do
-        before(:each) { VCR.stub(:real_http_connections_allowed? => http_allowed) }
+        before(:each) { allow(VCR).to receive(:real_http_connections_allowed?).and_return(http_allowed) }
 
         test_real_http_request(http_allowed, *other)
 
@@ -573,7 +573,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
           end
 
           it 'gets the stubbed responses when requests are made to http://example.com/foo, and does not record them' do
-            VCR.should_receive(:record_http_interaction).never
+            expect(VCR).to receive(:record_http_interaction).never
             expect(get_body_string(make_http_request(:get, 'http://example.com/foo'))).to match(/example\.com get response \d with path=foo/)
           end
 
