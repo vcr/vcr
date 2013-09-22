@@ -60,6 +60,10 @@ RSpec.configure do |config|
     expectations.syntax = :expect
   end
 
+  config.mock_with :rspec do |mocks|
+    mocks.syntax = :expect
+  end
+
   tmp_dir = File.expand_path('../../tmp/cassette_library_dir', __FILE__)
   config.before(:each) do
     unless example.metadata[:skip_vcr_reset]
