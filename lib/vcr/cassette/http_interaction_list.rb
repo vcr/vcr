@@ -2,7 +2,7 @@ module VCR
   class Cassette
     # @private
     class HTTPInteractionList
-      include Logger
+      include Logger::Mixin
 
       # @private
       module NullList

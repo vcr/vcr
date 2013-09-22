@@ -5,7 +5,7 @@ require 'vcr/cassette/serializers'
 module VCR
   # The media VCR uses to store HTTP interactions for later re-use.
   class Cassette
-    include Logger
+    include Logger::Mixin
 
     # The supported record modes.
     #
