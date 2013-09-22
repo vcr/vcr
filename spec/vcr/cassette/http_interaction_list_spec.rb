@@ -12,7 +12,7 @@ module VCR
 
       before(:each) do
         allow(VCR).to receive(:request_matchers).and_return(VCR::RequestMatcherRegistry.new)
-        VCR.stub_chain(:configuration, :debug_logger).and_return(double.as_null_object)
+        allow(VCR.configuration).to receive(:debug_logger).and_return(double.as_null_object)
       end
 
       def request_with(values)

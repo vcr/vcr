@@ -2,11 +2,16 @@ require 'vcr/request_matcher_registry'
 require 'vcr/structs'
 require 'support/limited_uri'
 require 'cgi'
+require 'support/configuration_stubbing'
 
 module VCR
   describe RequestMatcherRegistry do
-    before { VCR.stub_chain(:configuration, :uri_parser) { LimitedURI } }
-    before { VCR.stub_chain(:configuration, :query_parser) { CGI.method(:parse) } }
+    include_context "configuration stubbing"
+
+    before do
+      allow(config).to receive(:uri_parser) { LimitedURI }
+      allow(config).to receive(:query_parser) { CGI.method(:parse) }
+    end
 
     def request_with(values)
       VCR::Request.new.tap do |request|

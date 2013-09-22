@@ -8,6 +8,7 @@ require 'vcr/errors'
 require 'zlib'
 require 'stringio'
 require 'support/limited_uri'
+require 'support/configuration_stubbing'
 
 shared_examples_for "a header normalizer" do
   let(:instance) do
@@ -61,7 +62,8 @@ end
 
 module VCR
   describe HTTPInteraction do
-    before { VCR.stub_chain(:configuration, :uri_parser) { LimitedURI } }
+    include_context "configuration stubbing"
+    before { allow(config).to receive(:uri_parser) { LimitedURI } }
 
     if ''.respond_to?(:encoding)
       def body_hash(key, value)
@@ -233,9 +235,11 @@ module VCR
     end
 
     describe "#to_hash" do
+      include_context "configuration stubbing"
+
       before(:each) do
-        VCR.stub_chain(:configuration, :preserve_exact_body_bytes_for?).and_return(false)
-        VCR.stub_chain(:configuration, :uri_parser).and_return(URI)
+        allow(config).to receive(:preserve_exact_body_bytes_for?).and_return(false)
+        allow(config).to receive(:uri_parser).and_return(URI)
       end
 
       let(:hash) { interaction.to_hash }
@@ -275,7 +279,7 @@ module VCR
       end
 
       it 'encodes the body as base64 when the configuration is so set' do
-        VCR.stub_chain(:configuration, :preserve_exact_body_bytes_for?).and_return(true)
+        allow(config).to receive(:preserve_exact_body_bytes_for?).and_return(true)
         expect(hash['request']['body']).to eq(body_hash('base64_string', Base64.encode64('req body')))
         expect(hash['response']['body']).to eq(body_hash('base64_string', Base64.encode64('res body')))
       end
@@ -305,7 +309,7 @@ module VCR
     describe "#parsed_uri" do
       before :each do
         allow(uri_parser).to receive(:parse).and_return(uri)
-        VCR.stub_chain(:configuration, :uri_parser).and_return(uri_parser)
+        allow(config).to receive(:uri_parser).and_return(uri_parser)
       end
 
       let(:uri_parser){ double('parser') }
@@ -323,7 +327,11 @@ module VCR
   end
 
   describe HTTPInteraction::HookAware do
-    before { VCR.stub_chain(:configuration, :uri_parser) { LimitedURI } }
+    include_context "configuration stubbing"
+
+    before do
+      allow(config).to receive(:uri_parser) { LimitedURI }
+    end
 
     let(:response_status) { VCR::ResponseStatus.new(200, "OK foo") }
     let(:body) { "The body foo this is (foo-Foo)" }
@@ -464,7 +472,11 @@ module VCR
   end
 
   describe Request do
-    before { VCR.stub_chain(:configuration, :uri_parser) { LimitedURI } }
+    include_context "configuration stubbing"
+
+    before do
+      allow(config).to receive(:uri_parser) { LimitedURI }
+    end
 
     describe '#method' do
       subject { VCR::Request.new(:get) }
