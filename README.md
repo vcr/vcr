@@ -2,7 +2,7 @@
 
 Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests.
 
-[![Build Status](https://secure.travis-ci.org/vcr/vcr.png?branch=master)](http://travis-ci.org/vcr/vcr)
+[![Build Status](https://secure.travis-ci.org/vcr/vcr.png?branch=master)](http://travis-ci.org/vcr/vcr) [![Code Climate](https://codeclimate.com/github/vcr/vcr.png)](https://codeclimate.com/github/vcr/vcr)
 
 ## Synopsis
 
