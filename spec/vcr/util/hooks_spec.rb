@@ -68,7 +68,7 @@ describe VCR::Hooks::FilteredHook do
     it '#to_procs the filter objects' do
       filter_called = false
       subject.hook = lambda { }
-      subject.filters = [stub(:to_proc => lambda { filter_called = true })]
+      subject.filters = [double(:to_proc => lambda { filter_called = true })]
       subject.conditionally_invoke
       expect(filter_called).to be_true
     end
@@ -129,7 +129,7 @@ describe VCR::Hooks do
 
     it 'does not invoke any filtered callbacks' do
       subject.before_foo(:real?) { invocations << :blue_callback }
-      subject.invoke_hook(:before_foo, stub(:real? => false))
+      subject.invoke_hook(:before_foo, double(:real? => false))
       expect(invocations).to be_empty
     end
 

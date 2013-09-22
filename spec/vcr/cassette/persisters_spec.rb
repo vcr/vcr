@@ -7,7 +7,7 @@ module VCR
         context 'when there is already a persister registered for the given name' do
           before(:each) do
             subject[:foo] = :old_persister
-            subject.stub :warn
+            allow(subject).to receive :warn
           end
 
           it 'overrides the existing persister' do
@@ -16,7 +16,7 @@ module VCR
           end
 
           it 'warns that there is a name collision' do
-            subject.should_receive(:warn).with(
+            expect(subject).to receive(:warn).with(
               /WARNING: There is already a VCR cassette persister registered for :foo\. Overriding it/
             )
             subject[:foo] = :new_persister

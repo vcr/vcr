@@ -11,8 +11,8 @@ module VCR
       end
 
       before(:each) do
-        VCR.stub(:request_matchers => VCR::RequestMatcherRegistry.new)
-        VCR.stub_chain(:configuration, :debug_logger).and_return(stub.as_null_object)
+        allow(VCR).to receive(:request_matchers).and_return(VCR::RequestMatcherRegistry.new)
+        VCR.stub_chain(:configuration, :debug_logger).and_return(double.as_null_object)
       end
 
       def request_with(values)
@@ -102,7 +102,7 @@ module VCR
 
       describe "has_interaction_matching?" do
         it 'returns false when the list is empty' do
-          expect(HTTPInteractionList.new([], [:method])).not_to have_interaction_matching(stub)
+          expect(HTTPInteractionList.new([], [:method])).not_to have_interaction_matching(double)
         end
 
         it 'returns false when there is no matching interaction' do
@@ -136,10 +136,10 @@ module VCR
         end
 
         it "delegates to the parent list when it can't find a matching interaction" do
-          parent_list = mock(:has_interaction_matching? => true)
-          expect(HTTPInteractionList.new( [], [:method], false, parent_list)).to have_interaction_matching(stub)
-          parent_list = mock(:has_interaction_matching? => false)
-          expect(HTTPInteractionList.new( [], [:method], false, parent_list)).not_to have_interaction_matching(stub)
+          parent_list = double(:has_interaction_matching? => true)
+          expect(HTTPInteractionList.new( [], [:method], false, parent_list)).to have_interaction_matching(double)
+          parent_list = double(:has_interaction_matching? => false)
+          expect(HTTPInteractionList.new( [], [:method], false, parent_list)).not_to have_interaction_matching(double)
         end
 
         context 'when allow_playback_repeats is set to true' do
@@ -173,7 +173,7 @@ module VCR
 
       describe "#response_for" do
         it 'returns nil when the list is empty' do
-          expect(HTTPInteractionList.new([], [:method]).response_for(stub)).to respond_with(nil)
+          expect(HTTPInteractionList.new([], [:method]).response_for(double)).to respond_with(nil)
         end
 
         it 'returns nil when there is no matching interaction' do
@@ -213,10 +213,10 @@ module VCR
         end
 
         it "delegates to the parent list when it can't find a matching interaction" do
-          parent_list = mock(:response_for => response('parent'))
+          parent_list = double(:response_for => response('parent'))
           result = HTTPInteractionList.new(
             [], [:method], false, parent_list
-          ).response_for(stub)
+          ).response_for(double)
 
           expect(result).to respond_with('parent')
         end

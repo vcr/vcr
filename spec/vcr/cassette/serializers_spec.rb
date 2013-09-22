@@ -114,7 +114,7 @@ module VCR
         context 'when there is already a serializer registered for the given name' do
           before(:each) do
             subject[:foo] = :old_serializer
-            subject.stub :warn
+            allow(subject).to receive :warn
           end
 
           it 'overrides the existing serializer' do
@@ -123,7 +123,7 @@ module VCR
           end
 
           it 'warns that there is a name collision' do
-            subject.should_receive(:warn).with(
+            expect(subject).to receive(:warn).with(
               /WARNING: There is already a VCR cassette serializer registered for :foo\. Overriding it/
             )
             subject[:foo] = :new_serializer

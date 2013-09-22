@@ -40,10 +40,10 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
 
     context "when there'ss a bug and the request does not have the @__typed_vcr_request in the after_request callbacks" do
       let(:warner) { VCR::LibraryHooks::WebMock }
-      before { warner.stub(:warn) }
+      before { allow(warner).to receive(:warn) }
 
       it 'records the HTTP interaction properly' do
-        VCR.should_receive(:record_http_interaction) do |i|
+        expect(VCR).to receive(:record_http_interaction) do |i|
           expect(i.request.uri).to eq("http://foo.com/")
           expect(i.response.body).to eq("OK")
         end
@@ -63,7 +63,7 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
       end
 
       it 'prints a warning' do
-        warner.should_receive(:warn).at_least(:once).with(/bug.*after_request/)
+        expect(warner).to receive(:warn).at_least(:once).with(/bug.*after_request/)
 
         run_after_request_callback
       end

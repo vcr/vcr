@@ -77,7 +77,7 @@ module VCR
       let(:now) { Time.now }
 
       it 'is initialized to the current time' do
-        Time.stub(:now => now)
+        allow(Time).to receive(:now).and_return(now)
         expect(VCR::HTTPInteraction.new.recorded_at).to eq(now)
       end
     end
@@ -192,7 +192,7 @@ module VCR
           expect(string).to be_valid_encoding
           hash['request']['body']  = { 'string' => string, 'encoding' => 'ASCII-8BIT' }
 
-          Request.should_not_receive(:warn)
+          expect(Request).not_to receive(:warn)
           i = HTTPInteraction.from_hash(hash)
           expect(i.request.body).to eq(string)
           expect(i.request.body.bytes.to_a).to eq(string.bytes.to_a)
@@ -205,8 +205,8 @@ module VCR
           end
 
           before do
-            Request.stub(:warn)
-            Response.stub(:warn)
+            allow(Request).to receive(:warn)
+            allow(Response).to receive(:warn)
 
             hash['request']['body']  = { 'string' => "\xFAbc", 'encoding' => 'ISO-8859-1' }
             hash['response']['body']  = { 'string' => "\xFAbc", 'encoding' => 'ISO-8859-1' }
@@ -223,8 +223,8 @@ module VCR
           end
 
           it 'prints a warning and informs users of the :preserve_exact_body_bytes option' do
-            Request.should_receive(:warn).with(/ISO-8859-1.*preserve_exact_body_bytes/)
-            Response.should_receive(:warn).with(/ISO-8859-1.*preserve_exact_body_bytes/)
+            expect(Request).to receive(:warn).with(/ISO-8859-1.*preserve_exact_body_bytes/)
+            expect(Response).to receive(:warn).with(/ISO-8859-1.*preserve_exact_body_bytes/)
 
             HTTPInteraction.from_hash(hash)
           end
@@ -304,15 +304,15 @@ module VCR
 
     describe "#parsed_uri" do
       before :each do
-        uri_parser.stub(:parse).and_return(uri)
+        allow(uri_parser).to receive(:parse).and_return(uri)
         VCR.stub_chain(:configuration, :uri_parser).and_return(uri_parser)
       end
 
-      let(:uri_parser){ mock('parser') }
-      let(:uri){ mock('uri').as_null_object }
+      let(:uri_parser){ double('parser') }
+      let(:uri){ double('uri').as_null_object }
 
       it "parses the uri using the current uri_parser" do
-        uri_parser.should_receive(:parse).with(request.uri)
+        expect(uri_parser).to receive(:parse).with(request.uri)
         request.parsed_uri
       end
 
@@ -408,14 +408,14 @@ module VCR
   describe Request::Typed do
     [:uri, :method, :headers, :body].each do |method|
       it "delegates ##{method} to the request" do
-        request = stub(method => "delegated value")
+        request = double(method => "delegated value")
         expect(Request::Typed.new(request, :type).send(method)).to eq("delegated value")
       end
     end
 
     describe "#type" do
       it 'returns the initialized type' do
-        expect(Request::Typed.new(stub, :ignored).type).to be(:ignored)
+        expect(Request::Typed.new(double, :ignored).type).to be(:ignored)
       end
     end
 
@@ -423,11 +423,11 @@ module VCR
     valid_types.each do |type|
       describe "##{type}?" do
         it "returns true if the type is set to :#{type}" do
-          expect(Request::Typed.new(stub, type).send("#{type}?")).to be_true
+          expect(Request::Typed.new(double, type).send("#{type}?")).to be_true
         end
 
         it "returns false if the type is set to :other" do
-          expect(Request::Typed.new(stub, :other).send("#{type}?")).to be_false
+          expect(Request::Typed.new(double, :other).send("#{type}?")).to be_false
         end
       end
     end
@@ -436,13 +436,13 @@ module VCR
       real_types = [:ignored, :recordable]
       real_types.each do |type|
         it "returns true if the type is set to :#{type}" do
-          expect(Request::Typed.new(stub, type)).to be_real
+          expect(Request::Typed.new(double, type)).to be_real
         end
       end
 
       (valid_types - real_types).each do |type|
         it "returns false if the type is set to :#{type}" do
-          expect(Request::Typed.new(stub, type)).not_to be_real
+          expect(Request::Typed.new(double, type)).not_to be_real
         end
       end
     end
@@ -451,13 +451,13 @@ module VCR
       stubbed_types = [:externally_stubbed, :stubbed_by_vcr]
       stubbed_types.each do |type|
         it "returns true if the type is set to :#{type}" do
-          expect(Request::Typed.new(stub, type)).to be_stubbed
+          expect(Request::Typed.new(double, type)).to be_stubbed
         end
       end
 
       (valid_types - stubbed_types).each do |type|
         it "returns false if the type is set to :#{type}" do
-          expect(Request::Typed.new(stub, type)).not_to be_stubbed
+          expect(Request::Typed.new(double, type)).not_to be_stubbed
         end
       end
     end
@@ -527,7 +527,7 @@ module VCR
       end
 
       it 'can be cast to a proc' do
-        Fiber.should_receive(:yield)
+        expect(Fiber).to receive(:yield)
         lambda(&subject).call
       end
     end if RUBY_VERSION > '1.9'

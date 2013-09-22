@@ -3,7 +3,7 @@ require 'spec_helper'
 describe VCR, 'deprecations', :disable_warnings do
   describe ".config" do
     it 'delegates to VCR.configure' do
-      VCR.should_receive(:configure)
+      expect(VCR).to receive(:configure)
       VCR.config { }
     end
 
@@ -14,7 +14,7 @@ describe VCR, 'deprecations', :disable_warnings do
     end
 
     it 'prints a deprecation warning' do
-      VCR.should_receive(:warn).with(/VCR.config.*deprecated/i)
+      expect(VCR).to receive(:warn).with(/VCR.config.*deprecated/i)
 
       VCR.config { }
     end
@@ -26,7 +26,7 @@ describe VCR, 'deprecations', :disable_warnings do
     end
 
     it 'prints a deprecation warning' do
-      VCR.should_receive(:warn).with(/VCR::Config.*deprecated/i)
+      expect(VCR).to receive(:warn).with(/VCR::Config.*deprecated/i)
 
       VCR::Config
     end
@@ -44,7 +44,7 @@ describe VCR, 'deprecations', :disable_warnings do
     end
 
     it 'prints a deprecation warning' do
-      VCR::Cassette.should_receive(:warn).with(/VCR::Cassette::MissingERBVariableError.*deprecated/i)
+      expect(VCR::Cassette).to receive(:warn).with(/VCR::Cassette::MissingERBVariableError.*deprecated/i)
 
       VCR::Cassette::MissingERBVariableError
     end
@@ -58,26 +58,26 @@ describe VCR, 'deprecations', :disable_warnings do
 
   describe "VCR.configure { |c| c.stub_with ... }" do
     it 'delegates to #hook_into' do
-      VCR.configuration.should_receive(:hook_into).with(:fakeweb, :excon)
+      expect(VCR.configuration).to receive(:hook_into).with(:fakeweb, :excon)
       VCR.configure { |c| c.stub_with :fakeweb, :excon }
     end
 
     it 'prints a deprecation warning' do
-      VCR.configuration.should_receive(:warn).with(/stub_with.*deprecated/i)
+      expect(VCR.configuration).to receive(:warn).with(/stub_with.*deprecated/i)
       VCR.configure { |c| c.stub_with :fakeweb, :excon }
     end
   end
 
   describe "VCR::Middleware::Faraday" do
     it 'prints a deprecation warning when passed a block' do
-      Kernel.should_receive(:warn).with(/Passing a block .* is deprecated/)
-      VCR::Middleware::Faraday.new(stub) { }
+      expect(Kernel).to receive(:warn).with(/Passing a block .* is deprecated/)
+      VCR::Middleware::Faraday.new(double) { }
     end
   end
 
   describe "VCR::RSpec::Macros" do
     it 'prints a deprecation warning' do
-      Kernel.should_receive(:warn).with(/VCR::RSpec::Macros is deprecated/)
+      expect(Kernel).to receive(:warn).with(/VCR::RSpec::Macros is deprecated/)
       Class.new.extend(VCR::RSpec::Macros)
     end
   end

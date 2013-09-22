@@ -68,8 +68,8 @@ describe VCR::Configuration do
 
   describe '#hook_into' do
     it 'requires the named library hook' do
-      subject.should_receive(:require).with("vcr/library_hooks/fakeweb")
-      subject.should_receive(:require).with("vcr/library_hooks/excon")
+      expect(subject).to receive(:require).with("vcr/library_hooks/fakeweb")
+      expect(subject).to receive(:require).with("vcr/library_hooks/excon")
       subject.hook_into :fakeweb, :excon
     end
 
@@ -89,14 +89,14 @@ describe VCR::Configuration do
 
   describe '#ignore_hosts' do
     it 'delegates to the current request_ignorer instance' do
-      VCR.request_ignorer.should_receive(:ignore_hosts).with('example.com', 'example.net')
+      expect(VCR.request_ignorer).to receive(:ignore_hosts).with('example.com', 'example.net')
       subject.ignore_hosts 'example.com', 'example.net'
     end
   end
 
   describe '#ignore_localhost=' do
     it 'delegates to the current request_ignorer instance' do
-      VCR.request_ignorer.should_receive(:ignore_localhost=).with(true)
+      expect(VCR.request_ignorer).to receive(:ignore_localhost=).with(true)
       subject.ignore_localhost = true
     end
   end
@@ -107,7 +107,7 @@ describe VCR::Configuration do
     it 'registers the given block with the request ignorer' do
       block_called = false
       subject.ignore_request { |r| block_called = true }
-      VCR.request_ignorer.ignore?(stub(:parsed_uri => uri))
+      VCR.request_ignorer.ignore?(double(:parsed_uri => uri))
       expect(block_called).to be_true
     end
   end
@@ -155,9 +155,9 @@ describe VCR::Configuration do
       it 'sets up a tag filter' do
         called = false
         VCR.configuration.send(hook_type, :my_tag) { called = true }
-        VCR.configuration.invoke_hook(hook_type, stub, stub(:tags => []))
+        VCR.configuration.invoke_hook(hook_type, double, double(:tags => []))
         expect(called).to be_false
-        VCR.configuration.invoke_hook(hook_type, stub, stub(:tags => [:my_tag]))
+        VCR.configuration.invoke_hook(hook_type, double, double(:tags => [:my_tag]))
         expect(called).to be_true
       end
     end
@@ -165,42 +165,42 @@ describe VCR::Configuration do
 
   %w[ filter_sensitive_data define_cassette_placeholder ].each do |method|
     describe "##{method}" do
-      let(:interaction) { mock('interaction').as_null_object }
-      before(:each) { interaction.stub(:filter!) }
+      let(:interaction) { double('interaction').as_null_object }
+      before(:each) { allow(interaction).to receive(:filter!) }
 
       it 'adds a before_record hook that replaces the string returned by the block with the given string' do
         subject.send(method, 'foo', &lambda { 'bar' })
-        interaction.should_receive(:filter!).with('bar', 'foo')
-        subject.invoke_hook(:before_record, interaction, stub.as_null_object)
+        expect(interaction).to receive(:filter!).with('bar', 'foo')
+        subject.invoke_hook(:before_record, interaction, double.as_null_object)
       end
 
       it 'adds a before_playback hook that replaces the given string with the string returned by the block' do
         subject.send(method, 'foo', &lambda { 'bar' })
-        interaction.should_receive(:filter!).with('foo', 'bar')
-        subject.invoke_hook(:before_playback, interaction, stub.as_null_object)
+        expect(interaction).to receive(:filter!).with('foo', 'bar')
+        subject.invoke_hook(:before_playback, interaction, double.as_null_object)
       end
 
       it 'tags the before_record hook when given a tag' do
-        subject.should_receive(:before_record).with(:my_tag)
+        expect(subject).to receive(:before_record).with(:my_tag)
         subject.send(method, 'foo', :my_tag) { 'bar' }
       end
 
       it 'tags the before_playback hook when given a tag' do
-        subject.should_receive(:before_playback).with(:my_tag)
+        expect(subject).to receive(:before_playback).with(:my_tag)
         subject.send(method, 'foo', :my_tag) { 'bar' }
       end
 
       it 'yields the interaction to the block for the before_record hook' do
         yielded_interaction = nil
         subject.send(method, 'foo', &lambda { |i| yielded_interaction = i; 'bar' })
-        subject.invoke_hook(:before_record, interaction, stub.as_null_object)
+        subject.invoke_hook(:before_record, interaction, double.as_null_object)
         expect(yielded_interaction).to equal(interaction)
       end
 
       it 'yields the interaction to the block for the before_playback hook' do
         yielded_interaction = nil
         subject.send(method, 'foo', &lambda { |i| yielded_interaction = i; 'bar' })
-        subject.invoke_hook(:before_playback, interaction, stub.as_null_object)
+        subject.invoke_hook(:before_playback, interaction, double.as_null_object)
         expect(yielded_interaction).to equal(interaction)
       end
     end
@@ -235,7 +235,7 @@ describe VCR::Configuration do
   end if RUBY_VERSION < '1.9'
 
   describe "#cassette_serializers" do
-    let(:custom_serializer) { stub }
+    let(:custom_serializer) { double }
     it 'allows a custom serializer to be registered' do
       expect { subject.cassette_serializers[:custom] }.to raise_error(ArgumentError)
       subject.cassette_serializers[:custom] = custom_serializer
@@ -244,7 +244,7 @@ describe VCR::Configuration do
   end
 
   describe "#cassette_persisters" do
-    let(:custom_persister) { stub }
+    let(:custom_persister) { double }
     it 'allows a custom persister to be registered' do
       expect { subject.cassette_persisters[:custom] }.to raise_error(ArgumentError)
       subject.cassette_persisters[:custom] = custom_persister
@@ -253,7 +253,7 @@ describe VCR::Configuration do
   end
 
   describe "#uri_parser=" do
-    let(:custom_parser) { stub }
+    let(:custom_parser) { double }
     it 'allows a custom uri parser to be set' do
       subject.uri_parser = custom_parser
       expect(subject.uri_parser).to eq(custom_parser)
@@ -266,7 +266,7 @@ describe VCR::Configuration do
 
   describe "#preserve_exact_body_bytes_for?" do
     def message_for(body)
-      stub(:body => body)
+      double(:body => body)
     end
 
     context "default hook" do
@@ -302,7 +302,7 @@ describe VCR::Configuration do
     it "invokes the configured hook with the http message and the current cassette" do
       VCR.use_cassette('example') do |cassette|
         expect(cassette).to be_a(VCR::Cassette)
-        message = stub(:message)
+        message = double(:message)
 
         yielded_objects = nil
         subject.preserve_exact_body_bytes { |a, b| yielded_objects = [a, b] }
@@ -314,7 +314,7 @@ describe VCR::Configuration do
 
   describe "#configure_rspec_metadata!" do
     it "only configures the underlying metadata once, no matter how many times it is called" do
-      VCR::RSpec::Metadata.should_receive(:configure!).once
+      expect(VCR::RSpec::Metadata).to receive(:configure!).once
       VCR.configure do |c|
         c.configure_rspec_metadata!
       end

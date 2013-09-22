@@ -28,7 +28,7 @@ describe VCR do
   describe '.eject_cassette' do
     it 'ejects the current cassette' do
       cassette = insert_cassette
-      cassette.should_receive(:eject)
+      expect(cassette).to receive(:eject)
       VCR.eject_cassette
     end
 
@@ -45,7 +45,7 @@ describe VCR do
     it 'keeps the cassette as the current one until after #eject has finished' do
       cassette = insert_cassette
       current = nil
-      cassette.stub(:eject) { current = VCR.current_cassette }
+      allow(cassette).to receive(:eject) { current = VCR.current_cassette }
 
       VCR.eject_cassette
 
@@ -55,7 +55,7 @@ describe VCR do
 
     it 'properly pops the cassette off the stack even if an error occurs' do
       cassette = insert_cassette
-      cassette.stub(:eject) { raise "boom" }
+      allow(cassette).to receive(:eject) { raise "boom" }
       expect { VCR.eject_cassette }.to raise_error("boom")
       expect(VCR.current_cassette).to be_nil
     end
@@ -64,7 +64,7 @@ describe VCR do
   describe '.use_cassette' do
     it 'inserts a new cassette' do
       new_cassette = VCR::Cassette.new(:use_cassette_test)
-      VCR.should_receive(:insert_cassette).and_return(new_cassette)
+      expect(VCR).to receive(:insert_cassette).and_return(new_cassette)
       VCR.use_cassette(:cassette_test) { }
     end
 
@@ -88,18 +88,18 @@ describe VCR do
     end
 
     it 'ejects the cassette' do
-      VCR.should_receive(:eject_cassette)
+      expect(VCR).to receive(:eject_cassette)
       VCR.use_cassette(:cassette_test) { }
     end
 
     it 'ejects the cassette even if there is an error' do
-      VCR.should_receive(:eject_cassette)
+      expect(VCR).to receive(:eject_cassette)
       expect { VCR.use_cassette(:cassette_test) { raise StandardError } }.to raise_error
     end
 
     it 'does not eject a cassette if there was an error inserting it' do
-      VCR.should_receive(:insert_cassette).and_raise(StandardError.new('Boom!'))
-      VCR.should_not_receive(:eject_cassette)
+      expect(VCR).to receive(:insert_cassette).and_raise(StandardError.new('Boom!'))
+      expect(VCR).not_to receive(:eject_cassette)
       expect { VCR.use_cassette(:test) { } }.to raise_error(StandardError, 'Boom!')
     end
 
@@ -228,8 +228,8 @@ describe VCR do
   end
 
   describe '.record_http_interaction' do
-    before(:each) { VCR.stub(:current_cassette => current_cassette) }
-    let(:interaction) { stub(:request => stub) }
+    before(:each) { allow(VCR).to receive(:current_cassette).and_return(current_cassette) }
+    let(:interaction) { double(:request => double) }
 
     context 'when there is not a current cassette' do
       let(:current_cassette) { nil }
@@ -242,17 +242,17 @@ describe VCR do
     end
 
     context 'when there is a current cassette' do
-      let(:current_cassette) { mock('current cassette') }
+      let(:current_cassette) { double('current cassette') }
 
       it 'records the request when it should not be ignored' do
-        VCR.request_ignorer.stub(:ignore?).with(interaction.request).and_return(false)
-        current_cassette.should_receive(:record_http_interaction).with(interaction)
+        allow(VCR.request_ignorer).to receive(:ignore?).with(interaction.request).and_return(false)
+        expect(current_cassette).to receive(:record_http_interaction).with(interaction)
         VCR.record_http_interaction(interaction)
       end
 
       it 'does not record the request when it should be ignored' do
-        VCR.request_ignorer.stub(:ignore?).with(interaction.request).and_return(true)
-        current_cassette.should_not_receive(:record_http_interaction)
+        allow(VCR.request_ignorer).to receive(:ignore?).with(interaction.request).and_return(true)
+        expect(current_cassette).not_to receive(:record_http_interaction)
         VCR.record_http_interaction(interaction)
       end
     end
@@ -329,7 +329,7 @@ describe VCR do
     end
 
     it 'passes options through to .turn_off!' do
-      VCR.should_receive(:turn_off!).with(:ignore_cassettes => true)
+      expect(VCR).to receive(:turn_off!).with(:ignore_cassettes => true)
       VCR.turned_off(:ignore_cassettes => true) { }
     end
   end

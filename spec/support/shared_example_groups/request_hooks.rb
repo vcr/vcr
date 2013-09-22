@@ -30,7 +30,7 @@ shared_examples_for "request hooks" do |library_hook_name, request_type|
 
     specify "the #{hook} hook is not called if the library hook is disabled" do
       expect(VCR.library_hooks).to respond_to(:disabled?)
-      VCR.library_hooks.stub(:disabled? => true)
+      allow(VCR.library_hooks).to receive(:disabled?).and_return(true)
 
       hook_called = false
       VCR.configuration.send(hook) { |r| hook_called = true }

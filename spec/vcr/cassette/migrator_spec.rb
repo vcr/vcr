@@ -130,7 +130,7 @@ EOF
   subject { described_class.new(dir, out_io) }
 
   before(:each) do
-    File.stub(:mtime).with(file_name).and_return(filemtime)
+    allow(File).to receive(:mtime).with(file_name).and_return(filemtime)
   end
 
   it 'migrates a cassette from the 1.x to 2.x format' do
