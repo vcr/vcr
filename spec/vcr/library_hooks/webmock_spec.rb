@@ -98,7 +98,7 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
 
           expect {
             make_http_request(:get, request_url)
-          }.to_not raise_error(unexpected_error)
+          }.to_not raise_error
         end
 
         it 'can allow connections to matching urls' do
@@ -107,7 +107,7 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
 
           expect {
             make_http_request(:get, request_url)
-          }.to_not raise_error(unexpected_error)
+          }.to_not raise_error
         end
       end
     end
