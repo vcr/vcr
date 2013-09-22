@@ -20,6 +20,12 @@ or using the single command form
 git submodule update --init
 ```
 
+Make sure you have redis running on your machine.
+
+```console
+redis-server /usr/local/etc/redis.conf
+```
+
 You should be able to run the tests now:
 
 ```console
