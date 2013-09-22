@@ -16,7 +16,7 @@ describe "Typhoeus 0.4 hook", :with_monkey_patches => :typhoeus_0_4 do
 
   def directly_stub_request(method, url, response_body)
     response = ::Typhoeus::Response.new(:code => 200, :body => response_body)
-    allow(::Typhoeus::Hydra).to receive(method, url).and_return(response)
+    ::Typhoeus::Hydra.stub(method, url).and_return(response)
   end
 
   it_behaves_like 'a hook into an HTTP library', :typhoeus, 'typhoeus 0.4'
