@@ -113,10 +113,6 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
     end
   end
 
-  it_behaves_like "Excon streaming" do
-    before(:each) do
-      pending "waiting on bblimke/webmock#246 for a fix"
-    end
-  end
+  it_behaves_like "Excon streaming"
 end
 
