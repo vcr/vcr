@@ -73,7 +73,10 @@ module VCR
 
         if RUBY_VERSION =~ /1.9/
           engines[:json_gem] = EncodingError
-          engines[:json_pure] = EncodingError
+
+          # Disable json_pure for now due to this bug:
+          # https://github.com/flori/json/issues/186
+          # engines[:json_pure] = EncodingError
         end
 
         engines.each do |engine, error|
