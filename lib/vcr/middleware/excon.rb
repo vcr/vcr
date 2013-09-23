@@ -96,6 +96,10 @@ module VCR
 
       private
 
+        def externally_stubbed?
+          !!::Excon.stub_for(request_params)
+        end
+
         def should_record?
           @should_record
         end

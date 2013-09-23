@@ -2,11 +2,15 @@ require 'spec_helper'
 require 'support/shared_example_groups/excon'
 
 describe "Excon hook", :with_monkey_patches => :excon do
-  # TODO: figure out a way to get disabling VCR to work with Excon
-  #       and allow dirct excon stubs to work.
-  # def directly_stub_request(method, url, response_body)
-  #   ::Excon.stub({ :method => method, :url => url }, { :body => response_body })
-  # end
+  after(:each) do
+    ::Excon.stubs.clear
+    ::Excon.defaults[:mock] = false
+  end
+
+  def directly_stub_request(method, url, response_body)
+    ::Excon.defaults[:mock] = true
+    ::Excon.stub({ :method => method, :url => url }, { :body => response_body })
+  end
 
   it_behaves_like 'a hook into an HTTP library', :excon, 'excon', :status_message_not_exposed
 
