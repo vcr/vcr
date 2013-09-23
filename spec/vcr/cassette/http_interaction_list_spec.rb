@@ -90,16 +90,40 @@ module VCR
 
       describe "#assert_no_unused_interactions?" do
         it 'should raise a SkippedHTTPRequestError when there are unused interactions left' do
-           expect { list.assert_no_unused_interactions! }.to raise_error(Errors::UnusedHTTPInteractionError)
-           list.response_for(request_with(:method => :put))
-           expect { list.assert_no_unused_interactions! }.to raise_error(Errors::UnusedHTTPInteractionError)
+          expect {
+            list.assert_no_unused_interactions!
+          }.to raise_error(Errors::UnusedHTTPInteractionError)
+
+          list.response_for(request_with(:method => :put))
+          expect {
+            list.assert_no_unused_interactions!
+          }.to raise_error(Errors::UnusedHTTPInteractionError)
         end
 
         it 'should raise nothing when there are no unused interactions left' do
           [:put, :post, :post].each do |method|
             list.response_for(request_with(:method => method))
           end
-          list.assert_no_unused_interactions! # should not raise an error.
+
+          expect {
+            list.assert_no_unused_interactions!
+          }.not_to raise_error
+        end
+
+        context 'when the null logger is in use' do
+          before { allow(config).to receive(:logger).and_return(Logger::Null) }
+
+          it 'includes formatted request details in the error message' do
+            expect {
+              list.assert_no_unused_interactions!
+            }.to raise_error(/\[put/)
+          end
+
+          it 'includes formatted response details in the error message' do
+            expect {
+              list.assert_no_unused_interactions!
+            }.to raise_error(/\[200 "put response"\]/)
+          end
         end
       end
 

@@ -59,9 +59,10 @@ module VCR
       # @raise [VCR::Errors::UnusedHTTPInteractionError] if not all interactions were played back.
       def assert_no_unused_interactions!
         return unless has_unused_interactions?
+        logger = Logger.new(nil)
 
         descriptions = @interactions.map do |i|
-          "  - #{request_summary(i.request)} => #{response_summary(i.response)}"
+          "  - #{logger.request_summary(i.request, @request_matchers)} => #{logger.response_summary(i.response)}"
         end.join("\n")
 
         raise Errors::UnusedHTTPInteractionError, "There are unused HTTP interactions left in the cassette:\n#{descriptions}"
