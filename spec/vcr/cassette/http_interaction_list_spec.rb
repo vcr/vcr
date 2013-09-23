@@ -2,17 +2,20 @@ require 'vcr/util/logger'
 require 'vcr/cassette/http_interaction_list'
 require 'vcr/request_matcher_registry'
 require 'vcr/structs'
+require 'support/configuration_stubbing'
 
 module VCR
   class Cassette
     describe HTTPInteractionList do
+      include_context "configuration stubbing"
+
       ::RSpec::Matchers.define :respond_with do |expected|
         match { |a| expected.nil? ? a.nil? : a.body == expected }
       end
 
       before(:each) do
         allow(VCR).to receive(:request_matchers).and_return(VCR::RequestMatcherRegistry.new)
-        allow(VCR.configuration).to receive(:debug_logger).and_return(double.as_null_object)
+        allow(config).to receive(:logger).and_return(double.as_null_object)
       end
 
       def request_with(values)
