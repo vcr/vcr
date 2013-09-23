@@ -57,31 +57,10 @@ module VCR
     end
 
     def concurrently
-      if should_use_subprocess?
-        pid = Process.fork do
-          trap(:INT) { ::Rack::Handler::WEBrick.shutdown }
-          yield
-          exit # manually exit; otherwise this sub-process will re-run the specs that haven't run yet.
-        end
-
-        at_exit do
-          Process.kill('INT', pid)
-          begin
-            Process.wait(pid)
-          rescue Errno::ECHILD
-            # ignore this error...I think it means the child process has already exited.
-          end
-        end
-      else
-        # JRuby doesn't support forking.
-        # Rubinius does, but there's a weird issue with the booted? check not working,
-        # so we're just using a thread for now.
-        Thread.new { yield }
-      end
-    end
-
-    def should_use_subprocess?
-      false
+      # JRuby doesn't support forking.
+      # Rubinius does, but there's a weird issue with the booted? check not working,
+      # so we're just using a thread for now.
+      Thread.new { yield }
     end
 
     def wait_until(timeout, error_message, &block)
