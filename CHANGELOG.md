@@ -12,6 +12,7 @@ Bug Fixes:
   returned. Excon doesn't invoke the `:response_block` in this case,
   requiring special handling. (James Bence)
 * Explicitly support the latest WebMock (1.13). (Ron Smith)
+* Explicitly support the latest Excon (0.25). (Myron Marston)
 
 ## 2.5.0 (May 18, 2013)
 
