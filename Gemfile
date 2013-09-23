@@ -29,7 +29,6 @@ gem 'cucumber', '>= 1.1.4'
 gem 'aruba', '>= 0.5'
 
 gem 'rspec', '>= 2.11'
-gem 'shoulda', '>= 2.9.2'
 
 gem 'fakeweb', '>= 1.3.0'
 gem 'webmock', '>= 1.13'
