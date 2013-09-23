@@ -1,8 +1,8 @@
 using_git = File.exist?(File.expand_path('../.git/', __FILE__))
 
 if using_git
-  require 'bundler'
   require 'bundler/setup'
+  require 'bundler/gem_helper'
   Bundler::GemHelper.install_tasks
   require 'appraisal'
 end

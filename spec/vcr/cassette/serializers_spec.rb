@@ -69,11 +69,20 @@ module VCR
       it_behaves_like "a serializer", :json,  "json", :lazily_loaded do
         engines = {}
 
-        engines[:yajl] = ::MultiJson::DecodeError unless RUBY_INTERPRETER == :jruby
+        if RUBY_INTERPRETER == :jruby
+          # don't test yajl on jruby
+        elsif RUBY_VERSION.to_f < 1.9
+          engines[:yajl] = MultiJson::LoadError
+        else
+          engines[:yajl] = ArgumentError
+        end
 
         if RUBY_VERSION =~ /1.9/
           engines[:json_gem] = EncodingError
-          engines[:json_pure] = EncodingError
+
+          # Disable json_pure for now due to this bug:
+          # https://github.com/flori/json/issues/186
+          # engines[:json_pure] = EncodingError
         end
 
         engines.each do |engine, error|

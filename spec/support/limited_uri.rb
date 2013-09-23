@@ -1,4 +1,5 @@
 require 'forwardable'
+require 'uri'
 
 class LimitedURI
   extend Forwardable
