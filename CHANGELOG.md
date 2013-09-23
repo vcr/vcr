@@ -13,6 +13,8 @@ Bug Fixes:
   requiring special handling. (James Bence)
 * Explicitly support the latest WebMock (1.13). (Ron Smith)
 * Explicitly support the latest Excon (0.25). (Myron Marston)
+* Fix detection of encoding errors to handle `ArgumentError` that
+  is raised by recent version of `MultiJson` (Myron Marston).
 
 ## 2.5.0 (May 18, 2013)
 

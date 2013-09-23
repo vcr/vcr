@@ -13,7 +13,7 @@ module VCR
         extend EncodingErrorHandling
 
         # @private
-        ENCODING_ERRORS = [MultiJson::DecodeError]
+        ENCODING_ERRORS = [MultiJson::DecodeError, ArgumentError]
         ENCODING_ERRORS << EncodingError if defined?(EncodingError)
 
         # The file extension to use for this serializer.
