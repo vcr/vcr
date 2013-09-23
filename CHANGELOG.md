@@ -15,6 +15,8 @@ Bug Fixes:
 * Explicitly support the latest Excon (0.25). (Myron Marston)
 * Fix detection of encoding errors to handle `ArgumentError` that
   is raised by recent version of `MultiJson` (Myron Marston).
+* Fix Excon adapter so that it allows VCR to play nicely with
+  manual Excon stubs (using Excon's `Excon.stub` API). (Myron Marston)
 
 ## 2.5.0 (May 18, 2013)
 
