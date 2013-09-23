@@ -69,7 +69,13 @@ module VCR
       it_behaves_like "a serializer", :json,  "json", :lazily_loaded do
         engines = {}
 
-        engines[:yajl] = ArgumentError unless RUBY_INTERPRETER == :jruby
+        if RUBY_INTERPRETER == :jruby
+          # don't test yajl on jruby
+        elsif RUBY_VERSION.to_f < 1.9
+          engines[:yajl] = MultiJson::LoadError
+        else
+          engines[:yajl] = ArgumentError
+        end
 
         if RUBY_VERSION =~ /1.9/
           engines[:json_gem] = EncodingError
