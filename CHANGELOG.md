@@ -14,7 +14,7 @@ Bug Fixes:
 * Explicitly support the latest WebMock (1.13). (Ron Smith)
 * Explicitly support the latest Excon (0.25). (Myron Marston)
 * Fix detection of encoding errors to handle `ArgumentError` that
-  is raised by recent version of `MultiJson` (Myron Marston).
+  is raised by recent versions of `MultiJson` (Myron Marston).
 * Fix Excon adapter so that it allows VCR to play nicely with
   manual Excon stubs (using Excon's `Excon.stub` API). (Myron Marston)
 
