@@ -37,7 +37,10 @@ gem 'faraday', '>= 0.8'
 gem 'httpclient', '>= 2.2'
 gem 'excon', '>= 0.22'
 
-gem 'timecop', '>= 0.3.5'
+# 0.6.2 cannot install on 1.8.7:
+# https://github.com/travisjeffery/timecop/commit/cec7352a6655cceb0216db53eea630354ee63e3f
+gem 'timecop', '0.6.1'
+
 gem 'rack', '>= 1.3.6'
 gem 'sinatra', '>= 1.3.2'
 gem 'multi_json', '>= 1.0.3'
