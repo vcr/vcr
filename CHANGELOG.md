@@ -2,6 +2,11 @@
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v2.5.0...master)
 
+Enhancements:
+
+* Add `VCR::Cassette#originally_recorded_at` for use when freezing
+  time based on when the cassette was recorded (Myron Marston).
+
 Bug Fixes:
 
 * Fix confusing errors that could result when using the YAML serializer
