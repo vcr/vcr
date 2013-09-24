@@ -110,6 +110,20 @@ module VCR
       }
     end
 
+    # @return [Time, nil] The `recorded_at` time of the first HTTP interaction
+    #                     or nil if the cassette has no prior HTTP interactions.
+    #
+    # @example
+    #
+    #   VCR.use_cassette("some cassette") do |cassette|
+    #     Timecop.freeze(cassette.originally_recorded_at || Time.now) do
+    #       # ...
+    #     end
+    #   end
+    def originally_recorded_at
+      @originally_recorded_at ||= previously_recorded_interactions.map(&:recorded_at).min
+    end
+
   private
 
     def assert_valid_options!
@@ -174,13 +188,12 @@ module VCR
 
     def should_re_record?
       return false unless @re_record_interval
-      previously_recorded_at = earliest_interaction_recorded_at
-      return false unless previously_recorded_at
+      return false unless originally_recorded_at
 
       now = Time.now
 
-      (previously_recorded_at + @re_record_interval < now).tap do |value|
-        info = "previously recorded at: '#{previously_recorded_at}'; now: '#{now}'; interval: #{@re_record_interval} seconds"
+      (originally_recorded_at + @re_record_interval < now).tap do |value|
+        info = "previously recorded at: '#{originally_recorded_at}'; now: '#{now}'; interval: #{@re_record_interval} seconds"
 
         if !value
           log "Not re-recording since the interval has not elapsed (#{info})."
@@ -191,10 +204,6 @@ module VCR
           return false
         end
       end
-    end
-
-    def earliest_interaction_recorded_at
-      previously_recorded_interactions.map(&:recorded_at).min
     end
 
     def should_stub_requests?

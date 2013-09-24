@@ -8,6 +8,16 @@ describe VCR::Cassette do
     VCR::HTTPInteraction.new(request, response).tap { |i| yield i if block_given? }
   end
 
+  def stub_old_interactions(interactions)
+    VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
+
+    hashes = interactions.map(&:to_hash)
+    allow(VCR.cassette_serializers[:yaml]).to receive(:deserialize).and_return({ 'http_interactions' => hashes })
+    allow(VCR::HTTPInteraction).to receive(:from_hash) do |hash|
+      interactions[hashes.index(hash)]
+    end
+  end
+
   describe '#file' do
     it 'delegates the file resolution to the FileSystem persister' do
       fs = VCR::Cassette::Persisters::FileSystem
@@ -209,19 +219,10 @@ describe VCR::Cassette do
       end
 
       context "when :#{record_mode} is passed as the record option" do
-        def stub_old_interactions(interactions)
-          hashes = interactions.map(&:to_hash)
-          allow(VCR.cassette_serializers[:yaml]).to receive(:deserialize).and_return({ 'http_interactions' => hashes })
-          allow(VCR::HTTPInteraction).to receive(:from_hash) do |hash|
-            interactions[hashes.index(hash)]
-          end
-        end
-
         unless record_mode == :all
           let(:interaction_1) { http_interaction { |i| i.request.uri = 'http://example.com/foo' } }
           let(:interaction_2) { http_interaction { |i| i.request.uri = 'http://example.com/bar' } }
           let(:interactions)  { [interaction_1, interaction_2] }
-          before(:each) { VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec" }
 
           it 'updates the content_length headers when given :update_content_length_header => true' do
             stub_old_interactions(interactions)
@@ -353,6 +354,8 @@ describe VCR::Cassette do
 
         if stub_requests
           it 'invokes the before_playback hooks' do
+            VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
+
             expect(VCR.configuration).to receive(:invoke_hook).with(
               :before_playback,
               an_instance_of(VCR::HTTPInteraction::HookAware),
@@ -388,6 +391,25 @@ describe VCR::Cassette do
           end
         end
       end
+    end
+  end
+
+  describe ".originally_recorded_at" do
+    it 'returns the earliest `recorded_at` timestamp' do
+      i1 = http_interaction { |i| i.recorded_at = Time.now - 1000 }
+      i2 = http_interaction { |i| i.recorded_at = Time.now - 10000 }
+      i3 = http_interaction { |i| i.recorded_at = Time.now - 100 }
+
+      stub_old_interactions([i1, i2, i3])
+
+      cassette = VCR::Cassette.new("example")
+      expect(cassette.originally_recorded_at).to eq(i2.recorded_at)
+    end
+
+    it 'records nil for a cassette that has no prior recorded interactions' do
+      stub_old_interactions([])
+      cassette = VCR::Cassette.new("example")
+      expect(cassette.originally_recorded_at).to be_nil
     end
   end
 
