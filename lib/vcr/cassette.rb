@@ -58,7 +58,7 @@ module VCR
     # disk.
     def eject
       write_recorded_interactions_to_disk
-      http_interactions.assert_no_unused_interactions! unless @allow_unused_http_interactions
+      http_interactions.assert_no_unused_interactions! if should_assert_no_unused_interactions?
     end
 
     # @private
@@ -212,6 +212,10 @@ module VCR
 
     def should_remove_matching_existing_interactions?
       record_mode == :all
+    end
+
+    def should_assert_no_unused_interactions?
+      !(@allow_unused_http_interactions || $!)
     end
 
     def raw_cassette_bytes

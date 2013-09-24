@@ -88,7 +88,10 @@ module VCR
   # @option options :allow_unused_http_interactions [Boolean] If set to
   #  false, an error will be raised if a cassette is ejected before all
   #  previously recorded HTTP interactions have been used.
-  #  Defaults to true.
+  #  Defaults to true. Note that when an error has already occurred
+  #  (as indicated by the `$!` variable) unused interactions will be
+  #  allowed so that we don't silence the original error (which is almost
+  #  certainly more interesting/important).
   # @option options :exclusive [Boolean] Whether or not to use only this
   #  cassette and to completely ignore any cassettes in the cassettes stack.
   #  Defaults to false.
