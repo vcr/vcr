@@ -17,14 +17,21 @@ module VCR
             end
           end
 
-          config.around(:each, :vcr => lambda { |v| !!v }) do |example|
+          when_tagged_with_vcr = { :vcr => lambda { |v| !!v } }
+
+          config.before(:each, when_tagged_with_vcr) do |ex|
+            example = respond_to?(:example) ? self.example : ex
+
             options = example.metadata[:vcr]
             options = options.is_a?(Hash) ? options.dup : {} # in case it's just :vcr => true
 
             cassette_name = options.delete(:cassette_name) ||
                             vcr_cassette_name_for[example.metadata]
+            VCR.insert_cassette(cassette_name, options)
+          end
 
-            VCR.use_cassette(cassette_name, options, &example)
+          config.after(:each, when_tagged_with_vcr) do |ex|
+            VCR.eject_cassette
           end
         end
       end
