@@ -17,7 +17,7 @@ Bug Fixes:
   returned. Excon doesn't invoke the `:response_block` in this case,
   requiring special handling. (James Bence)
 * Explicitly support the latest WebMock (1.13). (Ron Smith)
-* Explicitly support the latest Excon (0.25). (Myron Marston)
+* Explicitly support the latest Excon (0.26). (Myron Marston)
 * Fix detection of encoding errors to handle `ArgumentError` that
   is raised by recent versions of `MultiJson` (Myron Marston).
 * Fix Excon adapter so that it allows VCR to play nicely with
