@@ -32,6 +32,12 @@ describe VCR do
       VCR.eject_cassette
     end
 
+    it 'forwards the given options to `Cassette#eject`' do
+      cassette = insert_cassette
+      expect(cassette).to receive(:eject).with(:some => :options)
+      VCR.eject_cassette(:some => :options)
+    end
+
     it 'returns the ejected cassette' do
       cassette = insert_cassette
       expect(VCR.eject_cassette).to eq(cassette)

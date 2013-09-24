@@ -137,10 +137,16 @@ module VCR
   # In addition, any newly recorded HTTP interactions will be written to
   # disk.
   #
+  # @param options [Hash] Eject options.
+  # @option options :skip_no_unused_interactions_assertion [Boolean]
+  #  If `true` is given, this will skip the "no unused HTTP interactions"
+  #  assertion enabled by the `:allow_unused_http_interactions => false`
+  #  cassette option. This is intended for use when your test has had
+  #  an error, but your test framework has already handled it.
   # @return [VCR::Cassette, nil] the ejected cassette if there was one
-  def eject_cassette
+  def eject_cassette(options = {})
     cassette = cassettes.last
-    cassette.eject if cassette
+    cassette.eject(options) if cassette
     cassette
   ensure
     cassettes.pop

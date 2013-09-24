@@ -31,7 +31,8 @@ module VCR
           end
 
           config.after(:each, when_tagged_with_vcr) do |ex|
-            VCR.eject_cassette
+            example = respond_to?(:example) ? self.example : ex
+            VCR.eject_cassette(:skip_no_unused_interactions_assertion => !!example.exception)
           end
         end
       end

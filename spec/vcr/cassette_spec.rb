@@ -442,6 +442,15 @@ describe VCR::Cassette do
 
         expect(interaction_list).not_to have_received(:assert_no_unused_interactions!)
       end
+
+      it 'does not assert no unused interactions if :skip_no_unused_interactions_assertion is passed' do
+        cassette = VCR.insert_cassette("foo", :allow_unused_http_interactions => false)
+
+        interaction_list = cassette.http_interactions
+        expect(interaction_list).not_to receive(:assert_no_unused_interactions!)
+
+        cassette.eject(:skip_no_unused_interactions_assertion => true)
+      end
     end
 
     it 'does not assert that there are no unused interactions if allow_unused_http_interactions is set to true' do
