@@ -496,7 +496,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
               expect(VCR).not_to receive(:record_http_interaction)
               make_http_request(:get, url)
             end
-          end unless other.include?(:not_disableable)
+          end
 
           it 'records the request uri' do
             expect(recorded_interaction.request.uri).to eq(url)

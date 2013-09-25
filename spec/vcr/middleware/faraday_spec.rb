@@ -7,8 +7,7 @@ describe VCR::Middleware::Faraday do
   http_libs.each do |lib|
     it_behaves_like 'a hook into an HTTP library', :faraday, "faraday (w/ #{lib})",
       :status_message_not_exposed,
-      :does_not_support_rotating_responses,
-      :not_disableable
+      :does_not_support_rotating_responses
   end
 
   context 'when performing a multipart upload' do

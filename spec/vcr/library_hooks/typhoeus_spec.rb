@@ -65,6 +65,34 @@ describe "Typhoeus hook", :with_monkey_patches => :typhoeus do
     end
   end
 
+  context "when used with a typhoeus-based faraday connection" do
+    let(:base_url) { "http://localhost:#{VCR::SinatraApp.port}" }
+
+    let(:conn) do
+      Faraday.new(:url => base_url) do |faraday|
+        faraday.adapter  :typhoeus
+      end
+    end
+
+    def get_response
+      # Ensure faraday hook doesn't handle the request.
+      VCR.library_hooks.exclusively_enabled(:typhoeus) do
+        VCR.use_cassette("faraday") do
+          conn.get("/")
+        end
+      end
+    end
+
+    it 'records and replays headers correctly' do
+      pending "waiting on typhoeus/typhoeus#324" do
+        recorded = get_response
+        played_back = get_response
+
+        expect(played_back.headers).to eq(recorded.headers)
+      end
+    end
+  end
+
   context '#effective_url' do
     def make_single_request
       VCR.use_cassette('single') do
