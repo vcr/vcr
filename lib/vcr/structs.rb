@@ -346,9 +346,15 @@ module VCR
   # @attr [Hash{String => Array<String>}] headers the response headers
   # @attr [String] body the response body
   # @attr [nil, String] http_version the HTTP version
-  class Response < Struct.new(:status, :headers, :body, :http_version)
+  # @attr [Hash] adapter_metadata Additional metadata used by a specific VCR adapter.
+  class Response < Struct.new(:status, :headers, :body, :http_version, :adapter_metadata)
     include Normalizers::Header
     include Normalizers::Body
+
+    def initialize(*args)
+      super(*args)
+      self.adapter_metadata ||= {}
+    end
 
     # Builds a serializable hash from the response data.
     #
@@ -361,7 +367,10 @@ module VCR
         'headers'      => headers,
         'body'         => serializable_body,
         'http_version' => http_version
-      }.tap { |h| OrderedHashSerializer.apply_to(h, members) }
+      }.tap do |hash|
+        hash['adapter_metadata'] = adapter_metadata unless adapter_metadata.empty?
+        OrderedHashSerializer.apply_to(hash, members)
+      end
     end
 
     # Constructs a new instance from a hash.
@@ -372,7 +381,8 @@ module VCR
       new ResponseStatus.from_hash(hash.fetch('status', {})),
           hash['headers'],
           body_from(hash['body']),
-          hash['http_version']
+          hash['http_version'],
+          hash['adapter_metadata']
     end
 
     # Updates the Content-Length response header so that it is

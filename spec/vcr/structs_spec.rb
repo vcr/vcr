@@ -120,6 +120,18 @@ module VCR
         expect(HTTPInteraction.from_hash(hash).recorded_at).to eq(recorded_at)
       end
 
+      it 'initializes the response adapter_metadata from the hash if it is included' do
+        hash['response']['adapter_metadata'] = { 'foo' => 12 }
+        interaction = HTTPInteraction.from_hash(hash)
+        expect(interaction.response.adapter_metadata).to eq("foo" => 12)
+      end
+
+      it 'works when the response adapter_metadata is missing' do
+        expect(hash['response'].keys).not_to include('adapter_metadata')
+        interaction = HTTPInteraction.from_hash(hash)
+        expect(interaction.response.adapter_metadata).to eq({})
+      end
+
       it 'uses a blank request when the hash lacks one' do
         hash.delete('request')
         i = HTTPInteraction.from_hash(hash)
@@ -265,6 +277,16 @@ module VCR
           'body'         => body_hash('string', 'res body'),
           'http_version' => '1.1'
         })
+      end
+
+      it 'includes the response adapter metadata when it is not empty' do
+        interaction.response.adapter_metadata['foo'] = 17
+        expect(hash['response']['adapter_metadata']).to eq('foo' => 17)
+      end
+
+      it 'does not include the response adapter metadata when it is empty' do
+        expect(interaction.response.adapter_metadata).to eq({})
+        expect(hash['response'].keys).not_to include('adapter_metadata')
       end
 
       context "when the body is extended with a module and some state" do
@@ -567,6 +589,27 @@ module VCR
     it_behaves_like 'a body normalizer' do
       def instance(body)
         described_class.new(:status, {}, body, '1.1')
+      end
+    end
+
+    describe "#adapter_metadata" do
+      it 'returns the hash given as the last #initialize argument' do
+        response = Response.new(
+          ResponseStatus.new(200, "OK"),
+          {}, "the body", "1.1",
+          { "meta" => "value" }
+        )
+
+        expect(response.adapter_metadata).to eq("meta" => "value")
+      end
+
+      it 'returns a blank hash when nil is passed to #initialize' do
+        response = Response.new(
+          ResponseStatus.new(200, "OK"),
+          {}, "the body", "1.1", nil
+        )
+
+        expect(response.adapter_metadata).to eq({})
       end
     end
 

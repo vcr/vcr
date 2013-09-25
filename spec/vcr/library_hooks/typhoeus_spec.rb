@@ -66,20 +66,51 @@ describe "Typhoeus hook", :with_monkey_patches => :typhoeus do
   end
 
   context '#effective_url' do
-    def make_single_request
-      VCR.use_cassette('single') do
-        response = Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/").run
+    ResponseValues = Struct.new(:status, :body, :effective_url)
 
-        response.effective_url
+    def url_for(path)
+      "http://localhost:#{VCR::SinatraApp.port}#{path}"
+    end
+
+    def make_single_request(path, options = {})
+      VCR.use_cassette('single') do |cassette|
+        response = Typhoeus::Request.new(url_for(path), options).run
+
+        yield cassette if block_given?
+
+        ResponseValues.new(
+          response.code,
+          response.body,
+          response.effective_url
+        )
       end
     end
 
-    it 'recorded and played back properly' do
-      recorded = make_single_request
-      played_back = make_single_request
-      expect(recorded).not_to be_nil
+    it 'records and plays back properly' do
+      recorded = make_single_request('/')
+      played_back = make_single_request('/')
 
+      expect(recorded.effective_url).to eq(url_for('/'))
       expect(played_back).to eq(recorded)
+    end
+
+    it 'falls back to the request url when it was not recorded (e.g. on VCR <= 2.5.0)' do
+      make_single_request('/') do |cassette|
+        cassette.new_recorded_interactions.each { |i| i.response.adapter_metadata.clear }
+      end
+
+      played_back = make_single_request('/')
+      expect(played_back.effective_url).to eq(url_for('/'))
+    end
+
+    context "when following redirects" do
+      it 'records and plays back properly' do
+        recorded = make_single_request('/redirect-to-root', :followlocation => true)
+        played_back = make_single_request('/redirect-to-root', :followlocation => true)
+
+        expect(recorded.effective_url).to eq(url_for('/'))
+        expect(played_back).to eq(recorded)
+      end
     end
   end
 end
