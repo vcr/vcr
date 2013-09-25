@@ -56,9 +56,17 @@ module VCR
     # Ejects the current cassette. The cassette will no longer be used.
     # In addition, any newly recorded HTTP interactions will be written to
     # disk.
-    def eject
+    #
+    # @note This is not intended to be called directly. Use `VCR.eject_cassette` instead.
+    #
+    # @param (see VCR#eject_casssette)
+    # @see VCR#eject_cassette
+    def eject(options = {})
       write_recorded_interactions_to_disk
-      http_interactions.assert_no_unused_interactions! unless @allow_unused_http_interactions
+
+      if should_assert_no_unused_interactions? && !options[:skip_no_unused_interactions_assertion]
+        http_interactions.assert_no_unused_interactions!
+      end
     end
 
     # @private
@@ -212,6 +220,10 @@ module VCR
 
     def should_remove_matching_existing_interactions?
       record_mode == :all
+    end
+
+    def should_assert_no_unused_interactions?
+      !(@allow_unused_http_interactions || $!)
     end
 
     def raw_cassette_bytes

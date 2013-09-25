@@ -6,7 +6,7 @@ describe VCR::CucumberTags do
   let(:after_blocks_for_tags) { {} }
 
   def scenario(name)
-    double(:name => name, :feature => double(:name => "My feature name\nThe preamble text is not included"))
+    double(:name => name, :feature => double(:name => "My feature name\nThe preamble text is not included"), :failed? => false)
   end
 
   let(:current_scenario) { scenario "My scenario name\nThe preamble text is not included" }
@@ -64,7 +64,7 @@ describe VCR::CucumberTags do
         it "makes a unique name for each element of scenario outline" do
           subject.send(tag_method, 'tag1', :use_scenario_name => true)
 
-          scenario_with_outline = double(:name => "My row name",
+          scenario_with_outline = double(:name => "My row name", :failed? => false,
                                        :scenario_outline => double(:feature => double(:name => "My feature name\nThe preamble text is not included"),
                                                                  :name => "My scenario outline name"))
           test_tag(:name, 'tag1', 'My feature name/My scenario outline name/My row name', scenario_with_outline)

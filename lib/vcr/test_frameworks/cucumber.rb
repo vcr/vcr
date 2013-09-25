@@ -52,8 +52,8 @@ module VCR
           VCR.insert_cassette(cassette_name, options)
         end
 
-        @main_object.After(tag_name) do
-          VCR.eject_cassette
+        @main_object.After(tag_name) do |scenario|
+          VCR.eject_cassette(:skip_no_unused_interactions_assertion => scenario.failed?)
         end
 
         self.class.add_tag(tag_name)

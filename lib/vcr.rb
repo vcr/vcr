@@ -88,7 +88,10 @@ module VCR
   # @option options :allow_unused_http_interactions [Boolean] If set to
   #  false, an error will be raised if a cassette is ejected before all
   #  previously recorded HTTP interactions have been used.
-  #  Defaults to true.
+  #  Defaults to true. Note that when an error has already occurred
+  #  (as indicated by the `$!` variable) unused interactions will be
+  #  allowed so that we don't silence the original error (which is almost
+  #  certainly more interesting/important).
   # @option options :exclusive [Boolean] Whether or not to use only this
   #  cassette and to completely ignore any cassettes in the cassettes stack.
   #  Defaults to false.
@@ -134,10 +137,16 @@ module VCR
   # In addition, any newly recorded HTTP interactions will be written to
   # disk.
   #
+  # @param options [Hash] Eject options.
+  # @option options :skip_no_unused_interactions_assertion [Boolean]
+  #  If `true` is given, this will skip the "no unused HTTP interactions"
+  #  assertion enabled by the `:allow_unused_http_interactions => false`
+  #  cassette option. This is intended for use when your test has had
+  #  an error, but your test framework has already handled it.
   # @return [VCR::Cassette, nil] the ejected cassette if there was one
-  def eject_cassette
+  def eject_cassette(options = {})
     cassette = cassettes.last
-    cassette.eject if cassette
+    cassette.eject(options) if cassette
     cassette
   ensure
     cassettes.pop

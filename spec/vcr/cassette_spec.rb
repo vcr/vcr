@@ -416,14 +416,41 @@ describe VCR::Cassette do
   describe '#eject' do
     let(:custom_persister) { double("custom persister", :[] => nil) }
 
-    it 'asserts that there are no unused interactions if allow_unused_http_interactions is set to false' do
-      cassette = VCR.insert_cassette("foo", :allow_unused_http_interactions => false)
+    context "when :allow_unused_http_interactions is set to false" do
+      it 'asserts that there are no unused interactions' do
+        cassette = VCR.insert_cassette("foo", :allow_unused_http_interactions => false)
 
-      interaction_list = cassette.http_interactions
-      expect(interaction_list).to respond_to(:assert_no_unused_interactions!).with(0).arguments
-      expect(interaction_list).to receive(:assert_no_unused_interactions!)
+        interaction_list = cassette.http_interactions
+        expect(interaction_list).to respond_to(:assert_no_unused_interactions!).with(0).arguments
+        expect(interaction_list).to receive(:assert_no_unused_interactions!)
 
-      cassette.eject
+        cassette.eject
+      end
+
+      it 'does not assert no unused interactions if there is an existing error' do
+        cassette = VCR.insert_cassette("foo", :allow_unused_http_interactions => false)
+        interaction_list = cassette.http_interactions
+        allow(interaction_list).to receive(:assert_no_unused_interactions!)
+
+        expect {
+          begin
+            raise "boom"
+          ensure
+            cassette.eject
+          end
+        }.to raise_error(/boom/)
+
+        expect(interaction_list).not_to have_received(:assert_no_unused_interactions!)
+      end
+
+      it 'does not assert no unused interactions if :skip_no_unused_interactions_assertion is passed' do
+        cassette = VCR.insert_cassette("foo", :allow_unused_http_interactions => false)
+
+        interaction_list = cassette.http_interactions
+        expect(interaction_list).not_to receive(:assert_no_unused_interactions!)
+
+        cassette.eject(:skip_no_unused_interactions_assertion => true)
+      end
     end
 
     it 'does not assert that there are no unused interactions if allow_unused_http_interactions is set to true' do

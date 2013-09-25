@@ -149,3 +149,62 @@ Feature: Usage with Cucumber
     And the file "features/cassettes/allowed.yml" should contain "Hello allowed"
     And the file "features/cassettes/VCR_example/tagged_scenario.yml" should contain "Hello localhost_request_1"
     And the file "features/cassettes/VCR_example/tagged_scenario_outline/_foo_bar_.yml" should contain "Hello localhost_request_1"
+
+  Scenario: `:allow_unused_http_interactions => false` does not raise if the scenario already failed
+    Given a previously recorded cassette file "features/cassettes/cucumber_tags/example.yml" with:
+      """
+      --- 
+      http_interactions: 
+      - request: 
+          method: get
+          uri: http://example.com/foo
+          body: 
+            encoding: UTF-8
+            string: ""
+          headers: {}
+        response: 
+          status: 
+            code: 200
+            message: OK
+          headers: 
+            Content-Length: 
+            - "5"
+          body: 
+            encoding: UTF-8
+            string: Hello
+          http_version: "1.1"
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
+      recorded_with: VCR 2.0.0
+      """
+    And a file named "features/support/vcr.rb" with:
+      """ruby
+      require 'vcr'
+
+      VCR.configure do |c|
+        c.hook_into :webmock
+        c.cassette_library_dir = 'features/cassettes'
+      end
+
+      VCR.cucumber_tags do |t|
+        t.tag '@example', :allow_unused_http_interactions => false
+      end
+      """
+    And a file named "features/step_definitions/steps.rb" with:
+      """ruby
+      When /^the scenario fails$/ do
+        raise "boom"
+      end
+      """
+    And a file named "features/vcr_example.feature" with:
+      """
+      Feature:
+
+        @example
+        Scenario: tagged scenario
+          When the scenario fails
+      """
+    When I run `cucumber features/vcr_example.feature`
+    Then it should fail with "1 scenario (1 failed)"
+     And the output should contain "boom"
+     And the output should not contain "There are unused HTTP interactions"
+

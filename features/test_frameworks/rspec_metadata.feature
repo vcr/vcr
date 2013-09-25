@@ -28,6 +28,31 @@ Feature: Usage with RSpec metadata
         c.treat_symbols_as_metadata_keys_with_true_values = true
       end
       """
+    And a previously recorded cassette file "spec/cassettes/Group/optionally_raises_an_error.yml" with:
+      """
+      --- 
+      http_interactions: 
+      - request: 
+          method: get
+          uri: http://example.com/foo
+          body: 
+            encoding: UTF-8
+            string: ""
+          headers: {}
+        response: 
+          status: 
+            code: 200
+            message: OK
+          headers: 
+            Content-Length: 
+            - "5"
+          body: 
+            encoding: UTF-8
+            string: Hello
+          http_version: "1.1"
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
+      recorded_with: VCR 2.0.0
+      """
 
   Scenario: Use `:vcr` metadata
     Given a file named "spec/vcr_example_spec.rb" with:
@@ -70,6 +95,39 @@ Feature: Usage with RSpec metadata
      And the file "spec/cassettes/VCR_example_group_metadata/records_another_http_request.yml" should contain "Hello"
      And the file "spec/cassettes/VCR_example_group_metadata/in_a_nested_example_group/records_another_one.yml" should contain "Hello"
      And the file "spec/cassettes/VCR_example_metadata/records_an_http_request.yml" should contain "Hello"
+
+  Scenario: `:allow_unused_http_interactions => false` causes a failure if there are unused interactions
+    And a file named "spec/vcr_example_spec.rb" with:
+      """ruby
+      require 'spec_helper'
+
+      describe "Group", :vcr => { :allow_unused_http_interactions => false } do
+        it 'optionally raises an error' do
+          # don't fail
+        end
+      end
+      """
+    When I run `rspec spec/vcr_example_spec.rb`
+    Then it should fail with an error like:
+      """
+      There are unused HTTP interactions left in the cassette:
+        - [get http://example.com/foo] => [200 "Hello"]
+      """
+
+  Scenario: `:allow_unused_http_interactions => false` does not raise if the example already failed
+    And a file named "spec/vcr_example_spec.rb" with:
+      """ruby
+      require 'spec_helper'
+
+      describe "Group", :vcr => { :allow_unused_http_interactions => false } do
+        it 'optionally raises an error' do
+          raise "boom"
+        end
+      end
+      """
+    When I run `rspec spec/vcr_example_spec.rb`
+    Then it should fail with "boom"
+     And the output should not contain "There are unused HTTP interactions"
 
   Scenario: Pass a hash to set the cassette options
     Given a file named "spec/vcr_example_spec.rb" with:

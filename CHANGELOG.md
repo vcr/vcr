@@ -5,7 +5,11 @@
 Enhancements:
 
 * Add `VCR::Cassette#originally_recorded_at` for use when freezing
-  time based on when the cassette was recorded (Myron Marston).
+  time based on when the cassette was recorded. (Myron Marston)
+* Improve the `:allow_unused_http_interactions => false` option
+  so that it does not raise an error when there are unused interactions
+  due to the test failing on its own; otherwise, it could raise
+  an error and silence the original test failure. (Myron Marston)
 
 Bug Fixes:
 

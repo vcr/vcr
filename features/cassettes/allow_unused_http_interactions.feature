@@ -1,7 +1,8 @@
 Feature: Allow Unused HTTP Interactions
 
   If set to false, this cassette option will cause VCR to raise an error
-  when a cassette is ejected and there are unused HTTP interactions remaining.
+  when a cassette is ejected and there are unused HTTP interactions remaining,
+  unless there is already an exception unwinding the callstack.
 
   It verifies that all requests included in the cassette were made, and allows
   VCR to function a bit like a mock object at the HTTP layer.
@@ -83,4 +84,17 @@ Feature: Allow Unused HTTP Interactions
       """
     When I run `ruby disallowed_with_all_requests.rb`
     Then it should pass
+
+  Scenario: Does not silence other errors raised in `use_cassette` block
+    Given a file named "does_not_silence_other_errors.rb" with:
+      """ruby
+      require 'vcr_config'
+
+      VCR.use_cassette("example", :allow_unused_http_interactions => false) do
+        raise "boom"
+      end
+      """
+    When I run `ruby does_not_silence_other_errors.rb`
+    Then it should fail with "boom"
+     And the output should not contain "There are unused HTTP interactions"
 
