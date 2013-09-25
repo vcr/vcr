@@ -27,6 +27,7 @@ module VCR
       #
       # @param [Hash] env the Faraday request env hash
       def call(env)
+        return if VCR.library_hooks.disabled?(:faraday)
         RequestHandler.new(@app, env).handle
       end
 
