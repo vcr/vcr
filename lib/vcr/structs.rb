@@ -171,7 +171,7 @@ module VCR
   module OrderedHashSerializer
     def each
       @ordered_keys.each do |key|
-        yield key, self[key]
+        yield key, self[key] if has_key?(key)
       end
     end
 

@@ -326,6 +326,11 @@ module VCR
         assert_yielded_keys hash['response'], 'status', 'headers', 'body', 'http_version'
         assert_yielded_keys hash['response']['status'], 'code', 'message'
       end
+
+      it 'yields `adapter_metadata` if it has any data' do
+        interaction.response.adapter_metadata['foo'] = 17
+        assert_yielded_keys hash['response'], 'status', 'headers', 'body', 'http_version', 'adapter_metadata'
+      end
     end
 
     describe "#parsed_uri" do
