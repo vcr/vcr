@@ -7,7 +7,7 @@ module VCR
   class Configuration
     include Hooks
     include VariableArgsBlockCaller
-    include Logger
+    include Logger::Mixin
 
     # Gets the directory to read cassettes from and write cassettes to.
     #
@@ -430,7 +430,21 @@ module VCR
     #   VCR.configure do |c|
     #     c.debug_logger = File.open('vcr.log', 'w')
     #   end
-    attr_accessor :debug_logger
+    attr_reader :debug_logger
+    # @private (documented above)
+    def debug_logger=(value)
+      @debug_logger = value
+
+      if value
+        @logger = Logger.new(value)
+      else
+        @logger = Logger::Null
+      end
+    end
+
+    # @private
+    # Logger object that provides logging APIs and helper methods.
+    attr_reader :logger
 
     # Sets a callback that determines whether or not to base64 encode
     # the bytes of a request or response body during serialization in
@@ -479,7 +493,7 @@ module VCR
 
       self.uri_parser = URI
       self.query_parser = CGI.method(:parse)
-      self.debug_logger = NullDebugLogger
+      self.debug_logger = nil
 
       register_built_in_hooks
     end
@@ -536,12 +550,6 @@ module VCR
 
     # @private
     define_hook :after_library_hooks_loaded
-  end
-
-  # @private
-  module NullDebugLogger
-    extend self
-    def puts(*); end
   end
 end
 
