@@ -191,22 +191,26 @@ Thanks also to the following people who have contributed patches or helpful sugg
 
 ## Ports in other languages
 
-* [Betamax](https://github.com/robfletcher/betamax) (Groovy)
+* [Betamax](https://github.com/robfletcher/betamax) (Groovy/JVM)
+* [Betamax](https://github.com/sigmavirus24/betamax) (Python)
+* [HAVCR](https://github.com/cordawyn/havcr) (Haskell)
 * [Mimic](https://github.com/acoulton/mimic) (PHP/Kohana)
-* [Nock](https://github.com/flatiron/nock) (JavaScript/Node)
+* [Nock-VCR](https://github.com/carbonfive/nock-vcr) (JavaScript/Node)
 * [NSURLConnectionVCR](https://bitbucket.org/martijnthe/nsurlconnectionvcr) (Objective-C)
+* [PHP-VCR](https://github.com/adri/php-vcr) (PHP)
 * [TapeDeck.js](https://github.com/EndangeredMassa/TapeDeck.js) (JavaScript)
 * [VCR.js](https://github.com/elcuervo/vcr.js) (JavaScript)
 * [VCR.py](https://github.com/kevin1024/vcrpy) (Python)
 * [VCRURLConnection](https://github.com/dstnbrkr/VCRURLConnection) (Objective-C)
 * [vcr-clj](https://github.com/ifesdjeen/vcr-clj) (Clojure)
-* [Betamax](https://github.com/sigmavirus24/betamax) (Python)
+* [VHS](https://github.com/diegoeche/vhs) (Erlang)
 
 ## Similar Libraries in Ruby
 
 * [Ephemeral Response](https://github.com/sandro/ephemeral_response)
 * [Net::HTTP Spy](http://github.com/martinbtt/net-http-spy)
 * [NetRecorder](https://github.com/chrisyoung/netrecorder)
+* [Puffing Billy](https://github.com/oesmith/puffing-billy)
 * [REST-assured](https://github.com/BBC/REST-assured)
 * [Stale Fish](https://github.com/jsmestad/stale_fish)
 * [WebFixtures](http://github.com/trydionel/web_fixtures)
