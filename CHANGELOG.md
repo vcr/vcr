@@ -10,6 +10,9 @@ Enhancements:
   so that it does not raise an error when there are unused interactions
   due to the test failing on its own; otherwise, it could raise
   an error and silence the original test failure. (Myron Marston)
+* Improve perf when no logger is used by having it short-circuit
+  and not bother formatting a logger message that won't be
+  printed, anyway (Luan Santos and Matt Parker).
 
 Bug Fixes:
 
@@ -29,12 +32,6 @@ Bug Fixes:
 * Fix Typhoeus adapter so that it sets `effective_url` properly
   when the `:followlocation` option is used and a redirect is
   followed. (Myron Marston)
-
-Enhancements:
-
-* Improve perf when no logger is used by having it short-circuit
-  and not bother formatting a logger message that won't be
-  printed, anyway (Luan Santos and Matt Parker).
 
 ## 2.5.0 (May 18, 2013)
 
