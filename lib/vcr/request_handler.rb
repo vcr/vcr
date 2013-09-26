@@ -1,7 +1,7 @@
 module VCR
   # @private
   class RequestHandler
-    include Logger
+    include Logger::Mixin
 
     def handle
       log "Handling request: #{request_summary} (disabled: #{disabled?})"
