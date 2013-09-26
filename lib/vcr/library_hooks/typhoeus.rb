@@ -50,7 +50,7 @@ else
               :status_message => stubbed_response.status.message,
               :headers        => stubbed_response_headers,
               :body           => stubbed_response.body,
-              :effective_url  => request.url,
+              :effective_url  => stubbed_response.adapter_metadata.fetch('effective_url', request.url),
               :mock           => true
           end
 
@@ -69,7 +69,8 @@ else
             VCR::ResponseStatus.new(response.code, response.status_message),
             response.headers,
             response.body,
-            response.http_version
+            response.http_version,
+            { "effective_url" => response.effective_url }
         end
 
         ::Typhoeus.on_complete do |response|
