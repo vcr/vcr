@@ -29,6 +29,26 @@ describe VCR do
       expect(recorded_content_for("search") +
              recorded_content_for("foo")).to include("query: thread", "FOO!")
     end
+
+    def make_multiple_threaded_requests(num_threads)
+      VCR.use_cassette("threaded") do
+        num_threads.times.map do |i|
+          Thread.new do
+            Thread.current.abort_on_exception = true
+            Excon.get("http://localhost:#{VCR::SinatraApp.port}/search?q=#{i}").body
+          end
+        end.map(&:value)
+      end
+    end
+
+    it 'can safely use one cassette across multiple threads' do
+      num_threads = 50
+      recorded = make_multiple_threaded_requests(num_threads)
+      expect(recorded).to eq(num_threads.times.map { |i| "query: #{i}" })
+
+      played_back = make_multiple_threaded_requests(num_threads)
+      expect(played_back).to eq(recorded)
+    end
   end
 end
 
