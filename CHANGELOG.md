@@ -23,9 +23,12 @@ Bug Fixes:
 * Explicitly support the latest WebMock (1.13). (Ron Smith)
 * Explicitly support the latest Excon (0.26). (Myron Marston)
 * Fix detection of encoding errors to handle `ArgumentError` that
-  is raised by recent versions of `MultiJson` (Myron Marston).
+  is raised by recent versions of `MultiJson`. (Myron Marston)
 * Fix Excon adapter so that it allows VCR to play nicely with
   manual Excon stubs (using Excon's `Excon.stub` API). (Myron Marston)
+* Fix Typhoeus adapter so that it sets `effective_url` properly
+  when the `:followlocation` option is used and a redirect is
+  followed. (Myron Marston)
 
 ## 2.5.0 (May 18, 2013)
 

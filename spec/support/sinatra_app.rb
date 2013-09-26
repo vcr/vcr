@@ -20,6 +20,10 @@ module VCR
       "FOO!"
     end
 
+    get '/redirect-to-root' do
+      redirect to('/')
+    end
+
     post '/foo' do
       "FOO!"
     end

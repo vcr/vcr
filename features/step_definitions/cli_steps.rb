@@ -31,6 +31,7 @@ module VCRHelpers
       i.request.body ||= ''
       i.response.body ||= ''
       i.response.status.message ||= ''
+      i.response.adapter_metadata.clear
 
       # Remove non-deterministic headers and headers
       # that get added by a particular HTTP library (but not by others)
