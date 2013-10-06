@@ -193,6 +193,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 
 * [Betamax](https://github.com/robfletcher/betamax) (Groovy/JVM)
 * [Betamax](https://github.com/sigmavirus24/betamax) (Python)
+* [ExVCR](https://github.com/parroty/exvcr) (Elixir)
 * [HAVCR](https://github.com/cordawyn/havcr) (Haskell)
 * [Mimic](https://github.com/acoulton/mimic) (PHP/Kohana)
 * [Nock-VCR](https://github.com/carbonfive/nock-vcr) (JavaScript/Node)
