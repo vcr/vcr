@@ -121,7 +121,7 @@ GEM
     timecop (0.6.1)
     typhoeus (0.6.5)
       ethon (~> 0.6.1)
-    webmock (1.13.0)
+    webmock (1.14.0)
       addressable (>= 2.2.7)
       crack (>= 0.3.2)
     yajl-ruby (1.1.0)
@@ -161,6 +161,6 @@ DEPENDENCIES
   timecop (= 0.6.1)
   typhoeus (>= 0.6)
   vcr!
-  webmock (>= 1.13)
+  webmock (>= 1.14)
   yajl-ruby (>= 1.1.0)
   yard

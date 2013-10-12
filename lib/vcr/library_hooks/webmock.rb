@@ -2,7 +2,7 @@ require 'vcr/util/version_checker'
 require 'vcr/request_handler'
 require 'webmock'
 
-VCR::VersionChecker.new('WebMock', WebMock.version, '1.8.0', '1.13').check_version!
+VCR::VersionChecker.new('WebMock', WebMock.version, '1.8.0', '1.14').check_version!
 
 module VCR
   class LibraryHooks
