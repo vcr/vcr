@@ -1,3 +1,9 @@
+## Unreleased Changes
+
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.6.0...master)
+
+* Explicitly support the latest WebMock (1.14). (Eduardo Maia)
+
 ## 2.6.0 (September 25, 2013)
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v2.5.0...v2.6.0)
