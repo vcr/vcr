@@ -31,7 +31,7 @@ gem 'aruba', '>= 0.5'
 gem 'rspec', '>= 2.11'
 
 gem 'fakeweb', '>= 1.3.0'
-gem 'webmock', '>= 1.14'
+gem 'webmock', '>= 1.15'
 
 gem 'faraday', '>= 0.8'
 gem 'httpclient', '>= 2.2'
