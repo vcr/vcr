@@ -161,6 +161,6 @@ DEPENDENCIES
   timecop (= 0.6.1)
   typhoeus (>= 0.6)
   vcr!
-  webmock (>= 1.14)
+  webmock (>= 1.15)
   yajl-ruby (>= 1.1.0)
   yard
