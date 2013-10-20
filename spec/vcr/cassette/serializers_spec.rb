@@ -71,10 +71,8 @@ module VCR
 
         if RUBY_INTERPRETER == :jruby
           # don't test yajl on jruby
-        elsif RUBY_VERSION.to_f < 1.9
-          engines[:yajl] = MultiJson::LoadError
         else
-          engines[:yajl] = ArgumentError
+          engines[:yajl] = MultiJson::LoadError
         end
 
         if RUBY_VERSION =~ /1.9/
