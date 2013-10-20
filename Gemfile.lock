@@ -71,7 +71,7 @@ GEM
       rbx-require-relative (> 0.0.4)
     method_source (0.8.2)
     mime-types (1.25)
-    multi_json (1.8.0)
+    multi_json (1.8.2)
     multi_test (0.0.2)
     multipart-post (1.2.0)
     patron (0.4.18)
