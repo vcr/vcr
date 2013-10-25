@@ -51,7 +51,11 @@ module VCR
 
         def sanitized_file_name_from(file_name)
           parts = file_name.to_s.split('.')
-          file_extension = '.' + parts.pop if parts.size > 1
+
+          if parts.size > 1 && !parts.last.include?(File::SEPARATOR)
+            file_extension = '.' + parts.pop
+          end
+
           parts.join('.').gsub(/[^\w\-\/]+/, '_') + file_extension.to_s
         end
       end
