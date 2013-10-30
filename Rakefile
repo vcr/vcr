@@ -22,7 +22,7 @@ end
 require 'cucumber/rake/task'
 Cucumber::Rake::Task.new
 
-task :default => [:spec, :cucumber]
+task :default => [:submodules, :spec, :cucumber]
 
 desc "Ensures we keep up 100% YARD coverage"
 task :yard_coverage do
@@ -49,12 +49,16 @@ task :check_code_coverage do
   end
 end
 
+desc "Checkout git submodules"
+task :submodules do
+  sh "git submodule sync"
+  sh "git submodule update --init --recursive"
+end
+
 namespace :ci do
   desc "Sets things up for a ci build on travis-ci.org"
-  task :setup do
+  task :setup => :submodules do
     ENV['TRAVIS'] = 'true'
-    sh "git submodule init"
-    sh "git submodule update"
   end
 
   RSpec::Core::RakeTask.new(:spec) do |t|
