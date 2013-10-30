@@ -3,9 +3,13 @@
 [Full Changelog](http://github.com/vcr/vcr/compare/v2.6.0...master)
 
 Enhancements:
+
 * Explicitly support the latest WebMock releases (1.14 and 1.15).
   (Eduardo Maia, Johannes Würbach)
-* Explicitly support the latest Excon release (0.27). (Myron Marston)
+* Explicitly support the latest Excon releases (0.27 and 0.28).
+  (Myron Marston)
+* Add support for Excon unix sockets by leveraging its
+  new `::Excon::Utils.request_uri` method. (Todd Lunter)
 
 Bug Fixes:
 

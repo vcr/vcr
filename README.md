@@ -185,6 +185,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Shay Frendt](https://github.com/shayfrendt)
 * [Steve Faulkner](https://github.com/southpolesteve)
 * [Stephen Anderson](https://github.com/bendycode)
+* [Todd Lunter](https://github.com/tlunter)
 * [Tyler Hunt](https://github.com/tylerhunt)
 * [Uģis Ozols](https://github.com/ugisozols)
 * [vzvu3k6k](https://github.com/vzvu3k6k)
