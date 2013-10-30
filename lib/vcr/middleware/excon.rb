@@ -164,8 +164,14 @@ module VCR
           normalized
         end
 
-        def uri
-          @uri ||= "#{request_params[:scheme]}://#{request_params[:host]}:#{request_params[:port]}#{request_params[:path]}#{query}"
+        if ::Excon::Utils.respond_to?(:request_uri)
+          def uri
+            @uri ||= "#{::Excon::Utils.request_uri(request_params)}"
+          end
+        else
+          def uri
+            @uri ||= "#{request_params[:scheme]}://#{request_params[:host]}:#{request_params[:port]}#{request_params[:path]}#{query}"
+          end
         end
 
         # based on:
