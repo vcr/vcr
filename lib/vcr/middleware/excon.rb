@@ -164,7 +164,7 @@ module VCR
           normalized
         end
 
-        if ::Excon::Utils.respond_to?(:request_uri)
+        if defined?(::Excon::Utils) && ::Excon::Utils.respond_to?(:request_uri)
           def uri
             @uri ||= "#{::Excon::Utils.request_uri(request_params)}"
           end
