@@ -2,7 +2,7 @@ require 'excon'
 require 'vcr/request_handler'
 require 'vcr/util/version_checker'
 
-VCR::VersionChecker.new('Excon', Excon::VERSION, '0.22.0', '0.27').check_version!
+VCR::VersionChecker.new('Excon', Excon::VERSION, '0.22.0', '0.28').check_version!
 
 module VCR
   # Contains middlewares for use with different libraries.
