@@ -8,6 +8,8 @@ Enhancements:
   (Eduardo Maia, Johannes Würbach)
 * Explicitly support the latest Excon releases (0.27 and 0.28).
   (Myron Marston)
+* Add support for Excon unix sockets by leveraging its
+  new `::Excon::Utils.request_uri` method. (Todd Lunter)
 
 Bug Fixes:
 
