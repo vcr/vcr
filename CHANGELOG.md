@@ -2,11 +2,17 @@
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v2.6.0...master)
 
+Enhancements:
 * Explicitly support the latest WebMock releases (1.14 and 1.15).
   (Eduardo Maia, Johannes Würbach)
 * Explicitly support the latest Excon release (0.27). (Myron Marston)
+
+Bug Fixes:
+
 * Fix detection of encoding errors for MultiJson 1.8.1+.
   (Myron Marston).
+* Fix file name sanitization to better handle paths that have
+  a dot in them (Rob Hanlon, Myron Marston).
 
 ## 2.6.0 (September 25, 2013)
 
