@@ -19,13 +19,13 @@ module VCR
 
     it 'prints a warning if the major version is too high' do
       checker = VersionChecker.new('foo', '2.0.0', '1.0.0', '1.1')
-      expect(Kernel).to receive(:warn).with(/may not work with this version/)
+      expect(Kernel).to receive(:warn).with(/you are using a newer version/)
       checker.check_version!
     end
 
     it 'prints a warning if the minor version is too high' do
       checker = VersionChecker.new('foo', '1.2.0', '1.0.0', '1.1')
-      expect(Kernel).to receive(:warn).with(/may not work with this version/)
+      expect(Kernel).to receive(:warn).with(/you are using a newer version/)
       checker.check_version!
     end
 

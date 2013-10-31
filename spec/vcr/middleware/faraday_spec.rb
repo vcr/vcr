@@ -128,6 +128,16 @@ describe VCR::Middleware::Faraday do
       end
     end
 
+    context "when another adapter is exclusive" do
+      it 'still makes requests properly' do
+        response = VCR.library_hooks.exclusively_enabled(:typhoeus) do
+          Faraday.get("http://localhost:#{VCR::SinatraApp.port}/")
+        end
+
+        expect(response.body).to eq("GET to root")
+      end
+    end
+
     context 'for a recorded request' do
       let!(:inserted_cassette) { VCR.insert_cassette('new_cassette') }
       before(:each) { expect(VCR).to receive(:record_http_interaction) }

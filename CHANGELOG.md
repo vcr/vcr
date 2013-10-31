@@ -10,6 +10,8 @@ Enhancements:
   (Myron Marston)
 * Add support for Excon unix sockets by leveraging its
   new `::Excon::Utils.request_uri` method. (Todd Lunter)
+* Reword the "it may not work with this version" warning
+  message so the intent is more clear (Myron Marston).
 
 Bug Fixes:
 
@@ -17,6 +19,8 @@ Bug Fixes:
   (Myron Marston).
 * Fix file name sanitization to better handle paths that have
   a dot in them (Rob Hanlon, Myron Marston).
+* Fix Faraday middleware so that it works properly when another
+  adapter is exclusively enabled (Myron Marston).
 
 ## 2.6.0 (September 25, 2013)
 
