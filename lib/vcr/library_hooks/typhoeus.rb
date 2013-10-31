@@ -23,7 +23,7 @@ else
             @vcr_request ||= VCR::Request.new \
               request.options.fetch(:method, :get),
               request.url,
-              request.options.fetch(:body, ""),
+              request_body,
               request.options.fetch(:headers, {})
           end
 
@@ -59,6 +59,16 @@ else
               stubbed_response.headers.each do |key, values|
                 hash[key] = values.size == 1 ? values.first : values
               end if stubbed_response.headers
+            end
+          end
+
+          if ::Typhoeus::Request.method_defined?(:encoded_body)
+            def request_body
+              request.encoded_body
+            end
+          else
+            def request_body
+              request.options.fetch(:body, "")
             end
           end
         end

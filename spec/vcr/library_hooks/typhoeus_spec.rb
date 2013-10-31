@@ -84,12 +84,29 @@ describe "Typhoeus hook", :with_monkey_patches => :typhoeus do
     end
 
     it 'records and replays headers correctly' do
-      pending "waiting on typhoeus/typhoeus#324" do
-        recorded = get_response
-        played_back = get_response
+      recorded = get_response
+      played_back = get_response
 
-        expect(played_back.headers).to eq(recorded.headers)
+      expect(played_back.headers).to eq(recorded.headers)
+    end
+  end
+
+  context 'when a request is made with a hash for the POST body' do
+    def make_request
+      VCR.use_cassette("hash_body") do
+        Typhoeus::Request.post(
+          "http://localhost:#{VCR::SinatraApp.port}/return-request-body",
+          :body => { :foo => "17" }
+        )
       end
+    end
+
+    it 'records and replays correctly' do
+      recorded = make_request
+      played_back = make_request
+
+      expect(recorded.body).to eq("foo=17")
+      expect(played_back.body).to eq(recorded.body)
     end
   end
 
