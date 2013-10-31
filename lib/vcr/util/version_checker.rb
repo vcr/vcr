@@ -35,8 +35,9 @@ module VCR
 
     def warn_about_too_high
       Kernel.warn "You are using #{@library_name} #{@library_version}. " +
-                  "VCR is known to work with #{@library_name} #{version_requirement}. " +
-                  "It may not work with this version."
+                  "VCR #{VCR.version} has been tested against #{@library_name} #{version_requirement}, " +
+                  "and you are using a newer version. If you experience VCR issues, " +
+                  "consider downgrading #{@library_name} as it may fix it."
     end
 
     def compare_version

@@ -10,6 +10,8 @@ Enhancements:
   (Myron Marston)
 * Add support for Excon unix sockets by leveraging its
   new `::Excon::Utils.request_uri` method. (Todd Lunter)
+* Reword the "it may not work with this version" warning
+  message so the intent is more clear (Myron Marston).
 
 Bug Fixes:
 
