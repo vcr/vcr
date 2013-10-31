@@ -12,6 +12,9 @@ Enhancements:
   new `::Excon::Utils.request_uri` method. (Todd Lunter)
 * Reword the "it may not work with this version" warning
   message so the intent is more clear (Myron Marston).
+* Support post/put bodies being specified as a hash when
+  using Typhoeus by leveraging it's new `encoded_body` API.
+  (Myron Marston, Hans Hasselberg)
 
 Bug Fixes:
 

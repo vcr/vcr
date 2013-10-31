@@ -28,6 +28,10 @@ module VCR
       "FOO!"
     end
 
+    post '/return-request-body' do
+      request.body
+    end
+
     get '/set-cookie-headers/1' do
       headers 'Set-Cookie' => 'foo'
       'header set'
