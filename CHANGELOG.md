@@ -17,6 +17,8 @@ Bug Fixes:
   (Myron Marston).
 * Fix file name sanitization to better handle paths that have
   a dot in them (Rob Hanlon, Myron Marston).
+* Fix Faraday middleware so that it works properly when another
+  adapter is exclusively enabled (Myron Marston).
 
 ## 2.6.0 (September 25, 2013)
 
