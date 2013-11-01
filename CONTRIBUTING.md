@@ -7,19 +7,6 @@ gem install bundler
 bundle install
 ```
 
-Next setup the Git submodules:
-
-```console
-git submodule init
-git submodule update
-```
-
-or using the single command form
-
-```console
-git submodule update --init
-```
-
 You should be able to run the tests now:
 
 ```console
