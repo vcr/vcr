@@ -200,7 +200,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Mimic](https://github.com/acoulton/mimic) (PHP/Kohana)
 * [Nock-VCR](https://github.com/carbonfive/nock-vcr) (JavaScript/Node)
 * [NSURLConnectionVCR](https://bitbucket.org/martijnthe/nsurlconnectionvcr) (Objective-C)
-* [PHP-VCR](https://github.com/adri/php-vcr) (PHP)
+* [PHP-VCR](https://github.com/php-vcr/php-vcr) (PHP)
 * [TapeDeck.js](https://github.com/EndangeredMassa/TapeDeck.js) (JavaScript)
 * [VCR.js](https://github.com/elcuervo/vcr.js) (JavaScript)
 * [VCR.py](https://github.com/kevin1024/vcrpy) (Python)
