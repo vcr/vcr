@@ -1,4 +1,5 @@
 require 'vcr/errors'
+require 'json'
 
 module VCR
   # Keeps track of the different request matchers.
@@ -124,6 +125,14 @@ module VCR
       register(:query) do |r1, r2|
         VCR.configuration.query_parser.call(r1.parsed_uri.query.to_s) ==
           VCR.configuration.query_parser.call(r2.parsed_uri.query.to_s)
+      end
+
+      register(:body_as_json) do |r1, r2|
+        begin
+          JSON.parse(r1.body) == JSON.parse(r2.body)
+        rescue JSON::ParserError
+          false
+        end
       end
     end
   end
