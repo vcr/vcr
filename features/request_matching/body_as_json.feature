@@ -1,6 +1,6 @@
 Feature: Matching on Body
 
-  Use the `:body_as_json` request matcher to match requests on the request body.
+  Use the `:body_as_json` request matcher to match requests on the request body where the body is JSON.
 
   Background:
     Given a previously recorded cassette file "cassettes/example.yml" with:
@@ -48,7 +48,7 @@ Feature: Matching on Body
       recorded_with: VCR 2.0.0
       """
 
-  Scenario Outline: Replay interaction that matches the body
+  Scenario Outline: Replay interaction that matches the body as JSON
     And a file named "body_as_json_matching.rb" with:
       """ruby
       include_http_adapter_for("<http_lib>")
