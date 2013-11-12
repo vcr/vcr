@@ -14,7 +14,9 @@ Bug Fixes:
   Excon middleware caused VCR's recording ot be skipped when an
   error was raised by another middleware. To fix this, we have
   split up VCR Excon middleware into two middlewares that we can
-  insert into the stack at the appropriate spots. (Myron Marston)
+  insert into the stack at the appropriate spots. Note that to get
+  this to work, Excon < 0.25.2 is no longer supported.
+  (Myron Marston)
 
 ## 2.7.0 (October 31, 2013)
 
