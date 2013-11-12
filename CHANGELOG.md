@@ -6,6 +6,16 @@ Enhancements:
 
 * Explicitly support the latest Excon release (0.29). (Myron Marston)
 
+Bug Fixes:
+
+* Fix Excon adapter so that it properly records responses even when
+  a middleware raises an error (such as via the `:expects` Excon
+  option). Previously, the order `response_call` was invoked on
+  Excon middleware caused VCR's recording ot be skipped when an
+  error was raised by another middleware. To fix this, we have
+  split up VCR Excon middleware into two middlewares that we can
+  insert into the stack at the appropriate spots. (Myron Marston)
+
 ## 2.7.0 (October 31, 2013)
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v2.6.0...v2.7.0)

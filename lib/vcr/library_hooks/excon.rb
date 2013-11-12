@@ -1,6 +1,21 @@
 require 'vcr/middleware/excon'
 
-Excon.defaults[:middlewares] << VCR::Middleware::Excon
+module VCR
+  class LibraryHooks
+    module Excon
+      # @private
+      def self.configure_middleware
+        middlewares = ::Excon.defaults[:middlewares]
+
+        middlewares << VCR::Middleware::Excon::Request
+        response_parser_index = middlewares.index(::Excon::Middleware::ResponseParser)
+        middlewares.insert(response_parser_index + 1, VCR::Middleware::Excon::Response)
+      end
+
+      configure_middleware
+    end
+  end
+end
 
 VCR.configuration.after_library_hooks_loaded do
   # ensure WebMock's Excon adapter does not conflict with us here
