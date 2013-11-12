@@ -97,6 +97,7 @@ VCR has been tested on the following ruby interpreters:
 * MRI 1.8.7
 * MRI 1.9.2
 * MRI 1.9.3
+* MRI 2.0.0
 * REE 1.8.7
 * JRuby
 * Rubinius
