@@ -102,7 +102,7 @@ module VCR
 
         def on_stubbed_by_vcr_request
           request_params[:response] = {
-            :body     => stubbed_response.body,
+            :body     => stubbed_response.body.dup, # Excon mutates the body, so we must dup it :-(
             :headers  => normalized_headers(stubbed_response.headers || {}),
             :status   => stubbed_response.status.code
           }

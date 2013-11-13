@@ -17,6 +17,10 @@ Bug Fixes:
   insert into the stack at the appropriate spots. Note that to get
   this to work, Excon < 0.25.2 is no longer supported.
   (Myron Marston)
+* Fix Excon adapter so that we pass it a dup of the body string
+  rather than the body string itself, since Excon has code paths
+  that will mutate the stubbed response string we give it, wreaking
+  confusing havoc. (Myron Marston)
 
 ## 2.7.0 (October 31, 2013)
 
