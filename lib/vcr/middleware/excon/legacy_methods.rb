@@ -1,6 +1,6 @@
 module VCR
   module Middleware
-    class Excon
+    module Excon
       # Contains legacy methods only needed when integrating with older versions
       # of Excon.
       # @api private

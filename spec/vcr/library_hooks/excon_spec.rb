@@ -30,6 +30,21 @@ describe "Excon hook", :with_monkey_patches => :excon do
     end
   end
 
+  context "when Excon's expects and idempotent middlewares cause errors to be raised" do
+    let(:excon) { ::Excon.new("http://localhost:#{VCR::SinatraApp.port}/404_not_200") }
+
+    def make_request
+      VCR.use_cassette('with_errors', :record => :once) do
+        excon.request(:method => :get, :expects => [200], :idempotent => true).body
+      end
+    end
+
+    it 'records and plays back properly' do
+      expect { make_request }.to raise_error(Excon::Errors::NotFound)
+      expect { make_request }.to raise_error(Excon::Errors::NotFound)
+    end
+  end
+
   include_examples "Excon streaming"
 
   context 'when Excon raises an error due to an unexpected response status' do

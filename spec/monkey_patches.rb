@@ -42,7 +42,7 @@ module MonkeyPatches
           ::Typhoeus::Hydra.stub_finders << finder
         end
       when :excon
-        ::Excon.defaults[:middlewares] << VCR::Middleware::Excon
+        VCR::LibraryHooks::Excon.configure_middleware
       when :vcr
         realias Net::HTTP, :request, :with_vcr
       else raise ArgumentError.new("Unexpected scope: #{scope}")
@@ -69,7 +69,8 @@ module MonkeyPatches
     end
 
     if defined?(::Excon)
-      ::Excon.defaults[:middlewares].delete(VCR::Middleware::Excon)
+      ::Excon.defaults[:middlewares].delete(VCR::Middleware::Excon::Request)
+      ::Excon.defaults[:middlewares].delete(VCR::Middleware::Excon::Response)
     end
   end
 
