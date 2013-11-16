@@ -1,5 +1,4 @@
 require 'vcr/errors'
-require 'json'
 
 module VCR
   # Keeps track of the different request matchers.
@@ -125,6 +124,16 @@ module VCR
       register(:query) do |r1, r2|
         VCR.configuration.query_parser.call(r1.parsed_uri.query.to_s) ==
           VCR.configuration.query_parser.call(r2.parsed_uri.query.to_s)
+      end
+
+      try_to_register_body_as_json
+    end
+
+    def try_to_register_body_as_json
+      begin
+        require 'json'
+      rescue LoadError
+        return
       end
 
       register(:body_as_json) do |r1, r2|
