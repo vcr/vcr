@@ -77,14 +77,26 @@ module VCR
       def construct_message
         ["", "", "=" * 80,
          "An HTTP request has been made that VCR does not know how to handle:",
-         "  #{request_description}\n",
+         "#{request_description}\n",
          cassette_description,
          formatted_suggestions,
          "=" * 80, "", ""].join("\n")
       end
 
       def request_description
-        "#{request.method.to_s.upcase} #{request.uri}"
+        lines = []
+
+        lines << "  #{request.method.to_s.upcase} #{request.uri}"
+
+        if match_request_on_body?
+          lines << "  Body: #{request.body}"
+        end
+
+        lines.join("\n")
+      end
+
+      def match_request_on_body?
+        (VCR.current_cassette && VCR.current_cassette.match_requests_on.include?(:body)) || VCR.configuration.default_cassette_options[:match_requests_on].include?(:body)
       end
 
       def cassette_description

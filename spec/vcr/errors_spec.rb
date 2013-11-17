@@ -23,6 +23,14 @@ module VCR
       end
 
       context 'when there is no current cassette' do
+        it 'identifies the request by its body when the default_cassette_options include the body in the match_requests_on option' do
+          VCR.configuration.default_cassette_options[:match_requests_on] = [:body]
+
+          expect(message_for(:body => 'param=val1')).to include(
+            "Body: param=val1"
+          )
+        end
+
         it 'mentions that there is no current cassette' do
           expect(message).to include('There is currently no cassette in use.')
         end
@@ -49,6 +57,14 @@ module VCR
       end
 
       context 'when there is a current cassette' do
+        it 'identifies the request by its body when the match_requests_on option includes the body' do
+          VCR.use_cassette('example', :match_requests_on => [:body]) do
+            expect(message_for(:body => 'param=val1')).to include(
+              "Body: param=val1"
+            )
+          end
+        end
+
         it 'mentions the details about the current casette' do
           VCR.use_cassette('example') do
             expect(message).to match(/VCR is currently using the following cassette:.+example.yml/m)
