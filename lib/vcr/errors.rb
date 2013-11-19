@@ -96,7 +96,15 @@ module VCR
       end
 
       def match_request_on_body?
-        (VCR.current_cassette && VCR.current_cassette.match_requests_on.include?(:body)) || VCR.configuration.default_cassette_options[:match_requests_on].include?(:body)
+        current_matchers.include?(:body)
+      end
+
+      def current_matchers
+        if VCR.current_cassette
+          VCR.current_cassette.match_requests_on
+        else
+          VCR.configuration.default_cassette_options[:match_requests_on]
+        end
       end
 
       def cassette_description

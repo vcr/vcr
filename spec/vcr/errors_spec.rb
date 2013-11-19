@@ -65,6 +65,15 @@ module VCR
           end
         end
 
+        it 'does not identify the request by its body when the cassette match_requests_on option does not include the body but the default_cassette_options do' do
+          VCR.configuration.default_cassette_options[:match_requests_on] = [:body]
+          VCR.use_cassette('example', :match_requests_on => [:uri]) do
+            expect(message_for(:body => 'param=val1')).to_not include(
+              "Body: param=val1"
+            )
+          end
+        end
+
         it 'mentions the details about the current casette' do
           VCR.use_cassette('example') do
             expect(message).to match(/VCR is currently using the following cassette:.+example.yml/m)
