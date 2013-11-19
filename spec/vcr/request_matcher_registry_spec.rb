@@ -262,6 +262,32 @@ module VCR
         end
       end
 
+      describe ":body_as_json" do
+        it 'matches when the body json is reordered' do
+          matches = subject[:body_as_json].matches?(
+            request_with(:body => '{ "a": "1", "b": "2" }'),
+            request_with(:body => '{ "b": "2", "a": "1" }')
+          )
+          expect(matches).to be_true
+        end
+
+        it 'does not match when json is not the same' do
+          matches = subject[:body_as_json].matches?(
+            request_with(:body => '{ "a": "1", "b": "2" }'),
+            request_with(:body => '{ "a": "1", "b": "1" }')
+          )
+          expect(matches).to be_false
+        end
+
+        it 'does not match when body is not json' do
+          matches = subject[:body_as_json].matches?(
+            request_with(:body => 'a=b'),
+            request_with(:body => 'a=b')
+          )
+          expect(matches).to be_false
+        end
+      end
+
       describe ":headers" do
         it 'matches when it is the same' do
           matches = subject[:headers].matches?(

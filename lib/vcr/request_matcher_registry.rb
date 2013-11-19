@@ -125,6 +125,24 @@ module VCR
         VCR.configuration.query_parser.call(r1.parsed_uri.query.to_s) ==
           VCR.configuration.query_parser.call(r2.parsed_uri.query.to_s)
       end
+
+      try_to_register_body_as_json
+    end
+
+    def try_to_register_body_as_json
+      begin
+        require 'json'
+      rescue LoadError
+        return
+      end
+
+      register(:body_as_json) do |r1, r2|
+        begin
+          JSON.parse(r1.body) == JSON.parse(r2.body)
+        rescue JSON::ParserError
+          false
+        end
+      end
     end
   end
 end
