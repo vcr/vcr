@@ -5,6 +5,7 @@
 Enhancements:
 
 * Explicitly support the latest Excon release (0.29). (Myron Marston)
+* Add `:body_as_json` request matcher. (Mike Dalton)
 
 Bug Fixes:
 
