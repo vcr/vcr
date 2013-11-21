@@ -156,6 +156,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Flaviu Simihaian](https://github.com/closedbracket)
 * [Gordon Wilson](https://github.com/gordoncww)
 * [Hans Hasselberg](https://github.com/i0rek)
+* [Herman Verschooten](https://github.com/Hermanverschooten)
 * [Ian Cordasco](https://github.com/sigmavirus24)
 * [Ingemar](https://github.com/ingemar)
 * [Jacob Green](https://github.com/Jacobkg)

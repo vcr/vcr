@@ -24,6 +24,8 @@ Bug Fixes:
   rather than the body string itself, since Excon has code paths
   that will mutate the stubbed response string we give it, wreaking
   confusing havoc. (Myron Marston)
+* Fix rspec metadata implementation so that it does not emit warnings
+  on RSpec 2.99. (Herman Verschooten)
 
 ## 2.7.0 (October 31, 2013)
 
