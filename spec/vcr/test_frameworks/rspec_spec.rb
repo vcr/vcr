@@ -44,7 +44,7 @@ describe VCR::RSpec::Macros do
   describe '#use_vcr_cassette' do
     def self.perform_test(context_name, expected_cassette_name, *args, &block)
       context context_name do
-        after(:each) do
+        after(:each) do |example|
           if example.metadata[:test_ejection]
             expect(VCR.current_cassette).to be_nil
           end

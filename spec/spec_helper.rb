@@ -65,7 +65,7 @@ RSpec.configure do |config|
   end
 
   tmp_dir = File.expand_path('../../tmp/cassette_library_dir', __FILE__)
-  config.before(:each) do
+  config.before(:each) do |example|
     unless example.metadata[:skip_vcr_reset]
       VCR.reset!
       VCR.configuration.cassette_library_dir = tmp_dir
