@@ -104,14 +104,14 @@ describe VCR::Cassette do
       it 'returns false when there is an existing cassette file with content' do
         cassette = VCR::Cassette.new("example", :record => :once)
         expect(File).to exist(cassette.file)
-        expect(File.size?(cassette.file)).to be true
+        expect(File.size?(cassette.file)).to be_truthy
         expect(cassette).not_to be_recording
       end
 
       it 'returns true when there is an empty existing cassette file' do
         cassette = VCR::Cassette.new("empty", :record => :once)
         expect(File).to exist(cassette.file)
-        expect(File.size?(cassette.file)).to be false
+        expect(File.size?(cassette.file)).to be_falsey
         expect(cassette).to be_recording
       end
 
