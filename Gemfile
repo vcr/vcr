@@ -10,8 +10,6 @@ gem 'yard'
 
 # Additional gems that are useful, but not required for development.
 gem 'relish', '~> 0.6'
-gem 'fuubar'
-gem 'fuubar-cucumber'
 
 gem 'redcarpet', '~> 1.17.2', :platforms => :ruby
 gem 'github-markup'
@@ -28,7 +26,7 @@ gem 'rake', '>= 0.9.2'
 gem 'cucumber', '>= 1.1.4'
 gem 'aruba', '>= 0.5'
 
-gem 'rspec', '>= 2.99.0.beta1'
+gem 'rspec', '>= 3.0.0.beta1'
 
 gem 'fakeweb', '>= 1.3.0'
 gem 'webmock', '>= 1.14'
