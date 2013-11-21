@@ -4,8 +4,24 @@ describe "VCR.version" do
   subject { VCR.version }
 
   it { should =~ /\A\d+\.\d+\.\d+(\.\w+)?\z/ }
-  its(:parts) { should be_instance_of(Array)  }
-  its(:major) { should be_instance_of(Fixnum) }
-  its(:minor) { should be_instance_of(Fixnum) }
-  its(:patch) { should be_instance_of(Fixnum) }
+
+  describe '#parts' do
+    subject { super().parts }
+    it { should be_instance_of(Array)  }
+  end
+
+  describe '#major' do
+    subject { super().major }
+    it { should be_instance_of(Fixnum) }
+  end
+
+  describe '#minor' do
+    subject { super().minor }
+    it { should be_instance_of(Fixnum) }
+  end
+
+  describe '#patch' do
+    subject { super().patch }
+    it { should be_instance_of(Fixnum) }
+  end
 end

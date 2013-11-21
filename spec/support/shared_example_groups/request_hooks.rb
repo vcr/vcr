@@ -36,7 +36,7 @@ shared_examples_for "request hooks" do |library_hook_name, request_type|
       VCR.configuration.send(hook) { |r| hook_called = true }
 
       make_request(:disabled)
-      expect(hook_called).to be_false
+      expect(hook_called).to be false
     end
 
     specify "the #type of the yielded request given to the #{hook} hook is #{request_type}" do

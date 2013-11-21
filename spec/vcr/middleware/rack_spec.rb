@@ -93,7 +93,7 @@ module VCR
       let(:threaded_app) do
         lambda do |env|
           sleep 0.15
-          expect(VCR.send(:cassettes)).to have(1).cassette
+          expect(VCR.send(:cassettes).size).to eq(1)
           [200, {}, ['OK']]
         end
       end

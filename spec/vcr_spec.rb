@@ -77,7 +77,7 @@ describe VCR do
     it 'yields' do
       yielded = false
       VCR.use_cassette(:cassette_test, &lambda { yielded = true })
-      expect(yielded).to be_true
+      expect(yielded).to be true
     end
 
     it 'yields the cassette instance if the block expects an argument' do
@@ -133,13 +133,13 @@ describe VCR do
       it 'returns true if the cassette is recording' do
         VCR.insert_cassette('foo', :record => :all)
         expect(VCR.current_cassette).to be_recording
-        expect(VCR.real_http_connections_allowed?).to be_true
+        expect(VCR.real_http_connections_allowed?).to be true
       end
 
       it 'returns false if the cassette is not recording' do
         VCR.insert_cassette('foo', :record => :none)
         expect(VCR.current_cassette).not_to be_recording
-        expect(VCR.real_http_connections_allowed?).to be_false
+        expect(VCR.real_http_connections_allowed?).to be false
       end
     end
 
@@ -151,19 +151,19 @@ describe VCR do
       it 'returns true if the allow_http_connections_when_no_cassette option is set to true' do
         expect(VCR).to be_turned_on
         VCR.configure { |c| c.allow_http_connections_when_no_cassette = true }
-        expect(VCR.real_http_connections_allowed?).to be_true
+        expect(VCR.real_http_connections_allowed?).to be true
       end
 
       it 'returns true if VCR is turned off' do
         VCR.turn_off!
         VCR.configure { |c| c.allow_http_connections_when_no_cassette = false }
-        expect(VCR.real_http_connections_allowed?).to be_true
+        expect(VCR.real_http_connections_allowed?).to be true
       end
 
       it 'returns false if the allow_http_connections_when_no_cassette option is set to false and VCR is turned on' do
         expect(VCR).to be_turned_on
         VCR.configure { |c| c.allow_http_connections_when_no_cassette = false }
-        expect(VCR.real_http_connections_allowed?).to be_false
+        expect(VCR.real_http_connections_allowed?).to be false
       end
     end
   end
@@ -306,7 +306,7 @@ describe VCR do
           expect(VCR.current_cassette).to be_nil
         end
 
-        expect(yielded).to be_true
+        expect(yielded).to be true
       end
     end
   end

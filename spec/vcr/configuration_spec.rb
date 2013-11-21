@@ -62,7 +62,7 @@ describe VCR::Configuration do
       matcher_run = false
       subject.register_request_matcher(:custom) { |r1, r2| matcher_run = true }
       VCR.request_matchers[:custom].matches?(:r1, :r2)
-      expect(matcher_run).to be_true
+      expect(matcher_run).to be true
     end
   end
 
@@ -83,7 +83,7 @@ describe VCR::Configuration do
       called = false
       subject.after_library_hooks_loaded { called = true }
       subject.hook_into :fakeweb
-      expect(called).to be_true
+      expect(called).to be true
     end
   end
 
@@ -108,7 +108,7 @@ describe VCR::Configuration do
       block_called = false
       subject.ignore_request { |r| block_called = true }
       VCR.request_ignorer.ignore?(double(:parsed_uri => uri))
-      expect(block_called).to be_true
+      expect(block_called).to be true
     end
   end
 
@@ -156,9 +156,9 @@ describe VCR::Configuration do
         called = false
         VCR.configuration.send(hook_type, :my_tag) { called = true }
         VCR.configuration.invoke_hook(hook_type, double, double(:tags => []))
-        expect(called).to be_false
+        expect(called).to be false
         VCR.configuration.invoke_hook(hook_type, double, double(:tags => [:my_tag]))
-        expect(called).to be_true
+        expect(called).to be true
       end
     end
   end
@@ -218,11 +218,11 @@ describe VCR::Configuration do
       yielded = false
       subject.after_http_request(:stubbed_by_vcr?) { |req| yielded = true }
       subject.invoke_hook(:after_http_request, request(:stubbed_by_vcr), response)
-      expect(yielded).to be_true
+      expect(yielded).to be true
 
       yielded = false
       subject.invoke_hook(:after_http_request, request(:ignored), response)
-      expect(yielded).to be_false
+      expect(yielded).to be false
     end
   end
 
@@ -271,31 +271,31 @@ describe VCR::Configuration do
 
     context "default hook" do
       it "returns false when there is no current cassette" do
-        expect(subject.preserve_exact_body_bytes_for?(message_for "string")).to be_false
+        expect(subject.preserve_exact_body_bytes_for?(message_for "string")).to be false
       end
 
       it "returns false when the current cassette has been created without the :preserve_exact_body_bytes option" do
         VCR.insert_cassette('foo')
-        expect(subject.preserve_exact_body_bytes_for?(message_for "string")).to be_false
+        expect(subject.preserve_exact_body_bytes_for?(message_for "string")).to be false
       end
 
       it 'returns true when the current cassette has been created with the :preserve_exact_body_bytes option' do
         VCR.insert_cassette('foo', :preserve_exact_body_bytes => true)
-        expect(subject.preserve_exact_body_bytes_for?(message_for "string")).to be_true
+        expect(subject.preserve_exact_body_bytes_for?(message_for "string")).to be true
       end
     end
 
     it "returns true when the configured block returns true" do
       subject.preserve_exact_body_bytes { |msg| msg.body == "a" }
-      expect(subject.preserve_exact_body_bytes_for?(message_for "a")).to be_true
-      expect(subject.preserve_exact_body_bytes_for?(message_for "b")).to be_false
+      expect(subject.preserve_exact_body_bytes_for?(message_for "a")).to be true
+      expect(subject.preserve_exact_body_bytes_for?(message_for "b")).to be false
     end
 
     it "returns true when any of the registered blocks returns true" do
       called_hooks = []
       subject.preserve_exact_body_bytes { called_hooks << :hook_1; false }
       subject.preserve_exact_body_bytes { called_hooks << :hook_2; true }
-      expect(subject.preserve_exact_body_bytes_for?(message_for "a")).to be_true
+      expect(subject.preserve_exact_body_bytes_for?(message_for "a")).to be true
       expect(called_hooks).to eq([:hook_1, :hook_2])
     end
 

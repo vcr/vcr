@@ -111,7 +111,7 @@ describe VCR::Middleware::Faraday do
 
         make_request
         expect(VCR.library_hooks).not_to be_disabled(:fakeweb)
-        expect(hook_called).to be_true
+        expect(hook_called).to be true
       end
     end
 
