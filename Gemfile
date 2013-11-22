@@ -33,7 +33,7 @@ gem 'rspec', '>= 2.11'
 gem 'fakeweb', '>= 1.3.0'
 gem 'webmock', '>= 1.14'
 
-gem 'faraday', '>= 0.8'
+gem 'faraday', '>= 0.9.0.rc6'
 gem 'httpclient', '>= 2.2'
 gem 'excon', '>= 0.22'
 
