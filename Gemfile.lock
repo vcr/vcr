@@ -51,7 +51,7 @@ GEM
     eventmachine (1.0.3)
     excon (0.29.0)
     fakeweb (1.3.0)
-    faraday (0.8.8)
+    faraday (0.9.0.rc6)
       multipart-post (~> 1.2.0)
     ffi (1.9.3)
     fuubar (1.2.1)
@@ -139,7 +139,7 @@ DEPENDENCIES
   em-http-request (>= 1.0.2)
   excon (>= 0.22)
   fakeweb (>= 1.3.0)
-  faraday (>= 0.8)
+  faraday (>= 0.9.0.rc6)
   fuubar
   fuubar-cucumber
   github-markup

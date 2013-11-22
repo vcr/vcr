@@ -10,7 +10,11 @@ module VCR
           super.extend BuilderInstanceExtension
         end
 
-        ::Faraday::Builder.extend self
+        if ::Faraday.const_defined?(:RackBuilder)
+          ::Faraday::RackBuilder.extend self
+        else
+          ::Faraday::Builder.extend self
+        end
       end
 
       # @private

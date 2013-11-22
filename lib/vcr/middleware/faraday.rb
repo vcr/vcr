@@ -71,15 +71,14 @@ module VCR
         end
 
         def response_for(env)
-          response = env[:response]
-          return nil unless response
+          return if env.status.nil?
 
-          VCR::Response.new(
-            VCR::ResponseStatus.new(response.status, nil),
-            response.headers,
-            raw_body_from(response.body),
-            nil
-          )
+          if ::Faraday.const_defined?(:Env)
+            make_vcr_response(env.status, env.response_headers, env.body)
+          else
+            response = env[:response]
+            make_vcr_response(response.status, response.headers, response.body)
+          end
         end
 
         def on_ignored_request
@@ -107,6 +106,15 @@ module VCR
         def invoke_after_request_hook(response)
           super
           VCR.library_hooks.exclusive_hook = nil
+        end
+
+        def make_vcr_response(status, headers, body)
+          VCR::Response.new(
+              VCR::ResponseStatus.new(status, nil),
+              headers,
+              raw_body_from(body),
+              nil
+          )
         end
       end
     end

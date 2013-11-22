@@ -3,10 +3,19 @@
 require "spec_helper"
 
 describe "The library itself" do
+  def encode str
+    if String.method_defined?(:encode)
+      str.encode!('UTF-8', 'UTF-8', :invalid => :replace)
+    else
+      ic = Iconv.new('UTF-8', 'UTF-8//IGNORE')
+      ic.iconv(str)
+    end
+  end
+
   def check_for_tab_characters(filename)
     failing_lines = []
     File.readlines(filename).each_with_index do |line,number|
-      failing_lines << number + 1 if line =~ /\t/
+      failing_lines << number + 1 if encode(line) =~ /\t/
     end
 
     unless failing_lines.empty?
@@ -17,8 +26,8 @@ describe "The library itself" do
   def check_for_extra_spaces(filename)
     failing_lines = []
     File.readlines(filename).each_with_index do |line,number|
-      next if line =~ /^\s+#.*\s+\n$/
-      failing_lines << number + 1 if line =~ /\s+\n$/
+      next if encode(line) =~ /^\s+#.*\s+\n$/
+      failing_lines << number + 1 if encode(line) =~ /\s+\n$/
     end
 
     unless failing_lines.empty?
