@@ -36,6 +36,6 @@ Before do
     set_env('PATH', (additional_paths + existing_paths).join(':'))
   end
 
-  @aruba_timeout_seconds = RUBY_PLATFORM == 'java' ? 60 : 20
+  @aruba_timeout_seconds = 60
 end
 

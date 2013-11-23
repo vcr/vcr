@@ -2,6 +2,8 @@ language: ruby
 env: CUCUMBER_FORMAT=progress
 bundler_args: --without extras
 script: "script/ci.sh"
+services:
+  - redis-server
 rvm:
   - 1.8.7
   - 1.9.2
@@ -16,6 +18,8 @@ matrix:
   allow_failures:
     - rvm: jruby-18mode
     - rvm: jruby-19mode
+    - rvm: rbx-18mode
+    - rvm: rbx-19mode
 branches:
   except:
     - gh-pages
