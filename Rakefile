@@ -98,13 +98,13 @@ task :relish do
     end
 
     require 'vcr/version'
-    sh "relish versions:add vcr/vcr:#{VCR.version}" if ENV['NEW_RELISH_RELEASE']
+    sh "relish versions:add vcr/vcr:#{VCR.version}" if ENV['NEW_RELISH_RELEASE'] == 'true'
     sh "relish push vcr/vcr:#{VCR.version}"
   end
 end
 
 task :prep_relish_release do
-  ENV['NEW_RELISH_RELEASE'] = 'true'
+  ENV['NEW_RELISH_RELEASE'] ||= 'true'
 end
 
 task :release => [:prep_relish_release, :relish]
