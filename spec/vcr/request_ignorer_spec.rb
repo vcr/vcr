@@ -58,11 +58,11 @@ module VCR
       end
 
       it 'ignores requests for which the block returns true' do
-        expect(subject.ignore?(request('http://foo.com:5/bar'))).to be_true
+        expect(subject.ignore?(request('http://foo.com:5/bar'))).to be true
       end
 
       it 'does not ignore requests for which the block returns false' do
-        expect(subject.ignore?(request('http://foo.com:6/bar'))).to be_false
+        expect(subject.ignore?(request('http://foo.com:6/bar'))).to be false
       end
     end
   end

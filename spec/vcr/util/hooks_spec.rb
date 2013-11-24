@@ -6,7 +6,7 @@ describe VCR::Hooks::FilteredHook do
       called = false
       subject.hook = lambda { called = true }
       subject.conditionally_invoke
-      expect(called).to be_true
+      expect(called).to be true
     end
 
     it 'forwards the given arguments to the hook' do
@@ -28,7 +28,7 @@ describe VCR::Hooks::FilteredHook do
       subject.hook = lambda { called = true }
       subject.filters = lambda { false }
       subject.conditionally_invoke
-      expect(called).to be_false
+      expect(called).to be false
     end
 
     it 'does not invoke the hook if any of the filters returns false' do
@@ -36,7 +36,7 @@ describe VCR::Hooks::FilteredHook do
       subject.hook = lambda { called = true }
       subject.filters = [lambda { false }, lambda { true }]
       subject.conditionally_invoke
-      expect(called).to be_false
+      expect(called).to be false
     end
 
     it 'forwards arguments to the filters' do
@@ -70,7 +70,7 @@ describe VCR::Hooks::FilteredHook do
       subject.hook = lambda { }
       subject.filters = [double(:to_proc => lambda { filter_called = true })]
       subject.conditionally_invoke
-      expect(filter_called).to be_true
+      expect(filter_called).to be true
     end
   end
 end
@@ -99,7 +99,7 @@ describe VCR::Hooks do
     end
 
     subject.before_foo { }
-    expect(override_called).to be_true
+    expect(override_called).to be true
   end
 
   describe '#clear_hooks' do

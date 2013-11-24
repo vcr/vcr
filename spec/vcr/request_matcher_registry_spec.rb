@@ -26,7 +26,7 @@ module VCR
         matcher_called = false
         subject.register(:my_matcher) { |*a| matcher_called = true }
         subject[:my_matcher].matches?(double, double)
-        expect(matcher_called).to be_true
+        expect(matcher_called).to be true
       end
 
       context 'when there is already a matcher for the given name' do
@@ -37,7 +37,7 @@ module VCR
 
         it 'overrides the existing matcher' do
           subject.register(:foo) { |*a| true }
-          expect(subject[:foo].matches?(double, double)).to be_true
+          expect(subject[:foo].matches?(double, double)).to be true
         end
 
         it 'warns that there is a name collision' do
@@ -65,15 +65,15 @@ module VCR
 
       it 'returns an object that calls the named block when #matches? is called on it' do
         subject.register(:foo) { |r1, r2| r1 == 5 || r2 == 10 }
-        expect(subject[:foo].matches?(5, 0)).to be_true
-        expect(subject[:foo].matches?(0, 10)).to be_true
-        expect(subject[:foo].matches?(7, 7)).to be_false
+        expect(subject[:foo].matches?(5, 0)).to be true
+        expect(subject[:foo].matches?(0, 10)).to be true
+        expect(subject[:foo].matches?(7, 7)).to be false
       end
 
       it 'returns an object that calls the given callable when #matches? is called on it' do
         block_called = false
         subject[lambda { |r1, r2| block_called = true }].matches?(5, 0)
-        expect(block_called).to be_true
+        expect(block_called).to be true
       end
     end
 
@@ -86,7 +86,7 @@ module VCR
             request_with(:uri => 'http://example.com/search?foo=123'),
             request_with(:uri => 'http://example.com/search?foo=123')
           )
-          expect(matches).to be_true
+          expect(matches).to be true
         end
 
         it 'matches two requests with URIs that are identical' do
@@ -94,7 +94,7 @@ module VCR
             request_with(:uri => 'http://example.com/search?foo=123'),
             request_with(:uri => 'http://example.com/search?foo=123')
           )
-          expect(matches).to be_true
+          expect(matches).to be true
         end
 
         it 'does not match two requests with different path parts' do
@@ -102,7 +102,7 @@ module VCR
             request_with(:uri => 'http://example.com/search?foo=123'),
             request_with(:uri => 'http://example.com/find?foo=123')
           )
-          expect(matches).to be_false
+          expect(matches).to be false
         end
 
         it 'ignores the given query parameters when it is at the start' do
@@ -110,7 +110,7 @@ module VCR
             request_with(:uri => 'http://example.com/search?foo=123&bar=r'),
             request_with(:uri => 'http://example.com/search?foo=124&bar=r')
           )
-          expect(matches).to be_true
+          expect(matches).to be true
         end
 
         it 'ignores the given query parameters when it is at the end' do
@@ -118,7 +118,7 @@ module VCR
             request_with(:uri => 'http://example.com/search?foo=124&bar=r'),
             request_with(:uri => 'http://example.com/search?foo=124&bar=q')
           )
-          expect(matches).to be_true
+          expect(matches).to be true
         end
 
         it 'still takes into account other query params' do
@@ -126,7 +126,7 @@ module VCR
             request_with(:uri => 'http://example.com/search?foo=123&bar=r'),
             request_with(:uri => 'http://example.com/search?foo=124&bar=q')
           )
-          expect(matches).to be_false
+          expect(matches).to be false
         end
 
         it 'handles multiple query params of the same name' do
@@ -134,7 +134,7 @@ module VCR
             request_with(:uri => 'http://example.com/search?foo=124&tag[]=a&tag[]=b'),
             request_with(:uri => 'http://example.com/search?foo=124&tag[]=d&tag[]=e')
           )
-          expect(matches).to be_true
+          expect(matches).to be true
         end
 
         it 'can ignore multiple named parameters' do
@@ -142,7 +142,7 @@ module VCR
             request_with(:uri => 'http://example.com/search?foo=123&bar=r&baz=9'),
             request_with(:uri => 'http://example.com/search?foo=124&baz=9&bar=q')
           )
-          expect(matches).to be_true
+          expect(matches).to be true
         end
 
         it 'matches two requests with URIs that have no params' do
@@ -150,7 +150,7 @@ module VCR
             request_with(:uri => 'http://example.com/search'),
             request_with(:uri => 'http://example.com/search')
           )
-          expect(matches).to be_true
+          expect(matches).to be true
         end
 
         it 'does not match two requests with URIs that have no params but different paths' do
@@ -158,7 +158,7 @@ module VCR
             request_with(:uri => 'http://example.com/foo'),
             request_with(:uri => 'http://example.com/bar')
           )
-          expect(matches).to be_false
+          expect(matches).to be false
         end
 
         it 'matches a second request when all parameters are filtered' do
@@ -166,7 +166,7 @@ module VCR
             request_with(:uri => 'http://example.com/search'),
             request_with(:uri => 'http://example.com/search?q=vcr&oq=vcr')
           )
-          expect(matches).to be_true
+          expect(matches).to be true
         end
       end
     end
@@ -178,7 +178,7 @@ module VCR
             request_with(:method => :get),
             request_with(:method => :get)
           )
-          expect(matches).to be_true
+          expect(matches).to be true
         end
 
         it 'does not match when it is not the same' do
@@ -186,7 +186,7 @@ module VCR
             request_with(:method => :get),
             request_with(:method => :post)
           )
-          expect(matches).to be_false
+          expect(matches).to be false
         end
       end
 
@@ -196,7 +196,7 @@ module VCR
             request_with(:uri => 'http://foo.com/bar?baz=7'),
             request_with(:uri => 'http://foo.com/bar?baz=7')
           )
-          expect(matches).to be_true
+          expect(matches).to be true
         end
 
         it 'does not match when it is different' do
@@ -204,7 +204,7 @@ module VCR
             request_with(:uri => 'http://foo1.com/bar?baz=7'),
             request_with(:uri => 'http://foo2.com/bar?baz=7')
           )
-          expect(matches).to be_false
+          expect(matches).to be false
         end
       end
 
@@ -214,7 +214,7 @@ module VCR
             request_with(:uri => 'http://foo.com/bar'),
             request_with(:uri => 'http://foo.com/car')
           )
-          expect(matches).to be_true
+          expect(matches).to be true
         end
 
         it 'does not match when it is not the same' do
@@ -222,7 +222,7 @@ module VCR
             request_with(:uri => 'http://foo.com/bar'),
             request_with(:uri => 'http://goo.com/bar')
           )
-          expect(matches).to be_false
+          expect(matches).to be false
         end
       end
 
@@ -232,7 +232,7 @@ module VCR
             request_with(:uri => 'http://foo.com/bar?a=8'),
             request_with(:uri => 'http://goo.com/bar?a=9')
           )
-          expect(matches).to be_true
+          expect(matches).to be true
         end
 
         it 'does not match when it is not the same' do
@@ -240,7 +240,7 @@ module VCR
             request_with(:uri => 'http://foo.com/bar?a=8'),
             request_with(:uri => 'http://foo.com/car?a=8')
           )
-          expect(matches).to be_false
+          expect(matches).to be false
         end
       end
 
@@ -250,7 +250,7 @@ module VCR
             request_with(:body => 'foo'),
             request_with(:body => 'foo')
           )
-          expect(matches).to be_true
+          expect(matches).to be true
         end
 
         it 'does not match when it is not the same' do
@@ -258,7 +258,7 @@ module VCR
             request_with(:body => 'foo'),
             request_with(:body => 'bar')
           )
-          expect(matches).to be_false
+          expect(matches).to be false
         end
       end
 
@@ -268,7 +268,7 @@ module VCR
             request_with(:body => '{ "a": "1", "b": "2" }'),
             request_with(:body => '{ "b": "2", "a": "1" }')
           )
-          expect(matches).to be_true
+          expect(matches).to be true
         end
 
         it 'does not match when json is not the same' do
@@ -276,7 +276,7 @@ module VCR
             request_with(:body => '{ "a": "1", "b": "2" }'),
             request_with(:body => '{ "a": "1", "b": "1" }')
           )
-          expect(matches).to be_false
+          expect(matches).to be false
         end
 
         it 'does not match when body is not json' do
@@ -284,7 +284,7 @@ module VCR
             request_with(:body => 'a=b'),
             request_with(:body => 'a=b')
           )
-          expect(matches).to be_false
+          expect(matches).to be false
         end
       end
 
@@ -294,7 +294,7 @@ module VCR
             request_with(:headers => { 'a' => 1, 'b' => 2 }),
             request_with(:headers => { 'b' => 2, 'a' => 1 })
           )
-          expect(matches).to be_true
+          expect(matches).to be true
         end
 
         it 'does not match when it is not the same' do
@@ -302,7 +302,7 @@ module VCR
             request_with(:headers => { 'a' => 3, 'b' => 2 }),
             request_with(:headers => { 'b' => 2, 'a' => 1 })
           )
-          expect(matches).to be_false
+          expect(matches).to be false
         end
       end
 
@@ -312,7 +312,7 @@ module VCR
             request_with(:uri => 'http://foo.com/bar?a=8'),
             request_with(:uri => 'http://goo.com/car?a=8')
           )
-          expect(matches).to be_true
+          expect(matches).to be true
         end
 
         it 'matches when empty' do
@@ -320,7 +320,7 @@ module VCR
             request_with(:uri => 'http://foo.com/bar'),
             request_with(:uri => 'http://goo.com/car')
           )
-          expect(matches).to be_true
+          expect(matches).to be true
         end
 
         it 'matches when parameters are reordered' do
@@ -328,7 +328,7 @@ module VCR
             request_with(:uri => 'http://foo.com/bar?a=8&b=9'),
             request_with(:uri => 'http://goo.com/car?b=9&a=8')
           )
-          expect(matches).to be_true
+          expect(matches).to be true
         end
 
         it 'does not match when it is not the same' do
@@ -336,7 +336,7 @@ module VCR
             request_with(:uri => 'http://foo.com/bar?a=8'),
             request_with(:uri => 'http://goo.com/car?b=8')
           )
-          expect(matches).to be_false
+          expect(matches).to be false
         end
       end
     end

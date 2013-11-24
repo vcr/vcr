@@ -54,7 +54,6 @@ end
 RSpec.configure do |config|
   config.order = :rand
   config.color_enabled = true
-  config.treat_symbols_as_metadata_keys_with_true_values = true
 
   config.expect_with :rspec do |expectations|
     expectations.syntax = :expect
@@ -65,7 +64,7 @@ RSpec.configure do |config|
   end
 
   tmp_dir = File.expand_path('../../tmp/cassette_library_dir', __FILE__)
-  config.before(:each) do
+  config.before(:each) do |example|
     unless example.metadata[:skip_vcr_reset]
       VCR.reset!
       VCR.configuration.cassette_library_dir = tmp_dir

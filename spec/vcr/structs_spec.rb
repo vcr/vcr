@@ -458,11 +458,11 @@ module VCR
     valid_types.each do |type|
       describe "##{type}?" do
         it "returns true if the type is set to :#{type}" do
-          expect(Request::Typed.new(double, type).send("#{type}?")).to be_true
+          expect(Request::Typed.new(double, type).send("#{type}?")).to be true
         end
 
         it "returns false if the type is set to :other" do
-          expect(Request::Typed.new(double, :other).send("#{type}?")).to be_false
+          expect(Request::Typed.new(double, :other).send("#{type}?")).to be false
         end
       end
     end

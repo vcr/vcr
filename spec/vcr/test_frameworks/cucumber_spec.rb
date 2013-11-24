@@ -82,7 +82,7 @@ describe VCR::CucumberTags do
           subject.send(tag_method, 'tag1', original_options)
           before_blocks_for_tags['tag1'].call(current_scenario)
 
-          expect(original_options).to have(2).items
+          expect(original_options.size).to eq(2)
           expect(original_options[:use_scenario_name]).to eq(true)
           expect(original_options[:record]).to eq(:none)
         end

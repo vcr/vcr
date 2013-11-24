@@ -104,14 +104,14 @@ describe VCR::Cassette do
       it 'returns false when there is an existing cassette file with content' do
         cassette = VCR::Cassette.new("example", :record => :once)
         expect(File).to exist(cassette.file)
-        expect(File.size?(cassette.file)).to be_true
+        expect(File.size?(cassette.file)).to be_truthy
         expect(cassette).not_to be_recording
       end
 
       it 'returns true when there is an empty existing cassette file' do
         cassette = VCR::Cassette.new("empty", :record => :once)
         expect(File).to exist(cassette.file)
-        expect(File.size?(cassette.file)).to be_false
+        expect(File.size?(cassette.file)).to be_falsey
         expect(cassette).to be_recording
       end
 
@@ -313,7 +313,7 @@ describe VCR::Cassette do
           VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
           cassette = VCR::Cassette.new('example', :record => record_mode)
 
-          expect(cassette).to have(3).previously_recorded_interactions
+          expect(cassette.send(:previously_recorded_interactions).size).to eq(3)
 
           i1, i2, i3 = *cassette.send(:previously_recorded_interactions)
 
@@ -363,7 +363,7 @@ describe VCR::Cassette do
             ).exactly(3).times
 
             cassette = VCR::Cassette.new('example', :record => record_mode)
-            expect(cassette).to have(3).previously_recorded_interactions
+            expect(cassette.send(:previously_recorded_interactions).size).to eq(3)
           end
 
           it 'does not playback any interactions that are ignored in a before_playback hook' do
@@ -373,20 +373,20 @@ describe VCR::Cassette do
 
             VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
             cassette = VCR::Cassette.new('example', :record => record_mode)
-            expect(cassette).to have(2).previously_recorded_interactions
+            expect(cassette.send(:previously_recorded_interactions).size).to eq(2)
           end
 
           it 'instantiates the http_interactions with the loaded interactions and the request matchers' do
             VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
             cassette = VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:body, :headers])
-            expect(cassette.http_interactions.interactions).to have(3).interactions
+            expect(cassette.http_interactions.interactions.size).to eq(3)
             expect(cassette.http_interactions.request_matchers).to eq([:body, :headers])
           end
         else
           it 'instantiates the http_interactions with the no interactions and the request matchers' do
             VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
             cassette = VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:body, :headers])
-            expect(cassette.http_interactions.interactions).to have(0).interactions
+            expect(cassette.http_interactions.interactions.size).to eq(0)
             expect(cassette.http_interactions.request_matchers).to eq([:body, :headers])
           end
         end

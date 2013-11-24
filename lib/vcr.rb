@@ -293,7 +293,7 @@ module VCR
   # @private
   def real_http_connections_allowed?
     return current_cassette.recording? if current_cassette
-    configuration.allow_http_connections_when_no_cassette? || @turned_off
+    !!(configuration.allow_http_connections_when_no_cassette? || @turned_off)
   end
 
   # @return [RequestMatcherRegistry] the request matcher registry

@@ -111,7 +111,7 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
 
     context 'when WebMock has been loaded' do
       before(:each) do
-        expect(defined?(WebMock)).to be_true
+        expect(defined?(WebMock)).to be_truthy
       end
 
       it 'raises an error since FakeWeb and WebMock cannot both be used simultaneously' do
