@@ -1,6 +1,6 @@
-## Development
+## 2.8.0 (November 23, 2013)
 
-[Full Changelog](http://github.com/vcr/vcr/compare/v2.7.0...master)
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.7.0...v2.8.0)
 
 Enhancements:
 
