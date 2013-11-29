@@ -10,8 +10,8 @@ Feature: before_record hook
   If you wish to prevent VCR from recording the HTTP interaction you can call
   `#ignore!` on the interaction.
 
-  If you don't want your hook to apply to all cassettes, you can use tags so
-  you can select which hooks are applied.  Consider this code:
+  If you don't want your hook to apply to all cassettes, you can use tags to
+  select which cassettes a given hook applies to.  Consider this code:
 
       VCR.configure do |c|
         c.before_record(:twitter) { ... } # modify the interactions somehow
