@@ -7,11 +7,11 @@ Feature: before_record hook
   the HTTP interaction that is about to be written to disk.  The second
   argument will be the current cassette.
 
-  You can also call `#ignore!` on the HTTP interaction to prevent VCR
-  from recording it.
+  If you wish to prevent VCR from recording the HTTP interaction you can call
+  `#ignore!` on the interaction.
 
-  If you don't your hook to apply to all cassettes, you can use tags for
-  this purpose.  Consider this code:
+  If you don't want your hook to apply to all cassettes, you can use tags to
+  select which cassettes a given hook applies to.  Consider this code:
 
       VCR.configure do |c|
         c.before_record(:twitter) { ... } # modify the interactions somehow
