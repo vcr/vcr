@@ -209,6 +209,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Nock-VCR](https://github.com/carbonfive/nock-vcr) (JavaScript/Node)
 * [NSURLConnectionVCR](https://bitbucket.org/martijnthe/nsurlconnectionvcr) (Objective-C)
 * [PHP-VCR](https://github.com/php-vcr/php-vcr) (PHP)
+* [Sepia](https://github.com/linkedin/sepia) (Javascript/Node)
 * [TapeDeck.js](https://github.com/EndangeredMassa/TapeDeck.js) (JavaScript)
 * [VCR.js](https://github.com/elcuervo/vcr.js) (JavaScript)
 * [VCR.py](https://github.com/kevin1024/vcrpy) (Python)
