@@ -201,6 +201,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 
 * [Betamax](https://github.com/robfletcher/betamax) (Groovy/JVM)
 * [Betamax](https://github.com/sigmavirus24/betamax) (Python)
+* [Betamax](https://github.com/thegreatape/betamax) (Go)
 * [Betamax](https://github.com/wjlroe/betamax) (Clojure)
 * [Betamax.NET](https://github.com/mfloryan/Betamax.Net) (C#/.NET)
 * [ExVCR](https://github.com/parroty/exvcr) (Elixir)
