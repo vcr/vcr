@@ -19,6 +19,7 @@ group :extras do
 
   gem 'debugger', :platforms => :mri_19
   gem 'pry'
+  gem 'pry-debugger'
 end
 
 gem 'rake', '>= 0.9.2'
@@ -27,6 +28,9 @@ gem 'cucumber', '>= 1.1.4'
 gem 'aruba', '>= 0.5'
 
 gem 'rspec', '>= 3.0.0.beta1'
+gem 'minitest'
+gem "minispec-metadata"
+gem "mocha"
 
 gem 'fakeweb', '>= 1.3.0'
 gem 'webmock', '>= 1.14'
