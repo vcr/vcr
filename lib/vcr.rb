@@ -30,6 +30,10 @@ module VCR
     autoload :Macros,                'vcr/deprecations'
   end
 
+  module MiniTest
+    autoload :Spec,              'vcr/test_frameworks/minitest'
+  end
+
   module Middleware
     autoload :Faraday,           'vcr/middleware/faraday'
     autoload :Rack,              'vcr/middleware/rack'

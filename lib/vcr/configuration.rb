@@ -415,6 +415,15 @@ module VCR
       end
     end
 
+    # Configures MiniTest to use a VCR cassette for any example
+    # tagged with `:vcr`.
+    def configure_minitest_metadata!
+      unless @mini_test_metadata_configured
+        VCR::MiniTest::Spec.configure!
+        @mini_test_metadata_configured = true
+      end
+    end
+
     # An object to log debug output to.
     #
     # @overload debug_logger
