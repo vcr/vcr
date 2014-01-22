@@ -173,6 +173,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Mark Burns](https://github.com/markburns)
 * [Max Riveiro](https://github.com/kavu)
 * [Michael Lavrisha](https://github.com/vrish88)
+* [Michiel de Mare](https://github.com/mdemare)
 * [Mike Dalton](https://github.com/kcdragon)
 * [Mislav Marohnić](https://github.com/mislav)
 * [Nathaniel Bibler](https://github.com/nbibler)
