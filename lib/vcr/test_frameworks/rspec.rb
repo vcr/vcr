@@ -11,7 +11,7 @@ module VCR
             description = metadata[:description]
 
             if example_group = metadata[:example_group]
-              [vcr_cassette_name_for[example_group], description].join('/')
+              [vcr_cassette_name_for[example_group], description].reject{|elem| elem.nil? || elem.strip.empty? }.join('/')
             else
               description
             end
