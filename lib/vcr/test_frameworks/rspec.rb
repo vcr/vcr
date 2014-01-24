@@ -27,7 +27,13 @@ module VCR
 
             cassette_name = options.delete(:cassette_name) ||
                             vcr_cassette_name_for[example.metadata]
-            VCR.insert_cassette(cassette_name, options)
+
+            if cassette_name.strip[-1,1] == "/"
+              pending "VCR does not support rspec one line syntax on line #{example.metadata[:line_number]}"
+            else
+              VCR.insert_cassette(cassette_name, options)
+            end
+            
           end
 
           config.after(:each, when_tagged_with_vcr) do |ex|
