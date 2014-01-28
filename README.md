@@ -82,6 +82,8 @@ The docs come in two flavors:
 See the [Upgrade](https://github.com/vcr/vcr/blob/master/Upgrade.md) doc
 for info about what's new and changed in VCR 2.0.
 
+There is also a Railscast, which will get you up and running in no-time http://railscasts.com/episodes/291-testing-with-vcr
+
 ## Release Policy
 
 VCR follows the principles of [semantic versioning](http://semver.org/).
