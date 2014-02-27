@@ -40,6 +40,13 @@ module VCR
       expect(Kernel).not_to receive(:warn)
       checker.check_version!
     end
+
+    it 'does not print a warning if version checking has been silenced' do
+      VCR.configure { |c| c.version_checking_warnings = false }
+      checker = VersionChecker.new('foo', '2.0.0', '1.0.0', '1.1')
+      expect(Kernel).to_not receive(:warn).with(/you are using a newer version/)
+      checker.check_version!
+    end
   end
 end
 

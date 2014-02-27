@@ -50,6 +50,19 @@ module VCR
       @default_cassette_options.merge!(overrides)
     end
 
+    # Set option to silence warnings from version checking.
+    #
+    # @example
+    #   VCR.configure do |c|
+    #     c.version_checking_warnings = false
+    #   end
+    #
+    # @note default is `true`
+    def version_checking_warnings=(value)
+      @version_checking_warnings = !!value
+    end
+    attr_reader :version_checking_warnings
+
     # Configures which libraries VCR will hook into to intercept HTTP requests.
     #
     # @example
@@ -490,6 +503,7 @@ module VCR
         :serialize_with    => :yaml,
         :persist_with      => :file_system
       }
+      @version_checking_warnings = true
 
       self.uri_parser = URI
       self.query_parser = CGI.method(:parse)
