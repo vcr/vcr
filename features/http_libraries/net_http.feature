@@ -144,7 +144,7 @@ Feature: Net::HTTP
           c.cassette_library_dir = 'cassettes'
         end
 
-        uri = URI("https://gist.github.com/myronmarston/fb555cb593f3349d53af/raw/6921dd638337d3f6a51b0e02e7f30e3c414f70d6/vcr_gist")
+        uri = URI("https://gist.githubusercontent.com/myronmarston/fb555cb593f3349d53af/raw/6921dd638337d3f6a51b0e02e7f30e3c414f70d6/vcr_gist")
 
         VCR.use_cassette('https') do
           http = Net::HTTP.new(uri.host, uri.port)
