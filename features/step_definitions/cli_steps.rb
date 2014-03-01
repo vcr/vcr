@@ -36,7 +36,7 @@ module VCRHelpers
       # Remove non-deterministic headers and headers
       # that get added by a particular HTTP library (but not by others)
       i.response.headers.reject! { |k, v| %w[ server date connection ].include?(k) }
-      i.request.headers.reject! { |k, v| %w[ accept user-agent connection expect ].include?(k) }
+      i.request.headers.reject! { |k, v| %w[ accept user-agent connection expect date ].include?(k) }
 
       # Some HTTP libraries include an extra space ("OK " instead of "OK")
       i.response.status.message = i.response.status.message.strip

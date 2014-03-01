@@ -85,7 +85,11 @@ HTTP_LIBRARY_ADAPTERS['httpclient'] = Module.new do
   end
 
   def normalize_request_headers(headers)
-    headers
+    headers.merge({
+      'Accept'     => ["*/*"],
+      'User-Agent' => ["HTTPClient/1.0 (#{HTTPClient::VERSION}, ruby #{RUBY_VERSION} (#{RUBY_RELEASE_DATE}))"],
+      'Date'       => [Time.now.httpdate]
+    })
   end
 end
 
