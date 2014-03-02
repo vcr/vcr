@@ -79,7 +79,6 @@ Feature: Matching on Headers
 
     Examples:
       | configuration         | http_lib              |
-      | c.hook_into :webmock  | httpclient            |
       | c.hook_into :webmock  | curb                  |
       | c.hook_into :webmock  | patron                |
       | c.hook_into :webmock  | em-http-request       |
