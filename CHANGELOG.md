@@ -4,6 +4,7 @@
 
 Enhancements:
 
+* Explicitly support the latest Excon release (0.32). (Ryan Foster)
 * Explicitly support the latest Excon release (0.29). (Michiel de Mare)
 * Explicitly support the latest Webmock releases (1.16, 1.17).
   (Ryan Foster, Lawson Kurtz)
