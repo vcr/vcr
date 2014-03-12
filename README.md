@@ -227,7 +227,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Net::HTTP Spy](http://github.com/martinbtt/net-http-spy)
 * [NetRecorder](https://github.com/chrisyoung/netrecorder)
 * [Puffing Billy](https://github.com/oesmith/puffing-billy)
-* [REST-assured](https://github.com/BBC/REST-assured)
+* [REST-assured](https://github.com/artemave/REST-assured)
 * [Stale Fish](https://github.com/jsmestad/stale_fish)
 * [WebFixtures](http://github.com/trydionel/web_fixtures)
 
