@@ -14,7 +14,7 @@ module VCR
 
     def check_version!
       raise_too_low_error if too_low?
-      warn_about_too_high if too_high?
+      warn_about_too_high if too_high? && version_warnings?
     end
 
   private
@@ -25,6 +25,10 @@ module VCR
 
     def too_high?
       @comparison_result == :too_high
+    end
+
+    def version_warnings?
+      VCR.configuration.version_checking_warnings
     end
 
     def raise_too_low_error
