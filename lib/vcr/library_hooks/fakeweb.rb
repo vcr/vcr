@@ -5,7 +5,7 @@ require 'vcr/extensions/net_http_response'
 require 'vcr/request_handler'
 require 'set'
 
-VCR::VersionChecker.new('FakeWeb', FakeWeb::VERSION, '1.3.0', '1.3').check_version!
+VCR::VersionChecker.new('FakeWeb', FakeWeb::VERSION, '1.3.0').check_version!
 
 module VCR
   class LibraryHooks

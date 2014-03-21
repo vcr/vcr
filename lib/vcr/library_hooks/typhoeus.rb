@@ -5,7 +5,7 @@ require 'typhoeus'
 if Float(Typhoeus::VERSION[/^\d+\.\d+/]) < 0.5
   require 'vcr/library_hooks/typhoeus_0.4'
 else
-  VCR::VersionChecker.new('Typhoeus', Typhoeus::VERSION, '0.5.0', '0.6').check_version!
+  VCR::VersionChecker.new('Typhoeus', Typhoeus::VERSION, '0.5.0').check_version!
 
   module VCR
     class LibraryHooks

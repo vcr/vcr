@@ -1,4 +1,4 @@
-VCR::VersionChecker.new('Typhoeus', Typhoeus::VERSION, '0.3.2', '0.4').check_version!
+VCR::VersionChecker.new('Typhoeus', Typhoeus::VERSION, '0.3.2').check_version!
 
 module VCR
   class LibraryHooks
