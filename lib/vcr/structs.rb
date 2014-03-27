@@ -119,7 +119,7 @@ module VCR
             else [v]
           end
 
-          new_headers[String.new(k)] = convert_to_raw_strings(val_array)
+          new_headers[String(k)] = convert_to_raw_strings(val_array)
           @normalized_header_keys[k.downcase] = k
         end if headers
 
