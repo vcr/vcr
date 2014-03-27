@@ -40,6 +40,11 @@ shared_examples_for "a header normalizer" do
     instance = with_headers('accept-encoding' => accept_encoding)
     expect(instance.headers['accept-encoding']).to eq(accept_encoding)
   end
+
+  it 'coerces symbol header keys into strings' do
+    instance = with_headers(:Accept => ['value'])
+    expect(instance.headers['Accept']).to eq(['value'])
+  end
 end
 
 shared_examples_for "a body normalizer" do
