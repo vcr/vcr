@@ -1,18 +1,17 @@
 require 'rubygems'
 
-# FIXME
-# expected ArgumentError, got #<TypeError: Coercion error:
-#          #<ArgumentError: ...>.to_str => String failed>
+
+# FIXME fwoeck: Why is this necessary?
 #
-class Exception
-  def to_str; message; end
+if RUBY_ENGINE == 'rbx'
+  class Exception
+    def to_str; message; end
+  end
+
+  class ArgumentError
+    def to_str; message; end
+  end
 end
-#
-class ArgumentError
-  def to_str; message; end
-end
-#
-# FIXME
 
 
 using_git = File.exist?(File.expand_path('../../.git/', __FILE__))
@@ -52,7 +51,7 @@ require "support/vcr_localhost_server"
 require "support/vcr_stub_helpers"
 
 require 'celluloid/test'
-Celluloid.shutdown_timeout = 1
+Celluloid.shutdown_timeout = 0.05
 Celluloid.logger = nil
 Celluloid.boot
 
@@ -73,8 +72,6 @@ module VCR
 end
 
 
-
-
 RSpec.configure do |config|
   config.order = :rand
   config.color_enabled = true
@@ -89,6 +86,8 @@ RSpec.configure do |config|
 
   tmp_dir = File.expand_path('../../tmp/cassette_library_dir', __FILE__)
   config.before(:each) do |example|
+    RSpec::Mocks.proxy_for(VCR).reset
+
     unless example.metadata[:skip_vcr_reset]
       VCR.cleanup!
 

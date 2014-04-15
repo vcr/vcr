@@ -12,6 +12,12 @@ Before('@rspec-1') do
   additional_paths << File.join(%w[ .. .. vendor rspec-1 bin ])
 end
 
+require 'celluloid/test'
+Celluloid.shutdown_timeout = 0.05
+Celluloid.logger = nil
+Celluloid.boot
+
+
 Before do
   load_paths, requires = ['../../lib'], []
 
@@ -37,5 +43,8 @@ Before do
   end
 
   @aruba_timeout_seconds = 60
-end
 
+  # FIXME fwoeck: Why is this harmful here?
+  #
+  # VCR.cleanup!
+end

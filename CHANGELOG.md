@@ -891,7 +891,7 @@ upgrade notes for more info.
   you in migrating your cassettes to the new format.  Simply add `load 'vcr/tasks/vcr.rake'` to your project's Rakefile,
   and run:
 
-    $ rake vcr:migrate_cassettes DIR=path/to/cassete/library/directory
+    $ rake vcr:migrate_cassettes DIR=path/to/cassette/library/directory
 
 * The new cassette format records more information about the request (i.e. the request headers and body), so that it
   can potentially be used with webmock in the future.
