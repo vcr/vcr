@@ -315,3 +315,9 @@ class VcrActor
   end
 
 end
+
+class VcrSupervisor < Celluloid::SupervisionGroup
+  supervise VcrActor, as: :vcr
+end
+
+VcrSupervisor.run!

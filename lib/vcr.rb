@@ -42,18 +42,15 @@ module VCR
     :turn_on!, :turned_off, :turned_on?, :real_http_connections_allowed?, :cassettes,
     :initialize_ivars, :wrapped_object
 
-  @@actor_mutex = Mutex.new
-
 
   def self.vcr_actor
-    @@actor_mutex.synchronize {
-      VcrActor.supervise_as(:vcr) unless Celluloid::Actor[:vcr]
-      Celluloid::Actor[:vcr]
-    }
+    Celluloid::Actor[:vcr]
   end
 
   def self.cleanup!
     Celluloid.shutdown
     Celluloid.boot
+
+    VcrSupervisor.run!
   end
 end
