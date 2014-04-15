@@ -13,26 +13,59 @@ require 'vcr/request_matcher_registry'
 require 'vcr/structs'
 require 'vcr/version'
 
+require 'celluloid/autostart'
+require 'forwardable'
+
+
 # The main entry point for VCR.
 # @note This module is extended onto itself; thus, the methods listed
 #  here as instance methods are available directly off of VCR.
 module VCR
-  include VariableArgsBlockCaller
+  extend  SingleForwardable
   include Errors
-
-  extend self
 
   autoload :CucumberTags,       'vcr/test_frameworks/cucumber'
   autoload :InternetConnection, 'vcr/util/internet_connection'
 
   module RSpec
-    autoload :Metadata,              'vcr/test_frameworks/rspec'
-    autoload :Macros,                'vcr/deprecations'
+    autoload :Metadata,         'vcr/test_frameworks/rspec'
+    autoload :Macros,           'vcr/deprecations'
   end
 
   module Middleware
-    autoload :Faraday,           'vcr/middleware/faraday'
-    autoload :Rack,              'vcr/middleware/rack'
+    autoload :Faraday,          'vcr/middleware/faraday'
+    autoload :Rack,             'vcr/middleware/rack'
+  end
+
+  def_delegators :vcr_actor,
+    :current_cassette, :eject_cassette, :insert_cassette, :request_ignorer, :request_matchers,
+    :cassette_persisters, :cassette_serializers, :configuration, :configure, :cucumber_tags,
+    :use_cassette, :http_interactions, :library_hooks, :record_http_interaction, :turn_off!,
+    :turn_on!, :turned_off, :turned_on?, :real_http_connections_allowed?, :cassettes,
+    :initialize_ivars, :wrapped_object
+
+  @@init_mutex = Mutex.new
+
+  def self.vcr_actor
+    @@init_mutex.synchronize {
+      @@actor ||= VcrActor.new
+    }
+  end
+
+  def self.cleanup!
+    @@actor = nil
+    Celluloid.shutdown
+    Celluloid.boot
+  end
+end
+
+
+class VcrActor
+  include Celluloid
+  include VCR::VariableArgsBlockCaller
+
+  def initialize
+    initialize_ivars # to avoid warnings
   end
 
   # The currently active cassette.
@@ -120,16 +153,16 @@ module VCR
   def insert_cassette(name, options = {})
     if turned_on?
       if cassettes.any? { |c| c.name == name }
-        raise ArgumentError.new("There is already a cassette with the same name (#{name}).  You cannot nest multiple cassettes with the same name.")
+        abort ArgumentError.new("There is already a cassette with the same name (#{name}).  You cannot nest multiple cassettes with the same name.")
       end
 
-      cassette = Cassette.new(name, options)
+      cassette = VCR::Cassette.new(name, options)
       cassettes.push(cassette)
       cassette
     elsif !ignore_cassettes?
       message = "VCR is turned off.  You must turn it on before you can insert a cassette.  " +
                 "Or you can use the `:ignore_cassettes => true` option to completely ignore cassette insertions."
-      raise TurnedOffError.new(message)
+      abort VCR::TurnedOffError.new(message)
     end
   end
 
@@ -171,9 +204,9 @@ module VCR
   # @see #eject_cassette
   def use_cassette(name, options = {}, &block)
     unless block
-      raise ArgumentError, "`VCR.use_cassette` requires a block. " +
-                           "If you cannot wrap your code in a block, use " +
-                           "`VCR.insert_cassette` / `VCR.eject_cassette` instead."
+      abort ArgumentError.new "`VCR.use_cassette` requires a block. " +
+                              "If you cannot wrap your code in a block, use " +
+                              "`VCR.insert_cassette` / `VCR.eject_cassette` instead."
     end
 
     cassette = insert_cassette(name, options)
@@ -201,7 +234,7 @@ module VCR
 
   # @return [VCR::Configuration] the VCR configuration.
   def configuration
-    @configuration ||= Configuration.new
+    @configuration ||= VCR::Configuration.new
   end
 
   # Sets up `Before` and `After` cucumber hooks in order to
@@ -252,14 +285,14 @@ module VCR
   # @raise [ArgumentError] if you pass an invalid option
   def turn_off!(options = {})
     if VCR.current_cassette
-      raise CassetteInUseError, "A VCR cassette is currently in use (#{VCR.current_cassette.name}). " +
-                                "You must eject it before you can turn VCR off."
+      abort VCR::CassetteInUseError.new "A VCR cassette is currently in use (#{VCR.current_cassette.name}). " +
+                                        "You must eject it before you can turn VCR off."
     end
 
     @ignore_cassettes = options[:ignore_cassettes]
     invalid_options = options.keys - [:ignore_cassettes]
     if invalid_options.any?
-      raise ArgumentError.new("You passed some invalid options: #{invalid_options.inspect}")
+      abort ArgumentError.new("You passed some invalid options: #{invalid_options.inspect}")
     end
 
     @turned_off = true
@@ -298,27 +331,27 @@ module VCR
 
   # @return [RequestMatcherRegistry] the request matcher registry
   def request_matchers
-    @request_matchers ||= RequestMatcherRegistry.new
+    @request_matchers ||= VCR::RequestMatcherRegistry.new
   end
 
   # @private
   def request_ignorer
-    @request_ignorer ||= RequestIgnorer.new
+    @request_ignorer ||= VCR::RequestIgnorer.new
   end
 
   # @private
   def library_hooks
-    @library_hooks ||= LibraryHooks.new
+    @library_hooks ||= VCR::LibraryHooks.new
   end
 
   # @private
   def cassette_serializers
-    @cassette_serializers ||= Cassette::Serializers.new
+    @cassette_serializers ||= VCR::Cassette::Serializers.new
   end
 
   # @private
   def cassette_persisters
-    @cassette_persisters ||= Cassette::Persisters.new
+    @cassette_persisters ||= VCR::Cassette::Persisters.new
   end
 
   # @private
@@ -328,8 +361,6 @@ module VCR
 
     cassette.record_http_interaction(interaction)
   end
-
-private
 
   def ignore_cassettes?
     @ignore_cassettes
@@ -343,5 +374,4 @@ private
     @turned_off = false
   end
 
-  initialize_ivars # to avoid warnings
 end

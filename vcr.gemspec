@@ -15,8 +15,10 @@ Gem::Specification.new do |s|
 
   s.version = VCR.version
   s.platform = Gem::Platform::RUBY
-  s.required_ruby_version = '>= 1.8.7'
-  s.required_rubygems_version = '>= 1.3.5'
+  s.required_ruby_version = '>= 1.9.2'
+  s.required_rubygems_version = '>= 1.3.6'
+
+  s.add_runtime_dependency 'celluloid', '~> 0.15'
 
   # Development dependencies are listed in the Gemfile.
 end

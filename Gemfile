@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'appraisal'
+gem 'celluloid', '~> 0.15'
 
 gemspec
 
