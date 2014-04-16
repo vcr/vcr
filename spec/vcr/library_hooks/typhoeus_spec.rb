@@ -30,9 +30,9 @@ describe "Typhoeus hook", :with_monkey_patches => :typhoeus do
 
   context 'when there are nested hydra queues' do
     def make_requests
-      VCR.use_cassette("nested") do
-        response_1 = response_2 = nil
+      response_1 = response_2 = nil
 
+      VCR.use_cassette("nested") do
         hydra   = Typhoeus::Hydra.new
         request = Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/")
 
@@ -47,9 +47,12 @@ describe "Typhoeus hook", :with_monkey_patches => :typhoeus do
 
         hydra.queue(request)
         hydra.run
-
-        return body_for(response_1), body_for(response_2)
       end
+
+      # FIXME Was it intended to have this line within
+      #       the VCR.use_cassette-block?
+      #
+      return body_for(response_1), body_for(response_2)
     end
 
     def body_for(response)

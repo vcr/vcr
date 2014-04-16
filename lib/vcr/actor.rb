@@ -154,6 +154,10 @@ class VcrActor
     begin
       call_block(block, cassette)
     ensure
+
+      # FIXME This doesn't work - see
+      #       https://github.com/celluloid/celluloid/wiki/Blocks
+      #
       eject_cassette
     end
   end
@@ -316,6 +320,10 @@ class VcrActor
 
 end
 
+
+# @note VcrSupervisor.run! starts a supervision group, that keeps
+#       a running actor accessible through Celluloid::Actor[:vcr].
+#
 class VcrSupervisor < Celluloid::SupervisionGroup
   supervise VcrActor, as: :vcr
 end

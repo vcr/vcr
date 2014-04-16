@@ -15,9 +15,9 @@ require 'vcr/request_matcher_registry'
 require 'vcr/structs'
 require 'vcr/version'
 
-# The main entry point for VCR.
-# @note This module is extended onto itself; thus, the methods listed
-#  here as instance methods are available directly off of VCR.
+# @note The main entry point for VCR. This serves as common interface to the singleton
+#       instance in vcr_actor. Class methods are being forwarded to there.
+#
 module VCR
   extend  SingleForwardable
   include Errors

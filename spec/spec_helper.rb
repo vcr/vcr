@@ -1,7 +1,7 @@
 require 'rubygems'
 
 
-# FIXME fwoeck: Why is this necessary?
+# FIXME Why is this necessary?
 #
 if RUBY_ENGINE == 'rbx'
   class Exception

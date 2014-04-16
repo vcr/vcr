@@ -44,7 +44,7 @@ Before do
 
   @aruba_timeout_seconds = 60
 
-  # FIXME fwoeck: Why is this harmful here?
+  # FIXME Why is this harmful here?
   #
   # VCR.cleanup!
 end
