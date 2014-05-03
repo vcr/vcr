@@ -113,6 +113,14 @@ module VCR
           expect(matches).to be true
         end
 
+        it 'does not skips the part of a query parameter value after = symbol' do
+          matches = subject[subject.send(meth, :foo)].matches?(
+            request_with(:uri => 'http://example.com/search?bar=r=1'),
+            request_with(:uri => 'http://example.com/search?bar=r=2')
+          )
+          expect(matches).to be false
+        end
+
         it 'ignores the given query parameters when it is at the end' do
           matches = subject[subject.send(meth, :bar)].matches?(
             request_with(:uri => 'http://example.com/search?foo=124&bar=r'),
