@@ -24,10 +24,3 @@ If you get an error while running `bundle install`, it may be one of the "extras
 ```console
 bundle install --without extras
 ```
-
-If you are getting an error installing `rb-fsevent` gem, you may want to temporarily change the Gemfile to use the pre-release version of the gem.
-
-```ruby
-gem 'rb-fsevent', '0.9.0.pre4'
-```
-
