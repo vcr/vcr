@@ -1,7 +1,16 @@
-require 'celluloid/autostart'
+begin
+  require 'celluloid/autostart'
+rescue LoadError
+end
 
 class VcrActor
-  include Celluloid
+  if defined?(Celluloid)
+    include Celluloid
+  else
+    def wrapped_object; self; end
+    def abort(*args); raise(*args); end
+  end
+
   include VCR::VariableArgsBlockCaller
 
   def initialize
@@ -324,8 +333,10 @@ end
 # @note VcrSupervisor.run! starts a supervision group, that keeps
 #       a running actor accessible through Celluloid::Actor[:vcr].
 #
-class VcrSupervisor < Celluloid::SupervisionGroup
-  supervise VcrActor, as: :vcr
-end
+if defined?(Celluloid)
+  class VcrSupervisor < Celluloid::SupervisionGroup
+    supervise VcrActor, as: :vcr
+  end
 
-VcrSupervisor.run!
+  VcrSupervisor.run!
+end

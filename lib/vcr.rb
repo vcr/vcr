@@ -44,13 +44,21 @@ module VCR
 
 
   def self.vcr_actor
-    Celluloid::Actor[:vcr]
+    if defined?(Celluloid)
+      Celluloid::Actor[:vcr]
+    else
+      @@vcr_actor ||= VcrActor.new
+    end
   end
 
   def self.cleanup!
-    Celluloid.shutdown
-    Celluloid.boot
+    if defined?(Celluloid)
+      Celluloid.shutdown
+      Celluloid.boot
 
-    VcrSupervisor.run!
+      VcrSupervisor.run!
+    else
+      @@vcr_actor = VcrActor.new
+    end
   end
 end

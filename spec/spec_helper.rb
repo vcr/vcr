@@ -50,10 +50,13 @@ require "support/sinatra_app"
 require "support/vcr_localhost_server"
 require "support/vcr_stub_helpers"
 
-require 'celluloid/test'
-Celluloid.shutdown_timeout = 0.05
-Celluloid.logger = nil
-Celluloid.boot
+begin
+  require 'celluloid/test'
+  Celluloid.shutdown_timeout = 0.05
+  Celluloid.logger = nil
+  Celluloid.boot
+rescue LoadError
+end
 
 require 'vcr'
 require 'monkey_patches'

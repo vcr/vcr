@@ -12,10 +12,13 @@ Before('@rspec-1') do
   additional_paths << File.join(%w[ .. .. vendor rspec-1 bin ])
 end
 
-require 'celluloid/test'
-Celluloid.shutdown_timeout = 0.05
-Celluloid.logger = nil
-Celluloid.boot
+begin
+  require 'celluloid/test'
+  Celluloid.shutdown_timeout = 0.05
+  Celluloid.logger = nil
+  Celluloid.boot
+rescue LoadError
+end
 
 
 Before do
