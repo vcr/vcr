@@ -2,6 +2,10 @@ source 'https://rubygems.org'
 
 gem 'appraisal'
 
+# FIXME This is clumsy -
+#       should we include it at all at this point?
+gem 'celluloid', :platforms => [:mri_19, :mri_20, :mri_21, :jruby, :rbx]
+
 gemspec
 
 gem 'jruby-openssl', :platforms => :jruby
