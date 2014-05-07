@@ -1,5 +1,19 @@
 require 'rubygems'
 
+
+# FIXME Why is this necessary?
+#
+if RUBY_ENGINE == 'rbx'
+  class Exception
+    def to_str; message; end
+  end
+
+  class ArgumentError
+    def to_str; message; end
+  end
+end
+
+
 using_git = File.exist?(File.expand_path('../../.git/', __FILE__))
 require 'bundler/setup' if using_git
 
@@ -36,9 +50,18 @@ require "support/sinatra_app"
 require "support/vcr_localhost_server"
 require "support/vcr_stub_helpers"
 
+begin
+  require 'celluloid/test'
+  Celluloid.shutdown_timeout = 0.05
+  Celluloid.logger = nil
+  Celluloid.boot
+rescue LoadError
+end
+
 require 'vcr'
 require 'monkey_patches'
-require "support/http_library_adapters"
+require 'support/http_library_adapters'
+
 
 module VCR
   SPEC_ROOT = File.dirname(File.expand_path('.', __FILE__))
@@ -50,6 +73,7 @@ module VCR
     configuration.hook_into hook if hook
   end
 end
+
 
 RSpec.configure do |config|
   config.order = :rand
@@ -65,7 +89,11 @@ RSpec.configure do |config|
 
   tmp_dir = File.expand_path('../../tmp/cassette_library_dir', __FILE__)
   config.before(:each) do |example|
+    RSpec::Mocks.proxy_for(VCR).reset
+
     unless example.metadata[:skip_vcr_reset]
+      VCR.cleanup!
+
       VCR.reset!
       VCR.configuration.cassette_library_dir = tmp_dir
       VCR.configuration.uri_parser = LimitedURI

@@ -41,6 +41,10 @@ describe "Excon hook", :with_monkey_patches => :excon do
 
     it 'records and plays back properly' do
       expect { make_request }.to raise_error(Excon::Errors::NotFound)
+
+      # FIXME This fails with "There is already a cassette with the same name (with_errors)"
+      #       The current cassette is not ejected, because "raise" is used instead of "abort"?
+      #
       expect { make_request }.to raise_error(Excon::Errors::NotFound)
     end
   end

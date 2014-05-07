@@ -49,4 +49,5 @@ doc
 .ruby-gemset
 bin/*
 bundle/*
+vendor/bundle/*
 .rspec-local
