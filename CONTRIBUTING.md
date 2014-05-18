@@ -7,6 +7,14 @@ gem install bundler
 bundle install
 ```
 
+You'll need redis running for the persistence test to pass. With homebrew:
+
+```console
+brew install redis
+```
+
+Then follow the instructions to configure redis.
+
 You should be able to run the tests now:
 
 ```console
