@@ -89,6 +89,8 @@ RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
 
   config.alias_it_should_behave_like_to :it_performs, 'it performs'
+
+  config.backtrace_exclusion_patterns = []
 end
 
 VCR::SinatraApp.boot
