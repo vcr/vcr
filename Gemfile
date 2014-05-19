@@ -17,7 +17,7 @@ gem 'github-markup'
 group :extras do
   gem 'ruby-debug', :platforms => [:mri_18, :jruby]
 
-  gem 'debugger', :platforms => :mri_19
+  gem 'debugger', :platforms => [:mri_19, :mri_21]
   gem 'pry'
 end
 
@@ -26,7 +26,11 @@ gem 'rake', '>= 0.9.2'
 gem 'cucumber', '>= 1.1.4'
 gem 'aruba', '>= 0.5'
 
-gem 'rspec', '>= 3.0.0.beta1'
+gem 'rspec', :git => 'https://github.com/rspec/rspec.git'
+gem 'rspec-core', :git => 'https://github.com/rspec/rspec-core.git'
+gem 'rspec-expectations', :git => 'https://github.com/rspec/rspec-expectations.git'
+gem 'rspec-mocks', :git => 'https://github.com/rspec/rspec-mocks.git'
+gem 'rspec-support', :git => 'https://github.com/rspec/rspec-support.git'
 
 gem 'fakeweb', '>= 1.3.0'
 gem 'webmock', '>= 1.14'
