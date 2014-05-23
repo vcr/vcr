@@ -26,7 +26,7 @@ gem 'rake', '>= 0.9.2'
 gem 'cucumber', '>= 1.1.4'
 gem 'aruba', '>= 0.5'
 
-gem 'rspec', '>= 3.0.0.beta1'
+gem 'rspec', '>= 3.0.0.rc1'
 
 gem 'fakeweb', '>= 1.3.0'
 gem 'webmock', '>= 1.14'

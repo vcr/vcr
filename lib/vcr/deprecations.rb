@@ -91,12 +91,13 @@ module VCR
         # RSpec 1 exposes #description_parts; use that if its available
         return description_parts.join("/") if respond_to?(:description_parts)
 
-        # Otherwise use RSpec 2 metadata...
+        # Otherwise use RSpec 2/3 metadata...
         group_descriptions = []
         klass = self
 
         while klass.respond_to?(:metadata) && klass.metadata
-          group_descriptions << klass.metadata[:example_group][:description]
+          group_descriptions << klass.metadata[:description] ||
+                                klass.metadata[:example_group][:description]
           klass = klass.superclass
         end
 
