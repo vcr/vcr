@@ -1,3 +1,11 @@
+## 2.9.1 (May 23, 2014)
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.9.0...v2.9.1)
+
+Bug Fixes:
+
+* Fix RSpec metadata integration to not trigger deprecation warnings
+  with RSpec 3.0.0.rc1+. (Janko Marohnić)
+
 ## 2.9.0 (March 27, 2014)
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v2.8.0...v2.9.0)
