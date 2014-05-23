@@ -27,7 +27,7 @@ describe "The library itself" do
   end
 
   RSpec::Matchers.define :be_well_formed do
-    failure_message_for_should do |actual|
+    failure_message do |actual|
       actual.join("\n")
     end
 

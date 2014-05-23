@@ -53,7 +53,7 @@ end
 
 RSpec.configure do |config|
   config.order = :rand
-  config.color_enabled = true
+  config.color = true
 
   config.expect_with :rspec do |expectations|
     expectations.syntax = :expect
