@@ -25,8 +25,6 @@ if RUBY_VERSION.to_f >= 1.9 && RUBY_ENGINE == 'ruby'
   end
 end
 
-require 'rspec'
-
 require "support/fixnum_extension"
 require "support/limited_uri"
 require "support/ruby_interpreter"
