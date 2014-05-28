@@ -29,7 +29,7 @@ GIT
 PATH
   remote: .
   specs:
-    vcr (2.9.1)
+    vcr (2.9.2)
 
 GEM
   remote: https://rubygems.org/
