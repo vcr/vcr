@@ -16,7 +16,7 @@ module VCR
                             end
 
             if example_group
-              [vcr_cassette_name_for[example_group], description].join('/')
+              [vcr_cassette_name_for[example_group], description].select { |v| !v.empty? }.join('/')
             else
               description
             end
