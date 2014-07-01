@@ -159,6 +159,7 @@ module VCR
       @serializer  = VCR.cassette_serializers[@options[:serialize_with]]
       @persister   = VCR.cassette_persisters[@options[:persist_with]]
       @record_mode = :all if should_re_record?
+      @record_mode = ENV.fetch('RECORD').to_sym if ENV.has_key?('RECORD')
       @parent_list = @exclusive ? HTTPInteractionList::NullList : VCR.http_interactions
     end
 

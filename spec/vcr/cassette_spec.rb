@@ -186,6 +186,24 @@ describe VCR::Cassette do
       expect { VCR::Cassette.new(:test, :record => :not_a_record_mode) }.to raise_error(ArgumentError)
     end
 
+    it "overrides record mode if given the 'RECORD' environment variable" do
+      begin
+        ENV['RECORD'] = 'all'
+        expect(VCR::Cassette.new(:test, :record => :none).record_mode).to eql(:all)
+      ensure
+        ENV.delete('RECORD')
+      end
+    end
+
+    it "raises an error if given the 'RECORD' environment variable with an invalid record mode" do
+      begin
+        ENV['RECORD'] = 'not_a_record_mode'
+        expect { VCR::Cassette.new(:test, :record => :none) }.to raise_error(ArgumentError)
+      ensure
+        ENV.delete('RECORD')
+      end
+    end
+
     it 'raises an error if given invalid options' do
       expect {
         VCR::Cassette.new(:test, :invalid => :option)
