@@ -161,6 +161,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Herman Verschooten](https://github.com/Hermanverschooten)
 * [Ian Cordasco](https://github.com/sigmavirus24)
 * [Ingemar](https://github.com/ingemar)
+* [Ilya Scharrenbroich](https://github.com/quidproquo)
 * [Jacob Green](https://github.com/Jacobkg)
 * [James Bence](https://github.com/jbence)
 * [Jay Shepherd](https://github.com/jayshepherd)
@@ -220,6 +221,11 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [VCRURLConnection](https://github.com/dstnbrkr/VCRURLConnection) (Objective-C)
 * [vcr-clj](https://github.com/ifesdjeen/vcr-clj) (Clojure)
 * [VHS](https://github.com/diegoeche/vhs) (Erlang)
+
+## Related Projects
+
+* [Mr. Video](https://github.com/quidproquo/mr_video) (Rails engine for managing VCR cassettes and episodes)
+
 
 ## Similar Libraries in Ruby
 
