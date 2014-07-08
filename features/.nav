@@ -20,6 +20,7 @@
   - new_episodes.feature
   - none.feature
   - all.feature
+  - environment_variable.feature
 - configuration:
   - cassette_library_dir.feature
   - hook_into.feature
