@@ -40,6 +40,12 @@ shared_examples_for "a header normalizer" do
     instance = with_headers('accept-encoding' => accept_encoding)
     expect(instance.headers['accept-encoding']).to eq(accept_encoding)
   end
+
+  it "handles a symbol key" do
+    instance = with_headers(foo: 1)
+    expect(instance.headers['foo']).to eq([1])
+    expect(YAML.dump(instance.headers)).to eq(YAML.dump('foo' => [1]))
+  end
 end
 
 shared_examples_for "a body normalizer" do
