@@ -244,7 +244,9 @@ module VCR
     end
 
     def interactions_to_record
-      merged_interactions.tap do |interactions|
+      # We deep-dup the interactions by roundtripping them to/from a hash.
+      # This is necessary because `before_record` can mutate the interactions.
+      merged_interactions.map { |i| HTTPInteraction.from_hash(i.to_hash) }.tap do |interactions|
         invoke_hook(:before_record, interactions)
       end
     end

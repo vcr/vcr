@@ -73,13 +73,23 @@ describe VCR::Cassette do
     let(:metadata) { subject.serializable_hash.reject { |k,v| k == "http_interactions" } }
 
     it 'includes the hash form of all recorded interactions' do
-      allow(interaction_1).to receive(:to_hash).and_return({ "i" => 1, 'body' => '' })
-      allow(interaction_2).to receive(:to_hash).and_return({ "i" => 2, 'body' => '' })
-      expect(subject.serializable_hash).to include('http_interactions' => [{ "i" => 1, 'body' => '' }, { "i" => 2, 'body' => '' }])
+      hash_1 = interaction_1.to_hash
+      hash_2 = interaction_2.to_hash
+      expect(subject.serializable_hash).to include('http_interactions' => [hash_1, hash_2])
     end
 
     it 'includes additional metadata about the cassette' do
       expect(metadata).to eq("recorded_with" => "VCR #{VCR.version}")
+    end
+
+    it 'does not allow the interactions to be mutated by configured hooks' do
+      VCR.configure do |c|
+        c.define_cassette_placeholder('<BODY>') { 'body' }
+      end
+
+      expect {
+        subject.serializable_hash
+      }.not_to change { interaction_1.response.body }
     end
   end
 

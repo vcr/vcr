@@ -1,3 +1,12 @@
+## Development
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.9.2...master)
+
+Bug Fixes:
+
+* Fix `VCR::Cassette#serializable_hash` so that it does not allow
+  `before_record` hooks to apply mutations to existing HTTPInteraction
+  instances. (Myron Marston)
+
 ## 2.9.2 (May 27, 2014)
 [Full Changelog](http://github.com/vcr/vcr/compare/v2.9.1...v2.9.2)
 
