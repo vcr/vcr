@@ -508,12 +508,12 @@ describe VCR::Cassette do
     end
 
     it 'does not record interactions that have been ignored' do
+      VCR.configure do |c|
+        c.before_record { |i| i.ignore! if i.request.uri =~ /foo/ }
+      end
+
       interaction_1 = http_interaction { |i| i.request.uri = 'http://foo.com/'; i.response.body = 'res 1' }
       interaction_2 = http_interaction { |i| i.request.uri = 'http://bar.com/'; i.response.body = 'res 2' }
-
-      hook_aware_interaction_1 = interaction_1.hook_aware
-      allow(interaction_1).to receive(:hook_aware).and_return(hook_aware_interaction_1)
-      hook_aware_interaction_1.ignore!
 
       cassette = VCR::Cassette.new('test_cassette')
       allow(cassette).to receive(:new_recorded_interactions).and_return([interaction_1, interaction_2])
@@ -524,11 +524,11 @@ describe VCR::Cassette do
     end
 
     it 'does not write the cassette to disk if all interactions have been ignored' do
-      interaction_1 = http_interaction { |i| i.request.uri = 'http://foo.com/'; i.response.body = 'res 1' }
+      VCR.configure do |c|
+        c.before_record { |i| i.ignore! }
+      end
 
-      hook_aware_interaction_1 = interaction_1.hook_aware
-      allow(interaction_1).to receive(:hook_aware).and_return(hook_aware_interaction_1)
-      hook_aware_interaction_1.ignore!
+      interaction_1 = http_interaction { |i| i.request.uri = 'http://foo.com/'; i.response.body = 'res 1' }
 
       cassette = VCR::Cassette.new('test_cassette')
       allow(cassette).to receive(:new_recorded_interactions).and_return([interaction_1])
