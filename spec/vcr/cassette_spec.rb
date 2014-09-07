@@ -113,21 +113,21 @@ describe VCR::Cassette do
 
       it 'returns false when there is an existing cassette file with content' do
         cassette = VCR::Cassette.new("example", :record => :once)
-        expect(File).to exist(cassette.file)
-        expect(File.size?(cassette.file)).to be_truthy
+        expect(::File).to exist(cassette.file)
+        expect(::File.size?(cassette.file)).to be_truthy
         expect(cassette).not_to be_recording
       end
 
       it 'returns true when there is an empty existing cassette file' do
         cassette = VCR::Cassette.new("empty", :record => :once)
-        expect(File).to exist(cassette.file)
-        expect(File.size?(cassette.file)).to be_falsey
+        expect(::File).to exist(cassette.file)
+        expect(::File.size?(cassette.file)).to be_falsey
         expect(cassette).to be_recording
       end
 
       it 'returns true when there is no existing cassette file' do
         cassette = VCR::Cassette.new("non_existant_file", :record => :once)
-        expect(File).not_to exist(cassette.file)
+        expect(::File).not_to exist(cassette.file)
         expect(cassette).to be_recording
       end
     end
@@ -253,11 +253,11 @@ describe VCR::Cassette do
           end
 
           context "and re_record_interval is 7.days" do
-            let(:file_name) { File.join(VCR.configuration.cassette_library_dir, "cassette_name.yml") }
-            subject { VCR::Cassette.new(File.basename(file_name).gsub('.yml', ''), :record => record_mode, :re_record_interval => 7.days) }
+            let(:file_name) { ::File.join(VCR.configuration.cassette_library_dir, "cassette_name.yml") }
+            subject { VCR::Cassette.new(::File.basename(file_name).gsub('.yml', ''), :record => record_mode, :re_record_interval => 7.days) }
 
             context 'when the cassette file does not exist' do
-              before(:each) { allow(File).to receive(:exist?).with(file_name).and_return(false) }
+              before(:each) { allow(::File).to receive(:exist?).with(file_name).and_return(false) }
 
               it "has :#{record_mode} for the record mode" do
                 expect(subject.record_mode).to eq(record_mode)
@@ -271,9 +271,9 @@ describe VCR::Cassette do
                 end
                 yaml = YAML.dump("http_interactions" => interactions)
 
-                allow(File).to receive(:exist?).with(file_name).and_return(true)
-                allow(File).to receive(:size?).with(file_name).and_return(true)
-                allow(File).to receive(:read).with(file_name).and_return(yaml)
+                allow(::File).to receive(:exist?).with(file_name).and_return(true)
+                allow(::File).to receive(:size?).with(file_name).and_return(true)
+                allow(::File).to receive(:read).with(file_name).and_return(yaml)
               end
 
               context 'and the earliest recorded interaction was recorded less than 7 days ago' do
@@ -490,7 +490,7 @@ describe VCR::Cassette do
       expect(cassette).to respond_to(:serializable_hash)
       allow(cassette).to receive(:serializable_hash).and_return({ "http_interactions" => [1, 3, 5] })
 
-      expect { cassette.eject }.to change { File.exist?(cassette.file) }.from(false).to(true)
+      expect { cassette.eject }.to change { ::File.exist?(cassette.file) }.from(false).to(true)
       saved_stuff = YAML.load_file(cassette.file)
       expect(saved_stuff).to eq("http_interactions" => [1, 3, 5])
     end
@@ -544,7 +544,7 @@ describe VCR::Cassette do
       allow(cassette).to receive(:new_recorded_interactions).and_return([interaction_1])
       cassette.eject
 
-      expect(File).not_to exist(cassette.file)
+      expect(::File).not_to exist(cassette.file)
     end
 
     it "writes the recorded interactions to a subdirectory if the cassette name includes a directory" do
@@ -552,7 +552,7 @@ describe VCR::Cassette do
       cassette = VCR::Cassette.new('subdirectory/test_cassette')
       allow(cassette).to receive(:new_recorded_interactions).and_return(recorded_interactions)
 
-      expect { cassette.eject }.to change { File.exist?(cassette.file) }.from(false).to(true)
+      expect { cassette.eject }.to change { ::File.exist?(cassette.file) }.from(false).to(true)
       saved_recorded_interactions = YAML.load_file(cassette.file)
       expect(saved_recorded_interactions["http_interactions"]).to eq(recorded_interactions.map(&:to_hash))
     end
@@ -568,8 +568,8 @@ describe VCR::Cassette do
 
         it "does not re-write to disk the previously recorded interactions if there are no new ones" do
           yaml_file = subject.file
-          expect(File).not_to receive(:open).with(subject.file, 'w')
-          expect { subject.eject }.to_not change { File.mtime(yaml_file) }
+          expect(::File).not_to receive(:open).with(subject.file, 'w')
+          expect { subject.eject }.to_not change { ::File.mtime(yaml_file) }
         end
 
         context 'when some new interactions have been recorded' do
