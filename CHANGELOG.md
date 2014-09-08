@@ -1,5 +1,5 @@
-## Development
-[Full Changelog](http://github.com/vcr/vcr/compare/v2.9.2...master)
+## 2.9.3 (September 7, 2014)
+[Full Changelog](http://github.com/vcr/vcr/compare/v2.9.2...v2.9.3)
 
 Bug Fixes:
 
