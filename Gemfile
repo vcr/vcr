@@ -25,10 +25,7 @@ gem 'rake', '>= 0.9.2'
 
 gem 'cucumber', '>= 1.1.4'
 gem 'aruba', '>= 0.5'
-
-%w[ core mocks expectations support ].each do |name|
-  gem "rspec-#{name}", :github => "rspec/rspec-#{name}"
-end
+gem 'rspec', '~> 3.1'
 
 gem 'fakeweb', '>= 1.3.0'
 gem 'webmock', '>= 1.14'

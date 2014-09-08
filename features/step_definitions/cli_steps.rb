@@ -176,10 +176,11 @@ Then /^the file "([^"]*)" should contain a YAML fragment like:$/ do |file_name, 
     # Normalize by removing leading and trailing whitespace...
     file_content = file_content.split("\n").map do |line|
       # Different versions of psych use single vs. double quotes
-      line.strip.gsub('"', "'")
+      # And then 2.1 sometimes adds quotes...
+      line.strip.gsub('"', "'").gsub("'", '')
     end.join("\n")
 
-    file_content.should include(fragment)
+    file_content.should include(fragment.gsub("'", ''))
   end
 end
 
