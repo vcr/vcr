@@ -41,7 +41,7 @@ module VCR
       end
 
       it 'restores all hooks to being enabled when the block completes, even if there is an error' do
-        subject.exclusively_enabled(:faraday) { raise "boom" } rescue
+        subject.exclusively_enabled(:faraday) { raise StandardError.new('boom') } rescue
         expect(subject.disabled?(:foo)).to be false
         expect(subject.disabled?(:faraday)).to be false
       end

@@ -216,7 +216,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
 
         it 'can be used to use a cassette for a request' do
           VCR.configuration.around_http_request do |request|
-            VCR.use_cassette('new_cassette', &request)
+            VCR.use_cassette('new_cassette') { request.proceed }
           end
 
           expect(VCR).to receive(:record_http_interaction) do
@@ -266,7 +266,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
 
         it 'does not get a dead fiber error when multiple requests are made' do
           VCR.configuration.around_http_request do |request|
-            VCR.use_cassette('new_cassette', &request)
+            VCR.use_cassette('new_cassette') { request.proceed }
           end
 
           3.times { make_http_request(:get, request_url) }
