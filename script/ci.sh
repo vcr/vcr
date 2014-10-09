@@ -27,6 +27,8 @@ export JRUBY_OPTS='-X-C' # disable JIT since these processes are so short lived
 # idea taken from https://github.com/jruby/jruby/wiki/Improving-startup-time
 export JAVA_OPTS='-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1'
 
+export SPEC_OPTS="--backtrace"
+
 echo "-------- Running Typhoeus 0.4 Specs ---------"
 BUNDLE_GEMFILE=gemfiles/typhoeus_old.gemfile run rspec spec/vcr/library_hooks/typhoeus_0.4_spec.rb
 
