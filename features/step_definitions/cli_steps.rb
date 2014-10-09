@@ -84,47 +84,47 @@ module VCRHelpers
 end
 World(VCRHelpers)
 
-Given /the following files do not exist:/ do |files|
+Given(/the following files do not exist:/) do |files|
   check_file_presence(files.raw.map{|file_row| file_row[0]}, false)
 end
 
-Given /^the directory "([^"]*)" does not exist$/ do |dir|
+Given(/^the directory "([^"]*)" does not exist$/) do |dir|
   check_directory_presence([dir], false)
 end
 
-Given /^a previously recorded cassette file "([^"]*)" with:$/ do |file_name, content|
+Given(/^a previously recorded cassette file "([^"]*)" with:$/) do |file_name, content|
   write_file(file_name, normalize_cassette_content(content))
 end
 
-Given /^it is (.*)$/ do |date_string|
+Given(/^it is (.*)$/) do |date_string|
   set_env('DATE_STRING', date_string)
 end
 
-Given /^the redis DB has no data$/ do
+Given(/^the redis DB has no data$/) do
   redis.flushdb
 end
 
-When /^I modify the file "([^"]*)" to replace "([^"]*)" with "([^"]*)"$/ do |file_name, orig_text, new_text|
+When(/^I modify the file "([^"]*)" to replace "([^"]*)" with "([^"]*)"$/) do |file_name, orig_text, new_text|
   modify_file(file_name, orig_text, new_text)
 end
 
-When /^I append to file "([^"]*)":$/ do |file_name, content|
+When(/^I append to file "([^"]*)":$/) do |file_name, content|
   append_to_file(file_name, "\n" + content)
 end
 
-When /^I set the "([^"]*)" environment variable to "([^"]*)"$/ do |var, value|
+When(/^I set the "([^"]*)" environment variable to "([^"]*)"$/) do |var, value|
   set_env(var, value)
 end
 
-Then /^the file "([^"]*)" should exist$/ do |file_name|
+Then(/^the file "([^"]*)" should exist$/) do |file_name|
   check_file_presence([file_name], true)
 end
 
-Then /^it should (pass|fail) with "([^"]*)"$/ do |pass_fail, partial_output|
+Then(/^it should (pass|fail) with "([^"]*)"$/) do |pass_fail, partial_output|
   assert_exit_status_and_partial_output(pass_fail == 'pass', partial_output)
 end
 
-Then /^it should (pass|fail) with an error like:$/ do |pass_fail, partial_output|
+Then(/^it should (pass|fail) with an error like:$/) do |pass_fail, partial_output|
   assert_success(pass_fail == 'pass')
 
   # different implementations place the exception class at different
@@ -138,38 +138,38 @@ Then /^it should (pass|fail) with an error like:$/ do |pass_fail, partial_output
   assert_partial_output(partial_output, process_output)
 end
 
-Then /^the output should contain each of the following:$/ do |table|
+Then(/^the output should contain each of the following:$/) do |table|
   table.raw.flatten.each do |string|
     assert_partial_output(string, all_output)
   end
 end
 
-Then /^the file "([^"]*)" should contain YAML like:$/ do |file_name, expected_content|
+Then(/^the file "([^"]*)" should contain YAML like:$/) do |file_name, expected_content|
   actual_content = in_current_dir { File.read(file_name) }
   normalize_cassette_hash(YAML.load(actual_content)).should == normalize_cassette_hash(YAML.load(expected_content))
 end
 
-Then /^the file "([^"]*)" should contain JSON like:$/ do |file_name, expected_content|
+Then(/^the file "([^"]*)" should contain JSON like:$/) do |file_name, expected_content|
   actual_content = in_current_dir { File.read(file_name) }
   actual = MultiJson.decode(actual_content)
   expected = MultiJson.decode(expected_content)
   normalize_cassette_hash(actual).should == normalize_cassette_hash(expected)
 end
 
-Then /^the file "([^"]*)" should contain ruby like:$/ do |file_name, expected_content|
+Then(/^the file "([^"]*)" should contain ruby like:$/) do |file_name, expected_content|
   actual_content = in_current_dir { File.read(file_name) }
   actual = eval(actual_content)
   expected = eval(expected_content)
   normalize_cassette_hash(actual).should == normalize_cassette_hash(expected)
 end
 
-Then /^the file "([^"]*)" should contain each of these:$/ do |file_name, table|
+Then(/^the file "([^"]*)" should contain each of these:$/) do |file_name, table|
   table.raw.flatten.each do |string|
     check_file_content(file_name, string, true)
   end
 end
 
-Then /^the file "([^"]*)" should contain a YAML fragment like:$/ do |file_name, fragment|
+Then(/^the file "([^"]*)" should contain a YAML fragment like:$/) do |file_name, fragment|
   in_current_dir do
     file_content = File.read(file_name)
 
@@ -184,18 +184,18 @@ Then /^the file "([^"]*)" should contain a YAML fragment like:$/ do |file_name, 
   end
 end
 
-Then /^the cassette "([^"]*)" should have the following response bodies:$/ do |file, table|
+Then(/^the cassette "([^"]*)" should have the following response bodies:$/) do |file, table|
   interactions = in_current_dir { YAML.load_file(file) }['http_interactions'].map { |h| VCR::HTTPInteraction.from_hash(h) }
   actual_response_bodies = interactions.map { |i| i.response.body }
   expected_response_bodies = table.raw.flatten
   actual_response_bodies.should =~ expected_response_bodies
 end
 
-Then /^the value stored at the redis key "([^"]*)" should include "([^"]*)"$/ do |key, value_fragment|
+Then(/^the value stored at the redis key "([^"]*)" should include "([^"]*)"$/) do |key, value_fragment|
   redis.get(key).should include(value_fragment)
 end
 
-Then /^it should (pass|fail)$/ do |pass_fail|
+Then(/^it should (pass|fail)$/) do |pass_fail|
   assert_success(pass_fail == 'pass')
 end
 

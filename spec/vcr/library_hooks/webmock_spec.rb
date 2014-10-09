@@ -94,7 +94,7 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
       context 'when real connections are disabled and VCR is turned off' do
         it 'can allow connections to localhost' do
           VCR.turn_off!
-          unexpected_error = disable_real_connections(:allow_localhost => true)
+          disable_real_connections(:allow_localhost => true)
 
           expect {
             make_http_request(:get, request_url)
@@ -103,7 +103,7 @@ describe "WebMock hook", :with_monkey_patches => :webmock do
 
         it 'can allow connections to matching urls' do
           VCR.turn_off!
-          unexpected_error = disable_real_connections(:allow => /foo/)
+          disable_real_connections(:allow => /foo/)
 
           expect {
             make_http_request(:get, request_url)
