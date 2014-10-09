@@ -46,10 +46,11 @@ task :check_code_coverage do
     puts "Cannot check code coverage--simplecov is not supported on this platform"
   else
     percent = File.read("./coverage/coverage_percent.txt").to_f
-    if percent < 98.0
+    treshold = 97.9
+    if percent < treshold
       abort "Spec coverage was not high enough: #{percent.round(2)}%"
     else
-      puts "Nice job! Spec coverage is still above 98%"
+      puts "Nice job! Spec coverage is still above #{treshold}%"
     end
   end
 end
