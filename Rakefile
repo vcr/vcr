@@ -22,7 +22,7 @@ end
 require 'cucumber/rake/task'
 Cucumber::Rake::Task.new
 
-task :default => [:submodules, :spec, :cucumber]
+task :default => [:spec, :cucumber]
 
 desc "Ensures we keep up 100% YARD coverage"
 task :yard_coverage do
@@ -48,12 +48,6 @@ task :check_code_coverage do
       puts "Nice job! Spec coverage is still above #{treshold}%"
     end
   end
-end
-
-desc "Checkout git submodules"
-task :submodules do
-  sh "git submodule sync"
-  sh "git submodule update --init --recursive"
 end
 
 def ensure_relish_doc_symlinked(filename)

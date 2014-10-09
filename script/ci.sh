@@ -36,9 +36,6 @@ echo "-------- Running Faraday 0.8 Specs ---------"
 BUNDLE_GEMFILE=gemfiles/faraday_old.gemfile run rspec spec/vcr/middleware/faraday_spec.rb spec/vcr/library_hooks/faraday_spec.rb
 BUNDLE_GEMFILE=gemfiles/faraday_old.gemfile run cucumber features/middleware/faraday.feature
 
-# Setup vendored rspec-1
-bundle exec rake submodules
-
 echo "-------- Running Specs ---------"
 run rspec
 
