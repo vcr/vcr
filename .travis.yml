@@ -1,7 +1,6 @@
 language: ruby
-env: CUCUMBER_FORMAT=progress
-bundler_args: --without extras
-script: "script/ci.sh"
+install: script/cached-bundle install --deployment --without extras --jobs 3 --retry 3
+script: script/ci.sh
 services:
   - redis-server
 rvm:
@@ -24,4 +23,8 @@ matrix:
 branches:
   except:
     - gh-pages
-
+env:
+  global:
+  - AMAZON_S3_BUCKET=ci-cache
+  - AMAZON_ACCESS_KEY_ID=AKIAJQCVTDEWQHRPBPGQ
+  - secure: CYAVdYsFlNbh4a2pqoP+V7wMsJAEwe3vBwOVkDFaXN8vwcsoJhgjAovfpYbRrzO8aoUnwuhitr6cc7Ceo2CGGOoKiHbREkKEMshMR/gnr2mMyOB1UuWFsao8eLuh/+v+ZIxl0+Nl/3uCeDP0t8p0ux/4x4M0U7Krz72iR43W//o=
