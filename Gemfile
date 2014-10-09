@@ -1,24 +1,21 @@
 source 'https://rubygems.org'
 
-gem 'appraisal'
-
 gemspec
 
 gem 'jruby-openssl', :platforms => :jruby
 
 gem 'yard'
 
-# Additional gems that are useful, but not required for development.
-gem 'relish', '~> 0.6'
-
-gem 'redcarpet', '~> 1.17.2', :platforms => :ruby
-gem 'github-markup'
-
 group :extras do
   gem 'ruby-debug', :platforms => [:mri_18, :jruby]
 
   gem 'debugger', :platforms => :mri_19
   gem 'pry'
+
+  gem 'appraisal'
+  gem 'relish', '~> 0.6'
+  gem 'mime-types', '< 2.0'
+  gem 'redcarpet'
 end
 
 gem 'rake', '>= 0.9.2'

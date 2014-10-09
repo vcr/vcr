@@ -4,7 +4,12 @@ if using_git
   require 'bundler/setup'
   require 'bundler/gem_helper'
   Bundler::GemHelper.install_tasks
+end
+
+begin
   require 'appraisal'
+rescue LoadError
+  warn "Warning: %s" % $! unless ENV['CI']
 end
 
 require 'rake'
