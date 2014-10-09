@@ -14,7 +14,7 @@ Feature: Decode compressed response
       require 'zlib'
       require 'stringio'
 
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') {
           content = 'The quick brown fox jumps over the lazy dog'
           io = StringIO.new
@@ -41,7 +41,7 @@ Feature: Decode compressed response
     When I append to file "decompress.rb":
       """ruby
       VCR.use_cassette(:decompress) do
-        Net::HTTP.start('localhost', 7777) do |http|
+        Net::HTTP.start('localhost', $server.port) do |http|
           http.get('/', 'accept-encoding' => 'identity')
         end
       end
@@ -57,7 +57,7 @@ Feature: Decode compressed response
     When I append to file "decompress.rb":
       """ruby
       VCR.use_cassette(:decompress, :decode_compressed_response => true) do
-        Net::HTTP.start('localhost', 7777) do |http|
+        Net::HTTP.start('localhost', $server.port) do |http|
           http.get('/', 'accept-encoding' => 'identity')
         end
       end

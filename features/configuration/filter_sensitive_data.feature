@@ -30,7 +30,7 @@ Feature: Filter sensitive data
     Given a file named "filtering.rb" with:
       """ruby
       if ARGV.include?('--with-server')
-        start_sinatra_app(:port => 7777) do
+        $server = start_sinatra_app do
           get('/') { "Hello World" }
         end
       end
@@ -45,7 +45,7 @@ Feature: Filter sensitive data
       end
 
       VCR.use_cassette('filtering') do
-        response = Net::HTTP.get_response('localhost', '/', 7777)
+        response = Net::HTTP.get_response('localhost', '/', $server ? $server.port : 0)
         puts "Response: #{response.body}"
       end
       """
@@ -63,7 +63,7 @@ Feature: Filter sensitive data
       """ruby
       if ARGV.include?('--with-server')
         response_count = 0
-        start_sinatra_app(:port => 7777) do
+        $server = start_sinatra_app do
           get('/') { "Hello World #{response_count += 1 }" }
         end
       end
@@ -77,12 +77,12 @@ Feature: Filter sensitive data
       end
 
       VCR.use_cassette('tagged', :tag => :my_tag) do
-        response = Net::HTTP.get_response('localhost', '/', 7777)
+        response = Net::HTTP.get_response('localhost', '/', $server ? $server.port : 0)
         puts "Tagged Response: #{response.body}"
       end
 
       VCR.use_cassette('untagged', :record => :new_episodes) do
-        response = Net::HTTP.get_response('localhost', '/', 7777)
+        response = Net::HTTP.get_response('localhost', '/', $server ? $server.port : 0)
         puts "Untagged Response: #{response.body}"
       end
       """
@@ -104,7 +104,7 @@ Feature: Filter sensitive data
       include_http_adapter_for('net/http')
 
       if ARGV.include?('--with-server')
-        start_sinatra_app(:port => 7777) do
+        $server = start_sinatra_app do
           helpers do
             def request_header_for(header_key_fragment)
               key = env.keys.find { |k| k =~ /#{header_key_fragment}/i }
@@ -132,8 +132,9 @@ Feature: Filter sensitive data
       end
 
       VCR.use_cassette('example', :match_requests_on => [:method, :uri, :headers]) do
+        port = $server ? $server.port : 0
         puts "Response: " + response_body_for(
-          :get, 'http://localhost:7777/', nil,
+          :get, "http://localhost:#{port}/", nil,
           'X-Http-Username' => 'john.doe',
           'X-Http-Password' => USER_PASSWORDS['john.doe']
         )

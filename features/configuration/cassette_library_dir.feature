@@ -11,7 +11,7 @@ Feature: cassette_library_dir
   Scenario: cassette_library_dir
     Given a file named "cassette_library_dir.rb" with:
       """ruby
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') { "Hello" }
       end
 
@@ -23,7 +23,7 @@ Feature: cassette_library_dir
       end
 
       VCR.use_cassette('localhost') do
-        Net::HTTP.get_response('localhost', '/', 7777)
+        Net::HTTP.get_response('localhost', '/', $server.port)
       end
       """
      And the directory "vcr/cassettes" does not exist

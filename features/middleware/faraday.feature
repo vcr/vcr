@@ -15,7 +15,7 @@ Feature: Faraday middleware
     Given a file named "faraday_example.rb" with:
       """ruby
       request_count = 0
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/:path') { "Hello #{params[:path]} #{request_count += 1}" }
       end
 
@@ -28,7 +28,7 @@ Feature: Faraday middleware
         c.cassette_library_dir = 'cassettes'
       end
 
-      conn = Faraday::Connection.new(:url => 'http://localhost:7777') do |builder|
+      conn = Faraday::Connection.new(:url => "http://localhost:#{$server.port}") do |builder|
         builder.use VCR::Middleware::Faraday
         builder.adapter :<adapter>
       end

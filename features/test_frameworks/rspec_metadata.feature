@@ -58,12 +58,12 @@ Feature: Usage with RSpec metadata
   Scenario: Use `:vcr` metadata
     Given a file named "spec/vcr_example_spec.rb" with:
       """ruby
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') { "Hello" }
       end
 
       def make_http_request
-        Net::HTTP.get_response('localhost', '/', 7777).body
+        Net::HTTP.get_response('localhost', '/', $server.port).body
       end
 
       require 'spec_helper'

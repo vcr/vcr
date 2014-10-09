@@ -28,14 +28,12 @@ def response_body_for(*args)
   get_body_string(make_http_request(*args))
 end
 
-def start_sinatra_app(options, &block)
-  raise ArgumentError.new("You must pass a port") unless options[:port]
-
+def start_sinatra_app(&block)
   require 'sinatra/base'
   require 'support/vcr_localhost_server'
   klass = Class.new(Sinatra::Base)
   klass.disable :protection
   klass.class_eval(&block)
 
-  VCR::LocalhostServer.new(klass.new, options[:port])
+  VCR::LocalhostServer.new(klass.new)
 end

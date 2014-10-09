@@ -17,7 +17,7 @@ Feature: Automatic Re-recording
       http_interactions: 
       - request: 
           method: get
-          uri: http://localhost:7777/
+          uri: http://localhost/
           body: 
             encoding: UTF-8
             string: ""
@@ -38,7 +38,7 @@ Feature: Automatic Re-recording
       """
     And a file named "re_record.rb" with:
       """ruby
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') { 'New Response' }
       end
 
@@ -49,8 +49,8 @@ Feature: Automatic Re-recording
         c.cassette_library_dir = 'cassettes'
       end
 
-      VCR.use_cassette('example', :re_record_interval => 7.days) do
-        puts Net::HTTP.get_response('localhost', '/', 7777).body
+      VCR.use_cassette('example', :re_record_interval => 7.days, :match_requests_on => [:method, :host, :path]) do
+        puts Net::HTTP.get_response('localhost', '/', $server.port).body
       end
       """
 

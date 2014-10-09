@@ -99,7 +99,7 @@ Feature: before_playback hook
   Scenario: Prevent playback by ignoring interaction in before_playback hook
     Given a file named "before_playback_ignore.rb" with:
       """ruby
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') { "sinatra response" }
       end
 
@@ -111,8 +111,8 @@ Feature: before_playback hook
         c.before_playback { |i| i.ignore! }
       end
 
-      VCR.use_cassette('localhost', :record => :new_episodes) do
-        response = Net::HTTP.get_response('localhost', '/', 7777)
+      VCR.use_cassette('localhost', :record => :new_episodes, :match_requests_on => [:method, :host, :path]) do
+        response = Net::HTTP.get_response('localhost', '/', $server.port)
         puts "Response: #{response.body}"
       end
       """

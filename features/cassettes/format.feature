@@ -56,7 +56,7 @@ Feature: Cassette format
       include_http_adapter_for("<http_lib>")
 
       if ARGV.any?
-        start_sinatra_app(:port => 7777) do
+        $server = start_sinatra_app do
           get('/:path') { ARGV[0] + ' ' + params[:path] }
         end
       end
@@ -66,14 +66,17 @@ Feature: Cassette format
       VCR.configure do |c|
         <configuration>
         c.cassette_library_dir = 'cassettes'
+        c.before_record do |i|
+          i.request.uri.sub!(/:\d+/, ':7777')
+        end
       end
 
       VCR.use_cassette('example') do
-        make_http_request(:get, "http://localhost:7777/foo", nil, 'Accept-Encoding' => 'identity')
-        make_http_request(:get, "http://localhost:7777/bar", nil, 'Accept-Encoding' => 'identity')
+        make_http_request(:get, "http://localhost:#{$server.port}/foo", nil, 'Accept-Encoding' => 'identity')
+        make_http_request(:get, "http://localhost:#{$server.port}/bar", nil, 'Accept-Encoding' => 'identity')
       end
       """
-    When I run `ruby cassette_yaml.rb 'Hello'`
+    When I successfully run `ruby cassette_yaml.rb 'Hello'`
     Then the file "cassettes/example.yml" should contain YAML like:
       """
       --- 
@@ -145,7 +148,7 @@ Feature: Cassette format
       """ruby
       include_http_adapter_for("net/http")
 
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/:path') { ARGV[0] + ' ' + params[:path] }
       end
 
@@ -154,11 +157,17 @@ Feature: Cassette format
       VCR.configure do |c|
         c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
+        c.before_record do |i|
+          i.request.uri.sub!(/:\d+/, ':7777')
+        end
+        c.default_cassette_options = {
+          :match_requests_on => [:method, :host, :path]
+        }
       end
 
       VCR.use_cassette('example', :serialize_with => :json) do
-        puts response_body_for(:get, "http://localhost:7777/foo", nil, 'Accept-Encoding' => 'identity')
-        puts response_body_for(:get, "http://localhost:7777/bar", nil, 'Accept-Encoding' => 'identity')
+        puts response_body_for(:get, "http://localhost:#{$server.port}/foo", nil, 'Accept-Encoding' => 'identity')
+        puts response_body_for(:get, "http://localhost:#{$server.port}/bar", nil, 'Accept-Encoding' => 'identity')
       end
       """
     When I run `ruby cassette_json.rb 'Hello'`
@@ -240,7 +249,7 @@ Feature: Cassette format
       """ruby
       include_http_adapter_for("net/http")
 
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/:path') { ARGV[0] + ' ' + params[:path] }
       end
 
@@ -259,11 +268,17 @@ Feature: Cassette format
         c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
         c.cassette_serializers[:ruby] = ruby_serializer
+        c.before_record do |i|
+          i.request.uri.sub!(/:\d+/, ':7777')
+        end
+        c.default_cassette_options = {
+          :match_requests_on => [:method, :host, :path]
+        }
       end
 
       VCR.use_cassette('example', :serialize_with => :ruby) do
-        puts response_body_for(:get, "http://localhost:7777/foo", nil, 'Accept-Encoding' => 'identity')
-        puts response_body_for(:get, "http://localhost:7777/bar", nil, 'Accept-Encoding' => 'identity')
+        puts response_body_for(:get, "http://localhost:#{$server.port}/foo", nil, 'Accept-Encoding' => 'identity')
+        puts response_body_for(:get, "http://localhost:#{$server.port}/bar", nil, 'Accept-Encoding' => 'identity')
       end
       """
     When I run `ruby cassette_ruby.rb 'Hello'`

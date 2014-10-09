@@ -24,7 +24,7 @@ Feature: Preserve Exact Body Bytes
       string = "abc \xFA"
       puts "Valid encoding: #{string.valid_encoding?}"
 
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') { string }
       end
 
@@ -43,7 +43,7 @@ Feature: Preserve Exact Body Bytes
         puts
         puts label
         VCR.use_cassette('example', :serialize_with => :json) do
-          body = Net::HTTP.get_response(URI("http://localhost:7777/")).body
+          body = Net::HTTP.get_response('localhost', '/', $server.port).body
           puts "Body: #{body.inspect}"
         end
       end
@@ -71,7 +71,7 @@ Feature: Preserve Exact Body Bytes
   Scenario: Preserve exact bytes for cassette with `:preserve_exact_body_bytes` option
     Given a file named "preserve.rb" with:
       """ruby
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') { "Hello World" }
       end
 
@@ -89,11 +89,11 @@ Feature: Preserve Exact Body Bytes
       end
 
       VCR.use_cassette('preserve_bytes', :preserve_exact_body_bytes => true) do
-        Net::HTTP.get_response(URI("http://localhost:7777/"))
+        Net::HTTP.get_response('localhost', '/', $server.port)
       end
 
       VCR.use_cassette('dont_preserve_bytes') do
-        Net::HTTP.get_response(URI("http://localhost:7777/"))
+        Net::HTTP.get_response('localhost', '/', $server.port)
       end
       """
     When I run `ruby preserve.rb`

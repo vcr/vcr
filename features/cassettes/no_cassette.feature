@@ -56,7 +56,7 @@ Feature: Error for HTTP request made when no cassette is in use
   Scenario: Temporarily turn VCR off to allow HTTP requests to procede as normal
     Given a file named "turn_off_vcr.rb" with:
       """ruby
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') { 'Hello' }
       end
 
@@ -69,7 +69,7 @@ Feature: Error for HTTP request made when no cassette is in use
 
       def make_request(context)
         puts context
-        puts Net::HTTP.get_response('localhost', '/', 7777).body
+        puts Net::HTTP.get_response('localhost', '/', $server.port).body
       rescue => e
         puts "Error: #{e.class}"
       end
@@ -127,7 +127,7 @@ Feature: Error for HTTP request made when no cassette is in use
   Scenario: Turning VCR off with `:ignore_cassettes => true` ignores cassettes
     Given a file named "turn_off_vcr_and_insert_cassette.rb" with:
       """ruby
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') { 'Hello' }
       end
 
@@ -142,7 +142,7 @@ Feature: Error for HTTP request made when no cassette is in use
       VCR.turn_off!(:ignore_cassettes => true)
 
       VCR.use_cassette('example') do
-        response = Net::HTTP.get_response('localhost', '/', 7777).body
+        response = Net::HTTP.get_response('localhost', '/', $server.port).body
         puts "Response: #{response}"
       end
       """

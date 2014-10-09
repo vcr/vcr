@@ -12,7 +12,7 @@ Feature: :new_episodes
   Background:
     Given a file named "setup.rb" with:
       """ruby
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') { 'Hello' }
       end
 
@@ -68,7 +68,7 @@ Feature: :new_episodes
       require 'setup'
 
       VCR.use_cassette('example', :record => :new_episodes) do
-        response = Net::HTTP.get_response('localhost', '/', 7777)
+        response = Net::HTTP.get_response('localhost', '/', $server.port)
         puts "Response: #{response.body}"
       end
       """

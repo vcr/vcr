@@ -10,7 +10,7 @@ Feature: EM HTTP Request
       """ruby
       require 'em-http-request'
 
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         %w[ foo bar bazz ].each_with_index do |path, index|
           get "/#{path}" do
             sleep index * 0.1 # ensure the async callbacks are invoked in order
@@ -24,6 +24,9 @@ Feature: EM HTTP Request
       VCR.configure do |c|
         c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
+        c.before_record do |i|
+          i.request.uri.sub!(/:\d+/, ':7777')
+        end
       end
       """
 
@@ -35,7 +38,7 @@ Feature: EM HTTP Request
       VCR.use_cassette('em_http') do
         EventMachine.run do
           http_array = %w[ foo bar bazz ].map do |p|
-            EventMachine::HttpRequest.new("http://localhost:7777/#{p}").get
+            EventMachine::HttpRequest.new("http://localhost:#{$server.port}/#{p}").get
           end
 
           http_array.each do |http|
@@ -145,7 +148,7 @@ Feature: EM HTTP Request
           multi = EventMachine::MultiRequest.new
 
           %w[ foo bar bazz ].each do |path|
-            multi.add(path, EventMachine::HttpRequest.new("http://localhost:7777/#{path}").get)
+            multi.add(path, EventMachine::HttpRequest.new("http://localhost:#{$server.port}/#{path}").get)
           end
 
           multi.callback do

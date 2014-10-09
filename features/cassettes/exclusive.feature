@@ -21,7 +21,7 @@ Feature: exclusive cassette
       http_interactions: 
       - request: 
           method: get
-          uri: http://localhost:7777/outer
+          uri: http://localhost/outer
           body: 
             encoding: UTF-8
             string: ""
@@ -46,7 +46,7 @@ Feature: exclusive cassette
       http_interactions: 
       - request: 
           method: get
-          uri: http://localhost:7777/inner
+          uri: http://localhost/inner
           body: 
             encoding: UTF-8
             string: ""
@@ -69,7 +69,7 @@ Feature: exclusive cassette
       """ruby
       include_http_adapter_for("net/http")
 
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/:path') { "New #{params[:path]} response" }
       end
 
@@ -78,7 +78,10 @@ Feature: exclusive cassette
       VCR.configure do |c|
         c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
-        c.default_cassette_options = { :record => :new_episodes }
+        c.default_cassette_options = {
+          :record => :new_episodes,
+          :match_requests_on => [:method, :host, :path]
+        }
       end
       """
 
@@ -89,8 +92,8 @@ Feature: exclusive cassette
 
       VCR.use_cassette('outer') do
         VCR.use_cassette('inner') do
-          puts response_body_for(:get, "http://localhost:7777/outer")
-          puts response_body_for(:get, "http://localhost:7777/inner")
+          puts response_body_for(:get, "http://localhost:#{$server.port}/outer")
+          puts response_body_for(:get, "http://localhost:#{$server.port}/inner")
         end
       end
       """
@@ -108,8 +111,8 @@ Feature: exclusive cassette
 
       VCR.use_cassette('outer') do
         VCR.use_cassette('inner', :exclusive => true) do
-          puts response_body_for(:get, "http://localhost:7777/outer")
-          puts response_body_for(:get, "http://localhost:7777/inner")
+          puts response_body_for(:get, "http://localhost:#{$server.port}/outer")
+          puts response_body_for(:get, "http://localhost:#{$server.port}/inner")
         end
       end
       """

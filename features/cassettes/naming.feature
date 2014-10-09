@@ -8,7 +8,7 @@ Feature: Naming
   Scenario: Name sanitizing
     Given a file named "name_sanitizing.rb" with:
       """ruby
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') { "Hello" }
       end
 
@@ -20,7 +20,7 @@ Feature: Naming
       end
 
       VCR.use_cassette('Fee, Fi Fo Fum') do
-        Net::HTTP.get_response('localhost', '/', 7777)
+        Net::HTTP.get_response('localhost', '/', $server.port)
       end
       """
      And the directory "cassettes" does not exist

@@ -104,6 +104,14 @@ Given(/^the redis DB has no data$/) do
   redis.flushdb
 end
 
+Given(/^that port numbers in "([^"]*)" are normalized to "([^"]*)"$/) do |file_name, port|
+  in_current_dir do
+    contents = File.read(file_name)
+    contents = contents.gsub(/:\d{2,}\//, ":#{port}/")
+    File.open(file_name, 'w') { |f| f.write(contents) }
+  end
+end
+
 When(/^I modify the file "([^"]*)" to replace "([^"]*)" with "([^"]*)"$/) do |file_name, orig_text, new_text|
   modify_file(file_name, orig_text, new_text)
 end

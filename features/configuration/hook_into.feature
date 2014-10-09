@@ -41,11 +41,11 @@ Feature: hook_into
       require 'vcr'
       VCR.configure { |c| c.ignore_localhost = true }
 
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') { ARGV[0] }
       end
 
-      puts "The response for request 1 was: #{response_body_for(:get, "http://localhost:7777/")}"
+      puts "The response for request 1 was: #{response_body_for(:get, "http://localhost:#{$server.port}/")}"
 
       VCR.configure do |c|
         <configuration>
@@ -55,7 +55,7 @@ Feature: hook_into
       end
 
       VCR.use_cassette('example') do
-        puts "The response for request 2 was: #{response_body_for(:get, "http://localhost:7777/")}"
+        puts "The response for request 2 was: #{response_body_for(:get, "http://localhost:#{$server.port}/")}"
       end
       """
     When I run `ruby hook_into_http_lib_combo.rb 'Hello World'`
@@ -97,24 +97,24 @@ Feature: hook_into
 
       VCR.configure { |c| c.ignore_localhost = true }
 
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/:path') { "#{ARGV[0]} #{params[:path]}" }
       end
 
       def net_http_response
-        Net::HTTP.get_response('localhost', '/net_http', 7777).body
+        Net::HTTP.get_response('localhost', '/net_http', $server.port).body
       end
 
       def typhoeus_response
-        Typhoeus::Request.get("http://localhost:7777/typhoeus").body
+        Typhoeus::Request.get("http://localhost:#{$server.port}/typhoeus").body
       end
 
       def excon_response
-        Excon.get("http://localhost:7777/excon").body
+        Excon.get("http://localhost:#{$server.port}/excon").body
       end
 
       def faraday_response
-        Faraday::Connection.new(:url => 'http://localhost:7777') do |builder|
+        Faraday::Connection.new(:url => "http://localhost:#{$server.port}") do |builder|
           builder.adapter :<faraday_adapter>
         end.get('/faraday').body
       end

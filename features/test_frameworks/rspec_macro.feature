@@ -29,7 +29,7 @@ Feature: Usage with RSpec macro
         | spec/cassettes/net_http_example.yml                                        |
     And a file named "spec/sinatra_app.rb" with:
       """ruby
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') { "Hello" }
       end
       """
@@ -39,7 +39,7 @@ Feature: Usage with RSpec macro
 
       describe "VCR-RSpec integration" do
         def make_http_request
-          Net::HTTP.get_response('localhost', '/', 7777).body
+          Net::HTTP.get_response('localhost', '/', $server.port).body
         end
 
         context "without an explicit cassette name" do

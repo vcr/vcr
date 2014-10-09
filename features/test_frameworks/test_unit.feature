@@ -6,7 +6,7 @@ Feature: Usage with Test::Unit
   Scenario: Use `VCR.use_cassette` in a test
     Given a file named "test/test_server.rb" with:
       """ruby
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') { "Hello" }
       end
       """
@@ -19,6 +19,9 @@ Feature: Usage with Test::Unit
       VCR.configure do |c|
         c.hook_into :webmock
         c.cassette_library_dir = 'test/fixtures/vcr_cassettes'
+        c.default_cassette_options = {
+          :match_requests_on => [:method, :host, :path]
+        }
       end
       """
     And a file named "test/vcr_example_test.rb" with:
@@ -28,7 +31,7 @@ Feature: Usage with Test::Unit
       class VCRExampleTest < Test::Unit::TestCase
         def test_use_vcr
           VCR.use_cassette('test_unit_example') do
-            response = Net::HTTP.get_response('localhost', '/', 7777)
+            response = Net::HTTP.get_response('localhost', '/', $server ? $server.port : 0)
             assert_equal "Hello", response.body
           end
         end

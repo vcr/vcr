@@ -24,7 +24,7 @@ Feature: Ignore Request
     Given a file named "sinatra_app.rb" with:
       """ruby
       response_count = 0
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') { "Port 7777 Response #{response_count += 1}" }
       end
       """
@@ -37,7 +37,7 @@ Feature: Ignore Request
       require 'sinatra_app.rb'
 
       response_count = 0
-      start_sinatra_app(:port => 8888) do
+      $server_8888 = start_sinatra_app do
         get('/') { "Port 8888 Response #{response_count += 1}" }
       end
 
@@ -45,7 +45,7 @@ Feature: Ignore Request
 
       VCR.configure do |c|
         c.ignore_request do |request|
-          URI(request.uri).port == 7777
+          URI(request.uri).port == $server.port
         end
 
         c.default_cassette_options = { :serialize_with => :syck }
@@ -54,21 +54,20 @@ Feature: Ignore Request
       end
 
       VCR.use_cassette('example') do
-        puts response_body_for(:get, "http://localhost:8888/")
+        puts response_body_for(:get, "http://localhost:#{$server_8888.port}/")
       end
 
       VCR.use_cassette('example') do
-        puts response_body_for(:get, "http://localhost:7777/")
+        puts response_body_for(:get, "http://localhost:#{$server.port}/")
       end
 
-      puts response_body_for(:get, "http://localhost:7777/")
-      puts response_body_for(:get, "http://localhost:8888/")
+      puts response_body_for(:get, "http://localhost:#{$server.port}/")
+      puts response_body_for(:get, "http://localhost:#{$server_8888.port}/")
       """
     When I run `ruby ignore_request.rb`
     Then it should fail with an error like:
       """
       An HTTP request has been made that VCR does not know how to handle:
-        GET http://localhost:8888/
       """
      And the output should contain:
       """
@@ -101,10 +100,10 @@ Feature: Ignore Request
       end
 
       VCR.use_cassette('example') do
-        puts response_body_for(:get, "http://localhost:7777/")
+        puts response_body_for(:get, "http://localhost:#{$server.port}/")
       end
 
-      puts response_body_for(:get, "http://localhost:7777/")
+      puts response_body_for(:get, "http://localhost:#{$server.port}/")
       """
     When I run `ruby ignore_hosts.rb`
     Then it should pass with:
@@ -138,10 +137,10 @@ Feature: Ignore Request
       end
 
       VCR.use_cassette('localhost') do
-        response_body_for(:get, "http://localhost:7777/")
+        response_body_for(:get, "http://localhost:#{$server.port}/")
       end
 
-      response_body_for(:get, "http://localhost:7777/")
+      response_body_for(:get, "http://localhost:#{$server.port}/")
       """
     When I run `ruby localhost_not_ignored.rb`
     Then it should fail with "An HTTP request has been made that VCR does not know how to handle"
@@ -170,10 +169,10 @@ Feature: Ignore Request
       end
 
       VCR.use_cassette('localhost') do
-        puts response_body_for(:get, "http://localhost:7777/")
+        puts response_body_for(:get, "http://localhost:#{$server.port}/")
       end
 
-      puts response_body_for(:get, "http://localhost:7777/")
+      puts response_body_for(:get, "http://localhost:#{$server.port}/")
       """
     When I run `ruby ignore_localhost_true.rb`
     Then it should pass with:
