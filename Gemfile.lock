@@ -62,7 +62,7 @@ GEM
     linecache (0.46)
       rbx-require-relative (> 0.0.4)
     method_source (0.8.2)
-    mime-types (2.4.1)
+    mime-types (1.25.1)
     multi_json (1.8.2)
     multi_test (0.0.2)
     multipart-post (2.0.0)
