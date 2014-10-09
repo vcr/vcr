@@ -12,6 +12,11 @@ echo "-------- Running Typhoeus 0.4 Specs ---------"
 bundle install --gemfile=gemfiles/typhoeus_old.gemfile --without extras
 BUNDLE_GEMFILE=gemfiles/typhoeus_old.gemfile bundle exec rspec spec/vcr/library_hooks/typhoeus_0.4_spec.rb --format progress --backtrace
 
+echo "-------- Running Faraday 0.8 Specs ---------"
+bundle install --gemfile=gemfiles/faraday_old.gemfile --without extras
+BUNDLE_GEMFILE=gemfiles/faraday_old.gemfile bundle exec rspec spec/vcr/middleware/faraday_spec.rb spec/vcr/library_hooks/faraday_spec.rb --format progress --backtrace
+BUNDLE_GEMFILE=gemfiles/faraday_old.gemfile bundle exec cucumber features/middleware/faraday.feature --format progress --backtrace
+
 # Setup vendored rspec-1
 bundle exec rake submodules
 
