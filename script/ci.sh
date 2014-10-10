@@ -4,10 +4,24 @@ set -e
 STATUS=0
 warnings="${TMPDIR:-/tmp}/vcr-warnings.$$"
 
+fold() {
+  local name="$1"
+  local status=0
+  shift 1
+  [ -z "$TRAVIS" ] || printf "travis_fold:start:%s\r" "$name"
+
+  "$@" || status=$?
+
+  if [ "$status" -eq 0 ]; then
+    [ -z "$TRAVIS" ] || printf "travis_fold:end:%s\r" "$name"
+  else
+    STATUS="$status"
+  fi
+}
+
 run() {
   # Save warnings on stderr to a separate file
-  RUBYOPT="$RUBYOPT -w" bundle exec "$@" \
-    2> >(tee >(grep 'warning:' >>"$warnings") | grep -v 'warning:') || STATUS=$?
+  RUBYOPT="$RUBYOPT -w" "$@" 2> >(tee >(grep 'warning:' >>"$warnings") | grep -v 'warning:')
 }
 
 check_warnings() {
@@ -29,24 +43,21 @@ export JAVA_OPTS='-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1'
 
 export SPEC_OPTS="--backtrace"
 
-echo "-------- Running Typhoeus 0.4 Specs ---------"
-BUNDLE_GEMFILE=gemfiles/typhoeus_old.gemfile run rspec spec/vcr/library_hooks/typhoeus_0.4_spec.rb
+BUNDLE_GEMFILE=gemfiles/typhoeus_old.gemfile fold "typhoeus-old" \
+  run script/test spec/vcr/library_hooks/typhoeus_0.4_spec.rb
 
-echo "-------- Running Faraday 0.8 Specs ---------"
-BUNDLE_GEMFILE=gemfiles/faraday_old.gemfile run rspec spec/vcr/middleware/faraday_spec.rb spec/vcr/library_hooks/faraday_spec.rb
-BUNDLE_GEMFILE=gemfiles/faraday_old.gemfile run cucumber features/middleware/faraday.feature
+BUNDLE_GEMFILE=gemfiles/faraday_old.gemfile fold "faraday-old" \
+  run script/test spec/vcr/middleware/faraday_spec.rb spec/vcr/library_hooks/faraday_spec.rb \
+    features/middleware/faraday.feature
 
-echo "-------- Running Specs ---------"
-run rspec
+fold "spec" run script/test spec/
 
-echo "-------- Running Cukes ---------"
-run cucumber
-
-echo "-------- Checking Coverage ---------"
-bundle exec rake yard_coverage
-
-bundle exec rake check_code_coverage
+fold "features" run script/test features/
 
 check_warnings
+
+fold "doc-coverage" bundle exec rake yard_coverage
+
+bundle exec rake check_code_coverage
 
 exit $STATUS
