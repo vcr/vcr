@@ -42,7 +42,7 @@ module VCR
 
     def boot
       # Use WEBrick since it's part of the ruby standard library and is available on all ruby interpreters.
-      options = { :Port => port }
+      options = { :Port => port, :ShutdownSocketWithoutClose => true }
       options.merge!(:AccessLog => [], :Logger => WEBrick::BasicLog.new(StringIO.new)) unless ENV['VERBOSE_SERVER']
       Rack::Handler::WEBrick.run(Identify.new(@rack_app), options)
     end
@@ -69,9 +69,8 @@ module VCR
       while true
         return if yield
         raise TimeoutError.new(error_message) if (Time.now - start_time) > timeout
-        sleep(0.05)
+        sleep(0.01)
       end
     end
   end
 end
-

@@ -31,7 +31,7 @@ end
 def start_sinatra_app(options, &block)
   raise ArgumentError.new("You must pass a port") unless options[:port]
 
-  require 'sinatra'
+  require 'sinatra/base'
   require 'support/vcr_localhost_server'
   klass = Class.new(Sinatra::Base)
   klass.disable :protection
