@@ -66,8 +66,8 @@ Feature: Usage with Cucumber
         @response = Net::HTTP.get_response(URI.parse(url))
       end
 
-      When /^(.*) within a cassette named "([^"]*)"$/ do |step, cassette_name|
-        VCR.use_cassette(cassette_name) { When step }
+      When /^(.*) within a cassette named "([^"]*)"$/ do |step_name, cassette_name|
+        VCR.use_cassette(cassette_name) { step(step_name) }
       end
 
       Then /^the response should be "([^"]*)"$/ do |expected_response|
