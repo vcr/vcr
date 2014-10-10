@@ -1,3 +1,4 @@
+@with-bundler
 Feature: Usage with Cucumber
 
   VCR can be used with cucumber in two basic ways:

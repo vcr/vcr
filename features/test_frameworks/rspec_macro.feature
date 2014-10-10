@@ -1,3 +1,4 @@
+@with-bundler
 Feature: Usage with RSpec macro
 
   VCR provides a macro that makes it easy to use a VCR cassette for an RSpec

@@ -1,3 +1,4 @@
+@with-bundler
 Feature: Usage with RSpec metadata
 
   VCR provides easy integration with RSpec using metadata. To set this
