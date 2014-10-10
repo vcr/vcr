@@ -1,0 +1,43 @@
+#!/bin/bash
+# Usage: script/test [FILES...]
+set -e
+
+filter() {
+  local prefix="$1"
+  shift 1
+  ls -d "$@" | sed "s:$PWD/::" | grep "$prefix"
+}
+
+color() {
+  if [ -t 1 ]; then
+    printf "\e[%sm%s\e[m" "$1" "$2"
+  else
+    echo -n "$2"
+  fi
+}
+
+run() {
+  color "1;34" "> $*"; echo
+  bundle exec "$@"
+}
+
+if [ $# -eq 0 ]; then
+  specs=( spec/ )
+  cukes=( features/ )
+else
+  specs=( $(filter ^spec "$@" || true) )
+  cukes=( $(filter ^features "$@" 2>/dev/null || true) )
+
+  if [ "${#specs[@]}" -eq 0 ] && [ "${#cukes[@]}" -eq 0 ]; then
+    echo "Error: nothing to test." >&2
+    exit 1
+  fi
+fi
+
+if [ "${#specs[@]}" -gt 0 ]; then
+  run rspec "${specs[@]}"
+fi
+
+if [ "${#cukes[@]}" -gt 0 ]; then
+  run cucumber "${cukes[@]}"
+fi
