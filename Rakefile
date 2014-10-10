@@ -42,7 +42,9 @@ task :check_code_coverage do
   else
     percent = File.read("./coverage/coverage_percent.txt").to_f
     treshold = 97.9
-    if percent < treshold
+    if percent.zero?
+      puts "Warning: code coverage is 0%, which probably means simplecov segfaulted or something."
+    elsif percent < treshold
       abort "Spec coverage was not high enough: #{percent.round(2)}%"
     else
       puts "Nice job! Spec coverage is still above #{treshold}%"
