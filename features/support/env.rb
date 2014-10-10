@@ -24,7 +24,12 @@ if RUBY_VERSION > '1.9'
 end
 
 Before do
-  @aruba_timeout_seconds = 60
+  @aruba_timeout_seconds = 30
+  if "jruby" == ruby_engine
+    @aruba_io_wait_seconds = 0.1
+  else
+    @aruba_io_wait_seconds = 0.02
+  end
 end
 
 Before("~@with-bundler") do
