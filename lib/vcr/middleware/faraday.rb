@@ -45,7 +45,8 @@ module VCR
           VCR.library_hooks.exclusive_hook = :faraday
           super
         ensure
-          invoke_after_request_hook(response_for(env)) unless delay_finishing?
+          response = defined?(@vcr_response) ? @vcr_response : nil
+          invoke_after_request_hook(response) unless delay_finishing?
         end
 
       private
@@ -70,10 +71,7 @@ module VCR
           end
         end
 
-        def response_for(env)
-          response = env[:response]
-          return nil unless response
-
+        def response_for(response)
           VCR::Response.new(
             VCR::ResponseStatus.new(response.status, nil),
             response.headers,
@@ -83,13 +81,17 @@ module VCR
         end
 
         def on_ignored_request
-          app.call(env)
+          response = app.call(env)
+          @vcr_response = response_for(response)
+          response
         end
 
         def on_stubbed_by_vcr_request
           headers = env[:response_headers] ||= ::Faraday::Utils::Headers.new
           headers.update stubbed_response.headers if stubbed_response.headers
           env.update :status => stubbed_response.status.code, :body => stubbed_response.body
+
+          @vcr_response = stubbed_response
 
           faraday_response = ::Faraday::Response.new
           faraday_response.finish(env)
@@ -98,9 +100,11 @@ module VCR
 
         def on_recordable_request
           @has_on_complete_hook = true
-          app.call(env).on_complete do |env|
-            VCR.record_http_interaction(VCR::HTTPInteraction.new(vcr_request, response_for(env)))
-            invoke_after_request_hook(response_for(env)) if delay_finishing?
+          response = app.call(env)
+          response.on_complete do
+            @vcr_response = response_for(response)
+            VCR.record_http_interaction(VCR::HTTPInteraction.new(vcr_request, @vcr_response))
+            invoke_after_request_hook(@vcr_response) if delay_finishing?
           end
         end
 
