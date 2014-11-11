@@ -41,6 +41,8 @@ fold() {
   else
     STATUS="$status"
   fi
+
+  return $status
 }
 
 run() {
