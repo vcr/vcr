@@ -22,7 +22,7 @@ Feature: after_http_request hook
       """ruby
       include_http_adapter_for("<http_lib>")
 
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/foo') { "Hello World (foo)" }
         get('/bar') { "Hello World (bar)" }
       end
@@ -34,12 +34,13 @@ Feature: after_http_request hook
         c.cassette_library_dir = 'cassettes'
         c.ignore_localhost = true
         c.after_http_request(:ignored?, lambda { |req| req.uri =~ /foo/ }) do |request, response|
-          puts "Response for #{request.method} #{request.uri}: #{response.body}"
+          uri = request.uri.sub(/:\d+/, ":7777")
+          puts "Response for #{request.method} #{uri}: #{response.body}"
         end
       end
 
-      make_http_request(:get, "http://localhost:7777/foo")
-      make_http_request(:get, "http://localhost:7777/bar")
+      make_http_request(:get, "http://localhost:#{$server.port}/foo")
+      make_http_request(:get, "http://localhost:#{$server.port}/bar")
       """
     When I run `ruby after_http_request.rb`
     Then the output should contain "Response for get http://localhost:7777/foo: Hello World (foo)"

@@ -26,7 +26,7 @@ Feature: before_record hook
   Scenario: Modify recorded response
     Given a file named "before_record_example.rb" with:
       """ruby
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') { "Hello Earth" }
       end
 
@@ -42,7 +42,7 @@ Feature: before_record hook
       end
 
       VCR.use_cassette('recording_example') do
-        Net::HTTP.get_response('localhost', '/', 7777)
+        Net::HTTP.get_response('localhost', '/', $server.port)
       end
       """
     When I run `ruby before_record_example.rb`
@@ -52,7 +52,7 @@ Feature: before_record hook
   Scenario: Modify recorded response based on the cassette
     Given a file named "before_record_example.rb" with:
       """ruby
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') { "Hello Earth" }
       end
 
@@ -68,7 +68,7 @@ Feature: before_record hook
       end
 
       VCR.use_cassette('recording_example') do
-        Net::HTTP.get_response('localhost', '/', 7777)
+        Net::HTTP.get_response('localhost', '/', $server.port)
       end
       """
     When I run `ruby before_record_example.rb`
@@ -77,7 +77,7 @@ Feature: before_record hook
   Scenario: Prevent recording by ignoring interaction in before_record hook
     Given a file named "before_record_ignore.rb" with:
       """ruby
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') { "Hello World" }
       end
 
@@ -90,7 +90,7 @@ Feature: before_record hook
       end
 
       VCR.use_cassette('recording_example') do
-        response = Net::HTTP.get_response('localhost', '/', 7777)
+        response = Net::HTTP.get_response('localhost', '/', $server.port)
         puts "Response: #{response.body}"
       end
       """
@@ -101,7 +101,7 @@ Feature: before_record hook
   Scenario: Multiple hooks are run in order
     Given a file named "multiple_hooks.rb" with:
       """ruby
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') { "Hello World" }
       end
 
@@ -116,7 +116,7 @@ Feature: before_record hook
       end
 
       VCR.use_cassette('example', :record => :new_episodes) do
-        response = Net::HTTP.get_response('localhost', '/', 7777)
+        response = Net::HTTP.get_response('localhost', '/', $server.port)
         puts "Response: #{response.body}"
       end
       """
@@ -131,7 +131,7 @@ Feature: before_record hook
   Scenario: Use tagging to apply hook to only certain cassettes
     Given a file named "tagged_hooks.rb" with:
       """ruby
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') { "Hello World" }
       end
 
@@ -151,7 +151,7 @@ Feature: before_record hook
         puts "Using tag: #{tag.inspect}"
 
         VCR.use_cassette('example', :record => :new_episodes, :tag => tag) do
-          response = Net::HTTP.get_response('localhost', '/', 7777)
+          response = Net::HTTP.get_response('localhost', '/', $server.port)
           puts "Response: #{response.body}"
         end
       end

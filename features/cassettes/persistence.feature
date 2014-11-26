@@ -21,7 +21,7 @@ Feature: Cassette Persistence
       And a file named "use_redis.rb" with:
       """ruby
       if ARGV.include?('--with-server')
-        start_sinatra_app(:port => 7777) do
+        $server = start_sinatra_app do
           get('/') { "Hello" }
         end
       end
@@ -47,11 +47,14 @@ Feature: Cassette Persistence
       VCR.configure do |c|
         c.hook_into :webmock
         c.cassette_persisters[:redis] = RedisCassettePersister.new(Redis.connect)
-        c.default_cassette_options = { :persist_with => :redis }
+        c.default_cassette_options = {
+          :persist_with => :redis,
+          :match_requests_on => [:method, :host, :path]
+        }
       end
 
       VCR.use_cassette("redis_example") do
-        response = Net::HTTP.get_response('localhost', '/', 7777)
+        response = Net::HTTP.get_response('localhost', '/', $server ? $server.port : 0)
         puts "Response: #{response.body}"
       end
       """

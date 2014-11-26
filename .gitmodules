@@ -1,3 +1,0 @@
-[submodule "vendor/rspec-1"]
-	path = vendor/rspec-1
-	url = git://github.com/myronmarston/rspec-1.git

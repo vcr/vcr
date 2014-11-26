@@ -23,7 +23,7 @@ Feature: before_http_request hook
       include_http_adapter_for("<http_lib>")
 
       if ARGV.include?('--with-server')
-        start_sinatra_app(:port => 7777) do
+        $server = start_sinatra_app do
           get('/') { "Hello World" }
         end
       end
@@ -41,10 +41,12 @@ Feature: before_http_request hook
       end
 
       VCR.use_cassette('hook_example') do
-        make_http_request(:get, "http://localhost:7777/")
+        port = $server ? $server.port : 0
+        make_http_request(:get, "http://localhost:#{port}/")
       end
       """
     When I run `ruby before_http_request.rb run1.log --with-server`
+    Given that port numbers in "run1.log" are normalized to "7777"
     Then the file "run1.log" should contain "before real request: get http://localhost:7777/"
     When I run `ruby before_http_request.rb run2.log`
     Then the file "run2.log" should not exist

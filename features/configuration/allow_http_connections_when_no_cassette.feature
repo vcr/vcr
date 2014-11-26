@@ -9,7 +9,7 @@ Feature: Allow HTTP connections when no cassette
     Given a file named "vcr_setup.rb" with:
       """ruby
       if ARGV.include?('--with-server')
-        start_sinatra_app(:port => 7777) do
+        $server = start_sinatra_app do
           get('/') { "Hello" }
         end
       end
@@ -20,6 +20,9 @@ Feature: Allow HTTP connections when no cassette
         c.allow_http_connections_when_no_cassette = true
         c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
+        c.default_cassette_options = {
+          :match_requests_on => [:method, :host, :path]
+        }
       end
       """
     And the directory "vcr/cassettes" does not exist
@@ -29,7 +32,7 @@ Feature: Allow HTTP connections when no cassette
       """ruby
       require 'vcr_setup.rb'
 
-      puts "Response: " + Net::HTTP.get_response('localhost', '/', 7777).body
+      puts "Response: " + Net::HTTP.get_response('localhost', '/', $server ? $server.port : 0).body
       """
     When I run `ruby no_cassette.rb --with-server`
     Then the output should contain "Response: Hello"
@@ -40,7 +43,7 @@ Feature: Allow HTTP connections when no cassette
       require 'vcr_setup.rb'
 
       VCR.use_cassette('localhost') do
-        puts "Response: " + Net::HTTP.get_response('localhost', '/', 7777).body
+        puts "Response: " + Net::HTTP.get_response('localhost', '/', $server ? $server.port : 0).body
       end
       """
     When I run `ruby record_replay_cassette.rb --with-server`

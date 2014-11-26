@@ -19,7 +19,7 @@ Feature: around_http_request hook
       include_http_adapter_for("<http_lib>")
 
       request_count = 0
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') { "Response #{request_count += 1 }" }
       end
 
@@ -34,8 +34,8 @@ Feature: around_http_request hook
         end
       end
 
-      puts "Response for request 1: " + response_body_for(:get, "http://localhost:7777/")
-      puts "Response for request 2: " + response_body_for(:get, "http://localhost:7777/")
+      puts "Response for request 1: " + response_body_for(:get, "http://localhost:#{$server.port}/")
+      puts "Response for request 2: " + response_body_for(:get, "http://localhost:#{$server.port}/")
       """
     When I run `ruby globally_handle_requests.rb`
     Then it should pass with:

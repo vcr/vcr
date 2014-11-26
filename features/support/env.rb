@@ -1,41 +1,44 @@
-require 'rubygems'
 require 'bundler'
 Bundler.setup
 
-require 'ruby-debug' if !defined?(RUBY_ENGINE) && RUBY_VERSION != '1.9.3' && !ENV['CI']
+ruby_engine = defined?(RUBY_ENGINE) ? RUBY_ENGINE : "ruby"
 
 require 'aruba/cucumber'
 require 'aruba/jruby' if RUBY_PLATFORM == 'java'
 
-additional_paths = []
-Before('@rspec-1') do
-  additional_paths << File.join(%w[ .. .. vendor rspec-1 bin ])
+gem_specs = Bundler.load.specs
+load_paths = Dir.glob(gem_specs.map { |spec|
+  if spec.respond_to?(:lib_dirs_glob)
+    spec.lib_dirs_glob
+  else
+    spec.load_paths
+  end
+}.flatten)
+
+load_paths << File.expand_path("../../../spec", __FILE__)
+rubyopt = "-rsupport/cucumber_helpers"
+
+if RUBY_VERSION > '1.9'
+  load_paths.unshift(".")
+  rubyopt = "--disable-gems #{rubyopt}" if "ruby" == ruby_engine
 end
 
 Before do
-  load_paths, requires = ['../../lib'], []
-
-  # Put any bundler-managed gems (such as :git gems) on the load path for when aruba shells out.
-  # Alternatively, we could hook up aruba to use bundler when it shells out, but invoking bundler
-  # for each and every time aruba starts ruby would slow everything down. We really only need it for
-  # bundler-managed gems.
-  load_paths.push($LOAD_PATH.grep %r|bundler/gems|)
-
-  if RUBY_VERSION < '1.9'
-    requires << "rubygems"
+  @aruba_timeout_seconds = 30
+  if "jruby" == ruby_engine
+    @aruba_io_wait_seconds = 0.1
   else
-    load_paths << '.'
+    @aruba_io_wait_seconds = 0.02
   end
+end
 
-  requires << '../../features/support/vcr_cucumber_helpers'
-  requires.map! { |r| "-r#{r}" }
-  set_env('RUBYOPT', "-I#{load_paths.join(':')} #{requires.join(' ')}")
+Before("~@with-bundler") do
+  set_env("RUBYLIB", load_paths.join(":"))
+  set_env("RUBYOPT", rubyopt)
+end
 
-  if additional_paths.any?
-    existing_paths = ENV['PATH'].split(':')
-    set_env('PATH', (additional_paths + existing_paths).join(':'))
-  end
-
-  @aruba_timeout_seconds = 60
+Before("@with-bundler") do
+  set_env("RUBYLIB", ".:#{ENV["RUBYLIB"]}:#{load_paths.last}")
+  set_env("RUBYOPT", "#{ENV["RUBYOPT"]} -rsupport/cucumber_helpers")
 end
 

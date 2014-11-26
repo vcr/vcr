@@ -12,7 +12,7 @@ Feature: :all
   Background:
     Given a file named "setup.rb" with:
       """ruby
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/')    { 'Hello' }
         get('/foo') { 'Goodbye' }
       end
@@ -30,7 +30,7 @@ Feature: :all
       http_interactions: 
       - request: 
           method: get
-          uri: http://localhost:7777/
+          uri: http://localhost/
           body: 
             encoding: UTF-8
             string: ""
@@ -55,8 +55,8 @@ Feature: :all
       """ruby
       require 'setup'
 
-      VCR.use_cassette('example', :record => :all) do
-        response = Net::HTTP.get_response('localhost', '/', 7777)
+      VCR.use_cassette('example', :record => :all, :match_requests_on => [:method, :host, :path]) do
+        response = Net::HTTP.get_response('localhost', '/', $server.port)
         puts "Response: #{response.body}"
       end
       """
@@ -71,7 +71,7 @@ Feature: :all
       require 'setup'
 
       VCR.use_cassette('example', :record => :all) do
-        response = Net::HTTP.get_response('localhost', '/foo', 7777)
+        response = Net::HTTP.get_response('localhost', '/foo', $server.port)
         puts "Response: #{response.body}"
       end
       """

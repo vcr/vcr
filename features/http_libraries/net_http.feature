@@ -7,14 +7,24 @@ Feature: Net::HTTP
   Background:
     Given a file named "vcr_setup.rb" with:
       """ruby
+      require 'ostruct'
+
       if ARGV[0] == '--with-server'
-        start_sinatra_app(:port => 7777) do
+        $server = start_sinatra_app do
           get('/')  { 'VCR works with Net::HTTP gets!' }
           post('/') { 'VCR works with Net::HTTP posts!' }
         end
+      else
+        $server = OpenStruct(:port => 0)
       end
 
       require 'vcr'
+
+      VCR.configure do |c|
+        c.default_cassette_options = {
+          :match_requests_on => [:method, :host, :path]
+        }
+      end
       """
 
   Scenario Outline: Calling #post on new Net::HTTP instance
@@ -28,7 +38,7 @@ Feature: Net::HTTP
       end
 
       VCR.use_cassette('net_http') do
-        puts Net::HTTP.new('localhost', 7777).post('/', '').body
+        puts Net::HTTP.new('localhost', $server.port).post('/', '').body
       end
       """
     When I run `ruby vcr_net_http.rb --with-server`
@@ -54,7 +64,7 @@ Feature: Net::HTTP
       end
 
       def perform_request
-        Net::HTTP.new('localhost', 7777).request(Net::HTTP::Get.new('/', {})) do |response|
+        Net::HTTP.new('localhost', $server.port).request(Net::HTTP::Get.new('/', {})) do |response|
           return response
         end
       end
@@ -88,7 +98,7 @@ Feature: Net::HTTP
       VCR.use_cassette('net_http') do
         body = ''
 
-        Net::HTTP.new('localhost', 7777).request_get('/') do |response|
+        Net::HTTP.new('localhost', $server.port).request_get('/') do |response|
           response.read_body { |frag| body << frag }
         end
 
@@ -119,7 +129,7 @@ Feature: Net::HTTP
       end
 
       VCR.use_cassette('net_http') do
-        puts open('http://localhost:7777/').read
+        puts open("http://localhost:#{$server.port}/").read
       end
       """
     When I run `ruby vcr_net_http.rb --with-server`

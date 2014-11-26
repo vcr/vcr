@@ -1,3 +1,4 @@
+@with-bundler
 Feature: Usage with RSpec macro
 
   VCR provides a macro that makes it easy to use a VCR cassette for an RSpec
@@ -28,7 +29,7 @@ Feature: Usage with RSpec macro
         | spec/cassettes/net_http_example.yml                                        |
     And a file named "spec/sinatra_app.rb" with:
       """ruby
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/') { "Hello" }
       end
       """
@@ -38,7 +39,7 @@ Feature: Usage with RSpec macro
 
       describe "VCR-RSpec integration" do
         def make_http_request
-          Net::HTTP.get_response('localhost', '/', 7777).body
+          Net::HTTP.get_response('localhost', '/', $server.port).body
         end
 
         context "without an explicit cassette name" do
@@ -78,29 +79,3 @@ Feature: Usage with RSpec macro
     Then the output should contain "2 examples, 0 failures"
      And the file "spec/cassettes/VCR-RSpec_integration/without_an_explicit_cassette_name.yml" should contain "Hello"
      And the file "spec/cassettes/net_http_example.yml" should contain "Hello"
-
-  @rspec-1 @exclude-jruby
-  Scenario: Use `use_vcr_cassette` macro with RSpec 1
-    Given a file named "spec/spec_helper.rb" with:
-      """ruby
-      require 'sinatra_app'
-
-      require 'spec'
-      require 'spec/autorun'
-
-      require 'vcr'
-
-      VCR.configure do |c|
-        c.cassette_library_dir = 'spec/cassettes'
-        c.hook_into :webmock
-      end
-
-      Spec::Runner.configure do |c|
-        c.extend VCR::RSpec::Macros
-      end
-      """
-    When I run `spec spec/vcr_example_spec.rb`
-    Then the output should contain "2 examples, 0 failures"
-     And the file "spec/cassettes/VCR-RSpec_integration/without_an_explicit_cassette_name.yml" should contain "Hello"
-     And the file "spec/cassettes/net_http_example.yml" should contain "Hello"
-

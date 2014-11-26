@@ -1,3 +1,4 @@
+@with-bundler
 Feature: Usage with Cucumber
 
   VCR can be used with cucumber in two basic ways:
@@ -35,7 +36,7 @@ Feature: Usage with Cucumber
     Given a file named "lib/server.rb" with:
       """ruby
       if ENV['WITH_SERVER'] == 'true'
-        start_sinatra_app(:port => 7777) do
+        $server = start_sinatra_app do
           get('/:path') { "Hello #{params[:path]}" }
         end
       end
@@ -49,6 +50,9 @@ Feature: Usage with Cucumber
       VCR.configure do |c|
         c.hook_into :webmock
         c.cassette_library_dir     = 'features/cassettes'
+        c.default_cassette_options = {
+          :match_requests_on => [:method, :host, :path]
+        }
       end
 
       VCR.cucumber_tags do |t|
@@ -62,11 +66,13 @@ Feature: Usage with Cucumber
       require 'net/http'
 
       When /^a request is made to "([^"]*)"$/ do |url|
-        @response = Net::HTTP.get_response(URI.parse(url))
+        uri = URI.parse(url)
+        uri.port = $server.port if $server
+        @response = Net::HTTP.get_response(uri)
       end
 
-      When /^(.*) within a cassette named "([^"]*)"$/ do |step, cassette_name|
-        VCR.use_cassette(cassette_name) { When step }
+      When /^(.*) within a cassette named "([^"]*)"$/ do |step_name, cassette_name|
+        VCR.use_cassette(cassette_name) { step(step_name) }
       end
 
       Then /^the response should be "([^"]*)"$/ do |expected_response|
@@ -122,11 +128,6 @@ Feature: Usage with Cucumber
     And the directory "features/cassettes" does not exist
     When I run `cucumber WITH_SERVER=true features/vcr_example.feature`
     Then it should fail with "5 scenarios (2 failed, 3 passed)"
-    And the output should contain each of the following:
-      | An HTTP request has been made that VCR does not know how to handle:               |
-      |   GET http://localhost:7777/disallowed_1                                          |
-      | An HTTP request has been made that VCR does not know how to handle:               |
-      |   GET http://localhost:7777/disallowed_2                                          |
     And the file "features/cassettes/cucumber_tags/localhost_request.yml" should contain "Hello localhost_request_1"
     And the file "features/cassettes/cucumber_tags/localhost_request.yml" should contain "Hello localhost_request_2"
     And the file "features/cassettes/nested_cassette.yml" should contain "Hello nested_cassette"

@@ -19,6 +19,7 @@ coverage
 coverage.data
 rdoc
 pkg
+vendor/bundle
 
 ## PROJECT::SPECIFIC
 features/fixtures/vcr_cassettes/**/temp/

@@ -18,7 +18,7 @@ Feature: Rack
     Given a file named "remote_server.rb" with:
       """ruby
       request_count = 0
-      start_sinatra_app(:port => 7777) do
+      $server = start_sinatra_app do
         get('/:path') { "Hello #{params[:path]} #{request_count += 1}" }
       end
       """
@@ -28,7 +28,7 @@ Feature: Rack
       require 'proxy_server'
       require 'cgi'
 
-      url = URI.parse("http://localhost:8888?url=#{CGI.escape('http://localhost:7777/foo')}")
+      url = URI.parse("http://localhost:#{$proxy.port}?url=#{CGI.escape("http://localhost:#{$server.port}/foo")}")
 
       puts "Response 1: #{Net::HTTP.get_response(url).body}"
       puts "Response 2: #{Net::HTTP.get_response(url).body}"
@@ -40,7 +40,7 @@ Feature: Rack
       """ruby
       require 'vcr'
 
-      start_sinatra_app(:port => 8888) do
+      $proxy = start_sinatra_app do
         use VCR::Middleware::Rack do |cassette|
           cassette.name    'proxied'
           cassette.options :record => :new_episodes
@@ -68,7 +68,7 @@ Feature: Rack
       """ruby
       require 'vcr'
 
-      start_sinatra_app(:port => 8888) do
+      $proxy = start_sinatra_app do
         use VCR::Middleware::Rack do |cassette, env|
           cassette.name    env['SERVER_NAME']
         end
