@@ -26,8 +26,8 @@ class VCRTest < Test::Unit::TestCase
 end
 ```
 
-Run this test once, and VCR will record the http request to `fixtures/vcr_cassettes/synopsis.yml`.  Run it again, and VCR
-will replay the response from iana.org when the http request is made.  This test is now fast (no real HTTP requests are
+Run this test once, and VCR will record the HTTP request to `fixtures/vcr_cassettes/synopsis.yml`.  Run it again, and VCR
+will replay the response from iana.org when the HTTP request is made.  This test is now fast (no real HTTP requests are
 made anymore), deterministic (the test will continue to pass, even if you are offline, or iana.org goes down for
 maintenance) and accurate (the response will contain the same headers and body you get from a real request).
 
@@ -61,10 +61,10 @@ maintenance) and accurate (the response will contain the same headers and body y
 * Dynamic responses are supported using ERB.
 * Automatically re-records cassettes on a configurable regular interval to keep them fresh and current.
 * Disables all HTTP requests that you don't explicitly allow.
-* Simple cucumber integration is provided using tags.
-* Includes convenient RSpec macro and integration with RSpec 2 metadata.
-* Known to work well with many popular ruby libraries including RSpec 1 & 2, Cucumber, Test::Unit,
-  Capybara, Mechanize, Rest-Client and HTTParty.
+* Simple Cucumber integration is provided using tags.
+* Includes convenient RSpec macros and integration with RSpec 2 metadata.
+* Known to work well with many popular Ruby libraries including RSpec 1 & 2, Cucumber, Test::Unit,
+  Capybara, Mechanize, Rest Client and HTTParty.
 * Includes Rack and Faraday middleware.
 
 ## Usage
@@ -72,7 +72,7 @@ maintenance) and accurate (the response will contain the same headers and body y
 The docs come in two flavors:
 
 * The [relish docs](https://relishapp.com/vcr/vcr/docs) contain
-  example-based documentation (VCR's cucumber suite, in fact). It's a
+  example-based documentation (VCR's Cucumber suite, in fact). It's a
   good place to look when you are first getting started with VCR, or if
   you want to see an example of how to use a feature.
 * The [rubydoc.info docs](http://rubydoc.info/gems/vcr/frames) contain
@@ -82,12 +82,12 @@ The docs come in two flavors:
 See the [Upgrade](https://github.com/vcr/vcr/blob/master/Upgrade.md) doc
 for info about what's new and changed in VCR 2.0.
 
-There is also a Railscast, which will get you up and running in no-time http://railscasts.com/episodes/291-testing-with-vcr
+There is also a Railscast, which will get you up and running in no-time http://railscasts.com/episodes/291-testing-with-vcr.
 
 ## Release Policy
 
 VCR follows the principles of [semantic versioning](http://semver.org/).
-The [API documentation](http://rubydoc.info/gems/vcr/frames) define
+The [API documentation](http://rubydoc.info/gems/vcr/frames) defines
 VCR's public API.  Patch level releases contain only bug fixes.  Minor
 releases contain backward-compatible new features.  Major new releases
 contain backwards-incompatible changes to the public API.
@@ -201,7 +201,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [vzvu3k6k](https://github.com/vzvu3k6k)
 * [Wesley Beary](https://github.com/geemus)
 
-## Ports in other languages
+## Ports in Other Languages
 
 * [Betamax](https://github.com/robfletcher/betamax) (Groovy/JVM)
 * [Betamax](https://github.com/sigmavirus24/betamax) (Python)
