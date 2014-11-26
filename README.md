@@ -4,6 +4,13 @@ Record your test suite's HTTP interactions and replay them during future test ru
 
 [![Gem Version](https://img.shields.io/gem/v/vcr.svg)](http://rubygems.org/gems/vcr) [![Build Status](https://img.shields.io/travis/vcr/vcr/master.svg)](https://travis-ci.org/vcr/vcr) [![Code Climate](https://img.shields.io/codeclimate/github/vcr/vcr.svg)](https://codeclimate.com/github/vcr/vcr)
 
+## New Maintainer(s) Needed
+
+I've maintained this gem for ~4 years and no longer have the time or
+desire to keep working on it. I'm looking for new maintainer(s). If
+you'd like to help maintain a well-used gem with over 2 million
+downloads, please get in touch.
+
 ## Synopsis
 
 ``` ruby
