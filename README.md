@@ -215,6 +215,7 @@ Thanks also to the following people who have contributed patches or helpful sugg
 * [Betamax](https://github.com/thegreatape/betamax) (Go)
 * [Betamax](https://github.com/wjlroe/betamax) (Clojure)
 * [Betamax.NET](https://github.com/mfloryan/Betamax.Net) (C#/.NET)
+* [DVR](https://github.com/orchestrate-io/dvr) (Go)
 * [ExVCR](https://github.com/parroty/exvcr) (Elixir)
 * [HAVCR](https://github.com/cordawyn/havcr) (Haskell)
 * [Mimic](https://github.com/acoulton/mimic) (PHP/Kohana)
