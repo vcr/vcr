@@ -42,7 +42,8 @@ fold() {
     STATUS="$status"
   fi
 
-  return $status
+  # We keep track of the status using `STATUS` and exit with
+  # it below, so we don't return the status here.
 }
 
 run() {
