@@ -9,7 +9,8 @@ Record your test suite's HTTP interactions and replay them during future test ru
 I've maintained this gem for ~4 years and no longer have the time or
 desire to keep working on it. I'm looking for new maintainer(s). If
 you'd like to help maintain a well-used gem with over 2 million
-downloads, please get in touch.
+downloads, please join the [vcr-maintainers google
+group](https://groups.google.com/forum/#!forum/vcr-maintainers)
 
 ## Synopsis
 
