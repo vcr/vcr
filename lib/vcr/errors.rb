@@ -88,11 +88,19 @@ module VCR
 
         lines << "  #{request.method.to_s.upcase} #{request.uri}"
 
+        if match_request_on_headers?
+          lines << "  Headers: #{request.headers}"
+        end
+
         if match_request_on_body?
           lines << "  Body: #{request.body}"
         end
 
         lines.join("\n")
+      end
+
+      def match_request_on_headers?
+        current_matchers.include?(:headers)
       end
 
       def match_request_on_body?
