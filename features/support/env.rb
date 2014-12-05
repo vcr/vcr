@@ -24,7 +24,7 @@ if RUBY_VERSION > '1.9'
 end
 
 Before do
-  @aruba_timeout_seconds = 30
+  @aruba_timeout_seconds = 60
   if "jruby" == ruby_engine
     @aruba_io_wait_seconds = 0.1
   else
