@@ -37,10 +37,7 @@ module VCR
           m = message_for(:body => 'param=val1', :headers => {'Accept' => 'application/json'})
 
           expect(m).to include(
-            "Body: param=val1"
-          )
-
-          expect(m).to include(
+            "Body: param=val1",
             "Headers: {\"Accept\"=>\"application/json\"}"
           )
         end
