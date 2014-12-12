@@ -1,30 +1,35 @@
 language: ruby
-install: script/cached-bundle install --deployment --without extras --jobs 3 --retry 3
-script: script/ci.sh
-services:
-  - redis-server
+
 rvm:
   - 1.8.7
   - 1.9.2
   - 1.9.3
   - 2.0.0
-  - 2.1.0
+  - 2.1
   - ree
   - jruby-18mode
   - jruby-19mode
   - rbx-18mode
   - rbx-19mode
+
+sudo: false
+
+bundler_args: --without extras --jobs 3 --retry 3
+
+before_install: rm Gemfile.lock || true
+
+script: script/ci.sh
+
+services:
+  - redis-server
+
 matrix:
   allow_failures:
     - rvm: jruby-18mode
     - rvm: jruby-19mode
     - rvm: rbx-18mode
     - rvm: rbx-19mode
+
 branches:
   except:
     - gh-pages
-env:
-  global:
-  - AMAZON_S3_BUCKET=ci-cache
-  - AMAZON_ACCESS_KEY_ID=AKIAJQCVTDEWQHRPBPGQ
-  - secure: CYAVdYsFlNbh4a2pqoP+V7wMsJAEwe3vBwOVkDFaXN8vwcsoJhgjAovfpYbRrzO8aoUnwuhitr6cc7Ceo2CGGOoKiHbREkKEMshMR/gnr2mMyOB1UuWFsao8eLuh/+v+ZIxl0+Nl/3uCeDP0t8p0ux/4x4M0U7Krz72iR43W//o=
