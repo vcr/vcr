@@ -1,4 +1,5 @@
 language: ruby
+sudo: false
 install: script/cached-bundle install --deployment --without extras --jobs 3 --retry 3
 script: script/ci.sh
 services:
