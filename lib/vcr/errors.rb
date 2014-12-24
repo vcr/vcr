@@ -88,11 +88,25 @@ module VCR
 
         lines << "  #{request.method.to_s.upcase} #{request.uri}"
 
+        if match_request_on_headers?
+          lines << "  Headers: #{construct_header_list(request.headers)}"
+        end
+
         if match_request_on_body?
           lines << "  Body: #{request.body}"
         end
 
         lines.join("\n")
+      end
+
+      def match_request_on_headers?
+        current_matchers.include?(:headers)
+      end
+
+      def construct_header_list(headers)
+        # Sorts the headers and returns a string of the format:
+        # '"Header1: Value1", "Header2: Value2"'
+        headers.keys.sort.map { |key| "\"#{key}: #{headers[key]}\"" }.join(', ')
       end
 
       def match_request_on_body?

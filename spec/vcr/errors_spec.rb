@@ -31,6 +31,17 @@ module VCR
           )
         end
 
+        it 'identifies the request by its body and headers when the default_cassette_options include the body and headers in the match_requests_on option' do
+          VCR.configuration.default_cassette_options[:match_requests_on] = [:body, :headers]
+
+          m = message_for(:body => 'param=val1', :headers => {'Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json'})
+
+          expect(m).to include(
+            "Body: param=val1",
+            "Headers: \"Accept: application/json\", \"Content-Type: application/x-www-form-urlencoded\""
+          )
+        end
+
         it 'mentions that there is no current cassette' do
           expect(message).to include('There is currently no cassette in use.')
         end
