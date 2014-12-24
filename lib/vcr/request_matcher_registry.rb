@@ -23,7 +23,7 @@ module VCR
 
           uri.query = uri.query.split('&').tap { |params|
             params.map! do |p|
-              key, value = p.split('=')
+              key, value = p.split('=', 2)
               key.gsub!(/\[\]\z/, '') # handle params like tag[]=
               [key, value]
             end
