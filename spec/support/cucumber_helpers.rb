@@ -1,7 +1,3 @@
-require 'date'
-require 'support/fixnum_extension'
-require 'vcr/util/internet_connection'
-
 module Gem
   def self.win_platform?() false end
 end unless defined?(Gem)

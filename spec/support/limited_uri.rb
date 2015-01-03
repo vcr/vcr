@@ -1,17 +1,7 @@
-require 'forwardable'
-require 'uri'
-
 class LimitedURI
   extend Forwardable
 
-  def_delegators :@uri, :scheme,
-                        :host,
-                        :port,
-                        :port=,
-                        :path,
-                        :query,
-                        :query=,
-                        :to_s
+  def_delegators :@uri, :scheme, :host, :port, :port=, :path, :query, :query=, :to_s
 
   def initialize(uri)
     @uri = uri

@@ -20,18 +20,22 @@ if RUBY_VERSION.to_f >= 1.9 && RUBY_ENGINE == 'ruby'
   end
 end
 
-require "support/fixnum_extension"
-require "support/limited_uri"
-require "support/ruby_interpreter"
-require "support/shared_example_groups/hook_into_http_library"
-require "support/shared_example_groups/request_hooks"
-require "support/sinatra_app"
-require "support/vcr_localhost_server"
-require "support/vcr_stub_helpers"
 
-require 'vcr'
-require 'monkey_patches'
-require "support/http_library_adapters"
+require "pry"
+require "rspec"
+require "vcr"
+require "date"
+require "forwardable"
+require "uri"
+require "vcr/util/internet_connection"
+require_relative "support/fixnum_extension"
+require_relative "support/limited_uri"
+require_relative "support/ruby_interpreter"
+require_relative "support/shared_example_groups/hook_into_http_library"
+require_relative "support/shared_example_groups/request_hooks"
+require_relative "support/vcr_stub_helpers"
+require_relative "monkey_patches"
+require_relative "support/http_library_adapters"
 
 module VCR
   SPEC_ROOT = File.dirname(File.expand_path('.', __FILE__))
