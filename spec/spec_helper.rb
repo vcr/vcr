@@ -1,25 +1,5 @@
-if RUBY_VERSION.to_f >= 1.9 && RUBY_ENGINE == 'ruby'
-  require 'simplecov'
-
-  SimpleCov.start do
-    add_filter "/spec"
-    add_filter "/features"
-    add_filter "/bin"
-    add_filter "/bundle"
-
-    # internet_connection mostly contains logic copied from the ruby 1.8.7
-    # stdlib for which I haven't written tests.
-    add_filter "internet_connection"
-  end
-
-  SimpleCov.at_exit do
-    File.open(File.join(SimpleCov.coverage_path, 'coverage_percent.txt'), 'w') do |f|
-      f.write SimpleCov.result.covered_percent
-    end
-    SimpleCov.result.format!
-  end
-end
-
+require "codeclimate-test-reporter"
+CodeClimate::TestReporter.start
 
 require "pry"
 require "rspec"
