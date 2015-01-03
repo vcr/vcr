@@ -1,11 +1,5 @@
 using_git = File.exist?(File.expand_path('../.git/', __FILE__))
 
-if using_git
-  require 'bundler/setup'
-  require 'bundler/gem_helper'
-  Bundler::GemHelper.install_tasks
-end
-
 begin
   require 'appraisal'
 rescue LoadError
