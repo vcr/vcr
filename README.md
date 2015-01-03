@@ -1,14 +1,14 @@
 vcr
 ===
 
-  - [![Quality](http://img.shields.io/codeclimate/github/krainboltgreene/vcr.svg?style=flat-square)](https://codeclimate.com/github/krainboltgreene/vcr)
-  - [![Coverage](http://img.shields.io/codeclimate/coverage/github/krainboltgreene/vcr.svg?style=flat-square)](https://codeclimate.com/github/krainboltgreene/vcr)
-  - [![Build](http://img.shields.io/travis-ci/krainboltgreene/vcr.svg?style=flat-square)](https://travis-ci.org/krainboltgreene/vcr)
-  - [![Dependencies](http://img.shields.io/gemnasium/krainboltgreene/vcr.svg?style=flat-square)](https://gemnasium.com/krainboltgreene/vcr)
+  - [![Quality](http://img.shields.io/codeclimate/github/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
+  - [![Coverage](http://img.shields.io/codeclimate/coverage/github/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
+  - [![Build](http://img.shields.io/travis-ci/vcr/vcr.svg?style=flat-square)](https://travis-ci.org/vcr/vcr)
+  - [![Dependencies](http://img.shields.io/gemnasium/vcr/vcr.svg?style=flat-square)](https://gemnasium.com/vcr/vcr)
   - [![Downloads](http://img.shields.io/gem/dtv/vcr.svg?style=flat-square)](https://rubygems.org/gems/vcr)
-  - [![Tags](http://img.shields.io/github/tag/krainboltgreene/vcr.svg?style=flat-square)](http://github.com/krainboltgreene/vcr/tags)
-  - [![Releases](http://img.shields.io/github/release/krainboltgreene/vcr.svg?style=flat-square)](http://github.com/krainboltgreene/vcr/releases)
-  - [![Issues](http://img.shields.io/github/issues/krainboltgreene/vcr.svg?style=flat-square)](http://github.com/krainboltgreene/vcr/issues)
+  - [![Tags](http://img.shields.io/github/tag/vcr/vcr.svg?style=flat-square)](http://github.com/vcr/vcr/tags)
+  - [![Releases](http://img.shields.io/github/release/vcr/vcr.svg?style=flat-square)](http://github.com/vcr/vcr/releases)
+  - [![Issues](http://img.shields.io/github/issues/vcr/vcr.svg?style=flat-square)](http://github.com/vcr/vcr/issues)
   - [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://opensource.org/licenses/MIT)
   - [![Version](http://img.shields.io/gem/v/vcr.svg?style=flat-square)](https://rubygems.org/gems/vcr)
 
