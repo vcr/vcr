@@ -38,7 +38,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "timecop"
   spec.add_development_dependency "multi_json"
   spec.add_development_dependency "json"
-  spec.add_development_dependency "redis"
   spec.add_development_dependency "typhoeus"
   spec.add_development_dependency "patron"
   spec.add_development_dependency "em-http-request"

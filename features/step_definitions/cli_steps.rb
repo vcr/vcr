@@ -74,13 +74,6 @@ module VCRHelpers
       File.open(file_name, 'w') { |f| f.write(file) }
     end
   end
-
-  def redis
-    @redis ||= begin
-       require 'redis'
-       Redis.connect
-    end
-  end
 end
 World(VCRHelpers)
 
@@ -98,10 +91,6 @@ end
 
 Given(/^it is (.*)$/) do |date_string|
   set_env('DATE_STRING', date_string)
-end
-
-Given(/^the redis DB has no data$/) do
-  redis.flushdb
 end
 
 Given(/^that port numbers in "([^"]*)" are normalized to "([^"]*)"$/) do |file_name, port|
@@ -199,11 +188,6 @@ Then(/^the cassette "([^"]*)" should have the following response bodies:$/) do |
   actual_response_bodies.should =~ expected_response_bodies
 end
 
-Then(/^the value stored at the redis key "([^"]*)" should include "([^"]*)"$/) do |key, value_fragment|
-  redis.get(key).should include(value_fragment)
-end
-
 Then(/^it should (pass|fail)$/) do |pass_fail|
   assert_success(pass_fail == 'pass')
 end
-
