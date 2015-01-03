@@ -14,6 +14,8 @@ require_relative "support/ruby_interpreter"
 require_relative "support/shared_example_groups/hook_into_http_library"
 require_relative "support/shared_example_groups/request_hooks"
 require_relative "support/vcr_stub_helpers"
+require_relative "support/vcr_localhost_server"
+require_relative "support/sinatra_app"
 require_relative "monkey_patches"
 require_relative "support/http_library_adapters"
 
