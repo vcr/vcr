@@ -31,23 +31,6 @@ task :yard_coverage do
   end
 end
 
-desc "Checks the spec coverage and fails if it is less than 100%"
-task :check_code_coverage do
-  if RUBY_VERSION.to_f < 1.9 || RUBY_ENGINE != 'ruby'
-    puts "Cannot check code coverage--simplecov is not supported on this platform"
-  else
-    percent = File.read("./coverage/coverage_percent.txt").to_f
-    treshold = 97.9
-    if percent.zero?
-      puts "Warning: code coverage is 0%, which probably means simplecov segfaulted or something."
-    elsif percent < treshold
-      abort "Spec coverage was not high enough: #{percent.round(2)}%"
-    else
-      puts "Nice job! Spec coverage is still above #{treshold}%"
-    end
-  end
-end
-
 def ensure_relish_doc_symlinked(filename)
   from_filename = filename.dup
   from_filename << '.md' unless filename =~ /\.md$/
