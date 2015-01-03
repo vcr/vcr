@@ -1,3 +1,14 @@
+#!/usr/bin/env rake
+
+require "bundler/gem_tasks"
+require "rspec/core/rake_task"
+
+desc "Run all the tests in spec"
+RSpec::Core::RakeTask.new(:spec)
+
+desc "Default: run tests"
+task default: :spec
+
 using_git = File.exist?(File.expand_path('../.git/', __FILE__))
 
 begin
@@ -6,17 +17,8 @@ rescue LoadError
   warn "Warning: %s" % $! unless ENV['CI']
 end
 
-require 'rake'
-require "rspec/core/rake_task"
-
-RSpec::Core::RakeTask.new(:spec) do |t|
-  t.verbose = false
-end
-
 require 'cucumber/rake/task'
 Cucumber::Rake::Task.new
-
-task :default => [:spec, :cucumber]
 
 desc "Ensures we keep up 100% YARD coverage"
 task :yard_coverage do
@@ -80,9 +82,6 @@ task :prep_relish_release do
 end
 
 task :release => [:prep_relish_release, :relish]
-
-# For gem-test: http://gem-testers.org/
-task :test => :spec
 
 load './lib/vcr/tasks/vcr.rake'
 namespace :vcr do
