@@ -20,9 +20,6 @@ matrix:
     - rvm: jruby-19mode
     - rvm: rbx-18mode
     - rvm: rbx-19mode
-branches:
-  except:
-    - gh-pages
 env:
   global:
   - AMAZON_S3_BUCKET=ci-cache
