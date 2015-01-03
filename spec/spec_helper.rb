@@ -29,17 +29,6 @@ module VCR
 end
 
 RSpec.configure do |config|
-  config.order = :rand
-  config.color = true
-
-  config.expect_with :rspec do |expectations|
-    expectations.syntax = :expect
-  end
-
-  config.mock_with :rspec do |mocks|
-    mocks.syntax = :expect
-  end
-
   tmp_dir = File.expand_path('../../tmp/cassette_library_dir', __FILE__)
   config.before(:each) do |example|
     unless example.metadata[:skip_vcr_reset]
