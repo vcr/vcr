@@ -20,16 +20,6 @@ end
 require 'cucumber/rake/task'
 Cucumber::Rake::Task.new
 
-desc "Ensures we keep up 100% YARD coverage"
-task :yard_coverage do
-  coverage_stats = `yard stats --list-undoc 2>&1`
-  puts coverage_stats
-  if coverage_stats.include?('100.00% documented')
-    puts "\nNice work! 100% documentation coverage"
-  else
-    raise "Documentation coverage is less than 100%"
-  end
-end
 
 def ensure_relish_doc_symlinked(filename)
   from_filename = filename.dup
