@@ -10,8 +10,7 @@ Feature: before_playback hook
   You can also call `#ignore!` on the HTTP interaction to prevent VCR
   from playing it back.
 
-  If you don't your hook to apply to all cassettes, you can use tags for
-  this purpose.  Consider this code:
+  You can use tags to specify a cassette, otherwise your hook will apply to all cassettes.  Consider this code:
 
       VCR.configure do |c|
         c.before_playback(:twitter) { ... } # modify the interactions somehow
@@ -26,25 +25,25 @@ Feature: before_playback hook
   Background:
     Given a previously recorded cassette file "cassettes/example.yml" with:
       """
-      --- 
-      http_interactions: 
-      - request: 
+      ---
+      http_interactions:
+      - request:
           method: get
           uri: http://localhost:7777/
-          body: 
+          body:
             encoding: UTF-8
             string: ""
           headers: {}
-        response: 
-          status: 
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Type: 
+          headers:
+            Content-Type:
             - text/html;charset=utf-8
-            Content-Length: 
+            Content-Length:
             - "20"
-          body: 
+          body:
             encoding: UTF-8
             string: previously recorded response
           http_version: "1.1"
