@@ -2,7 +2,7 @@ The cucumber features provided here demonstrate all of the major features of
 VCR.  These features are executable documentation for VCR.
 
 Many of the examples use one (or both) of these helper functions
-provided by `vcr_cucumber_helpers.rb`:
+provided by `spec/support/cucumber_helpers.rb`:
 
 * `start_sinatra_app`: starts a sinatra application on the given port.
   The server automatically shuts down when the ruby script ends.  Many
