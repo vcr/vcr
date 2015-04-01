@@ -246,6 +246,92 @@ Feature: Cassette format
       Hello bar
       """
 
+  Scenario: Request/Response data can be saved as compressed YAML
+    Given a file named "cassette_compressed.rb" with:
+      """ruby
+      include_http_adapter_for("net/http")
+
+      $server = start_sinatra_app do
+        get('/:path') { ARGV[0] + ' ' + params[:path] }
+      end
+
+      require 'vcr'
+
+      VCR.configure do |c|
+        c.hook_into :webmock
+        c.cassette_library_dir = 'cassettes'
+        c.before_record do |i|
+          i.request.uri.sub!(/:\d+/, ':7777')
+        end
+        c.default_cassette_options = {
+          :match_requests_on => [:method, :host, :path]
+        }
+      end
+
+      VCR.use_cassette('example', :serialize_with => :compressed) do
+        puts response_body_for(:get, "http://localhost:#{$server.port}/foo", nil, 'Accept-Encoding' => 'identity')
+        puts response_body_for(:get, "http://localhost:#{$server.port}/bar", nil, 'Accept-Encoding' => 'identity')
+      end
+
+      """
+    When I run `ruby cassette_compressed.rb 'Hello'`
+    Then the file "cassettes/example.gz" should contain compressed YAML like:
+      """
+      ---
+      http_interactions:
+      - request:
+          method: get
+          uri: http://localhost:7777/foo
+          body:
+            encoding: UTF-8
+            string: ""
+          headers:
+            Accept-Encoding:
+            - identity
+        response:
+          status:
+            code: 200
+            message: OK
+          headers:
+            Content-Type:
+            - text/html;charset=utf-8
+            Content-Length:
+            - "9"
+          body:
+            encoding: UTF-8
+            string: Hello foo
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
+      - request:
+          method: get
+          uri: http://localhost:7777/bar
+          body:
+            encoding: UTF-8
+            string: ""
+          headers:
+            Accept-Encoding:
+            - identity
+        response:
+          status:
+            code: 200
+            message: OK
+          headers:
+            Content-Type:
+            - text/html;charset=utf-8
+            Content-Length:
+            - "9"
+          body:
+            encoding: UTF-8
+            string: Hello bar
+        recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
+      recorded_with: VCR 2.0.0
+      """
+    When I run `ruby cassette_compressed.rb`
+    Then it should pass with:
+      """
+      Hello foo
+      Hello bar
+      """
+
   Scenario: Request/Response data can be saved using a custom serializer
     Given a file named "cassette_ruby.rb" with:
       """ruby
