@@ -153,6 +153,12 @@ Then(/^the file "([^"]*)" should contain JSON like:$/) do |file_name, expected_c
   expect(normalize_cassette_hash(actual)).to eq(normalize_cassette_hash(expected))
 end
 
+Then(/^the file "([^"]*)" should contain compressed YAML like:$/) do |file_name, expected_content|
+  actual_content = in_current_dir { File.read(file_name) }
+  unzipped_content = Zlib.inflate(actual_content)
+  expect(normalize_cassette_hash(YAML.load(unzipped_content))).to eq(normalize_cassette_hash(YAML.load(expected_content)))
+end
+
 Then(/^the file "([^"]*)" should contain ruby like:$/) do |file_name, expected_content|
   actual_content = in_current_dir { File.read(file_name) }
   actual = eval(actual_content)
