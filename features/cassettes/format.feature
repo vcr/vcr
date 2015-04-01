@@ -37,6 +37,8 @@ Feature: Cassette format
       you want to ensure that psych is always used.
     - `:json`--Uses [multi_json](https://github.com/intridea/multi_json)
       to serialize the cassette data as JSON.
+    - `:compressed`--Wraps the default YAML serializer with Zlib, writing
+      compressed cassettes to disk.
 
   You can also register a custom serializer using:
 
