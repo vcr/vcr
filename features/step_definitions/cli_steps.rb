@@ -150,14 +150,14 @@ Then(/^the file "([^"]*)" should contain JSON like:$/) do |file_name, expected_c
   actual_content = in_current_dir { File.read(file_name) }
   actual = MultiJson.decode(actual_content)
   expected = MultiJson.decode(expected_content)
-  normalize_cassette_hash(actual).should == normalize_cassette_hash(expected)
+  expect(normalize_cassette_hash(actual)).to eq(normalize_cassette_hash(expected))
 end
 
 Then(/^the file "([^"]*)" should contain ruby like:$/) do |file_name, expected_content|
   actual_content = in_current_dir { File.read(file_name) }
   actual = eval(actual_content)
   expected = eval(expected_content)
-  normalize_cassette_hash(actual).should == normalize_cassette_hash(expected)
+  expect(normalize_cassette_hash(actual)).to eq(normalize_cassette_hash(expected))
 end
 
 Then(/^the file "([^"]*)" should contain each of these:$/) do |file_name, table|
@@ -185,7 +185,7 @@ Then(/^the cassette "([^"]*)" should have the following response bodies:$/) do |
   interactions = in_current_dir { YAML.load_file(file) }['http_interactions'].map { |h| VCR::HTTPInteraction.from_hash(h) }
   actual_response_bodies = interactions.map { |i| i.response.body }
   expected_response_bodies = table.raw.flatten
-  actual_response_bodies.should =~ expected_response_bodies
+  expect(actual_response_bodies).to match(expected_response_bodies)
 end
 
 Then(/^it should (pass|fail)$/) do |pass_fail|
