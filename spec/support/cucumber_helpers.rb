@@ -1,3 +1,6 @@
+require "rubygems"
+require "vcr"
+
 module Gem
   def self.win_platform?() false end
 end unless defined?(Gem)
