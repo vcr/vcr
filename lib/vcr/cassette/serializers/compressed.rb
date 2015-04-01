@@ -7,9 +7,9 @@ module VCR
       # The compressed serializer. This serializer wraps the YAML serializer
       # to write compressed cassettes to disk.
       #
-      # JSON cassettes often compress at greater than 10:1. The tradeoff for
-      # this is that cassettes will not diff nicely or be easily inspectable or
-      # editable.
+      # Cassettes containing responses with JSON data often compress at greater
+      # than 10:1. The tradeoff is that cassettes will not diff nicely or be
+      # easily inspectable or editable.
       #
       # @see YAML
       module Compressed
