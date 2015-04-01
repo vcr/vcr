@@ -79,50 +79,50 @@ Feature: Cassette format
     When I successfully run `ruby cassette_yaml.rb 'Hello'`
     Then the file "cassettes/example.yml" should contain YAML like:
       """
-      --- 
-      http_interactions: 
-      - request: 
+      ---
+      http_interactions:
+      - request:
           method: get
           uri: http://localhost:7777/foo
-          body: 
+          body:
             encoding: UTF-8
             string: ""
-          headers: 
-            Accept-Encoding: 
+          headers:
+            Accept-Encoding:
             - identity
-        response: 
-          status: 
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Type: 
+          headers:
+            Content-Type:
             - text/html;charset=utf-8
-            Content-Length: 
+            Content-Length:
             - "9"
-          body: 
+          body:
             encoding: UTF-8
             string: Hello foo
           http_version: "1.1"
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
-      - request: 
+      - request:
           method: get
           uri: http://localhost:7777/bar
-          body: 
+          body:
             encoding: UTF-8
             string: ""
-          headers: 
-            Accept-Encoding: 
+          headers:
+            Accept-Encoding:
             - identity
-        response: 
-          status: 
+        response:
+          status:
             code: 200
             message: OK
-          headers: 
-            Content-Type: 
+          headers:
+            Content-Type:
             - text/html;charset=utf-8
-            Content-Length: 
+            Content-Length:
             - "9"
-          body: 
+          body:
             encoding: UTF-8
             string: Hello bar
           http_version: "1.1"
