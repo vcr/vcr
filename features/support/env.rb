@@ -41,4 +41,3 @@ Before("@with-bundler") do
   set_env("RUBYLIB", ".:#{ENV["RUBYLIB"]}:#{load_paths.last}")
   set_env("RUBYOPT", "#{ENV["RUBYOPT"]} -rsupport/cucumber_helpers")
 end
-
