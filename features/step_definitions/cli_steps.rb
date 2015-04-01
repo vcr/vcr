@@ -143,7 +143,7 @@ end
 
 Then(/^the file "([^"]*)" should contain YAML like:$/) do |file_name, expected_content|
   actual_content = in_current_dir { File.read(file_name) }
-  normalize_cassette_hash(YAML.load(actual_content)).should == normalize_cassette_hash(YAML.load(expected_content))
+  expect(normalize_cassette_hash(YAML.load(actual_content))).to eq(normalize_cassette_hash(YAML.load(expected_content)))
 end
 
 Then(/^the file "([^"]*)" should contain JSON like:$/) do |file_name, expected_content|
