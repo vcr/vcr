@@ -341,9 +341,9 @@ describe VCR do
   end
 
   describe '.turned_on?' do
-    it 'is on by default' do
+    it 'is off by default' do
       VCR.send(:initialize_ivars) # clear internal state
-      expect(VCR).to be_turned_on
+      expect(VCR).to_not be_turned_on
     end
   end
 end

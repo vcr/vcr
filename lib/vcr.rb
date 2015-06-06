@@ -340,7 +340,7 @@ private
   end
 
   def initialize_ivars
-    @turned_off = false
+    @turned_off = true
   end
 
   initialize_ivars # to avoid warnings
