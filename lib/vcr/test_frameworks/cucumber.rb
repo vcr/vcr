@@ -41,7 +41,10 @@ module VCR
 
           cassette_name = if options.delete(:use_scenario_name)
             feature = scenario.respond_to?(:scenario_outline) ? scenario.scenario_outline.feature : scenario.feature
-            name = feature.name.split("\n").first
+            # Cucumber 1.x provides the full description under feature.name, including leading \n if no name is provided.
+            # Cucumber 2.x provides only the text from 'Feature:' up to the first newline as feature.name.
+            name = feature.name.split("\n").first # this gets the feature name in Cucumber 1.x, or otherwise nil
+            name ||= feature.name                 # this gets the feature name in Cucumber 2.x
             name << "/#{scenario.scenario_outline.name}" if scenario.respond_to?(:scenario_outline)
             name << "/#{scenario.name.split("\n").first}"
             name
