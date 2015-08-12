@@ -52,7 +52,7 @@ GEM
     ethon (0.7.4)
       ffi (>= 1.3.0)
     eventmachine (1.0.8)
-    excon (0.32.1)
+    excon (0.45.4)
     fakeweb (1.3.0)
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
@@ -139,7 +139,7 @@ DEPENDENCIES
   cucumber
   curb
   em-http-request
-  excon (~> 0.32.0)
+  excon
   fakeweb
   faraday (= 0.9.0)
   httpclient
