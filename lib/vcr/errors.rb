@@ -78,9 +78,21 @@ module VCR
         ["", "", "=" * 80,
          "An HTTP request has been made that VCR does not know how to handle:",
          "#{request_description}\n",
-         cassette_description,
+         cassettes_description,
          formatted_suggestions,
          "=" * 80, "", ""].join("\n")
+      end
+
+      def current_cassettes
+        @cassettes ||= begin
+          cassettes = []
+
+          while cassette = VCR.eject_cassette
+            cassettes << cassette
+          end
+
+          cassettes
+        end
       end
 
       def request_description
@@ -100,19 +112,18 @@ module VCR
       end
 
       def current_matchers
-        if VCR.current_cassette
-          VCR.current_cassette.match_requests_on
+        if current_cassettes.size > 0
+          current_cassettes.inject([]) do |memo, cassette|
+            memo | cassette.match_requests_on
+          end
         else
           VCR.configuration.default_cassette_options[:match_requests_on]
         end
       end
 
-      def cassette_description
-        if cassette = VCR.current_cassette
-          ["VCR is currently using the following cassette:",
-           "  - #{cassette.file}",
-           "  - :record => #{cassette.record_mode.inspect}",
-           "  - :match_requests_on => #{cassette.match_requests_on.inspect}\n",
+      def cassettes_description
+        if current_cassettes.size > 0
+          [cassettes_list << "\n",
            "Under the current configuration VCR can not find a suitable HTTP interaction",
            "to replay and is prevented from recording new requests. There are a few ways",
            "you can deal with this:\n"].join("\n")
@@ -120,6 +131,26 @@ module VCR
           ["There is currently no cassette in use. There are a few ways",
            "you can configure VCR to handle this request:\n"].join("\n")
         end
+      end
+
+      def cassettes_list
+        lines = []
+
+        lines << if current_cassettes.size == 1
+          "VCR is currently using the following cassette:"
+        else
+          "VCR are currently using the following cassettes:"
+        end
+
+        lines = current_cassettes.inject(lines) do |memo, cassette|
+          memo.concat([
+             "  - #{cassette.file}",
+             "    - :record => #{cassette.record_mode.inspect}",
+             "    - :match_requests_on => #{cassette.match_requests_on.inspect}"
+          ])
+        end
+
+        lines.join("\n")
       end
 
       def formatted_suggestions
@@ -221,11 +252,11 @@ module VCR
       end
 
       def suggestions
-        return no_cassette_suggestions unless cassette = VCR.current_cassette
+        return no_cassette_suggestions if current_cassettes.size == 0
 
         [:try_debug_logger, :use_new_episodes, :ignore_request].tap do |suggestions|
           suggestions.push(*record_mode_suggestion)
-          suggestions << :allow_playback_repeats if cassette.http_interactions.has_used_interaction_matching?(request)
+          suggestions << :allow_playback_repeats if has_used_interaction_matching?
           suggestions.map! { |k| suggestion_for(k) }
           suggestions.push(*match_requests_on_suggestion)
         end
@@ -238,15 +269,26 @@ module VCR
       end
 
       def record_mode_suggestion
-        case VCR.current_cassette.record_mode
-        when :none then [:deal_with_none]
-        when :once then [:delete_cassette_for_once]
-        else []
+        record_modes = current_cassettes.map(&:record_mode)
+
+        if record_modes.all?{|r| r == :none }
+          [:deal_with_none]
+        elsif record_modes.all?{|r| r == :once }
+          [:delete_cassette_for_once]
+        else
+          []
         end
       end
 
+      def has_used_interaction_matching?
+        current_cassettes.any?{|c| c.http_interactions.has_used_interaction_matching?(request) }
+      end
+
       def match_requests_on_suggestion
-        num_remaining_interactions = VCR.current_cassette.http_interactions.remaining_unused_interaction_count
+        num_remaining_interactions = current_cassettes.inject(0) { |sum, c|
+          sum + c.http_interactions.remaining_unused_interaction_count
+        }
+
         return [] if num_remaining_interactions.zero?
 
         interaction_description = if num_remaining_interactions == 1
