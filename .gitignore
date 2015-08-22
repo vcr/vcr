@@ -10,7 +10,6 @@
 
 # Ignore bundler config
 /.bundle
-/Gemfile.lock
 
 # Ignore autoset environment variables
 /.ruby-env
