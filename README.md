@@ -19,6 +19,8 @@ Record your test suite's HTTP interactions and replay them during future test ru
 
 We looking for new maintainers. If you'd like to help maintain a well-used gem please join the [vcr-maintainers google group](https://groups.google.com/forum/#!forum/vcr-maintainers).
 
+We also have an irc channel. Its `#vcr` on `irc.freenode.net`.
+
 
 Usage
 =====
