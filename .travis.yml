@@ -1,6 +1,7 @@
 sudo: false
 language: ruby
 script: script/ci.sh
+cache: bundler
 rvm:
   - 1.9.2
   - 1.9.3
