@@ -149,7 +149,7 @@ end
 Then(/^the file "([^"]*)" should contain JSON like:$/) do |file_name, expected_content|
   actual_content = in_current_dir { File.read(file_name) }
   actual = MultiJson.decode(actual_content)
-  expected = MultiJson.decode(expected_content)
+  expected = MultiJson.decode(expected_content.to_s)
   expect(normalize_cassette_hash(actual)).to eq(normalize_cassette_hash(expected))
 end
 
