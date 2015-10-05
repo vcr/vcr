@@ -47,6 +47,7 @@ fold() {
 }
 
 run() {
+  [[ "${BUNDLE_GEMFILE##*/}" == Gemfile.* ]] && bundle install
   # Save warnings on stderr to a separate file
   RUBYOPT="$RUBYOPT -w" "$@" 2> >(tee >(grep 'warning:' >>"$warnings") | grep -v 'warning:')
 }
@@ -72,10 +73,10 @@ export JAVA_OPTS='-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1'
 
 export SPEC_OPTS="--backtrace --profile"
 
-BUNDLE_GEMFILE=gemfiles/typhoeus_old.gemfile fold "typhoeus-old" \
+BUNDLE_GEMFILE=Gemfile.typhoeus-0.4 fold "typhoeus-0.4" \
   run script/test spec/lib/vcr/library_hooks/typhoeus_0.4_spec.rb
 
-BUNDLE_GEMFILE=gemfiles/faraday_old.gemfile fold "faraday-old" \
+BUNDLE_GEMFILE=Gemfile.faraday-0.8 fold "faraday-0.8" \
   run script/test spec/lib/vcr/middleware/faraday_spec.rb spec/lib/vcr/library_hooks/faraday_spec.rb \
     features/middleware/faraday.feature
 

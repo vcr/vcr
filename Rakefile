@@ -11,12 +11,6 @@ task default: :spec
 
 using_git = File.exist?(File.expand_path('../.git/', __FILE__))
 
-begin
-  require 'appraisal'
-rescue LoadError
-  warn "Warning: %s" % $! unless ENV['CI']
-end
-
 require 'cucumber/rake/task'
 Cucumber::Rake::Task.new
 

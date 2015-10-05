@@ -43,7 +43,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "em-http-request"
   spec.add_development_dependency "curb"
   spec.add_development_dependency "yajl-ruby"
-  spec.add_development_dependency "appraisal"
   spec.add_development_dependency "relish"
   spec.add_development_dependency "mime-types"
   spec.add_development_dependency "sinatra"
