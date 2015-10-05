@@ -1,10 +1,3 @@
-# make the values of the example row cells available as an array...
-Cucumber::Ast::OutlineTable::ExampleRow.class_eval do
-  def cell_values
-    @cells.map { |c| c.value  }
-  end
-end
-
 if RUBY_VERSION == '1.8.7'
   # We get timeouts on 1.8.7 w/ Patron for some reason.
   UNSUPPORTED_HTTP_LIBS = %w[ patron ]
