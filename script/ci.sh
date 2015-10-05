@@ -73,10 +73,10 @@ export JAVA_OPTS='-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1'
 export SPEC_OPTS="--backtrace"
 
 BUNDLE_GEMFILE=gemfiles/typhoeus_old.gemfile fold "typhoeus-old" \
-  run script/test spec/vcr/library_hooks/typhoeus_0.4_spec.rb
+  run script/test spec/lib/vcr/library_hooks/typhoeus_0.4_spec.rb
 
 BUNDLE_GEMFILE=gemfiles/faraday_old.gemfile fold "faraday-old" \
-  run script/test spec/vcr/middleware/faraday_spec.rb spec/vcr/library_hooks/faraday_spec.rb \
+  run script/test spec/lib/vcr/middleware/faraday_spec.rb spec/lib/vcr/library_hooks/faraday_spec.rb \
     features/middleware/faraday.feature
 
 fold "spec" run script/test spec/
