@@ -1,5 +1,6 @@
 sudo: false
 language: ruby
+script: script/ci.sh
 rvm:
   - 1.9.2
   - 1.9.3
