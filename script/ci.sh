@@ -95,6 +95,9 @@ fold "features" run script/test features/
 
 check_warnings
 
-fold "doc-coverage" bundle exec rake yard_coverage
+if ! bundle exec yard stats --list-undoc | tee /dev/stdout | grep -q '100.00% documented'; then
+  printf "\e[31mFailed: documentation coverage is less than 100%\e[m\n"
+  STATUS=1
+fi
 
 exit $STATUS
