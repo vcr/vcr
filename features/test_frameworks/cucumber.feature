@@ -76,7 +76,7 @@ Feature: Usage with Cucumber
       end
 
       Then /^the response should be "([^"]*)"$/ do |expected_response|
-        @response.body.should == expected_response
+        expect(@response.body).to eq(expected_response)
       end
       """
     And a file named "features/vcr_example.feature" with:

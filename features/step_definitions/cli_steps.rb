@@ -68,7 +68,7 @@ module VCRHelpers
     in_current_dir do
       file = File.read(file_name)
       regex = /#{Regexp.escape(orig_text)}/
-      file.should =~ regex
+      expect(file).to match(regex)
 
       file = file.gsub(regex, new_text)
       File.open(file_name, 'w') { |f| f.write(file) }
@@ -183,7 +183,7 @@ Then(/^the file "([^"]*)" should contain a YAML fragment like:$/) do |file_name,
       line.strip.gsub('"', "'").gsub("'", '')
     end.join("\n")
 
-    file_content.should include(fragment.gsub("'", ''))
+    expect(file_content).to include(fragment.gsub("'", ''))
   end
 end
 
