@@ -52,9 +52,15 @@ run() {
   RUBYOPT="$RUBYOPT -w" "$@" 2> >(tee >(grep 'warning:' >>"$warnings") | grep -v 'warning:')
 }
 
+fetch_warnings() {
+  grep -F "$PWD" "$1" | \
+    grep -v "${PWD}/vendor/bundle" | \
+    grep -v "${PWD}/spec/.\+possible reference to past scope"
+}
+
 check_warnings() {
   # Display Ruby warnings from this project's source files. Abort if any were found.
-  num="$(grep -F "$PWD" "$warnings" | grep -v "${PWD}/vendor/bundle" | sort | uniq -c | sort -rn | tee /dev/stderr | wc -l)"
+  num="$(fetch_warnings "$warnings" | sort | uniq -c | sort -rn | tee /dev/stderr | wc -l)"
   rm -f "$warnings"
   if [ "$num" -gt 0 ]; then
     echo "FAILED: this test suite doesn't tolerate Ruby syntax warnings!" >&2
