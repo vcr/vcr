@@ -80,6 +80,9 @@ BUNDLE_GEMFILE=Gemfile.faraday-0.8 fold "faraday-0.8" \
   run script/test spec/lib/vcr/middleware/faraday_spec.rb spec/lib/vcr/library_hooks/faraday_spec.rb \
     features/middleware/faraday.feature
 
+BUNDLE_GEMFILE=Gemfile.cucumber-1.3 fold "cucumber-1.3" \
+  run script/test features/test_frameworks/cucumber.feature
+
 fold "spec" run script/test spec/
 
 fold "features" run script/test features/
