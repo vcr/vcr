@@ -11,9 +11,9 @@ elsif defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx'
 
   # I'm getting errors in the curb C extension in rbx.
 
-  # Faraday and Typhoeus should be buildable on rbx, but the travis build times out,
+  # Typhoeus should be buildable on rbx, but the travis build times out,
   # so we skip them to speed up the build on travis.
-  UNSUPPORTED_HTTP_LIBS = %w[ patron em-http-request curb faraday typhoeus ]
+  UNSUPPORTED_HTTP_LIBS = %w[ patron em-http-request curb typhoeus ]
 elsif RUBY_PLATFORM == 'java'
   # These gems have C extensions and can't install on JRuby.
   c_dependent_libs = %w[ typhoeus patron curb em-http-request ]
