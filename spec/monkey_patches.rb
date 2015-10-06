@@ -1,5 +1,3 @@
-require 'typhoeus'
-
 module MonkeyPatches
   extend self
 
@@ -134,10 +132,16 @@ end
 # for WebMock to work with them.
 require 'httpclient'
 
-unless RUBY_INTERPRETER == :jruby
-  require 'patron'
-  require 'em-http-request'
-  require 'curb'
+if RUBY_INTERPRETER == :mri
+  require 'typhoeus'
+  begin
+    require 'patron'
+    require 'em-http-request'
+    require 'curb'
+  rescue LoadError
+    # these are not always available, depending on the Gemfile used
+    warn $!.message
+  end
 end
 
 if defined?(::Typhoeus.before)
