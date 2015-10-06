@@ -97,6 +97,4 @@ check_warnings
 
 fold "doc-coverage" bundle exec rake yard_coverage
 
-bundle exec rake check_code_coverage
-
 exit $STATUS
