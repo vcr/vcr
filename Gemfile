@@ -12,3 +12,7 @@ platform :mri do
   gem "em-http-request"
   gem "curb"
 end
+
+platform :ruby do
+  gem "yajl-ruby"
+end
