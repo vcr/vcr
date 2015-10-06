@@ -70,6 +70,8 @@ check_warnings() {
 
 trap 'exit 1' INT
 
+RUBY_ENGINE="$(ruby -e 'puts defined?(RUBY_ENGINE) ? RUBY_ENGINE : "ruby"')"
+
 # idea taken from: http://blog.headius.com/2010/03/jruby-startup-time-tips.html
 export JRUBY_OPTS='-X-C' # disable JIT since these processes are so short lived
 
@@ -79,8 +81,10 @@ export JAVA_OPTS='-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1'
 
 export SPEC_OPTS="--backtrace --profile"
 
-BUNDLE_GEMFILE=Gemfile.typhoeus-0.4 fold "typhoeus-0.4" \
-  run script/test spec/lib/vcr/library_hooks/typhoeus_0.4_spec.rb
+if [ "$RUBY_ENGINE" = "ruby" ]; then
+  BUNDLE_GEMFILE=Gemfile.typhoeus-0.4 fold "typhoeus-0.4" \
+    run script/test spec/lib/vcr/library_hooks/typhoeus_0.4_spec.rb
+fi
 
 BUNDLE_GEMFILE=Gemfile.faraday-0.8 fold "faraday-0.8" \
   run script/test spec/lib/vcr/middleware/faraday_spec.rb spec/lib/vcr/library_hooks/faraday_spec.rb \
