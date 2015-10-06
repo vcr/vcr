@@ -28,9 +28,9 @@ if defined?(UNSUPPORTED_HTTP_LIBS)
   UNSUPPORTED_HTTP_LIB_REGEX = Regexp.union(*UNSUPPORTED_HTTP_LIBS)
 
   # Filter out example rows that use libraries that are not supported on the current ruby interpreter
-  Around do |scenario, block|
-    unless scenario.respond_to?(:cell_values) && scenario.cell_values.any? { |v| v =~ UNSUPPORTED_HTTP_LIB_REGEX }
-      block.call
+  Before do |scenario|
+    if scenario.respond_to?(:cell_values) && scenario.cell_values.any? { |v| v =~ UNSUPPORTED_HTTP_LIB_REGEX }
+      scenario.skip_invoke!
     end
   end
 end
