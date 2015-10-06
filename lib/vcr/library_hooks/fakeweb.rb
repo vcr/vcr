@@ -126,6 +126,7 @@ module VCR
         end
       end
 
+      # @private
       class RecursiveRequestHandler < RequestHandler
         attr_reader :stubbed_response
 

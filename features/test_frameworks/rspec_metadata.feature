@@ -70,23 +70,23 @@ Feature: Usage with RSpec metadata
 
       describe "VCR example group metadata", :vcr do
         it 'records an http request' do
-          make_http_request.should == 'Hello'
+          expect(make_http_request).to eq('Hello')
         end
 
         it 'records another http request' do
-          make_http_request.should == 'Hello'
+          expect(make_http_request).to eq('Hello')
         end
 
         context 'in a nested example group' do
           it 'records another one' do
-            make_http_request.should == 'Hello'
+            expect(make_http_request).to eq('Hello')
           end
         end
       end
 
       describe "VCR example metadata" do
         it 'records an http request', :vcr do
-          make_http_request.should == 'Hello'
+          expect(make_http_request).to eq('Hello')
         end
       end
       """
@@ -138,11 +138,11 @@ Feature: Usage with RSpec metadata
       vcr_options = { :cassette_name => "example", :record => :new_episodes }
       describe "Using an options hash", :vcr => vcr_options do
         it 'uses the provided cassette name' do
-          VCR.current_cassette.name.should == "example"
+          expect(VCR.current_cassette.name).to eq("example")
         end
 
         it 'sets the given options' do
-          VCR.current_cassette.record_mode.should == :new_episodes
+          expect(VCR.current_cassette.record_mode).to eq(:new_episodes)
         end
       end
       """

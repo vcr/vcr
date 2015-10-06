@@ -47,13 +47,20 @@ fold() {
 }
 
 run() {
+  [[ "${BUNDLE_GEMFILE##*/}" == Gemfile.* ]] && bundle install
   # Save warnings on stderr to a separate file
   RUBYOPT="$RUBYOPT -w" "$@" 2> >(tee >(grep 'warning:' >>"$warnings") | grep -v 'warning:')
 }
 
+fetch_warnings() {
+  grep -F "$PWD" "$1" | \
+    grep -v "${PWD}/vendor/bundle" | \
+    grep -v "${PWD}/spec/.\+possible reference to past scope"
+}
+
 check_warnings() {
   # Display Ruby warnings from this project's source files. Abort if any were found.
-  num="$(grep -F "$PWD" "$warnings" | grep -v "${PWD}/vendor/bundle" | sort | uniq -c | sort -rn | tee /dev/stderr | wc -l)"
+  num="$(fetch_warnings "$warnings" | sort | uniq -c | sort -rn | tee /dev/stderr | wc -l)"
   rm -f "$warnings"
   if [ "$num" -gt 0 ]; then
     echo "FAILED: this test suite doesn't tolerate Ruby syntax warnings!" >&2
@@ -70,14 +77,17 @@ export JRUBY_OPTS='-X-C' # disable JIT since these processes are so short lived
 # idea taken from https://github.com/jruby/jruby/wiki/Improving-startup-time
 export JAVA_OPTS='-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1'
 
-export SPEC_OPTS="--backtrace"
+export SPEC_OPTS="--backtrace --profile"
 
-BUNDLE_GEMFILE=gemfiles/typhoeus_old.gemfile fold "typhoeus-old" \
-  run script/test spec/vcr/library_hooks/typhoeus_0.4_spec.rb
+BUNDLE_GEMFILE=Gemfile.typhoeus-0.4 fold "typhoeus-0.4" \
+  run script/test spec/lib/vcr/library_hooks/typhoeus_0.4_spec.rb
 
-BUNDLE_GEMFILE=gemfiles/faraday_old.gemfile fold "faraday-old" \
-  run script/test spec/vcr/middleware/faraday_spec.rb spec/vcr/library_hooks/faraday_spec.rb \
+BUNDLE_GEMFILE=Gemfile.faraday-0.8 fold "faraday-0.8" \
+  run script/test spec/lib/vcr/middleware/faraday_spec.rb spec/lib/vcr/library_hooks/faraday_spec.rb \
     features/middleware/faraday.feature
+
+BUNDLE_GEMFILE=Gemfile.cucumber-1.3 fold "cucumber-1.3" \
+  run script/test features/test_frameworks/cucumber.feature
 
 fold "spec" run script/test spec/
 
@@ -85,8 +95,9 @@ fold "features" run script/test features/
 
 check_warnings
 
-fold "doc-coverage" bundle exec rake yard_coverage
-
-bundle exec rake check_code_coverage
+if ! bundle exec yard stats --list-undoc | tee /dev/stdout | grep -q '100.00% documented'; then
+  printf "\e[31mFailed: documentation coverage is less than 100%\e[m\n"
+  STATUS=1
+fi
 
 exit $STATUS

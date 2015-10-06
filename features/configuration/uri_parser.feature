@@ -27,7 +27,7 @@ Feature: uri_parser
       http_interactions:
       - request:
           method: get
-          uri: http://bad_url.example.com/
+          uri: http://example.com/hello
           body:
             encoding: UTF-8
             string: ""
@@ -51,16 +51,25 @@ Feature: uri_parser
     Given a file named "uri_parser.rb" with:
       """ruby
       require 'vcr'
-      require 'addressable/uri'
+      require 'uri'
+
+      module MyURI
+        def self.parse(url)
+          uri = URI.parse(url)
+          uri.host = 'example.com'
+          uri.path = '/hello'
+          uri
+        end
+      end
 
       VCR.configure do |c|
-        c.uri_parser = Addressable::URI
+        c.uri_parser = MyURI
         c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
       end
 
       VCR.use_cassette('example') do
-        puts Net::HTTP.get_response('bad_url.example.com', '/').body
+        puts Net::HTTP.get_response('evil.org', '/projects').body
       end
       """
      When I run `ruby uri_parser.rb`
@@ -70,7 +79,6 @@ Feature: uri_parser
     Given a file named "uri_parser_default.rb" with:
       """ruby
       require 'vcr'
-      require 'addressable/uri'
 
       VCR.configure do |c|
         c.hook_into :webmock
@@ -78,12 +86,8 @@ Feature: uri_parser
       end
 
       VCR.use_cassette('example') do
-        puts Net::HTTP.get_response('bad_url.example.com', '/').body
+        puts Net::HTTP.get_response('example.com', '/hello').body
       end
       """
      When I run `ruby uri_parser_default.rb`
-     Then it should fail with an error like:
-     """
-     URI::InvalidURIError
-     """
-
+     Then it should pass with "Hello"

@@ -68,7 +68,7 @@ module VCRHelpers
     in_current_dir do
       file = File.read(file_name)
       regex = /#{Regexp.escape(orig_text)}/
-      file.should =~ regex
+      expect(file).to match(regex)
 
       file = file.gsub(regex, new_text)
       File.open(file_name, 'w') { |f| f.write(file) }
@@ -149,7 +149,7 @@ end
 Then(/^the file "([^"]*)" should contain JSON like:$/) do |file_name, expected_content|
   actual_content = in_current_dir { File.read(file_name) }
   actual = MultiJson.decode(actual_content)
-  expected = MultiJson.decode(expected_content)
+  expected = MultiJson.decode(expected_content.to_s)
   expect(normalize_cassette_hash(actual)).to eq(normalize_cassette_hash(expected))
 end
 
@@ -183,7 +183,7 @@ Then(/^the file "([^"]*)" should contain a YAML fragment like:$/) do |file_name,
       line.strip.gsub('"', "'").gsub("'", '')
     end.join("\n")
 
-    file_content.should include(fragment.gsub("'", ''))
+    expect(file_content).to include(fragment.gsub("'", ''))
   end
 end
 
