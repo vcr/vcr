@@ -1,5 +1,6 @@
 require 'tmpdir'
 require 'vcr/cassette/migrator'
+require 'yaml'
 
 describe VCR::Cassette::Migrator do
   let(:original_contents) { <<-EOF
@@ -114,13 +115,14 @@ EOF
   end if RUBY_PLATFORM == 'java'
 
   # Use syck on all rubies for consistent results...
-  before(:each) do
-    YAML::ENGINE.yamler = 'syck' if defined?(YAML::ENGINE)
-  end
-
-  after(:each) do
-    YAML::ENGINE.yamler = 'psych' if defined?(YAML::ENGINE)
-  end
+  around(:each) do |example|
+    YAML::ENGINE.yamler = 'syck'
+    begin
+      example.call
+    ensure
+      YAML::ENGINE.yamler = 'psych'
+    end
+  end if defined?(YAML::ENGINE) && RUBY_VERSION.to_f < 2.0
 
   let(:filemtime) { Time.utc(2011, 5, 4, 12, 30) }
   let(:out_io)    { StringIO.new }
@@ -185,11 +187,10 @@ EOF
 
   context 'with psych' do
     before(:each) do
-      pending "psych not available" unless defined?(YAML::ENGINE)
       YAML::ENGINE.yamler = 'psych'
     end
 
     it_behaves_like "ignoring invalid YAML"
-  end
+  end if defined?(YAML::ENGINE)
 end
 

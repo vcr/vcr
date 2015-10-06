@@ -50,7 +50,7 @@ module VCR
       it_behaves_like "a serializer", :yaml,  "yml",  :lazily_loaded do
         it_behaves_like "encoding error handling", :yaml, ArgumentError do
           let(:string) { "\xFA".force_encoding("UTF-8") }
-          before { ::YAML::ENGINE.yamler = 'psych' }
+          before { ::YAML::ENGINE.yamler = 'psych' if defined?(::YAML::ENGINE) }
         end if ''.respond_to?(:encoding)
       end
 
@@ -162,7 +162,7 @@ module VCR
           ::YAML::ENGINE.yamler = 'syck'
           serialized = subject[:psych].serialize(problematic_syck_string)
           expect(subject[:psych].deserialize(serialized)).to eq(problematic_syck_string)
-        end if defined?(::Psych)
+        end if defined?(::Psych) && RUBY_VERSION.to_f < 2.0
 
         it 'raises an error if psych cannot be loaded' do
           expect { subject[:psych] }.to raise_error(LoadError)
