@@ -28,7 +28,7 @@ module VCR
         # @return [String] the compressed cassette data
         def serialize(hash)
           string = VCR::Cassette::Serializers::YAML.serialize(hash)
-          Zlib.deflate(string)
+          Zlib::Deflate.deflate(string)
         end
 
         # Deserializes the given compressed cassette data.
@@ -36,7 +36,7 @@ module VCR
         # @param [String] string the compressed YAML cassette data
         # @return [Hash] the deserialized object
         def deserialize(string)
-          yaml = Zlib.inflate(string)
+          yaml = Zlib::Inflate.inflate(string)
           VCR::Cassette::Serializers::YAML.deserialize(yaml)
         end
       end

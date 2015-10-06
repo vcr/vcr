@@ -155,7 +155,7 @@ end
 
 Then(/^the file "([^"]*)" should contain compressed YAML like:$/) do |file_name, expected_content|
   actual_content = in_current_dir { File.read(file_name) }
-  unzipped_content = Zlib.inflate(actual_content)
+  unzipped_content = Zlib::Inflate.inflate(actual_content)
   expect(normalize_cassette_hash(YAML.load(unzipped_content))).to eq(normalize_cassette_hash(YAML.load(expected_content)))
 end
 
