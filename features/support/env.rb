@@ -20,7 +20,7 @@ rubyopt = "-rsupport/cucumber_helpers"
 
 if RUBY_VERSION > '1.9'
   load_paths.unshift(".")
-  rubyopt = "--disable-gems #{rubyopt}" if "ruby" == ruby_engine
+  rubyopt = "--disable-gems #{rubyopt}" unless "rbx" == ruby_engine
 end
 
 Before do
@@ -35,6 +35,8 @@ end
 Before("~@with-bundler") do
   set_env("RUBYLIB", load_paths.join(":"))
   set_env("RUBYOPT", rubyopt)
+  set_env("RBXOPT", "--disable-gems #{ENV["RBXOPT"]}") if "rbx" == ruby_engine
+  set_env("GEM_HOME", nil)
 end
 
 Before("@with-bundler") do
