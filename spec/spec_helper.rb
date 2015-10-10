@@ -26,6 +26,7 @@ module VCR
     instance_variables.each do |ivar|
       instance_variable_set(ivar, nil)
     end
+    initialize_ivars
     configuration.hook_into hook if hook
   end
 end

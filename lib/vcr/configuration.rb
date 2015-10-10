@@ -396,8 +396,7 @@ module VCR
       hook_allowed, hook_decaration = false, caller.first
       before_http_request(*filters) do |request|
         hook_allowed = true
-        fiber = start_new_fiber_for(request, block)
-        fibers[Thread.current] = fiber
+        start_new_fiber_for(request, fibers, block)
       end
 
       after_http_request(lambda { hook_allowed }) do |request, response|
@@ -508,16 +507,25 @@ module VCR
 
     def resume_fiber(fiber, response, hook_declaration)
       fiber.resume(response)
-    rescue FiberError
+    rescue FiberError => ex
       raise Errors::AroundHTTPRequestHookError.new \
-        "Your around_http_request hook declared at #{hook_declaration}" +
-        " must call #proceed on the yielded request but did not."
+        "Your around_http_request hook declared at #{hook_declaration}" \
+        " must call #proceed on the yielded request but did not. " \
+        "(actual error: #{ex.class}: #{ex.message})"
     end
 
-    def start_new_fiber_for(request, block)
-      Fiber.new(&block).tap do |fiber|
-        fiber.resume(Request::FiberAware.new(request))
+    def start_new_fiber_for(request, fibers, proc)
+      fiber = Fiber.new do |*args, &block|
+        begin
+          proc.call(*args, &block)
+        rescue StandardError => ex
+          warn "Your around_http_request hook raised an error: " \
+            "#{ex.class}: #{ex.message}"
+          raise
+        end
       end
+      fibers[Thread.current] = fiber
+      fiber.resume(Request::FiberAware.new(request))
     end
 
     def tag_filter_from(tag)
