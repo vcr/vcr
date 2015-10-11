@@ -100,7 +100,8 @@ describe VCR do
 
     it 'ejects the cassette even if there is an error' do
       expect(VCR).to receive(:eject_cassette)
-      expect { VCR.use_cassette(:cassette_test) { raise StandardError } }.to raise_error
+      test_error = Class.new(StandardError)
+      expect { VCR.use_cassette(:cassette_test) { raise test_error } }.to raise_error(test_error)
     end
 
     it 'does not eject a cassette if there was an error inserting it' do
