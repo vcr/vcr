@@ -262,13 +262,13 @@ module VCR
                                 "You must eject it before you can turn VCR off."
     end
 
-    @ignore_cassettes[Thread.current] = options[:ignore_cassettes]
+    set_context_value(:ignore_cassettes, options[:ignore_cassettes])
     invalid_options = options.keys - [:ignore_cassettes]
     if invalid_options.any?
       raise ArgumentError.new("You passed some invalid options: #{invalid_options.inspect}")
     end
 
-    set_turned_off(true)
+    set_context_value(:turned_off, true)
   end
 
   # Turns on VCR, if it has previously been turned off.
@@ -277,7 +277,7 @@ module VCR
   # @see #turned_off
   # @see #turned_on?
   def turn_on!
-    set_turned_off(false)
+    set_context_value(:turned_off, false)
   end
 
   # @return whether or not VCR is turned on
@@ -287,11 +287,7 @@ module VCR
   # @see #turn_off!
   # @see #turned_off
   def turned_on?
-    if @turned_off.key?(Thread.current)
-      !@turned_off[Thread.current]
-    else
-      !@turned_off[MainThread]
-    end
+    !context_value(:turned_off)
   end
 
   # @private
@@ -339,31 +335,78 @@ module VCR
     cassette.record_http_interaction(interaction)
   end
 
-private
-
-  def set_turned_off(value)
-    @turned_off[Thread.current] = value
+  # @private
+  def link_context(from_thread, to_key)
+    @context[to_key] = get_context(from_thread)
   end
 
-  def ignore_cassettes?
-    if @ignore_cassettes.key?(Thread.current)
-      @ignore_cassettes[Thread.current]
+  # @private
+  def unlink_context(key)
+    @context.delete(key)
+  end
+
+  # @private
+  def fibers_available?
+    @fibers_available
+  end
+
+private
+  def current_context
+    get_context(Thread.current, Fiber.current)
+  end
+
+  def get_context(thread_key, fiber_key = nil)
+    context = @context[fiber_key] if fiber_key
+    context ||= @context[thread_key]
+    if context
+      context
     else
-      @ignore_cassettes[MainThread]
+      @context[thread_key] = dup_context(@context[MainThread])
     end
   end
 
-  def cassettes
-    c = @cassettes[Thread.current]
-    return c if c
+  def context_value(name)
+    current_context[name]
+  end
 
-    @cassettes[Thread.current] = @cassettes[MainThread].dup
+  def set_context_value(name, value)
+    current_context[name] = value
+  end
+
+  def dup_context(context)
+    {
+      :turned_off => context[:turned_off],
+      :ignore_cassettes => context[:ignore_cassettes].dup,
+      :cassettes => context[:cassettes].dup
+    }
+  end
+
+  def ignore_cassettes?
+    context_value(:ignore_cassettes)
+  end
+
+  def cassettes
+    context_value(:cassettes)
+  end
+
+  def initialize_fibers
+    begin
+      require 'fiber'
+      @fibers_available = true
+    rescue LoadError
+      @fibers_available = false
+    end
   end
 
   def initialize_ivars
-    @turned_off = { MainThread => false }
-    @cassettes = { MainThread => [] }
-    @ignore_cassettes = { MainThread => [] }
+    initialize_fibers
+    @context = {
+      MainThread => {
+        :turned_off => false,
+        :ignore_cassettes => [],
+        :cassettes => []
+      }
+    }
     @configuration = Configuration.new
     @request_matchers = RequestMatcherRegistry.new
     @request_ignorer = RequestIgnorer.new

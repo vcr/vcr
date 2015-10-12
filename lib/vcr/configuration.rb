@@ -386,12 +386,12 @@ module VCR
     # @see #before_http_request
     # @see #after_http_request
     def around_http_request(*filters, &block)
-      require 'fiber'
-    rescue LoadError
-      raise Errors::NotSupportedError.new \
-        "VCR::Configuration#around_http_request requires fibers, " +
-        "which are not available on your ruby intepreter."
-    else
+      unless VCR.fibers_available?
+        raise Errors::NotSupportedError.new \
+          "VCR::Configuration#around_http_request requires fibers, " +
+          "which are not available on your ruby intepreter."
+      end
+
       fibers = {}
       hook_allowed, hook_decaration = false, caller.first
       before_http_request(*filters) do |request|
@@ -515,13 +515,19 @@ module VCR
     end
 
     def start_new_fiber_for(request, fibers, proc)
+      current_thread = Thread.current
       fiber = Fiber.new do |*args, &block|
         begin
+          # JRuby Fiber runs in a separate thread, so we need to make this Fiber
+          # use the context of the calling thread
+          VCR.link_context(current_thread, Fiber.current) if RUBY_PLATFORM == 'java'
           proc.call(*args, &block)
         rescue StandardError => ex
           warn "Your around_http_request hook raised an error: " \
             "#{ex.class}: #{ex.message}"
           raise
+        ensure
+          VCR.unlink_context(Fiber.current) if RUBY_PLATFORM == 'java'
         end
       end
       fibers[Thread.current] = fiber
