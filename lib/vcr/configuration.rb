@@ -393,15 +393,16 @@ module VCR
       end
 
       fibers = {}
-      hook_allowed, hook_decaration = false, caller.first
+      fiber_errors = {}
+      hook_allowed, hook_declaration = false, caller.first
       before_http_request(*filters) do |request|
         hook_allowed = true
-        start_new_fiber_for(request, fibers, block)
+        start_new_fiber_for(request, fibers, fiber_errors, hook_declaration, block)
       end
 
       after_http_request(lambda { hook_allowed }) do |request, response|
         fiber = fibers.delete(Thread.current)
-        resume_fiber(fiber, response, hook_decaration)
+        resume_fiber(fiber, fiber_errors, response, hook_declaration)
       end
     end
 
@@ -505,7 +506,8 @@ module VCR
       raise ArgumentError.new("#{hook.inspect} is not a supported VCR HTTP library hook.")
     end
 
-    def resume_fiber(fiber, response, hook_declaration)
+    def resume_fiber(fiber, fiber_errors, response, hook_declaration)
+      raise fiber_errors[Thread.current] if fiber_errors[Thread.current]
       fiber.resume(response)
     rescue FiberError => ex
       raise Errors::AroundHTTPRequestHookError.new \
@@ -514,22 +516,27 @@ module VCR
         "(actual error: #{ex.class}: #{ex.message})"
     end
 
-    def start_new_fiber_for(request, fibers, proc)
+    def create_fiber_for(fiber_errors, hook_declaration, proc)
       current_thread = Thread.current
-      fiber = Fiber.new do |*args, &block|
+      Fiber.new do |*args, &block|
         begin
           # JRuby Fiber runs in a separate thread, so we need to make this Fiber
           # use the context of the calling thread
           VCR.link_context(current_thread, Fiber.current) if RUBY_PLATFORM == 'java'
           proc.call(*args, &block)
         rescue StandardError => ex
-          warn "Your around_http_request hook raised an error: " \
-            "#{ex.class}: #{ex.message}"
+          # Fiber errors get swallowed, so we re-raise the error in the parent
+          # thread (see resume_fiber)
+          fiber_errors[current_thread] = ex
           raise
         ensure
           VCR.unlink_context(Fiber.current) if RUBY_PLATFORM == 'java'
         end
       end
+    end
+
+    def start_new_fiber_for(request, fibers, fiber_errors, hook_declaration, proc)
+      fiber = create_fiber_for(fiber_errors, hook_declaration, proc)
       fibers[Thread.current] = fiber
       fiber.resume(Request::FiberAware.new(request))
     end
