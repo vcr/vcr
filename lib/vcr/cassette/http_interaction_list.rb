@@ -28,8 +28,12 @@ module VCR
       end
 
       def response_for(request)
-        if index = matching_interaction_index_for(request)
-          interaction = @interactions.delete_at(index)
+        if interaction = matching_interaction_for(request)
+          index = @interactions.index(interaction)
+          delete_count = 0
+          @interactions.delete_if do |i|
+            i === interaction && delete_count == 0 ? delete_count += 1 : false
+          end
           @used_interactions.unshift interaction
           log "Found matching interaction for #{request_summary(request)} at index #{index}: #{response_summary(interaction.response)}", 1
           interaction.response
@@ -41,7 +45,7 @@ module VCR
       end
 
       def has_interaction_matching?(request)
-        !!matching_interaction_index_for(request) ||
+        !!matching_interaction_for(request) ||
         !!matching_used_interaction_for(request) ||
         @parent_list.has_interaction_matching?(request)
       end
@@ -79,8 +83,8 @@ module VCR
         super(request, @request_matchers)
       end
 
-      def matching_interaction_index_for(request)
-        @interactions.index { |i| interaction_matches_request?(request, i) }
+      def matching_interaction_for(request)
+        @interactions.detect { |i| interaction_matches_request?(request, i) }
       end
 
       def matching_used_interaction_for(request)
