@@ -17,6 +17,17 @@ describe VCR::RSpec::Metadata, :skip_vcr_reset do
         ])
       end
     end
+
+    context 'when the spec has no description' do
+      it do
+        expect(VCR.current_cassette.name.split('/')).to eq([
+          'VCR::RSpec::Metadata',
+          'an example group',
+          'when the spec has no description',
+          '1:1:2:1'
+        ])
+      end
+    end
   end
 
   context 'with the cassette name overridden at the example group level', :vcr => { :cassette_name => 'foo' } do
