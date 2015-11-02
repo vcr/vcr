@@ -262,7 +262,7 @@ module VCR
                                 "You must eject it before you can turn VCR off."
     end
 
-    set_context_value(:ignore_cassettes, options[:ignore_cassettes])
+    set_context_value(:ignore_cassettes, options.fetch(:ignore_cassettes, false))
     invalid_options = options.keys - [:ignore_cassettes]
     if invalid_options.any?
       raise ArgumentError.new("You passed some invalid options: #{invalid_options.inspect}")
@@ -376,7 +376,7 @@ private
   def dup_context(context)
     {
       :turned_off => context[:turned_off],
-      :ignore_cassettes => context[:ignore_cassettes].dup,
+      :ignore_cassettes => context[:ignore_cassettes],
       :cassettes => context[:cassettes].dup
     }
   end
@@ -403,7 +403,7 @@ private
     @context = {
       MainThread => {
         :turned_off => false,
-        :ignore_cassettes => [],
+        :ignore_cassettes => false,
         :cassettes => []
       }
     }
