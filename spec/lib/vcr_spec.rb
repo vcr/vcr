@@ -291,6 +291,11 @@ describe VCR do
       }.to raise_error(ArgumentError)
     end
 
+    it 'sets ignore_cassettes to false' do
+      VCR.turn_off!
+      expect(VCR.send(:ignore_cassettes?)).to equal(false)
+    end
+
     context 'when `:ignore_cassettes => true` is passed' do
       before(:each) { VCR.turn_off!(:ignore_cassettes => true) }
 
