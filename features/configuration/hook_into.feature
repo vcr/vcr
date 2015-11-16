@@ -85,7 +85,7 @@ Feature: hook_into
       | c.hook_into :faraday  | faraday (w/ net_http) |
       | c.hook_into :faraday  | faraday (w/ typhoeus) |
 
-  @exclude-jruby @exclude-18
+  @exclude-jruby @exclude-rbx @exclude-18
   Scenario Outline: Use Typhoeus, Excon and Faraday in combination with FakeWeb or WebMock
     Given a file named "hook_into_multiple.rb" with:
       """ruby
