@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Typhoeus hook", :with_monkey_patches => :typhoeus do
+describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_INTERPRETER == :mri) do
   after(:each) do
     ::Typhoeus::Expectation.clear
   end

@@ -40,11 +40,18 @@ module VCR
           options = original_options.dup
 
           cassette_name = if options.delete(:use_scenario_name)
-            feature = scenario.respond_to?(:scenario_outline) ? scenario.scenario_outline.feature : scenario.feature
-            name = feature.name.split("\n").first
-            name << "/#{scenario.scenario_outline.name}" if scenario.respond_to?(:scenario_outline)
-            name << "/#{scenario.name.split("\n").first}"
-            name
+            if scenario.respond_to?(:outline?) && scenario.outline?
+              ScenarioNameBuilder.new(scenario).cassette_name
+            elsif scenario.respond_to?(:scenario_outline)
+              [ scenario.scenario_outline.feature.name.split("\n").first,
+                scenario.scenario_outline.name,
+                scenario.name.split("\n").first
+              ].join("/")
+            else
+              [ scenario.feature.name.split("\n").first,
+                scenario.name.split("\n").first
+              ].join("/")
+            end
           else
             "cucumber_tags/#{tag_name.gsub(/\A@/, '')}"
           end
@@ -60,5 +67,32 @@ module VCR
       end
     end
     alias :tag :tags
+
+    # Constructs a cassette name from a Cucumber 2 scenario outline
+    # @private
+    class ScenarioNameBuilder
+      def initialize(test_case)
+        @parts = []
+        test_case.describe_source_to self
+      end
+
+      def cassette_name
+        @parts.join("/")
+      end
+
+      def feature(feature)
+        @parts.unshift feature.name
+        self
+      end
+      alias scenario_outline feature
+
+      def scenario(*) self end
+      alias examples_table scenario
+
+      def examples_table_row(row)
+        @parts.unshift "| %s |" % row.values.join(" | ")
+        self
+      end
+    end
   end
 end

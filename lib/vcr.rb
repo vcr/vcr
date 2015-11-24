@@ -22,6 +22,12 @@ module VCR
 
   extend self
 
+  # Mutex to synchronize access to cassettes in a threaded environment
+  CassetteMutex = Mutex.new
+
+  # The main thread in which VCR was loaded
+  MainThread = Thread.current
+
   autoload :CucumberTags,       'vcr/test_frameworks/cucumber'
   autoload :InternetConnection, 'vcr/util/internet_connection'
 
@@ -201,7 +207,7 @@ module VCR
 
   # @return [VCR::Configuration] the VCR configuration.
   def configuration
-    @configuration ||= Configuration.new
+    @configuration
   end
 
   # Sets up `Before` and `After` cucumber hooks in order to
@@ -256,13 +262,13 @@ module VCR
                                 "You must eject it before you can turn VCR off."
     end
 
-    @ignore_cassettes = options[:ignore_cassettes]
+    set_context_value(:ignore_cassettes, options.fetch(:ignore_cassettes, false))
     invalid_options = options.keys - [:ignore_cassettes]
     if invalid_options.any?
       raise ArgumentError.new("You passed some invalid options: #{invalid_options.inspect}")
     end
 
-    @turned_off = true
+    set_context_value(:turned_off, true)
   end
 
   # Turns on VCR, if it has previously been turned off.
@@ -271,7 +277,7 @@ module VCR
   # @see #turned_off
   # @see #turned_on?
   def turn_on!
-    @turned_off = false
+    set_context_value(:turned_off, false)
   end
 
   # @return whether or not VCR is turned on
@@ -281,7 +287,7 @@ module VCR
   # @see #turn_off!
   # @see #turned_off
   def turned_on?
-    !@turned_off
+    !context_value(:turned_off)
   end
 
   # @private
@@ -293,32 +299,32 @@ module VCR
   # @private
   def real_http_connections_allowed?
     return current_cassette.recording? if current_cassette
-    !!(configuration.allow_http_connections_when_no_cassette? || @turned_off)
+    !!(configuration.allow_http_connections_when_no_cassette? || !turned_on?)
   end
 
   # @return [RequestMatcherRegistry] the request matcher registry
   def request_matchers
-    @request_matchers ||= RequestMatcherRegistry.new
+    @request_matchers
   end
 
   # @private
   def request_ignorer
-    @request_ignorer ||= RequestIgnorer.new
+    @request_ignorer
   end
 
   # @private
   def library_hooks
-    @library_hooks ||= LibraryHooks.new
+    @library_hooks
   end
 
   # @private
   def cassette_serializers
-    @cassette_serializers ||= Cassette::Serializers.new
+    @cassette_serializers
   end
 
   # @private
   def cassette_persisters
-    @cassette_persisters ||= Cassette::Persisters.new
+    @cassette_persisters
   end
 
   # @private
@@ -329,18 +335,84 @@ module VCR
     cassette.record_http_interaction(interaction)
   end
 
+  # @private
+  def link_context(from_thread, to_key)
+    @context[to_key] = get_context(from_thread)
+  end
+
+  # @private
+  def unlink_context(key)
+    @context.delete(key)
+  end
+
+  # @private
+  def fibers_available?
+    @fibers_available
+  end
+
 private
+  def current_context
+    get_context(Thread.current, Fiber.current)
+  end
+
+  def get_context(thread_key, fiber_key = nil)
+    context = @context[fiber_key] if fiber_key
+    context ||= @context[thread_key]
+    if context
+      context
+    else
+      @context[thread_key] = dup_context(@context[MainThread])
+    end
+  end
+
+  def context_value(name)
+    current_context[name]
+  end
+
+  def set_context_value(name, value)
+    current_context[name] = value
+  end
+
+  def dup_context(context)
+    {
+      :turned_off => context[:turned_off],
+      :ignore_cassettes => context[:ignore_cassettes],
+      :cassettes => context[:cassettes].dup
+    }
+  end
 
   def ignore_cassettes?
-    @ignore_cassettes
+    context_value(:ignore_cassettes)
   end
 
   def cassettes
-    @cassettes ||= []
+    context_value(:cassettes)
+  end
+
+  def initialize_fibers
+    begin
+      require 'fiber'
+      @fibers_available = true
+    rescue LoadError
+      @fibers_available = false
+    end
   end
 
   def initialize_ivars
-    @turned_off = false
+    initialize_fibers
+    @context = {
+      MainThread => {
+        :turned_off => false,
+        :ignore_cassettes => false,
+        :cassettes => []
+      }
+    }
+    @configuration = Configuration.new
+    @request_matchers = RequestMatcherRegistry.new
+    @request_ignorer = RequestIgnorer.new
+    @library_hooks = LibraryHooks.new
+    @cassette_serializers = Cassette::Serializers.new
+    @cassette_persisters = Cassette::Persisters.new
   end
 
   initialize_ivars # to avoid warnings

@@ -8,7 +8,12 @@ module VCR
       def configure!
         ::RSpec.configure do |config|
           vcr_cassette_name_for = lambda do |metadata|
-            description = metadata[:description]
+            description = if metadata[:description].empty?
+                            # we have an "it { is_expected.to be something }" block
+                            metadata[:scoped_id]
+                          else
+                            metadata[:description]
+                          end
             example_group = if metadata.key?(:example_group)
                               metadata[:example_group]
                             else

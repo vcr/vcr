@@ -68,7 +68,7 @@ module VCRHelpers
     in_current_dir do
       file = File.read(file_name)
       regex = /#{Regexp.escape(orig_text)}/
-      file.should =~ regex
+      expect(file).to match(regex)
 
       file = file.gsub(regex, new_text)
       File.open(file_name, 'w') { |f| f.write(file) }
@@ -143,20 +143,20 @@ end
 
 Then(/^the file "([^"]*)" should contain YAML like:$/) do |file_name, expected_content|
   actual_content = in_current_dir { File.read(file_name) }
-  expect(normalize_cassette_hash(YAML.load(actual_content))).to eq(normalize_cassette_hash(YAML.load(expected_content)))
+  expect(normalize_cassette_hash(YAML.load(actual_content))).to eq(normalize_cassette_hash(YAML.load(expected_content.to_s)))
 end
 
 Then(/^the file "([^"]*)" should contain JSON like:$/) do |file_name, expected_content|
   actual_content = in_current_dir { File.read(file_name) }
   actual = MultiJson.decode(actual_content)
-  expected = MultiJson.decode(expected_content)
+  expected = MultiJson.decode(expected_content.to_s)
   expect(normalize_cassette_hash(actual)).to eq(normalize_cassette_hash(expected))
 end
 
 Then(/^the file "([^"]*)" should contain compressed YAML like:$/) do |file_name, expected_content|
   actual_content = in_current_dir { File.read(file_name) }
-  unzipped_content = Zlib.inflate(actual_content)
-  expect(normalize_cassette_hash(YAML.load(unzipped_content))).to eq(normalize_cassette_hash(YAML.load(expected_content)))
+  unzipped_content = Zlib::Inflate.inflate(actual_content)
+  expect(normalize_cassette_hash(YAML.load(unzipped_content))).to eq(normalize_cassette_hash(YAML.load(expected_content.to_s)))
 end
 
 Then(/^the file "([^"]*)" should contain ruby like:$/) do |file_name, expected_content|
@@ -183,7 +183,7 @@ Then(/^the file "([^"]*)" should contain a YAML fragment like:$/) do |file_name,
       line.strip.gsub('"', "'").gsub("'", '')
     end.join("\n")
 
-    file_content.should include(fragment.gsub("'", ''))
+    expect(file_content).to include(fragment.gsub("'", ''))
   end
 end
 

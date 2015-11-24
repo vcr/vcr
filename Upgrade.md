@@ -110,7 +110,7 @@ marshal_serializer.instance_eval do
 end
 
 VCR.configure do |c|
-  c.cassette_serializers[:marshal] = serializer
+  c.cassette_serializers[:marshal] = marshal_serializer
   c.default_cassette_options = { :serialize_with => :marshal }
 end
 ```

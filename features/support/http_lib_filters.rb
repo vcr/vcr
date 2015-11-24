@@ -1,10 +1,3 @@
-# make the values of the example row cells available as an array...
-Cucumber::Ast::OutlineTable::ExampleRow.class_eval do
-  def cell_values
-    @cells.map { |c| c.value  }
-  end
-end
-
 if RUBY_VERSION == '1.8.7'
   # We get timeouts on 1.8.7 w/ Patron for some reason.
   UNSUPPORTED_HTTP_LIBS = %w[ patron ]
@@ -18,9 +11,9 @@ elsif defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx'
 
   # I'm getting errors in the curb C extension in rbx.
 
-  # Faraday and Typhoeus should be buildable on rbx, but the travis build times out,
+  # Typhoeus should be buildable on rbx, but the travis build times out,
   # so we skip them to speed up the build on travis.
-  UNSUPPORTED_HTTP_LIBS = %w[ patron em-http-request curb faraday typhoeus ]
+  UNSUPPORTED_HTTP_LIBS = %w[ patron em-http-request curb typhoeus ]
 elsif RUBY_PLATFORM == 'java'
   # These gems have C extensions and can't install on JRuby.
   c_dependent_libs = %w[ typhoeus patron curb em-http-request ]
@@ -35,9 +28,9 @@ if defined?(UNSUPPORTED_HTTP_LIBS)
   UNSUPPORTED_HTTP_LIB_REGEX = Regexp.union(*UNSUPPORTED_HTTP_LIBS)
 
   # Filter out example rows that use libraries that are not supported on the current ruby interpreter
-  Around do |scenario, block|
-    unless scenario.respond_to?(:cell_values) && scenario.cell_values.any? { |v| v =~ UNSUPPORTED_HTTP_LIB_REGEX }
-      block.call
+  Before do |scenario|
+    if scenario.respond_to?(:cell_values) && scenario.cell_values.any? { |v| v =~ UNSUPPORTED_HTTP_LIB_REGEX }
+      scenario.skip_invoke!
     end
   end
 end

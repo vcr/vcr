@@ -100,7 +100,8 @@ describe VCR do
 
     it 'ejects the cassette even if there is an error' do
       expect(VCR).to receive(:eject_cassette)
-      expect { VCR.use_cassette(:cassette_test) { raise StandardError } }.to raise_error
+      test_error = Class.new(StandardError)
+      expect { VCR.use_cassette(:cassette_test) { raise test_error } }.to raise_error(test_error)
     end
 
     it 'does not eject a cassette if there was an error inserting it' do
@@ -290,6 +291,11 @@ describe VCR do
       }.to raise_error(ArgumentError)
     end
 
+    it 'sets ignore_cassettes to false' do
+      VCR.turn_off!
+      expect(VCR.send(:ignore_cassettes?)).to equal(false)
+    end
+
     context 'when `:ignore_cassettes => true` is passed' do
       before(:each) { VCR.turn_off!(:ignore_cassettes => true) }
 
@@ -342,7 +348,6 @@ describe VCR do
 
   describe '.turned_on?' do
     it 'is on by default' do
-      VCR.send(:initialize_ivars) # clear internal state
       expect(VCR).to be_turned_on
     end
   end

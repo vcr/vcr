@@ -46,7 +46,7 @@ Feature: Usage with RSpec macro
           use_vcr_cassette
 
           it 'records an http request' do
-            make_http_request.should == 'Hello'
+            expect(make_http_request).to eq('Hello')
           end
         end
 
@@ -54,7 +54,7 @@ Feature: Usage with RSpec macro
           use_vcr_cassette "net_http_example"
 
           it 'records an http request' do
-            make_http_request.should == 'Hello'
+            expect(make_http_request).to eq('Hello')
           end
         end
       end

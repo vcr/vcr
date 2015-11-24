@@ -81,8 +81,10 @@ module VCR
 
     # @private
     def record_http_interaction(interaction)
-      log "Recorded HTTP interaction #{request_summary(interaction.request)} => #{response_summary(interaction.response)}"
-      new_recorded_interactions << interaction
+      VCR::CassetteMutex.synchronize do
+        log "Recorded HTTP interaction #{request_summary(interaction.request)} => #{response_summary(interaction.response)}"
+        new_recorded_interactions << interaction
+      end
     end
 
     # @private
