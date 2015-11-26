@@ -22,7 +22,7 @@ module VCR
         )
       end
 
-      context 'when there is no current cassette' do
+      context 'when there is no cassette' do
         it 'identifies the request by its body when the default_cassette_options include the body in the match_requests_on option' do
           VCR.configuration.default_cassette_options[:match_requests_on] = [:body]
 
@@ -31,7 +31,7 @@ module VCR
           )
         end
 
-        it 'mentions that there is no current cassette' do
+        it 'mentions that there is no cassette' do
           expect(message).to include('There is currently no cassette in use.')
         end
 
@@ -56,7 +56,7 @@ module VCR
         end
       end
 
-      context 'when there is a current cassette' do
+      context 'when there are cassettes' do
         it 'identifies the request by its body when the match_requests_on option includes the body' do
           VCR.use_cassette('example', :match_requests_on => [:body]) do
             expect(message_for(:body => 'param=val1')).to include(
@@ -72,9 +72,17 @@ module VCR
           end
         end
 
-        it 'mentions the details about the current casette' do
+        it 'mentions the details about the single cassette when there is one cassette' do
           VCR.use_cassette('example') do
             expect(message).to match(/VCR is currently using the following cassette:.+example.yml/m)
+          end
+        end
+
+        it 'mentions the details about all cassettes when there are a few cassettes' do
+          VCR.use_cassette('example') do
+            VCR.use_cassette('sample') do
+              expect(message).to match(/VCR are currently using the following cassettes:.+sample.yml.+example.yml/m)
+            end
           end
         end
 
@@ -102,7 +110,15 @@ module VCR
           end
         end
 
-        it 'mentions :allow_playback_repeats if the current cassette has a used matching interaction' do
+        it 'does not mention the :once or :none record modes if using the :new_episodes record mode at least in one cassette' do
+          VCR.use_cassette('example', :record => :new_episodes) do
+            VCR.use_cassette('sample') do
+              expect(message).not_to include('current record mode (:once)', 'current record mode (:none)')
+            end
+          end
+        end
+
+        it 'mentions :allow_playback_repeats if the cassette has a used matching interaction' do
           VCR.use_cassette('example') do |cassette|
             expect(cassette.http_interactions).to respond_to(:has_used_interaction_matching?)
             allow(cassette.http_interactions).to receive(:has_used_interaction_matching?).and_return(true)
@@ -110,7 +126,7 @@ module VCR
           end
         end
 
-        it 'does not mention :allow_playback_repeats if the current cassette does not have a used matching interaction' do
+        it 'does not mention :allow_playback_repeats if the cassette does not have a used matching interaction' do
           VCR.use_cassette('example') do |cassette|
             expect(cassette.http_interactions).to respond_to(:has_used_interaction_matching?)
             allow(cassette.http_interactions).to receive(:has_used_interaction_matching?).and_return(false)
