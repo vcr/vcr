@@ -273,7 +273,7 @@ describe VCR::Cassette do
 
                 allow(::File).to receive(:exist?).with(file_name).and_return(true)
                 allow(::File).to receive(:size?).with(file_name).and_return(true)
-                allow(::File).to receive(:read).with(file_name).and_return(yaml)
+                allow(::File).to receive(:binread).with(file_name).and_return(yaml)
               end
 
               context 'and the earliest recorded interaction was recorded less than 7 days ago' do
