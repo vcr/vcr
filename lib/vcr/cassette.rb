@@ -134,6 +134,11 @@ module VCR
       @originally_recorded_at ||= previously_recorded_interactions.map(&:recorded_at).min
     end
 
+    # @return [Boolean] false unless wrapped with LinkedCassette
+    def linked?
+      false
+    end
+
   private
 
     def assert_valid_options!
