@@ -129,7 +129,7 @@ describe "FakeWeb hook", :with_monkey_patches => :fakeweb do
       end
 
       it "warns about FakeWeb deprecation" do
-        expect(::Kernel).to receive(:warn).with("WARNING: VCR's FakeWeb integration is deprecated and will be removed in VCR 3.0.")
+        expect(::Kernel).to receive(:warn).with("WARNING: VCR's FakeWeb integration is deprecated and will be removed in VCR 4.0.")
         run_hook
       end
     end
