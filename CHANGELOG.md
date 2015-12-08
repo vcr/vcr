@@ -1,8 +1,20 @@
 Changelog
 =========
 
-  - 3.0.0
-    [Full Changelog](https://github.com/vcr/vcr/compare/v2.9.3...v3.0.0)
+## 3.0.1
+
+[Full Changelog](https://github.com/vcr/vcr/compare/v3.0.1...v3.0.0)
+
+Enhancements:
+
+* Use the specs scope as the cassette name when the description is empty (Philipp Tessenow)
+
+Fixes:
+
+* make ignore_cassettes a boolean again to prevent nil.dup crashes (Harald Sitter)
+
+## 3.0.0
+[Full Changelog](https://github.com/vcr/vcr/compare/v2.9.3...v3.0.0)
     * [Breaking] test support for 1.8.7, 1.9.2, 2.0.0, 2.1.0, ree, jruby 1.8mode, rbx 1.8mode
     * [Breaking] the possible return value `VCR.configuration`, it now might return `nil`
     * [Breaking] the possible return value `VCR.cassette_serializers`, it now might return `nil`
