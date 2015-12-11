@@ -12,6 +12,8 @@ Enhancements:
 Fixes:
 
 * make ignore_cassettes a boolean again to prevent nil.dup crashes (Harald Sitter)
+* Fix issue #517 Cucumber scenario outlines use incorrect cassette (Jan Berdajs)
+* fix(persisters): use binary mode in read/write (KARASZI István)
 
 ## 3.0.0
 [Full Changelog](https://github.com/vcr/vcr/compare/v2.9.3...v3.0.0)
