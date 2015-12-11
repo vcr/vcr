@@ -171,6 +171,9 @@ Credits
     support.
   * [Jacob Green](https://github.com/Jacobkg) for help with ongoing VCR
     maintenance.
+  * [Jan Berdajs](https://github.com/mrbrdo) and [Daniel Berger](https://github.com/djberg96)
+    for improvements to thread-safety.
+
 
 Thanks also to the following people who have contributed patches or helpful suggestions:
 

@@ -51,6 +51,10 @@ module VCR
     # @see VCR::HTTPInteractionList#assert_no_unused_interactions!
     class UnusedHTTPInteractionError < Error; end
 
+    # Error raised when you attempt to eject a cassette inserted by another
+    # thread.
+    class EjectLinkedCassetteError         < Error; end
+
     # Error raised when an HTTP request is made that VCR is unable to handle.
     # @note VCR will raise this to force you to do something about the
     #  HTTP request. The idea is that you want to handle _every_ HTTP
@@ -85,10 +89,13 @@ module VCR
 
       def current_cassettes
         @cassettes ||= begin
-          cassettes = []
+          cassettes = VCR.cassettes.to_a.reverse
 
-          while cassette = VCR.eject_cassette
-            cassettes << cassette
+          begin
+            loop do
+              break unless VCR.eject_cassette
+            end
+          rescue EjectLinkedCassetteError
           end
 
           cassettes

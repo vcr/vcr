@@ -4,6 +4,7 @@ require 'vcr/util/variable_args_block_caller'
 require 'vcr/cassette'
 require 'vcr/cassette/serializers'
 require 'vcr/cassette/persisters'
+require 'vcr/linked_cassette'
 require 'vcr/configuration'
 require 'vcr/deprecations'
 require 'vcr/errors'
@@ -130,7 +131,7 @@ module VCR
       end
 
       cassette = Cassette.new(name, options)
-      cassettes.push(cassette)
+      context_cassettes.push(cassette)
       cassette
     elsif !ignore_cassettes?
       message = "VCR is turned off.  You must turn it on before you can insert a cassette.  " +
@@ -155,7 +156,7 @@ module VCR
     cassette.eject(options) if cassette
     cassette
   ensure
-    cassettes.pop
+    context_cassettes.delete(cassette)
   end
 
   # Inserts a cassette using the given name and options, runs the given
@@ -307,6 +308,14 @@ module VCR
     @request_matchers
   end
 
+  # @return [Enumerable] list of all cassettes currently being used
+  def cassettes(context = current_context)
+    linked_context = context[:linked_context]
+    linked_cassettes = cassettes(linked_context) if linked_context
+
+    LinkedCassette.list(context[:cassettes], Array(linked_cassettes))
+  end
+
   # @private
   def request_ignorer
     @request_ignorer
@@ -377,7 +386,8 @@ private
     {
       :turned_off => context[:turned_off],
       :ignore_cassettes => context[:ignore_cassettes],
-      :cassettes => context[:cassettes].dup
+      :cassettes => [],
+      :linked_context => context
     }
   end
 
@@ -385,7 +395,7 @@ private
     context_value(:ignore_cassettes)
   end
 
-  def cassettes
+  def context_cassettes
     context_value(:cassettes)
   end
 
@@ -404,7 +414,8 @@ private
       MainThread => {
         :turned_off => false,
         :ignore_cassettes => false,
-        :cassettes => []
+        :cassettes => [],
+        :linked_context => nil
       }
     }
     @configuration = Configuration.new
