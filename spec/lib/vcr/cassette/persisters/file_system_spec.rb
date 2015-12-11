@@ -25,10 +25,16 @@ module VCR
         end
 
         describe "#[]=" do
-          it 'writes the given file contents to the given file name' do
-            expect(File.exist?(FileSystem.storage_location + '/foo.txt')).to be false
-            FileSystem["foo.txt"] = "bar"
-            expect(File.read(FileSystem.storage_location + '/foo.txt')).to eq("bar")
+          context 'with a simple file_name and binary content' do
+            let(:file_name) { 'foo.txt' }
+            let(:content) { SecureRandom.random_bytes(20) }
+            let(:location) { FileSystem.storage_location + '/' + file_name }
+
+            it 'writes the given file contents to the given file name' do
+              expect(File.exist?(location)).to be false
+              FileSystem[file_name] = content
+              expect(File.binread(location)).to eq(content)
+            end
           end
 
           it 'creates any needed intermediary directories' do

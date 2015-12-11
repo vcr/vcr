@@ -23,7 +23,7 @@ module VCR
         def [](file_name)
           path = absolute_path_to_file(file_name)
           return nil unless File.exist?(path)
-          File.read(path)
+          File.binread(path)
         end
 
         # Sets the cassette for the given storage key (file name).
@@ -34,7 +34,7 @@ module VCR
           path = absolute_path_to_file(file_name)
           directory = File.dirname(path)
           FileUtils.mkdir_p(directory) unless File.exist?(directory)
-          File.open(path, 'w') { |f| f.write(content) }
+          File.binwrite(path, content)
         end
 
         # @private
@@ -44,7 +44,6 @@ module VCR
         end
 
       private
-
         def absolute_path_for(path)
           Dir.chdir(path) { Dir.pwd }
         end
