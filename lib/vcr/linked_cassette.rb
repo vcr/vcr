@@ -60,7 +60,7 @@ module VCR
 
     # Prevents cassette ejection by raising EjectLinkedCassetteError
     def eject(*args)
-      raise EjectLinkedCassetteError,
+      raise Errors::EjectLinkedCassetteError,
         "cannot eject a cassette inserted by a parent thread"
     end
 
