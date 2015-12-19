@@ -125,6 +125,7 @@ yard server --reload
   * [VCR.py](https://github.com/kevin1024/vcrpy) (Python)
   * [Betamax](https://github.com/thegreatape/betamax) (Go)
   * [DVR](https://github.com/orchestrate-io/dvr) (Go)
+  * [Go VCR](https://github.com/dnaeon/go-vcr) (Go)
   * [Betamax](https://github.com/wjlroe/betamax) (Clojure)
   * [vcr-clj](https://github.com/ifesdjeen/vcr-clj) (Clojure)
   * [Betamax.NET](https://github.com/mfloryan/Betamax.Net) (C#/.NET)
