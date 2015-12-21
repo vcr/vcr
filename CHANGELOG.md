@@ -257,7 +257,7 @@ Bug Fixes:
 [Full Changelog](http://github.com/vcr/vcr/compare/v2.0.0.rc2...v2.0.0)
 
   * Add some additional logged events for the `debug_logger`.
-  * Don't worry about stripping the standard port from the request URI on playback. The standard port only needs to be stripped during recording; for playback, it will have already been stripped.  This allows people to use the `filter_sensitive_data` option in a way that changes the URI; before this change, doing so could result in `URI::InvalidURIError`. Thanks to [Patrick Schmitz](https://github.com/bullfight) and [Dan Thompson](https://github.com/danthompson) for reporting the issue and helping diagnose it.
+  * Don't worry about stripping the standard port from the request URI on playback. The standard port only needs to be stripped during recording; for playback, it will have already been stripped. This allows people to use the `filter_sensitive_data` option in a way that changes the URI; before this change, doing so could result in `URI::InvalidURIError`. Thanks to [Patrick Schmitz](https://github.com/bullfight) and [Dan Thompson](https://github.com/danthompson) for reporting the issue and helping diagnose it.
   * Relax Excon dependency to include newly released 0.10.
   * Relax Faraday dependency to include 0.8.
   * Fix Faraday library hook so that it always does the version checking.
@@ -271,16 +271,16 @@ Bug Fixes:
   * Fix `around_http_request` hook so that `request.proceed` returns   the response. 
   * Resolve `cassette_library_dir` to an absolute path. Thanks to   [Nate Clark](https://github.com/heythisisnate) for the suggestion. 
   * Add to the `VCR::Request` API in `before_http_request` and   `after_http_request` hooks so the request has query methods like   `#real?`, `#recordable?`, `#ignored?`, etc. Thanks to   [Nate Clark](https://github.com/heythisisnate) for the idea. 
-  * Allow filters (objects that respond to `#to_proc`) to be passed   to `before_http_request` and `after_http_request`.  This allows   an API like `before_http_request(:real?)` or   `after_http_request(lambda { |req| req.uri =~ /amazon/ })`. 
+  * Allow filters (objects that respond to `#to_proc`) to be passed   to `before_http_request` and `after_http_request`. This allows   an API like `before_http_request(:real?)` or   `after_http_request(lambda { |req| req.uri =~ /amazon/ })`. 
   * Add `debug_logger` config option. This can be used to   troubleshoot what VCR is doing. 
   * Update WebMock to version (1.8.0) that supports Excon stubbing. 
   * Store the encoding with the request & response bodies in the   serialized cassette. 
-  * Add new `preserve_exact_body_bytes` option that base64 encodes the   request or response body in order to preserve the bytes exactly.   Thanks to [Jeff Pollard](https://github.com/Fluxx) for help   designing this feature and for code reviewing it. 
+  * Add new `preserve_exact_body_bytes` option that base64 encodes the   request or response body in order to preserve the bytes exactly.  Thanks to [Jeff Pollard](https://github.com/Fluxx) for help   designing this feature and for code reviewing it. 
   * Update to and require latest Excon (0.9.6).
 
 ## Bug Fixes
   * Fix rspec metadata integration to allow the cassette name to be set   at the example group level and apply to multiple examples. Thanks to   [Paul Russell](https://github.com/pauljamesrussell) for reporting the   bug. 
-  * Add missing `require 'vcr/version'` to the cassette migrator task.   If you tried the migration rake task with 2.0.0.rc1 and got a   `NoMethodError`, it should be fixed now. 
+  * Add missing `require 'vcr/version'` to the cassette migrator task.  If you tried the migration rake task with 2.0.0.rc1 and got a   `NoMethodError`, it should be fixed now. 
   * Update Excon dependency to 0.9.5; 0.9.5 includes an important bug   fix needed by VCR. 
   * Ensure the excon retry limit is honored properly. 
   * Ensure that the correct error class is raised by excon when stubbing   an unexpected status. 
@@ -290,7 +290,7 @@ Bug Fixes:
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v2.0.0.beta2...v2.0.0.rc1)
 
-  * Add Faraday hook that automatically inserts the VCR middleware so that you can use VCR with Faraday without needing to insert the middleware yourself.  Use `VCR.configure { |c| c.hook_into :faraday }`.
+  * Add Faraday hook that automatically inserts the VCR middleware so that you can use VCR with Faraday without needing to insert the middleware yourself. Use `VCR.configure { |c| c.hook_into :faraday }`.
   * Add `ignore_request` config option. Pass it a block that returns true if the given request should be ignored.
   * Improve the unhandled HTTP request error message so that it lists different options for how to get VCR to handle it.
   * Add {before,after,around}_http_request hooks.
@@ -307,14 +307,14 @@ Bug Fixes:
   * Update to (and require) Typhoeus 0.3.2.
   * Fix a bug with `VCR.request_matchers.uri_without_param(:some_param)` so that it properly handles URIs that have no parameters. Thanks to [Sathya Sekaran](https://github.com/sfsekaran) for this fix.
   * The cassette format has changed significantly: 
-    * The HTTPInteractions are no longer normalized in a lossy fashion.   VCR 1.x converted all HTTP header keys to lowercase.  VCR 2.0 no longer does this because it is impossible to know what the original casing was (i.e. given `etag`, was it originally `etag`, `ETag` or   `Etag`?). Also, some HTTP libraries add particular request headers   to every request, and these used to be ignored. The aren't anymore. 
-  * The ruby struct objects are not directly serialized anymore.   Instead, only primitives (hashes, arrays, strings, integers) are   serialized. This allows swappable serializers and will allow other   tools to read and use a VCR cassette. 
-  * Add new serializer API.  VCR ships with YAML, Syck, Psych and JSON   serializers, and it is very simple to implement your own. The   serializer can be configured on a per-cassette basis. 
-  * New `vcr:migrate_cassettes DIR=path/to/cassettes` rake task assists   with upgrading from VCR 1.x to 2.0. 
-  * Cassettes now contain a `recorded_with` attribute. This should   allow the cassette structure to be updated more easily in the future   as the version number provides a means for easily migrating   cassettes. 
-  * Add `recorded_at` to data serialized with an HTTPInteraction.  This   allows the `:re_record_interval` cassette option to work more   accurately and no longer rely on the file modification time.
+    * The HTTPInteractions are no longer normalized in a lossy fashion.  VCR 1.x converted all HTTP header keys to lowercase. VCR 2.0 no longer does this because it is impossible to know what the original casing was (i.e. given `etag`, was it originally `etag`, `ETag` or   `Etag`?). Also, some HTTP libraries add particular request headers   to every request, and these used to be ignored. The aren't anymore. 
+    * The ruby struct objects are not directly serialized anymore.  Instead, only primitives (hashes, arrays, strings, integers) are   serialized. This allows swappable serializers and will allow other   tools to read and use a VCR cassette. 
+    * Add new serializer API. VCR ships with YAML, Syck, Psych and JSON   serializers, and it is very simple to implement your own. The   serializer can be configured on a per-cassette basis. 
+    * New `vcr:migrate_cassettes DIR=path/to/cassettes` rake task assists   with upgrading from VCR 1.x to 2.0. 
+    * Cassettes now contain a `recorded_with` attribute. This should   allow the cassette structure to be updated more easily in the future   as the version number provides a means for easily migrating   cassettes. 
+    * Add `recorded_at` to data serialized with an HTTPInteraction. This   allows the `:re_record_interval` cassette option to work more   accurately and no longer rely on the file modification time.
 
-Note that VCR 1.x cassettes cannot be used with VCR 2.0.  See the
+Note that VCR 1.x cassettes cannot be used with VCR 2.0. See the
 upgrade notes for more info.
 
 ## 2.0.0 Beta 1 (October 8, 2011)
@@ -325,9 +325,9 @@ upgrade notes for more info.
 
   * Previously, the last matching response in a cassette would repeatedly playback if the same request kept being made. This is no longer the case.
   * The Faraday middleware has been rewritten. 
-  * You no longer need to configure `stub_with :faraday` to use it. 
-  * It has been updated to work in parallel mode. 
-  * It no longer accepts a block and uses that to determine the   cassette.  Instead, use `VCR.use_cassette` just like you would   with FakeWeb or WebMock.
+    * You no longer need to configure `stub_with :faraday` to use it. 
+    * It has been updated to work in parallel mode. 
+    * It no longer accepts a block and uses that to determine the   cassette. Instead, use `VCR.use_cassette` just like you would   with FakeWeb or WebMock.
 
 ### Added
 
@@ -346,8 +346,8 @@ upgrade notes for more info.
 ### Deprecated
 
   * Deprecated `VCR.config` in favor of `VCR.configure`.
-  * Deprecated `VCR::Config` singleton module in favor of `VCR::Configuration` class.  The current configuration instance can be accessed via `VCR.configuration`.
-  * Deprecated `stub_with` in favor of `hook_into`.  The stubbing adapters have been completely rewritten and are no longer an implementation of the adapter design pattern. Instead they simply use the named library to globally hook into every HTTP request.
+  * Deprecated `VCR::Config` singleton module in favor of `VCR::Configuration` class. The current configuration instance can be accessed via `VCR.configuration`.
+  * Deprecated `stub_with` in favor of `hook_into`. The stubbing adapters have been completely rewritten and are no longer an implementation of the adapter design pattern. Instead they simply use the named library to globally hook into every HTTP request.
 
 ## 1.11.3 (August 31, 2011)
 
@@ -360,7 +360,7 @@ upgrade notes for more info.
 [Full Changelog](http://github.com/vcr/vcr/compare/v1.11.1...v1.11.2)
 
   * Updated rake, cucumber and aruba dev dependencies to latest releases.
-  * Fix all warnings originating from VCR.  VCR is now warning-free!
+  * Fix all warnings originating from VCR. VCR is now warning-free!
 
 ## 1.11.1 (August 18, 2011)
 
@@ -390,7 +390,7 @@ upgrade notes for more info.
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v1.10.0...v1.10.1)
 
-  * Fix typo in error message.  Fix provided by [Bradley](https://github.com/bradleyisotope).
+  * Fix typo in error message. Fix provided by [Bradley](https://github.com/bradleyisotope).
   * Fix excon adapter to properly handle queries specified as a hash.
   * Fix excon adapter to stub a response with a hash as excon expects. Fix provided by [Wesley Beary](https://github.com/geemus).
   * Fix excon adapter so that it records a response even when excon raises an error due to an unexpected response.
@@ -401,7 +401,7 @@ upgrade notes for more info.
 
   * Fix header normalization so that it properly handles nested arrays and non-string values.
   * Add cucumber scenario documenting how VCR sanitizes cassette names to "normal" file names (i.e. only alphanumerics, no spaces).
-  * Add `:ignore_cassettes` option to `VCR.turn_off!`.  This causes cassette insertions to be ignored rather than to trigger an error. Patch provided by [Justin Smestad](https://github.com/jsmestad).
+  * Add `:ignore_cassettes` option to `VCR.turn_off!`. This causes cassette insertions to be ignored rather than to trigger an error. Patch provided by [Justin Smestad](https://github.com/jsmestad).
   * Fix rack middleware to make it threadsafe.
   * Update to latest RSpec (rspec 2.6).
 
@@ -421,7 +421,7 @@ upgrade notes for more info.
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v1.7.1...v1.7.2)
 
-  * Fixed Typhoeus adapter so headers are returned in the same form during playback as they would be without VCR.  Bug reported by [Avdi Grimm](https://github.com/avdi).
+  * Fixed Typhoeus adapter so headers are returned in the same form during playback as they would be without VCR. Bug reported by [Avdi Grimm](https://github.com/avdi).
   * Fixed Faraday adapter so it treats response headers in the same way Faraday itself does (i.e. with lowercase keys).
 
 ## 1.7.1 (March 19, 2011)
@@ -434,21 +434,21 @@ upgrade notes for more info.
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v1.6.0...v1.7.0)
 
-  * Use Psych for YAML serialization/deserialization when it is available. Syck, Ruby's old YAML engine, will remove whitespace from some strings.  Bug reported by [Robert Poor](https://github.com/rdpoor).
-  * Add new `:update_content_length_header` cassette option.  The option will ensure the `content-length` header value matches the actual response body length.
-  * Add new `:once` record mode.  It operates like `:new_episodes` except when the cassette file already exists, in which case it causes new requests to raise an error.  Feature suggested by [Jamie Cobbett](https://github.com/jamiecobbett).
+  * Use Psych for YAML serialization/deserialization when it is available. Syck, Ruby's old YAML engine, will remove whitespace from some strings. Bug reported by [Robert Poor](https://github.com/rdpoor).
+  * Add new `:update_content_length_header` cassette option. The option will ensure the `content-length` header value matches the actual response body length.
+  * Add new `:once` record mode. It operates like `:new_episodes` except when the cassette file already exists, in which case it causes new requests to raise an error. Feature suggested by [Jamie Cobbett](https://github.com/jamiecobbett).
   * Made `:once` the default record mode.
-  * Add new `filter_sensitive_data` configuration option.  Feature suggested by [Nathaniel Bibler](https://github.com/nbibler).
-  * Commit to [Semantic Versioning](http://semver.org/).  The cucumber features document the public API for the purposes of semver.
+  * Add new `filter_sensitive_data` configuration option. Feature suggested by [Nathaniel Bibler](https://github.com/nbibler).
+  * Commit to [Semantic Versioning](http://semver.org/). The cucumber features document the public API for the purposes of semver.
   * Add support for CI builds using [travis-ci](http://travis-ci.org/myronmarston/vcr).
-  * Add support for running tests through `gem test vcr`.  Visit [test.rubygems.org](http://test.rubygems.org/gems/vcr) to see the results.
+  * Add support for running tests through `gem test vcr`. Visit [test.rubygems.org](http://test.rubygems.org/gems/vcr) to see the results.
   * Fix cucumber support to use separate `Before` & `After` hooks rather than a single `Around` hook because of a bug in cucumber that prevents background steps from running within the `Around` hook.
 
 ## 1.6.0 (February 3, 2011)
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v1.5.1...v1.6.0)
 
-  * Add new `ignore_hosts` configuration option that allows you to ignore any host (not just localhost aliases, as the `ignore_localhost` option works).  Feature suggested by [Claudio Poli](https://github.com/masterkain).
+  * Add new `ignore_hosts` configuration option that allows you to ignore any host (not just localhost aliases, as the `ignore_localhost` option works). Feature suggested by [Claudio Poli](https://github.com/masterkain).
   * Upgraded to the latest Typhoeus (0.2.1).
   * General code clean up and refactoring.
 
@@ -456,28 +456,28 @@ upgrade notes for more info.
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v1.5.0...v1.5.1)
 
-  * Fix response and request serialization so that the headers are raw strings.  This fixes intermittent YAML seg faults for paperclip uploads to S3.  Bug reported by [Rob Slifka](https://github.com/rslifka).
+  * Fix response and request serialization so that the headers are raw strings. This fixes intermittent YAML seg faults for paperclip uploads to S3. Bug reported by [Rob Slifka](https://github.com/rslifka).
 
 ## 1.5.0 (January 12, 2011)
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v1.4.0...v1.5.0)
 
-  * Fix VCR::Cassette so it does not raise an error when a cassette file is empty.  Bug reported and fixed by [Karl Baum](https://github.com/kbaum).
+  * Fix VCR::Cassette so it does not raise an error when a cassette file is empty. Bug reported and fixed by [Karl Baum](https://github.com/kbaum).
   * Lots of code cleanup.
   * Fix the stubbing adapters so that they use the cassette instance rather than the cassette name to create and restore checkpoints.
   * Raise an appropriate error when a nested cassette is inserted with the same name as a cassette that is already in the stack (VCR's design doesn't allow this and you would get weird errors later on).
   * Raise an appropriate error when restoring a stubs checkpoint if the checkpoint cannot be found.
-  * Add `before_record` and `before_playback` hooks.  Idea and initial implementation by [Oliver Searle-Barnes](https://github.com/opsb); futher suggestions, testing and feedback by [Nathaniel Bibler](https://github.com/nbibler).
+  * Add `before_record` and `before_playback` hooks. Idea and initial implementation by [Oliver Searle-Barnes](https://github.com/opsb); futher suggestions, testing and feedback by [Nathaniel Bibler](https://github.com/nbibler).
 
 ## 1.4.0 (December 3, 2010)
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v1.3.3...v1.4.0)
 
-  * Added support for making HTTP requests without a cassette (i.e. if you don't want to use VCR for all of your test suite).  There are a few ways to enable this: 
+  * Added support for making HTTP requests without a cassette (i.e. if you don't want to use VCR for all of your test suite). There are a few ways to enable this: 
     * In your `VCR.config` block, set `allow_http_connections_when_no_cassette`   to true to allow HTTP requests without a cassette. 
-  * You can temporarily turn off VCR using `VCR.turned_off { ... }`. 
-  * You can toggle VCR off and on with `VCR.turn_off!` and `VCR.turn_on!`.
-  * Fixed bug with `ignore_localhost` config option.  Previously, an error would be raised if it was set before the `stub_with` option.
+    * You can temporarily turn off VCR using `VCR.turned_off { ... }`. 
+    * You can toggle VCR off and on with `VCR.turn_off!` and `VCR.turn_on!`.
+  * Fixed bug with `ignore_localhost` config option. Previously, an error would be raised if it was set before the `stub_with` option.
   * Added VCR::Middleware::Rack (see features/middleware/rack.feature for usage).
   * Added support for Faraday (see features/middleware/faraday.feature for usage).
 
@@ -485,7 +485,7 @@ upgrade notes for more info.
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v1.3.2...v1.3.3)
 
-  * In specs, hit a local sinatra server rather than example.com.  This makes the specs faster and removes an external dependency.  The specs can pass without being online!
+  * In specs, hit a local sinatra server rather than example.com. This makes the specs faster and removes an external dependency. The specs can pass without being online!
   * Raise an explicit error when the http stubbing library is not configured (rather than letting the user get a confusing error later).
   * Test against the latest WebMock release (1.6.1) (no changes required).
   * Fix a few cucumber scenarios so they pass on rubinius and jruby.
@@ -515,19 +515,19 @@ upgrade notes for more info.
   * Refactoring and code cleanup.
   * Fix InternetConnection.available? so that it memoizes correctly when a connection is not available.
   * Fix WebMock version checking to allow newly released 1.5.0 to be used without a warning.
-  * Add support for [Typhoeus](https://github.com/pauldix/typhoeus).  Thanks to [David Balatero](https://github.com/dbalatero) for making the necessary changes in Typhoeus to support VCR.
-  * Remove FakeWeb/WebMock inference logic.  You _must_ configure the http stubbing library explicitly now.
+  * Add support for [Typhoeus](https://github.com/pauldix/typhoeus). Thanks to [David Balatero](https://github.com/dbalatero) for making the necessary changes in Typhoeus to support VCR.
+  * Remove FakeWeb/WebMock inference logic. You _must_ configure the http stubbing library explicitly now.
 
 ## 1.2.0 (October 13, 2010)
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v1.1.2...v1.2.0)
 
-  * Improved the `:all` record mode so that it keeps previously recorded interactions that do not match the new recorded interactions.  Previously, all of the previously recorded interactions were deleted.
-  * Added `:re_record_interval` cassette option.  This option causes a cassette to be re-recorded when the existing file is older than the specified interval.
-  * Improved RSpec support.  Added #use_vcr_cassette RSpec macro method that sets up a cassette for an RSpec example group.
-  * Fixed VCR/Net::HTTP/WebMock integration so that VCR no longer loads its Net::HTTP monkey patch when WebMock is used, and relies upon WebMock's after_request callback to record Net::HTTP instead.  This fixes [a bug](http://github.com/vcr/vcr/issues/14) when using WebMock and Open URI.
+  * Improved the `:all` record mode so that it keeps previously recorded interactions that do not match the new recorded interactions. Previously, all of the previously recorded interactions were deleted.
+  * Added `:re_record_interval` cassette option. This option causes a cassette to be re-recorded when the existing file is older than the specified interval.
+  * Improved RSpec support. Added #use_vcr_cassette RSpec macro method that sets up a cassette for an RSpec example group.
+  * Fixed VCR/Net::HTTP/WebMock integration so that VCR no longer loads its Net::HTTP monkey patch when WebMock is used, and relies upon WebMock's after_request callback to record Net::HTTP instead. This fixes [a bug](http://github.com/vcr/vcr/issues/14) when using WebMock and Open URI.
   * Consider 0.0.0.0 to be a localhost alias (previously only "localhost" and 127.0.0.1 were considered).
-  * Added spec and feature coverage for Curb integration.  Works out of the box with no changes required to VCR due to [Pete Higgins'](http://github.com/phiggins) great work to add Curb support to WebMock.
+  * Added spec and feature coverage for Curb integration. Works out of the box with no changes required to VCR due to [Pete Higgins'](http://github.com/phiggins) great work to add Curb support to WebMock.
   * Got specs and features to pass on rubinius.
   * Changed WebMock version requirement to 1.4.0.
 
@@ -535,7 +535,7 @@ upgrade notes for more info.
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v1.1.1...v1.1.2)
 
-  * Fixed a minor bug with the WebMock integration: WebMock extends each `Net::HTTPResponse` with an extension module after reading the body, and VCR was doing the same thing, leading to some slight deviance from standard Net::HTTP behavior.  The fix prevents VCR from adding the same extension to a `Net::HTTPResponse` that has already been extende by WebMock.
+  * Fixed a minor bug with the WebMock integration: WebMock extends each `Net::HTTPResponse` with an extension module after reading the body, and VCR was doing the same thing, leading to some slight deviance from standard Net::HTTP behavior. The fix prevents VCR from adding the same extension to a `Net::HTTPResponse` that has already been extende by WebMock.
   * Fixed a minor bug in the `VCR::Net::HTTPResponse` module so that it correctly handles nil bodies (such as for a HEAD request).
   * Refactored `VCR::Net::HTTPResponse` module so it is implemented in a much simpler manner.
   * Updated specs and features so they pass against the latest WebMock release (1.3.5).
@@ -549,7 +549,7 @@ upgrade notes for more info.
   * Use new `FakeWeb::Utility.request_uri_as_string` method rather than our own logic to construct a request uri.
   * Use new `FakeWeb.allow_net_connect = /url regex/` feature to power the `ignore_localhost` VCR option rather then toggling `FakeWeb.allow_net_connect` in our Net::HTTP extension.
   * Optimized `VCR.http_stubbing_adapter.stub_requests` a bit.
-  * Changed the http stubbing adapters to be modules rather than classes.  They should never be instantiated and don't really hold state, so a module is more appropriate.
+  * Changed the http stubbing adapters to be modules rather than classes. They should never be instantiated and don't really hold state, so a module is more appropriate.
   * Warn when FakeWeb or WebMock are a minor or major version number ahead of the required version, as the new version isn't known to work with VCR.
 
 ## 1.1.0 (August 22, 2010)
@@ -557,9 +557,9 @@ upgrade notes for more info.
 [Full Changelog](http://github.com/vcr/vcr/compare/v1.0.3...v1.1.0)
 
   * Added `:match_requests_on` cassette option, which determines how VCR matches requests.
-  * Removed VCR::TaskRunner and the corresponding rake task definition.  The rake task migrated cassettes from the 0.3.1 format to the 0.4+ format.  If you are still on 0.3.1 or earlier, I recommend you upgrade to 0.4.1 first, migrate your cassettes and deal with migration warnings, then upgrade to the current release.
+  * Removed VCR::TaskRunner and the corresponding rake task definition. The rake task migrated cassettes from the 0.3.1 format to the 0.4+ format. If you are still on 0.3.1 or earlier, I recommend you upgrade to 0.4.1 first, migrate your cassettes and deal with migration warnings, then upgrade to the current release.
   * Added some code to VCR::Cassette.new to check the options passed to the cassette and raise an error if any invalid options are passed.
-  * Optimized ERB rendering a bit.  Rather than creating a new struct subclass for each time we render an ERB cassette with locals, we keep a cache of reusable struct subclasses based on the desired attributes. [Benchmarking](http://gist.github.com/512948) reveals this is about 28% faster.
+  * Optimized ERB rendering a bit. Rather than creating a new struct subclass for each time we render an ERB cassette with locals, we keep a cache of reusable struct subclasses based on the desired attributes. [Benchmarking](http://gist.github.com/512948) reveals this is about 28% faster.
   * Upgraded tests to use em-http-request 0.2.10 rather than 0.2.7.
 
 ## 1.0.3 (August 5, 2010)
@@ -568,14 +568,14 @@ upgrade notes for more info.
 
   * Upgraded VCR specs to RSpec 2.
   * Updated `VCR::CucumberTags` so that it uses an `around` hook rather than a `before` hook and an `after` hook. Around hooks were added to Cucumber in the 0.7.3 release, so you'll have to be on that version or higher to use the `VCR::CucumberTags` feature.
-  * Updated the WebMock version requirement to 1.3.3 or greater.  1.3.2 and earlier versions did not properly handle multiple value for the same response header.
+  * Updated the WebMock version requirement to 1.3.3 or greater. 1.3.2 and earlier versions did not properly handle multiple value for the same response header.
   * Miscellaneous documentation updates.
 
 ## 1.0.2 (July 6, 2010)
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v1.0.1...v1.0.2)
 
-  * Fixed VCR to work with [rest-client](http://github.com/archiloque/rest-client).  Rest-client extends the Net::HTTP response body string with a module containing additional data, which got serialized to the cassette file YAML and occasionally caused problems when the YAML was deserialized.  Bug reported by [Thibaud Guillaume-Gentil](http://github.com/thibaudgg).
+  * Fixed VCR to work with [rest-client](http://github.com/archiloque/rest-client). Rest-client extends the Net::HTTP response body string with a module containing additional data, which got serialized to the cassette file YAML and occasionally caused problems when the YAML was deserialized. Bug reported by [Thibaud Guillaume-Gentil](http://github.com/thibaudgg).
   * Setup bundler to manage development dependencies.
 
 ## 1.0.1 (July 1, 2010)
@@ -583,7 +583,7 @@ upgrade notes for more info.
 [Full Changelog](http://github.com/vcr/vcr/compare/v1.0.0...v1.0.1)
 
   * Fixed specs and features so they pass on MRI 1.9.2-preview3 and JRuby 1.5.1.
-  * Normalized response and request headers so that they are stored the same (i.e. lower case keys, arrays of values) in the cassette yaml files, regardless of which HTTP library is used.  This is the same way Net::HTTP normalizes HTTP headers.
+  * Normalized response and request headers so that they are stored the same (i.e. lower case keys, arrays of values) in the cassette yaml files, regardless of which HTTP library is used. This is the same way Net::HTTP normalizes HTTP headers.
   * Fixed `VCR.use_cassette` so that it doesn't eject a cassette if an exception occurs while inserting one.
   * Fixed FakeWeb adapter so that it works for requests that use basic auth. Patch submitted by [Eric Allam](http://github.com/rubymaverick).
 
@@ -592,11 +592,11 @@ upgrade notes for more info.
 [Full Changelog](http://github.com/vcr/vcr/compare/v0.4.1...v1.0.0)
 
   * New Features 
-    * Added support for [HTTPClient](http://github.com/nahi/httpclient), [Patron](http://github.com/toland/patron) and   [em-http-request](http://github.com/igrigorik/em-http-request) when WebMock is used.  Any future http libraries   WebMock supports should (theoretically, at least) work without any VCR code changes.  Thanks to   [Bartosz Blimke](http://github.com/bblimke) for adding the necessary code to WebMock to make this happen! 
-    * Added support for dynamic responses using ERB.  A cassette will be evaluated as ERB before the YAML   is deserialized if you pass it an `:erb => true` option.  You can pass variables using   `:erb => { :var1 => 'some value', :var2 => 'another value' }`. 
-    * Added `ignore_localhost` configuration setting, which defaults to false.  Setting it true does the following:   
-      * Localhost requests will proceed as normal.  The "Real HTTP connections are disabled" error will not occur.   
-      * Localhost requests will not be recorded.   
+    * Added support for [HTTPClient](http://github.com/nahi/httpclient), [Patron](http://github.com/toland/patron) and   [em-http-request](http://github.com/igrigorik/em-http-request) when WebMock is used. Any future http libraries   WebMock supports should (theoretically, at least) work without any VCR code changes. Thanks to   [Bartosz Blimke](http://github.com/bblimke) for adding the necessary code to WebMock to make this happen! 
+    * Added support for dynamic responses using ERB. A cassette will be evaluated as ERB before the YAML   is deserialized if you pass it an `:erb => true` option. You can pass variables using   `:erb => { :var1 => 'some value', :var2 => 'another value' }`. 
+    * Added `ignore_localhost` configuration setting, which defaults to false. Setting it true does the following:   
+      * Localhost requests will proceed as normal. The "Real HTTP connections are disabled" error will not occur.  
+      * Localhost requests will not be recorded.  
       * Previously recorded localhost requests will not be replayed. 
     * Exposed the version number:   
       * `VCR.version` => string (in the format "major.minor.patch")   
@@ -604,34 +604,37 @@ upgrade notes for more info.
       * `VCR.version.major` => integer   
       * `VCR.version.minor` => integer   
       * `VCR.version.patch` => integer 
-    * Added test coverage and documentation of using a regex for non-deterministic URLs (i.e. URLs that include   a timestamp as a query parameter).  It turns out this feature worked before, and I just didn't realize it :).
+    * Added test coverage and documentation of using a regex for non-deterministic URLs (i.e. URLs that include   a timestamp as a query parameter). It turns out this feature worked before, and I just didn't realize it :).
 
   * Breaking Changes 
-    * The `:allow_real_http => lambda { |uri| ... }` cassette option has been removed.  There was no way to get   this to work with the newly supported http libraries without extensive monkeypatching, and it was mostly   useful for localhost requests, which is more easily handled by the new `ignore_localhost` config setting. 
-    * Removed methods and options that had been previously deprecated.  If you're upgrading from an old version,   I recommend upgrading to 0.4.1 first, deal with all the deprecation warnings, then upgrade to 1.0.0.
+    * The `:allow_real_http => lambda { |uri| ... }` cassette option has been removed. There was no way to get   this to work with the newly supported http libraries without extensive monkeypatching, and it was mostly   useful for localhost requests, which is more easily handled by the new `ignore_localhost` config setting. 
+    * Removed methods and options that had been previously deprecated. If you're upgrading from an old version,   I recommend upgrading to 0.4.1 first, deal with all the deprecation warnings, then upgrade to 1.0.0.
 
   * Misc Changes:
-    * Removed dependency on [jeweler](http://github.com/technicalpickles/jeweler).  Manage the gemspec by hand instead. 
+    * Removed dependency on [jeweler](http://github.com/technicalpickles/jeweler). Manage the gemspec by hand instead. 
     * Removed some extensions that are no longer necessary.
 
 ## 0.4.1 May 11, 2010
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v0.4.0...v0.4.1)
 
-  * Fixed a bug: when `Net::HTTPResponse#read_body` was called after VCR had read the body to record a new request, it raised an error (`IOError: Net::HTTPResponse#read_body called twice`).  My fix extends Net::HTTPResponse so that it no longer raises this error.
+  * Fixed a bug: when `Net::HTTPResponse#read_body` was called after VCR had read the body to record a new request, it raised an error (`IOError: Net::HTTPResponse#read_body called twice`). My fix extends Net::HTTPResponse so that it no longer raises this error.
 
 ## 0.4.0 April 28, 2010
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v0.3.1...v0.4.0)
 
-  * Added support for webmock.  All the fakeweb-specific code is now in an adapter (as is the webmock code).
+  * Added support for webmock. All the fakeweb-specific code is now in an adapter (as is the webmock code).
 
-  * Changed the format of the VCR cassettes.  The old format was tied directly to Net::HTTP, but webmock supports other HTTP libraries and I plan to allow VCR to use them in the future.  Note that this is a breaking change--your old VCR cassettes from prior releases will not work with VCR 0.4.0.  However, VCR provides a rake task to assist you in migrating your cassettes to the new format.  Simply add `load 'vcr/tasks/vcr.rake'` to your project's Rakefile, and run:
-   $ rake vcr:migrate_cassettes DIR=path/to/cassete/library/directory
+  * Changed the format of the VCR cassettes. The old format was tied directly to Net::HTTP, but webmock supports other HTTP libraries and I plan to allow VCR to use them in the future. Note that this is a breaking change--your old VCR cassettes from prior releases will not work with VCR 0.4.0. However, VCR provides a rake task to assist you in migrating your cassettes to the new format. Simply add `load 'vcr/tasks/vcr.rake'` to your project's Rakefile, and run:
+
+    ```
+    $ rake vcr:migrate_cassettes DIR=path/to/cassete/library/directory
+    ```
 
   * The new cassette format records more information about the request (i.e. the request headers and body), so that it can potentially be used with webmock in the future.
 
-  * Made most of `VCR::Cassette`'s methods private.  I had forgotten to make the methods private before, and most of them don't need to be exposed.
+  * Made most of `VCR::Cassette`'s methods private. I had forgotten to make the methods private before, and most of them don't need to be exposed.
 
   * Automatically disallow http connections using the appropriate setting of the http stubbing library (fakeweb or webmock). This relieves users from the need to set the option themselves, so they hopefully aren't using either fakeweb or webmock directly, making it much easier to switch between these.
 
@@ -666,7 +669,7 @@ upgrade notes for more info.
 
   * Added `:allow_real_http` cassette option, which allows VCR to work with capybara and a javascript driver. Bug reported by [Ben Hutton](http://github.com/benhutton).
 
-  * Deprecated the `default_cassette_record_mode` option.  Use `default_cassette_options[:record_mode]` instead.
+  * Deprecated the `default_cassette_record_mode` option. Use `default_cassette_options[:record_mode]` instead.
 
 ## 0.1.2 March 4, 2010
 
@@ -682,10 +685,10 @@ upgrade notes for more info.
 
 [Full Changelog](http://github.com/vcr/vcr/compare/v0.1.0...v0.1.1)
 
-  * Handle asynchronous HTTP requests (such as for mechanize).  Bug reported by [Thibaud Guillaume-Gentil](http://github.com/thibaudgg).
+  * Handle asynchronous HTTP requests (such as for mechanize). Bug reported by [Thibaud Guillaume-Gentil](http://github.com/thibaudgg).
 
 ## 0.1.0 February 25, 2010
 
 [Full Changelog](http://github.com/vcr/vcr/compare/d2577f79247d7db60bf160881b1b64e9fa10e4fd...v0.1.0)
 
-  * Initial release.  Basic recording and replaying of responses works.
+  * Initial release. Basic recording and replaying of responses works.
