@@ -13,7 +13,7 @@ module VCR
     module Ping
       def pingecho(host, timeout=5, service="echo")
         begin
-          timeout(timeout) do
+          Timeout.timeout(timeout) do
             s = TCPSocket.new(host, service)
             s.close
           end
