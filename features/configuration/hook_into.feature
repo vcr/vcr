@@ -21,7 +21,7 @@ Feature: hook_into
   There are some addiitonal trade offs to consider when deciding which
   option to use:
 
-    - WebMock uses extensive monkey patching to hook into supported HTTP 
+    - WebMock uses extensive monkey patching to hook into supported HTTP
       libraries.  No monkey patching is used for Typhoeus, Excon or Faraday.
     - Typhoeus, Excon, Faraday can be used together, and with either FakeWeb or WebMock.
     - FakeWeb and WebMock cannot both be used at the same time.
@@ -85,7 +85,7 @@ Feature: hook_into
       | c.hook_into :faraday  | faraday (w/ net_http) |
       | c.hook_into :faraday  | faraday (w/ typhoeus) |
 
-  @exclude-jruby @exclude-rbx @exclude-18
+  @exclude-jruby @exclude-rbx
   Scenario Outline: Use Typhoeus, Excon and Faraday in combination with FakeWeb or WebMock
     Given a file named "hook_into_multiple.rb" with:
       """ruby
