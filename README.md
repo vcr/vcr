@@ -91,16 +91,16 @@ VCR follows the principles of [semantic versioning](http://semver.org/). The [AP
 
 VCR has been tested on the following ruby interpreters:
 
-  * MRI 1.8.7
-  * MRI 1.9.2
   * MRI 1.9.3
   * MRI 2.0.0
   * MRI 2.1
+  * MRI 2.2
+  * MRI 2.3.0
   * REE 1.8.7
   * JRuby
   * Rubinius
 
-Note that as of VCR 2, 1.8.6 and 1.9.1 are not supported.
+Note that as of VCR 3, 1.8.7, and 1.9.2 are not supported.
 
 **Development**
 
