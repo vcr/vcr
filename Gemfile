@@ -10,7 +10,7 @@ platform :mri do
   gem "typhoeus"
   gem "patron"
   gem "em-http-request"
-  gem "curb"
+  gem "curb", "~> 0.8.8"
 end
 
 platform :ruby do
