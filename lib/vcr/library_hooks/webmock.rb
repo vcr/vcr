@@ -10,17 +10,32 @@ module VCR
     module WebMock
       extend self
 
-      attr_accessor :global_hook_disabled
-      alias global_hook_disabled? global_hook_disabled
+      @global_hook_disabled_requests = {}
 
-      def with_global_hook_disabled
-        self.global_hook_disabled = true
+      def with_global_hook_disabled(request)
+        global_hook_disabled_requests << request
 
         begin
           yield
         ensure
-          self.global_hook_disabled = false
+          global_hook_disabled_requests.delete(request)
         end
+      end
+
+      def global_hook_disabled?(request)
+        requests = @global_hook_disabled_requests[Thread.current.object_id]
+        requests && requests.include?(request)
+      end
+
+      def global_hook_disabled_requests
+        requests = @global_hook_disabled_requests[Thread.current.object_id]
+        return requests if requests
+
+        ObjectSpace.define_finalizer(Thread.current, lambda {
+          @global_hook_disabled_requests.delete(Thread.current.object_id)
+        })
+
+        @global_hook_disabled_requests[Thread.current.object_id] = []
       end
 
       # @private
@@ -88,7 +103,7 @@ module VCR
 
         def externally_stubbed?
           # prevent infinite recursion...
-          VCR::LibraryHooks::WebMock.with_global_hook_disabled do
+          VCR::LibraryHooks::WebMock.with_global_hook_disabled(request) do
             ::WebMock.registered_request?(request)
           end
         end
@@ -124,7 +139,7 @@ module VCR
       extend Helpers
 
       ::WebMock.globally_stub_request do |req|
-        global_hook_disabled? ? nil : RequestHandler.new(req).handle
+        global_hook_disabled?(req) ? nil : RequestHandler.new(req).handle
       end
 
       ::WebMock.after_request(:real_requests_only => true) do |request, response|
