@@ -1,16 +1,16 @@
 vcr
 ===
 
-  - [![Quality](http://img.shields.io/codeclimate/github/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
-  - [![Coverage](http://img.shields.io/codeclimate/coverage/github/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
-  - [![Build](http://img.shields.io/travis-ci/vcr/vcr.svg?style=flat-square)](https://travis-ci.org/vcr/vcr)
-  - [![Dependencies](http://img.shields.io/gemnasium/vcr/vcr.svg?style=flat-square)](https://gemnasium.com/vcr/vcr)
-  - [![Downloads](http://img.shields.io/gem/dtv/vcr.svg?style=flat-square)](https://rubygems.org/gems/vcr)
-  - [![Tags](http://img.shields.io/github/tag/vcr/vcr.svg?style=flat-square)](http://github.com/vcr/vcr/tags)
-  - [![Releases](http://img.shields.io/github/release/vcr/vcr.svg?style=flat-square)](http://github.com/vcr/vcr/releases)
-  - [![Issues](http://img.shields.io/github/issues/vcr/vcr.svg?style=flat-square)](http://github.com/vcr/vcr/issues)
-  - [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://opensource.org/licenses/MIT)
-  - [![Version](http://img.shields.io/gem/v/vcr.svg?style=flat-square)](https://rubygems.org/gems/vcr)
+  - [![Quality](https://img.shields.io/codeclimate/github/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
+  - [![Coverage](https://img.shields.io/codeclimate/coverage/github/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
+  - [![Build](https://img.shields.io/travis-ci/vcr/vcr.svg?style=flat-square)](https://travis-ci.org/vcr/vcr)
+  - [![Dependencies](https://img.shields.io/gemnasium/vcr/vcr.svg?style=flat-square)](https://gemnasium.com/vcr/vcr)
+  - [![Downloads](https://img.shields.io/gem/dtv/vcr.svg?style=flat-square)](https://rubygems.org/gems/vcr)
+  - [![Tags](https://img.shields.io/github/tag/vcr/vcr.svg?style=flat-square)](https://github.com/vcr/vcr/tags)
+  - [![Releases](https://img.shields.io/github/release/vcr/vcr.svg?style=flat-square)](http://github.com/vcr/vcr/releases)
+  - [![Issues](https://img.shields.io/github/issues/vcr/vcr.svg?style=flat-square)](https://github.com/vcr/vcr/issues)
+  - [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://opensource.org/licenses/MIT)
+  - [![Version](https://img.shields.io/gem/v/vcr.svg?style=flat-square)](https://rubygems.org/gems/vcr)
 
 
 Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests.
@@ -52,18 +52,18 @@ Run this test once, and VCR will record the HTTP request to `fixtures/vcr_casset
     * [WebMock](https://github.com/bblimke/webmock)
     * [Typhoeus](https://github.com/typhoeus/typhoeus)
     * [Faraday](https://github.com/lostisland/faraday)
-    * [Excon](https://github.com/geemus/excon)
+    * [Excon](https://github.com/excon/excon)
     * [FakeWeb](https://github.com/chrisk/fakeweb) (deprecated)
   * Supports multiple HTTP libraries:
-    * [Patron](http://github.com/toland/patron) (when using WebMock)
-    * [Curb](http://github.com/taf2/curb) (when using WebMock -- only supports Curl::Easy at the moment)
-    * [HTTPClient](http://github.com/nahi/httpclient) (when using WebMock)
-    * [em-http-request](http://github.com/igrigorik/em-http-request) (when using WebMock)
+    * [Patron](https://github.com/toland/patron) (when using WebMock)
+    * [Curb](https://github.com/taf2/curb) (when using WebMock -- only supports Curl::Easy at the moment)
+    * [HTTPClient](https://github.com/nahi/httpclient) (when using WebMock)
+    * [em-http-request](https://github.com/igrigorik/em-http-request) (when using WebMock)
     * [Net::HTTP](http://www.ruby-doc.org/stdlib/libdoc/net/http/rdoc/index.html) (when using FakeWeb and WebMock)
     * [Typhoeus](https://github.com/typhoeus/typhoeus) (Typhoeus::Hydra, but not Typhoeus::Easy or Typhoeus::Multi)
     * [Excon](https://github.com/geemus/excon)
     * [Faraday](https://github.com/lostisland/faraday)
-    * And of course any library built on Net::HTTP, such as [Mechanize](http://github.com/sparklemotion/mechanize), [HTTParty](http://github.com/jnunemaker/httparty) or [Rest Client](http://github.com/rest-client/rest-client).
+    * And of course any library built on Net::HTTP, such as [Mechanize](https://github.com/sparklemotion/mechanize), [HTTParty](https://github.com/jnunemaker/httparty) or [Rest Client](https://github.com/rest-client/rest-client).
   * Request matching is configurable based on HTTP method, URI, host, path, body and headers, or you can easily implement a custom request matcher to handle any need.
   * The same request can receive different responses in different tests--just use different cassettes.
   * The recorded requests and responses are stored on disk in a serialization format of your choice (currently YAML and JSON are built in, and you can easily implement your own custom serializer) and can easily be inspected and edited.
@@ -78,7 +78,7 @@ Run this test once, and VCR will record the HTTP request to `fixtures/vcr_casset
 The docs come in two flavors:
 
   * The [relish docs](https://relishapp.com/vcr/vcr/docs) contain example-based documentation (VCR's Cucumber suite, in fact). It's a good place to look when you are first getting started with VCR, or if you want to see an example of how to use a feature.
-  * The [rubydoc.info docs](http://rubydoc.info/gems/vcr/frames) contain API documentation. The API docs contain detailed info about all of VCR's public API.
+  * The [rubydoc.info docs](http://www.rubydoc.info/gems/vcr/frames) contain API documentation. The API docs contain detailed info about all of VCR's public API.
   * See the [Upgrade](https://github.com/vcr/vcr/blob/master/Upgrade.md) doc for info about what's new and changed in VCR 2.0.
 
 There is also a Railscast, which will get you up and running in no-time http://railscasts.com/episodes/291-testing-with-vcr.
@@ -138,7 +138,7 @@ yard server --reload
   * [NSURLConnectionVCR](https://bitbucket.org/martijnthe/nsurlconnectionvcr) (Objective-C)
   * [VCRURLConnection](https://github.com/dstnbrkr/VCRURLConnection) (Objective-C)
   * [VHS](https://github.com/diegoeche/vhs) (Erlang)
-  * [Betamax](https://github.com/robfletcher/betamax) (Groovy/JVM)
+  * [Betamax](https://github.com/betamaxteam/betamax) (Groovy/JVM)
   * [http_replayer](https://github.com/ucarion/http_replayer) (Rust)
 
 **Related Projects**
@@ -149,21 +149,21 @@ yard server --reload
 **Similar Libraries in Ruby**
 
   * [Ephemeral Response](https://github.com/sandro/ephemeral_response)
-  * [Net::HTTP Spy](http://github.com/martinbtt/net-http-spy)
+  * [Net::HTTP Spy](https://github.com/martinbtt/net-http-spy)
   * [NetRecorder](https://github.com/chrisyoung/netrecorder)
   * [Puffing Billy](https://github.com/oesmith/puffing-billy)
   * [REST-assured](https://github.com/artemave/REST-assured)
   * [Stale Fish](https://github.com/jsmestad/stale_fish)
-  * [WebFixtures](http://github.com/trydionel/web_fixtures)
+  * [WebFixtures](https://github.com/trydionel/web_fixtures)
 
 
 Credits
 =======
 
-  * [Aslak Hellesøy](http://github.com/aslakhellesoy) for [Cucumber](http://github.com/aslakhellesoy/cucumber).
-  * [Bartosz Blimke](http://github.com/bblimke) for [WebMock](http://github.com/bblimke/webmock).
-  * [Chris Kampmeier](http://github.com/chrisk) for [FakeWeb](http://github.com/chrisk/fakeweb).
-  * [Chris Young](http://github.com/chrisyoung) for [NetRecorder](http://github.com/chrisyoung/netrecorder),
+  * [Aslak Hellesøy](https://github.com/aslakhellesoy) for [Cucumber](https://github.com/aslakhellesoy/cucumber).
+  * [Bartosz Blimke](https://github.com/bblimke) for [WebMock](https://github.com/bblimke/webmock).
+  * [Chris Kampmeier](https://github.com/chrisk) for [FakeWeb](https://github.com/chrisk/fakeweb).
+  * [Chris Young](https://github.com/chrisyoung) for [NetRecorder](https://github.com/chrisyoung/netrecorder),
     the inspiration for VCR.
   * [David Balatero](https://github.com/dbalatero) and [Hans Hasselberg](https://github.com/i0rek)
     for help with [Typhoeus](https://github.com/typhoeus/typhoeus) support.
@@ -177,20 +177,20 @@ Credits
 
 Thanks also to the following people who have contributed patches or helpful suggestions:
 
-  * [Aaron Brethorst](http://github.com/aaronbrethorst)
+  * [Aaron Brethorst](https://github.com/aaronbrethorst)
   * [Alexander Wenzowski](https://github.com/wenzowski)
   * [Austen Ito](https://github.com/austenito)
   * [Avdi Grimm](https://github.com/avdi)
   * [Bartosz Blimke](http://github.com/bblimke)
   * [Benjamin Oakes](https://github.com/benjaminoakes)
-  * [Ben Hutton](http://github.com/benhutton)
+  * [Ben Hutton](https://github.com/benhutton)
   * [Bradley Isotope](https://github.com/bradleyisotope)
   * [Carlos Kirkconnell](https://github.com/kirkconnell)
   * [Chad Jolly](https://github.com/cjolly)
   * [Chris Le](https://github.com/chrisle)
   * [Chris Gunther](https://github.com/cgunther)
   * [Eduardo Maia](https://github.com/emaiax)
-  * [Eric Allam](http://github.com/rubymaverick)
+  * [Eric Allam](https://github.com/rubymaverick)
   * [Ezekiel Templin](https://github.com/ezkl)
   * [Flaviu Simihaian](https://github.com/closedbracket)
   * [Gordon Wilson](https://github.com/gordoncww)
