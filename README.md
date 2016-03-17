@@ -138,7 +138,7 @@ yard server --reload
   * [NSURLConnectionVCR](https://bitbucket.org/martijnthe/nsurlconnectionvcr) (Objective-C)
   * [VCRURLConnection](https://github.com/dstnbrkr/VCRURLConnection) (Objective-C)
   * [VHS](https://github.com/diegoeche/vhs) (Erlang)
-  * [Betamax](https://github.com/betamaxteam/betamax) (Groovy/JVM)
+  * [Betamax](https://github.com/betamaxteam/betamax) (Java)
   * [http_replayer](https://github.com/ucarion/http_replayer) (Rust)
 
 **Related Projects**
