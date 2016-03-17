@@ -1,4 +1,3 @@
-@exclude-18
 Feature: Debug Logging
 
   Use the `debug_logger` option to set an IO-like object that VCR will log
