@@ -68,7 +68,7 @@ Run this test once, and VCR will record the HTTP request to `fixtures/vcr_casset
   * The same request can receive different responses in different tests--just use different cassettes.
   * The recorded requests and responses are stored on disk in a serialization format of your choice (currently YAML and JSON are built in, and you can easily implement your own custom serializer) and can easily be inspected and edited.
   * Dynamic responses are supported using ERB.
-  * Automatically re-records cassettes on a configurable regular interval to keep them fresh and current.
+  * Optionally re-records cassettes on a configurable regular interval to keep them fresh and current.
   * Disables all HTTP requests that you don't explicitly allow.
   * Simple Cucumber integration is provided using tags.
   * Includes convenient RSpec macros and integration with RSpec 2 metadata.
