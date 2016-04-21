@@ -1,16 +1,18 @@
 vcr
 ===
 
-  - [![Quality](https://img.shields.io/codeclimate/github/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
-  - [![Coverage](https://img.shields.io/codeclimate/coverage/github/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
-  - [![Build](https://img.shields.io/travis-ci/vcr/vcr.svg?style=flat-square)](https://travis-ci.org/vcr/vcr)
-  - [![Dependencies](https://img.shields.io/gemnasium/vcr/vcr.svg?style=flat-square)](https://gemnasium.com/vcr/vcr)
-  - [![Downloads](https://img.shields.io/gem/dtv/vcr.svg?style=flat-square)](https://rubygems.org/gems/vcr)
-  - [![Tags](https://img.shields.io/github/tag/vcr/vcr.svg?style=flat-square)](https://github.com/vcr/vcr/tags)
-  - [![Releases](https://img.shields.io/github/release/vcr/vcr.svg?style=flat-square)](http://github.com/vcr/vcr/releases)
-  - [![Issues](https://img.shields.io/github/issues/vcr/vcr.svg?style=flat-square)](https://github.com/vcr/vcr/issues)
-  - [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://opensource.org/licenses/MIT)
-  - [![Version](https://img.shields.io/gem/v/vcr.svg?style=flat-square)](https://rubygems.org/gems/vcr)
+[![Quality](https://img.shields.io/codeclimate/github/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
+[![Coverage](https://img.shields.io/codeclimate/coverage/github/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
+[![Build](https://img.shields.io/travis-ci/vcr/vcr.svg?style=flat-square)](https://travis-ci.org/vcr/vcr)
+[![Dependencies](https://img.shields.io/gemnasium/vcr/vcr.svg?style=flat-square)](https://gemnasium.com/vcr/vcr)
+[![Downloads](https://img.shields.io/gem/dtv/vcr.svg?style=flat-square)](https://rubygems.org/gems/vcr)
+[![Tags](https://img.shields.io/github/tag/vcr/vcr.svg?style=flat-square)](https://github.com/vcr/vcr/tags)
+[![Releases](https://img.shields.io/github/release/vcr/vcr.svg?style=flat-square)](http://github.com/vcr/vcr/releases)
+[![Issues](https://img.shields.io/github/issues/vcr/vcr.svg?style=flat-square)](https://github.com/vcr/vcr/issues)
+[![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/gem/v/vcr.svg?style=flat-square)](https://rubygems.org/gems/vcr)
+[![OpenCollective](https://opencollective.com/vcr/backers/badge.svg)](https://opencollective.com/vcr#backer)
+[![OpenCollective](https://opencollective.com/vcr/sponsors/badge.svg)](https://opencollective.com/vcr#sponsor)
 
 
 Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests.
@@ -237,6 +239,79 @@ Thanks also to the following people who have contributed patches or helpful sugg
   * [Uģis Ozols](https://github.com/ugisozols)
   * [vzvu3k6k](https://github.com/vzvu3k6k)
   * [Wesley Beary](https://github.com/geemus)
+
+
+# Backers
+
+Support us with a monthly donation and help us continue our activities. [[Become a backer](https://opencollective.com/vcr#backer)]
+
+<a href="https://opencollective.com/vcr/backer/0/website" target="_blank"><img src="https://opencollective.com/vcr/backer/0/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/1/website" target="_blank"><img src="https://opencollective.com/vcr/backer/1/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/2/website" target="_blank"><img src="https://opencollective.com/vcr/backer/2/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/3/website" target="_blank"><img src="https://opencollective.com/vcr/backer/3/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/4/website" target="_blank"><img src="https://opencollective.com/vcr/backer/4/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/5/website" target="_blank"><img src="https://opencollective.com/vcr/backer/5/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/6/website" target="_blank"><img src="https://opencollective.com/vcr/backer/6/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/7/website" target="_blank"><img src="https://opencollective.com/vcr/backer/7/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/8/website" target="_blank"><img src="https://opencollective.com/vcr/backer/8/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/9/website" target="_blank"><img src="https://opencollective.com/vcr/backer/9/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/10/website" target="_blank"><img src="https://opencollective.com/vcr/backer/10/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/11/website" target="_blank"><img src="https://opencollective.com/vcr/backer/11/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/12/website" target="_blank"><img src="https://opencollective.com/vcr/backer/12/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/13/website" target="_blank"><img src="https://opencollective.com/vcr/backer/13/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/14/website" target="_blank"><img src="https://opencollective.com/vcr/backer/14/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/15/website" target="_blank"><img src="https://opencollective.com/vcr/backer/15/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/16/website" target="_blank"><img src="https://opencollective.com/vcr/backer/16/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/17/website" target="_blank"><img src="https://opencollective.com/vcr/backer/17/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/18/website" target="_blank"><img src="https://opencollective.com/vcr/backer/18/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/19/website" target="_blank"><img src="https://opencollective.com/vcr/backer/19/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/20/website" target="_blank"><img src="https://opencollective.com/vcr/backer/20/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/21/website" target="_blank"><img src="https://opencollective.com/vcr/backer/21/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/22/website" target="_blank"><img src="https://opencollective.com/vcr/backer/22/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/23/website" target="_blank"><img src="https://opencollective.com/vcr/backer/23/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/24/website" target="_blank"><img src="https://opencollective.com/vcr/backer/24/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/25/website" target="_blank"><img src="https://opencollective.com/vcr/backer/25/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/26/website" target="_blank"><img src="https://opencollective.com/vcr/backer/26/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/27/website" target="_blank"><img src="https://opencollective.com/vcr/backer/27/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/28/website" target="_blank"><img src="https://opencollective.com/vcr/backer/28/avatar"></a>
+<a href="https://opencollective.com/vcr/backer/29/website" target="_blank"><img src="https://opencollective.com/vcr/backer/29/avatar"></a>
+
+
+# Sponsors
+
+Become a sponsor and get your logo on our README on Github with a link to your site. [[Become a sponsor](https://opencollective.com/vcr#sponsor)]
+
+<a href="https://opencollective.com/vcr/sponsor/0/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/0/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/1/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/1/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/2/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/2/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/3/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/3/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/4/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/4/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/5/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/5/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/6/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/6/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/7/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/7/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/8/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/8/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/9/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/9/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/10/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/10/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/11/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/11/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/12/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/12/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/13/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/13/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/14/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/14/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/15/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/15/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/16/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/16/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/17/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/17/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/18/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/18/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/19/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/19/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/20/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/20/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/21/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/21/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/22/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/22/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/23/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/23/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/24/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/24/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/25/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/25/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/26/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/26/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/27/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/27/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/28/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/28/avatar"></a>
+<a href="https://opencollective.com/vcr/sponsor/29/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/29/avatar"></a>
+
 
 
 Copyright
