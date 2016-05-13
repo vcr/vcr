@@ -4,6 +4,8 @@ require 'webmock'
 
 VCR::VersionChecker.new('WebMock', WebMock.version, '1.8.0').check_version!
 
+WebMock.enable!
+
 module VCR
   class LibraryHooks
     # @private
