@@ -48,7 +48,8 @@ end
 Run this test once, and VCR will record the HTTP request to `fixtures/vcr_cassettes/synopsis.yml`.  Run it again, and VCR will replay the response from iana.org when the HTTP request is made.  This test is now fast (no real HTTP requests are made anymore), deterministic (the test will continue to pass, even if you are offline, or iana.org goes down for maintenance) and accurate (the response will contain the same headers and body you get from a real request).  You can use a different cassette library directory (e.g., "test/vcr_cassettes"), but do *not* use 'test/fixtures' as the directory if you're using Rails and minitest (Rails will instead transitively load any files in that directory as models).
 
 **Using WebMock**
-If you are using version 2.x of WebMock , it is no longer enabled by simply including it in your Gemfile. Call `WebMock.enable!` as per the [WebMock change log](https://github.com/bblimke/webmock/blob/master/CHANGELOG.md#200).
+
+If you are using version 2.x of WebMock, it is no longer enabled by simply including it in your Gemfile. Call `WebMock.enable!` as per the [WebMock change log](https://github.com/bblimke/webmock/blob/master/CHANGELOG.md#200).
 
 **Features**
 
