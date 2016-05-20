@@ -2,7 +2,7 @@ Changelog
 =========
 
 ## 3.0.2
-[Full Changelog](https://github.com/vcr/vcr/compare/v3.0.2...v3.0.1)
+[Full Changelog](https://github.com/vcr/vcr/compare/v3.0.1...v3.0.2)
 
 Bug Fixes:
 
@@ -11,7 +11,7 @@ Bug Fixes:
 
 ## 3.0.1
 
-[Full Changelog](https://github.com/vcr/vcr/compare/v3.0.1...v3.0.0)
+[Full Changelog](https://github.com/vcr/vcr/compare/v3.0.0...v3.0.1)
 
   * [Adding] Use the specs scope as the cassette name when the description is empty (Philipp Tessenow)
   * [Fixing] make ignore_cassettes a boolean again to prevent nil.dup crashes (Harald Sitter)
