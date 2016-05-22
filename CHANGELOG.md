@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## 3.0.3
+[Full Changelog](https://github.com/vcr/vcr/compare/v3.0.2...v3.0.3)
+
+Bug Fixes:
+
+  * rebuild Gem with ruby 2.2 to avoid rubygems issue https://github.com/rubygems/rubygems/issues/1448
+
+
 ## 3.0.2
 [Full Changelog](https://github.com/vcr/vcr/compare/v3.0.1...v3.0.2)
 
