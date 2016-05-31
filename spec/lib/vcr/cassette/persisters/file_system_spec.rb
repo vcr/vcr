@@ -62,8 +62,8 @@ module VCR
             expected = File.join(FileSystem.storage_location, "a_1/b")
             expect(FileSystem.absolute_path_to_file("a 1/b")).to eq(expected)
 
-            expected = File.join(FileSystem.storage_location, "萬國碼")
-            expect(FileSystem.absolute_path_to_file("萬國碼")).to eq(expected)
+            expected = File.join(FileSystem.storage_location, "\u842c\u570b\u78bc")
+            expect(FileSystem.absolute_path_to_file("\u842c\u570b\u78bc")).to eq(expected)
           end
 
           it 'handles files with no extensions (even when there is a dot in the path)' do
