@@ -37,7 +37,7 @@ module VCR
           end
 
           it "can serialize and deserialize a hash" do
-            hash = { "a" => 7, "nested" => { "hash" => [1, 2, 3] }}
+            hash = { "a" => 7, "null value" => nil, "nested" => { "hash" => [1, 2, 3] }}
             serialized = serializer.serialize(hash)
             expect(serialized).not_to eq(hash)
             expect(serialized).to be_a(String)
