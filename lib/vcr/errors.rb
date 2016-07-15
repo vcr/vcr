@@ -88,18 +88,7 @@ module VCR
       end
 
       def current_cassettes
-        @cassettes ||= begin
-          cassettes = VCR.cassettes.to_a.reverse
-
-          begin
-            loop do
-              break unless VCR.eject_cassette
-            end
-          rescue EjectLinkedCassetteError
-          end
-
-          cassettes
-        end
+        @current_cassettes ||= VCR.cassettes.to_a.reverse
       end
 
       def request_description

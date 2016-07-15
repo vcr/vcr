@@ -57,6 +57,18 @@ module VCR
       end
 
       context 'when there are cassettes' do
+        it 'allows to continue to play a cassette even after errors' do
+          VCR.use_cassette('example', :record => :once) do
+            message1 = message
+            expect(message1).to include('An HTTP request has been made that VCR does not know how to handle')
+            expect(message1).not_to include('There is currently no cassette in use')
+
+            message2 = message
+            expect(message2).to include('An HTTP request has been made that VCR does not know how to handle')
+            expect(message2).not_to include('There is currently no cassette in use')
+          end
+        end
+
         it 'identifies the request by its body when the match_requests_on option includes the body' do
           VCR.use_cassette('example', :match_requests_on => [:body]) do
             expect(message_for(:body => 'param=val1')).to include(
