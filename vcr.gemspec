@@ -37,7 +37,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "aruba", "~> 0.5.3"
   spec.add_development_dependency "faraday"
   spec.add_development_dependency "httpclient"
-  spec.add_development_dependency "excon"
+  spec.add_development_dependency "excon", "~> 0.51.0"
   spec.add_development_dependency "timecop"
   spec.add_development_dependency "multi_json"
   spec.add_development_dependency "json"
