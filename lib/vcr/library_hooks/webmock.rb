@@ -140,6 +140,8 @@ module VCR
 
       extend Helpers
 
+      ::WebMock::Config.instance.query_values_notation = :flat_array
+
       ::WebMock.globally_stub_request do |req|
         global_hook_disabled?(req) ? nil : RequestHandler.new(req).handle
       end
