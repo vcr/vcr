@@ -17,7 +17,6 @@ Gem::Specification.new do |spec|
 
   spec.files         = Dir[File.join("lib", "**", "*")]
   spec.executables   = Dir[File.join("bin", "**", "*")].map! { |f| f.gsub(/bin\//, "") }
-  spec.test_files    = Dir[File.join("test", "**", "*"), File.join("spec", "**", "*"), File.join("features", "**", "*")]
   spec.require_paths = ["lib"]
 
   spec.required_ruby_version = ">= 1.9.3"
