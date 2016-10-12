@@ -110,6 +110,24 @@ describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_INTERP
     end
   end
 
+  context 'when using on_body callback' do
+    def make_request
+      VCR.use_cassette('no_body') do
+        request = Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/localhost_test")
+        request.on_body { |chunk| }
+        request.run
+      end
+    end
+
+    it 'records and replays correctly' do
+      recorded = make_request
+      played_back = make_request
+
+      expect(recorded.body).to eq('Localhost response')
+      expect(played_back.body).to eq(recorded.body)
+    end
+  end
+
   context '#effective_url' do
     ResponseValues = Struct.new(:status, :body, :effective_url)
 
@@ -159,4 +177,3 @@ describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_INTERP
     end
   end
 end
-
