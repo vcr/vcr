@@ -7,7 +7,7 @@ gemspec
 gem 'jruby-openssl', :platforms => :jruby
 
 platform :mri do
-  gem "typhoeus"
+  gem "typhoeus", "~> 1.0.2"
   gem "patron"
   gem "em-http-request"
   gem "curb", "~> 0.8.8"
