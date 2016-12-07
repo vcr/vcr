@@ -55,7 +55,7 @@ module VCR
             file_extension = '.' + parts.pop
           end
 
-          parts.join('.').gsub(/[^\w\-\/]+/, '_') + file_extension.to_s
+          parts.join('.').gsub(/[^[:word:]\-\/]+/, '_') + file_extension.to_s
         end
       end
     end
