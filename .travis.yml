@@ -3,7 +3,6 @@ language: ruby
 script: script/ci.sh
 cache: bundler
 rvm:
-  - 1.9.3
   - '2.0'
   - '2.1'
   - '2.2'
