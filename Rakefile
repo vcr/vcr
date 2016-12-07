@@ -11,7 +11,7 @@ task default: :spec
 
 using_git = File.exist?(File.expand_path('../.git/', __FILE__))
 
-require 'cucumber/rake/task'
+require "cucumber/rake/task"
 Cucumber::Rake::Task.new
 
 
