@@ -12,3 +12,10 @@ rvm:
 matrix:
   allow_failures:
     - rvm: jruby-19mode
+# Using `rvm get master` allows builds to obtain rbx-2 until a new version of
+# rvm is released.
+before_install:
+  - rm $rvm_path/user/db
+  - rvm get master
+  - rvm alias delete $RUBY
+  - rvm use $(rvm strings $RUBY) --install --binary
