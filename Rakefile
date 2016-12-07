@@ -6,14 +6,13 @@ require "rspec/core/rake_task"
 desc "Run all the tests in spec"
 RSpec::Core::RakeTask.new(:spec)
 
-desc "Default: run tests"
-task default: :spec
-
 using_git = File.exist?(File.expand_path('../.git/', __FILE__))
 
-require 'cucumber/rake/task'
+require "cucumber/rake/task"
 Cucumber::Rake::Task.new
 
+desc "Default: run tests"
+task default: [:spec, :cucumber]
 
 def ensure_relish_doc_symlinked(filename)
   from_filename = filename.dup
