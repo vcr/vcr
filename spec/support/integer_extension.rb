@@ -1,5 +1,5 @@
 unless 7.respond_to?(:days)
-  class Fixnum
+  class Integer
     def days
       self *
       24 * # hours
