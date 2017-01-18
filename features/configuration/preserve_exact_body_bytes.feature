@@ -11,7 +11,7 @@ Feature: Preserve Exact Body Bytes
   VCR provides a configuration option to deal with cases like these. The `preserve_exact_body_bytes`
   method accepts a block that VCR will use to determine if the body of the given request or response object
   should be base64 encoded in order to preserve the bytes exactly as-is. VCR does not do this by
-  default, since base64-encoding the string removes the human readibility of the cassette.
+  default, since base64-encoding the string removes the human readability of the cassette.
 
   Alternately, if you want to force an entire cassette to preserve the exact body bytes,
   you can pass the `:preserve_exact_body_bytes => true` cassette option when inserting your
