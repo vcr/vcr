@@ -1,6 +1,6 @@
 require "rubygems"
 require "vcr"
-require "support/fixnum_extension"
+require "support/integer_extension"
 
 module Gem
   def self.win_platform?() false end
