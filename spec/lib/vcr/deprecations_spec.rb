@@ -58,13 +58,13 @@ describe VCR, 'deprecations', :disable_warnings do
 
   describe "VCR.configure { |c| c.stub_with ... }" do
     it 'delegates to #hook_into' do
-      expect(VCR.configuration).to receive(:hook_into).with(:fakeweb, :excon)
-      VCR.configure { |c| c.stub_with :fakeweb, :excon }
+      expect(VCR.configuration).to receive(:hook_into).with(:webmock, :excon)
+      VCR.configure { |c| c.stub_with :webmock, :excon }
     end
 
     it 'prints a deprecation warning' do
       expect(VCR.configuration).to receive(:warn).with(/stub_with.*deprecated/i)
-      VCR.configure { |c| c.stub_with :fakeweb, :excon }
+      VCR.configure { |c| c.stub_with :webmock, :excon }
     end
   end
 

@@ -42,7 +42,6 @@ Feature: Error for HTTP request made when no cassette is in use
 
     Examples:
       | configuration         | http_lib              |
-      | c.hook_into :fakeweb  | net/http              |
       | c.hook_into :webmock  | net/http              |
       | c.hook_into :webmock  | httpclient            |
       | c.hook_into :webmock  | curb                  |

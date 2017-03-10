@@ -2,7 +2,7 @@ Feature: Net::HTTP
 
   There are many ways to use Net::HTTP.  The scenarios below provide regression
   tests for some Net::HTTP APIs that have not worked properly with VCR and
-  FakeWeb or WebMock in the past (but have since been fixed).
+  WebMock in the past (but have since been fixed).
 
   Background:
     Given a file named "vcr_setup.rb" with:
@@ -50,7 +50,6 @@ Feature: Net::HTTP
 
     Examples:
       | hook_into |
-      | :fakeweb  |
       | :webmock  |
 
   Scenario Outline: Return from yielded block
@@ -82,7 +81,6 @@ Feature: Net::HTTP
 
     Examples:
       | hook_into |
-      | :fakeweb  |
       | :webmock  |
 
   Scenario Outline: Use Net::ReadAdapter to read body in fragments
@@ -114,7 +112,6 @@ Feature: Net::HTTP
 
     Examples:
       | hook_into |
-      | :fakeweb  |
       | :webmock  |
 
   Scenario Outline: Use open-uri (which is built on top of Net::HTTP and uses a seldom-used Net::HTTP API)
@@ -141,7 +138,6 @@ Feature: Net::HTTP
 
     Examples:
       | hook_into |
-      | :fakeweb  |
       | :webmock  |
 
     Scenario Outline: Make an HTTPS request
@@ -175,5 +171,4 @@ Feature: Net::HTTP
 
       Examples:
         | hook_into |
-        | :fakeweb  |
         | :webmock  |

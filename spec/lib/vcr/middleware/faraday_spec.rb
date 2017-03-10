@@ -100,16 +100,16 @@ describe VCR::Middleware::Faraday do
       end
 
       it 'makes the faraday middleware exclusively enabled for the duration of the request' do
-        expect(VCR.library_hooks).not_to be_disabled(:fakeweb)
+        expect(VCR.library_hooks).not_to be_disabled(:webmock)
 
         hook_called = false
         VCR.configuration.after_http_request do
           hook_called = true
-          expect(VCR.library_hooks).to be_disabled(:fakeweb)
+          expect(VCR.library_hooks).to be_disabled(:webmock)
         end
 
         make_request
-        expect(VCR.library_hooks).not_to be_disabled(:fakeweb)
+        expect(VCR.library_hooks).not_to be_disabled(:webmock)
         expect(hook_called).to be true
       end
     end
