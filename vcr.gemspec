@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "yard"
   spec.add_development_dependency "rack"
   spec.add_development_dependency "fakeweb"
-  spec.add_development_dependency "webmock"
+  spec.add_development_dependency "webmock", "2.0.1"
   spec.add_development_dependency "cucumber", "~> 2.0.2"
   spec.add_development_dependency "aruba", "~> 0.5.3"
   spec.add_development_dependency "faraday", "~> 0.11.0"
