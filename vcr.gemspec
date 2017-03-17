@@ -30,7 +30,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "codeclimate-test-reporter", "~> 0.4"
   spec.add_development_dependency "yard"
   spec.add_development_dependency "rack"
-  spec.add_development_dependency "fakeweb"
   spec.add_development_dependency "webmock"
   spec.add_development_dependency "cucumber", "~> 2.0.2"
   spec.add_development_dependency "aruba", "~> 0.5.3"

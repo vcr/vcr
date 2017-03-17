@@ -274,7 +274,7 @@ module VCR
       end
 
       # @return [Boolean] whether or not this request is being stubbed by an
-      #  external library (such as WebMock or FakeWeb).
+      #  external library (such as WebMock).
       # @see #stubbed_by_vcr?
       # @see #stubbed?
       def externally_stubbed?

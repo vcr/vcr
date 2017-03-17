@@ -68,9 +68,9 @@ describe VCR::Configuration do
 
   describe '#hook_into' do
     it 'requires the named library hook' do
-      expect(subject).to receive(:require).with("vcr/library_hooks/fakeweb")
+      expect(subject).to receive(:require).with("vcr/library_hooks/webmock")
       expect(subject).to receive(:require).with("vcr/library_hooks/excon")
-      subject.hook_into :fakeweb, :excon
+      subject.hook_into :webmock, :excon
     end
 
     it 'raises an error for unsupported stubbing libraries' do
@@ -82,7 +82,7 @@ describe VCR::Configuration do
     it 'invokes the after_library_hooks_loaded hooks' do
       called = false
       subject.after_library_hooks_loaded { called = true }
-      subject.hook_into :fakeweb
+      subject.hook_into :webmock
       expect(called).to be true
     end
   end
@@ -121,7 +121,7 @@ describe VCR::Configuration do
     end
   end
 
-  describe "request/configuration interactions", :with_monkey_patches => :fakeweb do
+  describe "request/configuration interactions", :with_monkey_patches => :webmock do
     specify 'the request on the yielded interaction is not typed even though the request given to before_http_request is' do
       before_record_req = before_request_req = nil
       VCR.configure do |c|

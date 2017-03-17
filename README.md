@@ -32,7 +32,7 @@ require 'vcr'
 
 VCR.configure do |config|
   config.cassette_library_dir = "fixtures/vcr_cassettes"
-  config.hook_into :webmock # or :fakeweb
+  config.hook_into :webmock
 end
 
 class VCRTest < Test::Unit::TestCase
@@ -58,13 +58,12 @@ Do *not* use 'test/fixtures' as the directory if you're using Rails and Minitest
     * [Typhoeus](https://github.com/typhoeus/typhoeus)
     * [Faraday](https://github.com/lostisland/faraday)
     * [Excon](https://github.com/excon/excon)
-    * [FakeWeb](https://github.com/chrisk/fakeweb) (deprecated)
   * Supports multiple HTTP libraries:
     * [Patron](https://github.com/toland/patron) (when using WebMock)
     * [Curb](https://github.com/taf2/curb) (when using WebMock -- only supports Curl::Easy at the moment)
     * [HTTPClient](https://github.com/nahi/httpclient) (when using WebMock)
     * [em-http-request](https://github.com/igrigorik/em-http-request) (when using WebMock)
-    * [Net::HTTP](http://www.ruby-doc.org/stdlib/libdoc/net/http/rdoc/index.html) (when using FakeWeb and WebMock)
+    * [Net::HTTP](http://www.ruby-doc.org/stdlib/libdoc/net/http/rdoc/index.html) (when using WebMock)
     * [Typhoeus](https://github.com/typhoeus/typhoeus) (Typhoeus::Hydra, but not Typhoeus::Easy or Typhoeus::Multi)
     * [Excon](https://github.com/geemus/excon)
     * [Faraday](https://github.com/lostisland/faraday)

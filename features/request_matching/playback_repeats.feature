@@ -4,7 +4,7 @@ Feature: Playback repeats
   once while the cassette is in use (it can, of course, be re-used in multiple
   tests, each of which should use the cassette separately). Note that this is
   a change from the behavior in VCR 1.x. The old behavior occurred because of
-  how FakeWeb and WebMock behave internally and was not intended. Repeats create
+  how WebMock behave internally and was not intended. Repeats create
   less accurate tests since the real HTTP server may not necessarily return the
   same response when identical requests are made in sequence.
 

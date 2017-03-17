@@ -80,7 +80,6 @@ Feature: Ignore Request
 
     Examples:
       | configuration         | http_lib              |
-      | c.hook_into :fakeweb  | net/http              |
       | c.hook_into :webmock  | net/http              |
       | c.hook_into :typhoeus | typhoeus              |
       | c.hook_into :faraday  | faraday (w/ net_http) |
@@ -115,7 +114,6 @@ Feature: Ignore Request
 
     Examples:
       | configuration         | http_lib              |
-      | c.hook_into :fakeweb  | net/http              |
       | c.hook_into :webmock  | net/http              |
       | c.hook_into :typhoeus | typhoeus              |
       | c.hook_into :excon    | excon                 |
@@ -148,7 +146,6 @@ Feature: Ignore Request
 
     Examples:
       | configuration         | http_lib              |
-      | c.hook_into :fakeweb  | net/http              |
       | c.hook_into :webmock  | net/http              |
       | c.hook_into :typhoeus | typhoeus              |
       | c.hook_into :excon    | excon                 |
@@ -184,7 +181,6 @@ Feature: Ignore Request
 
     Examples:
       | configuration         | http_lib              |
-      | c.hook_into :fakeweb  | net/http              |
       | c.hook_into :webmock  | net/http              |
       | c.hook_into :typhoeus | typhoeus              |
       | c.hook_into :excon    | excon                 |

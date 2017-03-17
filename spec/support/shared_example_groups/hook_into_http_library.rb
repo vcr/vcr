@@ -56,7 +56,6 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
     test_record_and_playback "with a complex escaped query param", "q=#{CGI.escape("A&(! 234k !@ kasdj232\#$ kjw35")}"
 
     it 'plays back an empty body response exactly as it was recorded (e.g. nil vs empty string)' do
-      pending "awaiting an external fix" if library_hook_name == :fakeweb
       skip "Faraday 0.8 may return nil bodies" if library_hook_name == :faraday && !defined?(::Faraday::RackBuilder)
       get_body = lambda do
         VCR.use_cassette('empty_body', :record => :once) do

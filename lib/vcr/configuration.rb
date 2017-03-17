@@ -54,16 +54,14 @@ module VCR
     #
     # @example
     #   VCR.configure do |c|
-    #     c.hook_into :fakeweb, :typhoeus
+    #     c.hook_into :webmock, :typhoeus
     #   end
     #
     # @param hooks [Array<Symbol>] List of libraries. Valid values are
-    #  `:fakeweb`, `:webmock`, `:typhoeus`, `:excon` and `:faraday`.
+    #  `:webmock`, `:typhoeus`, `:excon` and `:faraday`.
     # @raise [ArgumentError] when given an unsupported library name.
     # @raise [VCR::Errors::LibraryVersionTooLowError] when the version
     #  of a library you are using is too low for VCR to support.
-    # @note `:fakeweb` and `:webmock` cannot both be used since they both monkey patch
-    #  `Net::HTTP`. Otherwise, you can use any combination of these.
     def hook_into(*hooks)
       hooks.each { |a| load_library_hook(a) }
       invoke_hook(:after_library_hooks_loaded)
@@ -502,7 +500,7 @@ module VCR
       file = "vcr/library_hooks/#{hook}"
       require file
     rescue LoadError => e
-      raise e unless e.message.include?(file) # in case FakeWeb/WebMock/etc itself is not available
+      raise e unless e.message.include?(file) # in case WebMock itself is not available
       raise ArgumentError.new("#{hook.inspect} is not a supported VCR HTTP library hook.")
     end
 

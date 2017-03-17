@@ -16,22 +16,18 @@ Feature: hook_into
       but not Typhoeus::Easy or Typhoeus::Multi).
     - :excon can be used to hook into itself.
     - :faraday can be used to hook into itself.
-    - :fakeweb (deprecated) can be used to hook into Net::HTTP requests.
 
   There are some addiitonal trade offs to consider when deciding which
   option to use:
 
     - WebMock uses extensive monkey patching to hook into supported HTTP
       libraries.  No monkey patching is used for Typhoeus, Excon or Faraday.
-    - Typhoeus, Excon, Faraday can be used together, and with either FakeWeb or WebMock.
-    - FakeWeb and WebMock cannot both be used at the same time.
+    - Typhoeus, Excon, Faraday can be used together, and with WebMock.
 
   Regardless of which library you use, VCR takes care of all of the configuration
-  for you.  You should not need to interact directly with FakeWeb, WebMock or the
+  for you.  You should not need to interact directly with WebMock or the
   stubbing facilities of Typhoeus, Excon or Faraday.  If/when you decide to change stubbing
-  libraries (i.e. if you initially use FakeWeb because it's faster but later need the
-  additional features of WebMock) you can change the `hook_into` configuration
-  option and it'll work with no other changes required.
+  libraries, you can change the `hook_into` configuration option and it'll work with no other changes required.
 
   Scenario Outline: Record and replay a request using each supported hook_into/http library combination
     Given a file named "hook_into_http_lib_combo.rb" with:
@@ -72,7 +68,6 @@ Feature: hook_into
 
    Examples:
       | configuration         | http_lib              |
-      | c.hook_into :fakeweb  | net/http              |
       | c.hook_into :webmock  | net/http              |
       | c.hook_into :webmock  | httpclient            |
       | c.hook_into :webmock  | curb                  |
@@ -86,7 +81,7 @@ Feature: hook_into
       | c.hook_into :faraday  | faraday (w/ typhoeus) |
 
   @exclude-jruby @exclude-rbx
-  Scenario Outline: Use Typhoeus, Excon and Faraday in combination with FakeWeb or WebMock
+  Scenario Outline: Use Typhoeus, Excon and Faraday in combination with WebMock
     Given a file named "hook_into_multiple.rb" with:
       """ruby
       require 'typhoeus'
@@ -166,7 +161,5 @@ Feature: hook_into
 
     Examples:
       | hook_into | faraday_adapter | extra_require                       |
-      | :fakeweb  | net_http        |                                     |
       | :webmock  | net_http        |                                     |
-      | :fakeweb  | typhoeus        | require 'typhoeus/adapters/faraday' |
       | :webmock  | typhoeus        | require 'typhoeus/adapters/faraday' |
