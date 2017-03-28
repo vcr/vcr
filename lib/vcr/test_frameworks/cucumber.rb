@@ -30,7 +30,7 @@ module VCR
     def tags(*tag_names)
       original_options = tag_names.last.is_a?(::Hash) ? tag_names.pop : {}
       tag_names.each do |tag_name|
-        tag_name = "@#{tag_name}" unless tag_name =~ /\A@/
+        tag_name = "@#{tag_name}" unless tag_name =~ /\A~?@/
 
         # It would be nice to use an Around hook here, but
         # cucumber has a bug: background steps do not run
@@ -53,7 +53,7 @@ module VCR
               ].join("/")
             end
           else
-            "cucumber_tags/#{tag_name.gsub(/\A@/, '')}"
+            "cucumber_tags/#{tag_name.gsub(/\A~?@/, '')}"
           end
 
           VCR.insert_cassette(cassette_name, options)
