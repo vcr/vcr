@@ -1,4 +1,4 @@
-See the [Changelog](changelog) for a complete list of changes from VCR
+See the [Changelog](CHANGELOG.md) for a complete list of changes from VCR
 1.x to 2.0. This file simply lists the most pertinent ones to upgrading.
 
 ## Supported Rubies
