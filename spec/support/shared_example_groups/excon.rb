@@ -30,7 +30,7 @@ shared_examples "Excon streaming" do
             Excon.get "http://localhost:#{VCR::SinatraApp.port}/404_not_200", :expects => 200, :response_block => lambda { |chunk, remaining_bytes, total_bytes|
               chunks << chunk
             }
-          rescue Excon::Errors::Error => e
+          rescue Excon::Error => e
             chunks << e.response.body
           end
         end

@@ -60,7 +60,7 @@ describe "Excon hook", :with_monkey_patches => :excon do
 
       expect {
         Excon.get("http://localhost:#{VCR::SinatraApp.port}/404_not_200", :expects => 200)
-      }.to raise_error(Excon::Errors::Error)
+      }.to raise_error(Excon::Error)
     end
 
     def error_raised_by
@@ -88,7 +88,7 @@ describe "Excon hook", :with_monkey_patches => :excon do
       def make_request(disabled = false)
         expect {
           Excon.get(request_url, :expects => 404)
-        }.to raise_error(Excon::Errors::Error)
+        }.to raise_error(Excon::Error)
       end
     end
   end
