@@ -50,6 +50,10 @@ Run this test once, and VCR will record the HTTP request to `fixtures/vcr_casset
 **Rails and Minitest:**
 Do *not* use 'test/fixtures' as the directory if you're using Rails and Minitest (Rails will instead transitively load any files in that directory as models).
 
+**Using WebMock**
+
+If you are using version 2.x of WebMock, it is no longer enabled by simply including it in your Gemfile. Call `WebMock.enable!` as per the [WebMock change log](https://github.com/bblimke/webmock/blob/master/CHANGELOG.md#200).
+
 **Features**
 
   * Automatically records and replays your HTTP interactions with minimal setup/configuration code.
