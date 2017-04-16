@@ -109,10 +109,10 @@ module VCR
     end
 
     def register_built_ins
-      register(:method)  { |r1, r2| r1.method == r2.method }
-      register(:uri)     { |r1, r2| r1.uri == r2.uri }
-      register(:body)    { |r1, r2| r1.body == r2.body }
-      register(:headers) { |r1, r2| r1.headers == r2.headers }
+      register(:method)  { |r1, r2| r2.method.is_a?(Regexp)  ? r1.method.match(r2.method)   : r1.method == r2.method }
+      register(:uri)     { |r1, r2| r2.uri.is_a?(Regexp)     ? r1.uri.match(r2.uri)         : r1.uri == r2.uri }
+      register(:body)    { |r1, r2| r2.body.is_a?(Regexp)    ? r1.body.match(r2.body)       : r1.body == r2.body }
+      register(:headers) { |r1, r2| r2.headers.is_a?(Regexp) ? r1.headers.match(r2.headers) : r1.headers == r2.headers }
 
       register(:host) do |r1, r2|
         r1.parsed_uri.host == r2.parsed_uri.host
