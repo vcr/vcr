@@ -37,7 +37,9 @@ module VCR
             # ASCII-8BIT just means binary, so encoding to it is nonsensical
             # and yet "\u00f6".encode("ASCII-8BIT") raises an error.
             # Instead, we'll force encode it (essentially just tagging it as binary)
-            return string.force_encoding(encoding) if encoding == "ASCII-8BIT"
+            if encoding == "ASCII-8BIT" || VCR.configuration.force_utf8_encoding?
+              return string.force_encoding(encoding)
+            end
 
             string.encode(encoding)
           rescue EncodingError => e
@@ -90,7 +92,11 @@ module VCR
 
       if ''.respond_to?(:encoding)
         def base_body_hash(body)
-          { 'encoding' => body.encoding.name }
+          if VCR.configuration.force_utf8_encoding?
+            { 'encoding' => 'utf-8' }
+          else
+            { 'encoding' => body.encoding.name }
+          end
         end
       else
         def base_body_hash(body)

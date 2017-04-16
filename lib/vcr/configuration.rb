@@ -123,6 +123,11 @@ module VCR
       !!@allow_http_connections_when_no_cassette
     end
 
+    attr_writer :force_utf8_encoding
+    def force_utf8_encoding?
+      @force_utf8_encoding
+    end
+
     # Sets a parser for VCR to use when parsing query strings for request
     # comparisons.  The new parser must implement a method `call` that returns
     # an object which is both equalivant and consistent when given an HTTP
@@ -480,6 +485,7 @@ module VCR
 
     def initialize
       @allow_http_connections_when_no_cassette = nil
+      @force_utf8_encoding = false
       @rspec_metadata_configured = false
       @default_cassette_options = {
         :record            => :once,
