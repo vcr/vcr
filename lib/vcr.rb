@@ -34,7 +34,6 @@ module VCR
 
   module RSpec
     autoload :Metadata,              'vcr/test_frameworks/rspec'
-    autoload :Macros,                'vcr/deprecations'
   end
 
   module Middleware
