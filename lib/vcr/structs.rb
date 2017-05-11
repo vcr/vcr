@@ -106,6 +106,12 @@ module VCR
         normalize_headers
       end
 
+      # Support the Net::HTTPHeader interface
+      def [](key)
+        v = headers[key] or return nil
+        v.join(', ')
+      end
+
     private
 
       def normalize_headers
