@@ -115,10 +115,7 @@ describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_INTERP
       VCR.use_cassette('no_body') do
         request = Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/localhost_test")
         request.on_headers { on_headers_counter.increment }
-        request.on_body do
-          on_body_counter.increment
-          next :abort
-        end
+        request.on_body { on_body_counter.increment }
         request.run
       end
     end
