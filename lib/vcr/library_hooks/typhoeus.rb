@@ -93,10 +93,12 @@ else
 
           def collect_chunks(request)
             chunks = ''
-            request.on_body do |body, response|
-              chunks += body
-              request.instance_variable_set(:@chunked_body, chunks)
-            end
+            request.on_body.unshift(
+              Proc.new do |body, response|
+                chunks += body
+                request.instance_variable_set(:@chunked_body, chunks)
+              end
+            )
           end
 
           def restore_body_from_chunks(response, request)
@@ -125,6 +127,8 @@ else
         ::Typhoeus.before do |request|
           collect_chunks(request) if request.streaming?
           if response = VCR::LibraryHooks::Typhoeus::RequestHandler.new(request).handle
+            request.on_headers.each { |cb| cb.call(response) }
+            request.on_body.each { |cb| cb.call(response.body, response) }
             request.finish(response)
           else
             true
