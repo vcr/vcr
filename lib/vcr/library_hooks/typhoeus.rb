@@ -53,9 +53,10 @@ else
               :effective_url  => stubbed_response.adapter_metadata.fetch('effective_url', request.url),
               :mock           => true
 
+            first_header_line = "HTTP/#{stubbed_response.http_version} #{response.code} #{response.status_message}\r\n"
+            response.instance_variable_set(:@first_header_line, first_header_line)
             response.instance_variable_get(:@options)[:response_headers] =
-              "HTTP/#{response.http_version} #{response.code} #{response.status_message}\r\n" +
-                response.headers.map { |k,v| "#{k}: #{v}"}.join("\r\n")
+              first_header_line + response.headers.map { |k,v| "#{k}: #{v}"}.join("\r\n")
 
             response
           end
