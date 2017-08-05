@@ -44,7 +44,7 @@ else
           end
 
           def on_stubbed_by_vcr_request
-            ::Typhoeus::Response.new \
+            response = ::Typhoeus::Response.new \
               :http_version   => stubbed_response.http_version,
               :code           => stubbed_response.status.code,
               :status_message => stubbed_response.status.message,
@@ -52,6 +52,12 @@ else
               :body           => stubbed_response.body,
               :effective_url  => stubbed_response.adapter_metadata.fetch('effective_url', request.url),
               :mock           => true
+
+            response.instance_variable_get(:@options)[:response_headers] =
+              "HTTP/#{response.http_version} #{response.code} #{response.status_message}\r\n" +
+                response.headers.map { |k,v| "#{k}: #{v}"}.join("\r\n")
+
+            response
           end
 
           def stubbed_response_headers
