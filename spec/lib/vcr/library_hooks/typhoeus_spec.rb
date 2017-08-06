@@ -177,4 +177,3 @@ describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_INTERP
     end
   end
 end
-
