@@ -135,3 +135,4 @@ VCR.configuration.after_library_hooks_loaded do
     WebMock::HttpLibAdapters::TyphoeusAdapter.disable!
   end
 end
+
