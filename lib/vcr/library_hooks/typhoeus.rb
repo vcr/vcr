@@ -81,17 +81,36 @@ else
         end
 
         # @private
-        def self.vcr_response_from(response)
-          VCR::Response.new \
-            VCR::ResponseStatus.new(response.code, response.status_message),
-            response.headers,
-            response.body,
-            response.http_version,
-            { "effective_url" => response.effective_url }
+        class << self
+          def vcr_response_from(response)
+            VCR::Response.new \
+              VCR::ResponseStatus.new(response.code, response.status_message),
+              response.headers,
+              response.body,
+              response.http_version,
+              { "effective_url" => response.effective_url }
+          end
+
+          def collect_chunks(request)
+            chunks = ''
+            request.on_body.unshift(
+              Proc.new do |body, response|
+                chunks += body
+                request.instance_variable_set(:@chunked_body, chunks)
+              end
+            )
+          end
+
+          def restore_body_from_chunks(response, request)
+            response.options[:response_body] = request.instance_variable_get(:@chunked_body)
+          end
         end
 
         ::Typhoeus.on_complete do |response|
           request = response.request
+
+          restore_body_from_chunks(response, request) if request.streaming?
+
           unless VCR.library_hooks.disabled?(:typhoeus)
             vcr_response = vcr_response_from(response)
             typed_vcr_request = request.send(:remove_instance_variable, :@__typed_vcr_request)
@@ -106,7 +125,10 @@ else
         end
 
         ::Typhoeus.before do |request|
+          collect_chunks(request) if request.streaming?
           if response = VCR::LibraryHooks::Typhoeus::RequestHandler.new(request).handle
+            request.on_headers.each { |cb| cb.call(response) }
+            request.on_body.each { |cb| cb.call(response.body, response) }
             request.finish(response)
           else
             true
