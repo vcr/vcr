@@ -68,6 +68,19 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
       expect(played_back).to eq(recorded)
     end
 
+    describe "making an HTTP request when :allow_unused_http_interactions is false" do
+      it 'gives a helpful error message for a request not in the cassette' do
+        VCR.eject_cassette
+        VCR.configure do |c|
+          c.cassette_library_dir = File.join(VCR::SPEC_ROOT, 'fixtures')
+        end
+
+        VCR.use_cassette('fake_example_responses', :record => :none, :allow_unused_http_interactions => false) do
+          expect { make_http_request(:get, "http://notincassette/") }.to raise_error(/An HTTP request has been made that VCR does not know how to handle/)
+        end
+      end
+    end
+
     describe 'making an HTTP request' do
       let(:status)        { VCR::ResponseStatus.new(200, 'OK') }
       let(:interaction)   { VCR::HTTPInteraction.new(request, response) }
