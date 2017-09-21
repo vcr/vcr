@@ -36,6 +36,9 @@ module VCR
     # @return [Integer, nil] How frequently (in seconds) the cassette should be re-recorded.
     attr_reader :re_record_interval
 
+    # @return [Boolean, nil] Should outdated interactions be recorded back to file
+    attr_reader :clean_outdated_http_interactions
+
     # @return [Array<Symbol>] If set, {VCR::Configuration#before_record} and
     #  {VCR::Configuration#before_playback} hooks with a corresponding tag will apply.
     attr_reader :tags
@@ -146,7 +149,7 @@ module VCR
         :record, :erb, :match_requests_on, :re_record_interval, :tag, :tags,
         :update_content_length_header, :allow_playback_repeats, :allow_unused_http_interactions,
         :exclusive, :serialize_with, :preserve_exact_body_bytes, :decode_compressed_response,
-        :persist_with
+        :persist_with, :clean_outdated_http_interactions
       ]
 
       if invalid_options.size > 0
@@ -155,7 +158,7 @@ module VCR
     end
 
     def extract_options
-      [:erb, :match_requests_on, :re_record_interval,
+      [:erb, :match_requests_on, :re_record_interval, :clean_outdated_http_interactions,
        :allow_playback_repeats, :allow_unused_http_interactions, :exclusive].each do |name|
         instance_variable_set("@#{name}", @options[name])
       end
@@ -253,9 +256,13 @@ module VCR
     def interactions_to_record
       # We deep-dup the interactions by roundtripping them to/from a hash.
       # This is necessary because `before_record` can mutate the interactions.
-      merged_interactions.map { |i| HTTPInteraction.from_hash(i.to_hash) }.tap do |interactions|
+      result = merged_interactions.map { |i| HTTPInteraction.from_hash(i.to_hash) }.tap do |interactions|
         invoke_hook(:before_record, interactions)
       end
+
+      return result unless clean_outdated_http_interactions && re_record_interval
+
+      result.reject { |x| x[:recorded_at] < Time.now - re_record_interval }
     end
 
     def write_recorded_interactions_to_disk
