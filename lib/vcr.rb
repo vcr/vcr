@@ -192,6 +192,20 @@ module VCR
     end
   end
 
+  # Inserts multiple cassettes the given names
+  #
+  # @example
+  # VCR.use_cassettes(['github', 'apple', 'google]) do
+  #   # make multiple HTTP requests
+  # end
+  def use_cassettes(names, &block)
+    return use_cassette(names.last) { block.call } if names.length == 1
+    cassette = names.pop
+    use_cassette(cassette) do
+      use_cassettes(names, &block)
+    end
+  end
+
   # Used to configure VCR.
   #
   # @example
