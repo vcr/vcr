@@ -360,7 +360,12 @@ describe VCR do
       expect(VCR).to receive(:insert_cassette).and_return(cassette_by_github)
       expect(VCR).to receive(:insert_cassette).and_return(cassette_by_apple)
 
-      VCR.use_cassettes([cassette_by_github, cassette_by_apple]) { }
+      cassettes = [
+        { names: cassette_by_github },
+        { names: cassette_by_apple, options: { erb: true } }
+      ]
+
+      VCR.use_cassettes(cassettes) { }
     end
   end
 end

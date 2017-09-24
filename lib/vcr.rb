@@ -195,14 +195,18 @@ module VCR
   # Inserts multiple cassettes the given names
   #
   # @example
-  # VCR.use_cassettes(['github', 'apple', 'google]) do
+  # cassettes = [
+  #  { name: 'github' },
+  #  { name: 'apple', options: { erb: true } }
+  # ]
+  # VCR.use_cassettes() do
   #   # make multiple HTTP requests
   # end
-  def use_cassettes(names, &block)
-    return use_cassette(names.last) { block.call } if names.length == 1
-    cassette = names.pop
-    use_cassette(cassette) do
-      use_cassettes(names, &block)
+  def use_cassettes(cassettes, &block)
+    return use_cassette(cassettes.last[:name]) { block.call } if cassettes.length == 1
+    cassette = cassettes.pop
+    use_cassette(cassette[:name], cassette[:options]) do
+      use_cassettes(cassettes, &block)
     end
   end
 
