@@ -250,19 +250,20 @@ module VCR
         end
       end
 
-      old_interactions + new_recorded_interactions
+      up_to_date_interactions(old_interactions) + new_recorded_interactions
+    end
+
+    def up_to_date_interactions(interactions)
+      return interactions unless clean_outdated_http_interactions && re_record_interval
+      interactions.take_while { |x| x[:recorded_at] > Time.now - re_record_interval }
     end
 
     def interactions_to_record
       # We deep-dup the interactions by roundtripping them to/from a hash.
       # This is necessary because `before_record` can mutate the interactions.
-      result = merged_interactions.map { |i| HTTPInteraction.from_hash(i.to_hash) }.tap do |interactions|
+      merged_interactions.map { |i| HTTPInteraction.from_hash(i.to_hash) }.tap do |interactions|
         invoke_hook(:before_record, interactions)
       end
-
-      return result unless clean_outdated_http_interactions && re_record_interval
-
-      result.take_while { |x| x[:recorded_at] > Time.now - re_record_interval }
     end
 
     def write_recorded_interactions_to_disk

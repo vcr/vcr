@@ -93,7 +93,12 @@ describe VCR::Cassette do
     end
 
     describe 'clean_outdated_http_interactions' do
-      before(:each) { subject.instance_variable_set(:@clean_outdated_http_interactions, true) }
+      before(:each) do
+        subject.instance_variable_set(:@clean_outdated_http_interactions, true)
+        subject.instance_variable_set(:@previously_recorded_interactions, subject.instance_variable_get(:@new_recorded_interactions))
+        subject.instance_variable_set(:@new_recorded_interactions, [])
+      end
+
       let(:interaction_hashes) { [interaction_1, interaction_2].map(&:to_hash) }
 
       it "returns all interactions if re_record_interval is not set" do
