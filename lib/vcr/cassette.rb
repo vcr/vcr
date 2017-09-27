@@ -262,7 +262,7 @@ module VCR
 
       return result unless clean_outdated_http_interactions && re_record_interval
 
-      result.reject { |x| x[:recorded_at] < Time.now - re_record_interval }
+      result.take_while { |x| x[:recorded_at] > Time.now - re_record_interval }
     end
 
     def write_recorded_interactions_to_disk
