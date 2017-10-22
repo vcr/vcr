@@ -131,6 +131,7 @@ yard server --reload
   * [Go VCR](https://github.com/dnaeon/go-vcr) (Go)
   * [Betamax](https://github.com/wjlroe/betamax) (Clojure)
   * [vcr-clj](https://github.com/ifesdjeen/vcr-clj) (Clojure)
+  * [scotch](https://github.com/mleech/scotch) (C#/.NET)
   * [Betamax.NET](https://github.com/mfloryan/Betamax.Net) (C#/.NET)
   * [ExVCR](https://github.com/parroty/exvcr) (Elixir)
   * [HAVCR](https://github.com/cordawyn/havcr) (Haskell)
