@@ -351,4 +351,21 @@ describe VCR do
       expect(VCR).to be_turned_on
     end
   end
+
+  describe '.use_cassettes' do
+    it 'use multiple cassettes' do
+      cassette_by_github = VCR::Cassette.new(:use_cassette_test_call_github)
+      cassette_by_apple = VCR::Cassette.new(:use_cassette_test_call_apple)
+
+      expect(VCR).to receive(:insert_cassette).and_return(cassette_by_github)
+      expect(VCR).to receive(:insert_cassette).and_return(cassette_by_apple)
+
+      cassettes = [
+        { names: cassette_by_github },
+        { names: cassette_by_apple, options: { erb: true } }
+      ]
+
+      VCR.use_cassettes(cassettes) { }
+    end
+  end
 end
