@@ -3,9 +3,9 @@ language: ruby
 script: script/ci.sh
 cache: bundler
 rvm:
-  - '2.2.2'
-  - '2.3.0'
-  - '2.4.0'
+  - '2.2.8'
+  - '2.3.5'
+  - '2.4.2'
   - jruby-19mode
   - rbx-2
 matrix:
