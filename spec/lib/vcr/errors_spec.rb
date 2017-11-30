@@ -8,12 +8,8 @@ module VCR
       end
       alias message message_for
 
-      def request_with(values)
-        VCR::Request.new.tap do |request|
-          values.each do |name, value|
-            request.send("#{name}=", value)
-          end
-        end
+      def request_with(options)
+        VCR::Request.new(*options.values_at(*VCR::Request.members))
       end
 
       it 'identifies the request by method and URI' do
@@ -28,6 +24,16 @@ module VCR
 
           expect(message_for(:body => 'param=val1')).to include(
             "Body: param=val1"
+          )
+        end
+
+        it 'identifies the request by its headers when the default_cassette_options include the headers in the match_requests_on option' do
+          VCR.configuration.default_cassette_options[:match_requests_on] = [:headers]
+
+          expect(message_for(:headers => { "Content-Type" => "application/json", "X-Custom" => ["123", "ab\"c"]})).to include(
+            'Content-Type: "application/json"',
+            'X-Custom: "123"',
+            'X-Custom: "ab\"c"'
           )
         end
 
@@ -61,6 +67,16 @@ module VCR
           VCR.use_cassette('example', :match_requests_on => [:body]) do
             expect(message_for(:body => 'param=val1')).to include(
               "Body: param=val1"
+            )
+          end
+        end
+
+        it 'identifies the request by its headers when the match_requests_on option includes the headers' do
+          VCR.use_cassette('example', :match_requests_on => [:headers]) do
+            expect(message_for(:headers => { "Content-Type" => "application/json", "X-Custom" => ["123", "ab\"c"]})).to include(
+              'Content-Type: "application/json"',
+              'X-Custom: "123"',
+              'X-Custom: "ab\"c"'
             )
           end
         end
