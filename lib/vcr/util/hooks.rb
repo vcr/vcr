@@ -5,6 +5,7 @@ module VCR
   module Hooks
     include VariableArgsBlockCaller
 
+    # @private
     FilteredHook = Struct.new(:hook, :filters) do
       include VariableArgsBlockCaller
 
