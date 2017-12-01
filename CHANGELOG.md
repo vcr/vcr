@@ -1,6 +1,15 @@
 Changelog
 =========
 
+## 4.0.0
+[Full Changelog](https://github.com/vcr/vcr/compare/v3.0.3...v4.0.0)
+
+  - [Feature] Output non-matched headers on error
+  - [Fix] Allow non-latin charaters in cassette filenames
+  - [Breaking] Remove deprecated VCR::RSpec::Macros
+  - [Breaking] Remove support for ruby 1.9.3
+  - [Breaking] Remove support for Fakeweb
+
 ## 3.0.3
 [Full Changelog](https://github.com/vcr/vcr/compare/v3.0.2...v3.0.3)
 
