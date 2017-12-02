@@ -45,11 +45,6 @@ module VCR
           "recorded_with"     => "VCR #{VCR.version}"
         }
 
-        def hash.each
-          yield 'http_interactions', self['http_interactions']
-          yield 'recorded_with', self['recorded_with']
-        end
-
         File.open(cassette, 'w') { |f| f.write ::YAML.dump(hash) }
         @out.puts "  - Migrated #{relative_casssette_name(cassette)}"
       end
