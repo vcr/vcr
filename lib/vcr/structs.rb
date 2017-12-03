@@ -167,25 +167,6 @@ module VCR
     end
   end
 
-  # @private
-  module OrderedHashSerializer
-    def each
-      @ordered_keys.each do |key|
-        yield key, self[key] if has_key?(key)
-      end
-    end
-
-    if RUBY_VERSION.to_f > 1.8
-      # 1.9+ hashes are already ordered.
-      def self.apply_to(*args); end
-    else
-      def self.apply_to(hash, keys)
-        hash.instance_variable_set(:@ordered_keys, keys)
-        hash.extend self
-      end
-    end
-  end
-
   # The request of an {HTTPInteraction}.
   #
   # @attr [Symbol] method the HTTP method (i.e. :head, :options, :get, :post, :put, :patch or :delete)
@@ -219,7 +200,7 @@ module VCR
         'uri'     => uri,
         'body'    => serializable_body,
         'headers' => headers
-      }.tap { |h| OrderedHashSerializer.apply_to(h, members) }
+      }
     end
 
     # Constructs a new instance from a hash.
@@ -369,7 +350,6 @@ module VCR
         'http_version' => http_version
       }.tap do |hash|
         hash['adapter_metadata'] = adapter_metadata unless adapter_metadata.empty?
-        OrderedHashSerializer.apply_to(hash, members)
       end
     end
 
@@ -463,7 +443,7 @@ module VCR
     def to_hash
       {
         'code' => code, 'message' => message
-      }.tap { |h| OrderedHashSerializer.apply_to(h, members) }
+      }
     end
 
     # Constructs a new instance from a hash.
@@ -496,9 +476,7 @@ module VCR
         'request'     => request.to_hash,
         'response'    => response.to_hash,
         'recorded_at' => recorded_at.httpdate
-      }.tap do |hash|
-        OrderedHashSerializer.apply_to(hash, members)
-      end
+      }
     end
 
     # Constructs a new instance from a hash.
