@@ -167,6 +167,16 @@ module VCR
     end
   end
 
+  # @private
+  module OrderedHashSerializer
+    def each
+      @ordered_keys.each do |key|
+        yield key, self[key] if has_key?(key)
+      end
+    end
+    def self.apply_to(*args); end
+  end
+
   # The request of an {HTTPInteraction}.
   #
   # @attr [Symbol] method the HTTP method (i.e. :head, :options, :get, :post, :put, :patch or :delete)

@@ -35,8 +35,8 @@ HTTP_LIBRARY_ADAPTERS['net/http'] = Module.new do
   end
 
   DEFAULT_REQUEST_HEADERS = { "Accept"=>["*/*"] }
-  DEFAULT_REQUEST_HEADERS['User-Agent'] = ["Ruby"] if RUBY_VERSION.to_f > 1.8
-  DEFAULT_REQUEST_HEADERS['Accept-Encoding'] = ["gzip;q=1.0,deflate;q=0.6,identity;q=0.3"] if RUBY_VERSION.to_f > 1.9
+  DEFAULT_REQUEST_HEADERS['User-Agent'] = ["Ruby"]
+  DEFAULT_REQUEST_HEADERS['Accept-Encoding'] = ["gzip;q=1.0,deflate;q=0.6,identity;q=0.3"]
 
   def normalize_request_headers(headers)
     defined?(super) ? super :
@@ -286,4 +286,3 @@ end
     end
   end
 end
-
