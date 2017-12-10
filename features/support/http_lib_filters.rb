@@ -1,7 +1,4 @@
-if RUBY_VERSION == '1.8.7'
-  # We get timeouts on 1.8.7 w/ Patron for some reason.
-  UNSUPPORTED_HTTP_LIBS = %w[ patron ]
-elsif defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx'
+if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx'
   # Patron is freezing up the cukes (as it does on 1.9.2)
 
   # I'm not sure why em-http-request isn't working on rbx,

@@ -226,14 +226,6 @@ describe VCR::Configuration do
     end
   end
 
-  describe "#around_http_request, when called on ruby 1.8" do
-    it 'raises an error since fibers are not available' do
-      expect {
-        subject.around_http_request { }
-      }.to raise_error(/requires fibers, which are not available/)
-    end
-  end if RUBY_VERSION < '1.9'
-
   describe "#cassette_serializers" do
     let(:custom_serializer) { double }
     it 'allows a custom serializer to be registered' do
