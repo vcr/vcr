@@ -174,16 +174,7 @@ module VCR
         yield key, self[key] if has_key?(key)
       end
     end
-
-    if RUBY_VERSION.to_f > 1.8
-      # 1.9+ hashes are already ordered.
-      def self.apply_to(*args); end
-    else
-      def self.apply_to(hash, keys)
-        hash.instance_variable_set(:@ordered_keys, keys)
-        hash.extend self
-      end
-    end
+    def self.apply_to(*args); end
   end
 
   # The request of an {HTTPInteraction}.
