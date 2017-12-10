@@ -12,7 +12,7 @@ describe VCR do
       VCR.cassette_persisters[:file_system]["#{name}.yml"].to_s
     end
 
-    it 'can use a cassette in an #around_http_request hook', :if => (RUBY_VERSION.to_f > 1.8) do
+    it 'can use a cassette in an #around_http_request hook' do
       VCR.configure do |vcr|
         vcr.around_http_request do |req|
           VCR.use_cassette(req.parsed_uri.path, &req)
@@ -31,4 +31,3 @@ describe VCR do
     end
   end
 end
-
