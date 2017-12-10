@@ -78,6 +78,7 @@ Do *not* use 'test/fixtures' as the directory if you're using Rails and Minitest
   * Includes convenient RSpec macros and integration with RSpec 2 metadata.
   * Known to work well with many popular Ruby libraries including RSpec 1 & 2, Cucumber, Test::Unit, Capybara, Mechanize, Rest Client and HTTParty.
   * Includes Rack and Faraday middleware.
+  * Supports filtering sensitive data from the response body
 
 The docs come in two flavors:
 
@@ -131,6 +132,7 @@ yard server --reload
   * [Go VCR](https://github.com/dnaeon/go-vcr) (Go)
   * [Betamax](https://github.com/wjlroe/betamax) (Clojure)
   * [vcr-clj](https://github.com/ifesdjeen/vcr-clj) (Clojure)
+  * [scotch](https://github.com/mleech/scotch) (C#/.NET)
   * [Betamax.NET](https://github.com/mfloryan/Betamax.Net) (C#/.NET)
   * [ExVCR](https://github.com/parroty/exvcr) (Elixir)
   * [HAVCR](https://github.com/cordawyn/havcr) (Haskell)

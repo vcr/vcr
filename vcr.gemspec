@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["myron.marston@gmail.com"]
   spec.summary       = %q{Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests.}
   spec.description   = spec.summary
-  spec.homepage      = "http://vcr.github.io/vcr"
+  spec.homepage      = "https://relishapp.com/vcr/vcr/docs"
   spec.license       = "MIT"
 
   spec.files         = Dir[File.join("lib", "**", "*")]

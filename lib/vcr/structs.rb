@@ -210,7 +210,7 @@ module VCR
         'uri'     => uri,
         'body'    => serializable_body,
         'headers' => headers
-      }.tap { |h| OrderedHashSerializer.apply_to(h, members) }
+      }
     end
 
     # Constructs a new instance from a hash.
@@ -360,7 +360,6 @@ module VCR
         'http_version' => http_version
       }.tap do |hash|
         hash['adapter_metadata'] = adapter_metadata unless adapter_metadata.empty?
-        OrderedHashSerializer.apply_to(hash, members)
       end
     end
 
@@ -454,7 +453,7 @@ module VCR
     def to_hash
       {
         'code' => code, 'message' => message
-      }.tap { |h| OrderedHashSerializer.apply_to(h, members) }
+      }
     end
 
     # Constructs a new instance from a hash.
@@ -487,9 +486,7 @@ module VCR
         'request'     => request.to_hash,
         'response'    => response.to_hash,
         'recorded_at' => recorded_at.httpdate
-      }.tap do |hash|
-        OrderedHashSerializer.apply_to(hash, members)
-      end
+      }
     end
 
     # Constructs a new instance from a hash.

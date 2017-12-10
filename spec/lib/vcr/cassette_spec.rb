@@ -91,6 +91,31 @@ describe VCR::Cassette do
         subject.serializable_hash
       }.not_to change { interaction_1.response.body }
     end
+
+    describe 'clean_outdated_http_interactions' do
+      before(:each) do
+        subject.instance_variable_set(:@clean_outdated_http_interactions, true)
+        subject.instance_variable_set(:@previously_recorded_interactions, subject.instance_variable_get(:@new_recorded_interactions))
+        subject.instance_variable_set(:@new_recorded_interactions, [])
+      end
+
+      let(:interaction_hashes) { [interaction_1, interaction_2].map(&:to_hash) }
+
+      it "returns all interactions if re_record_interval is not set" do
+        expect(subject.serializable_hash).to include('http_interactions' => interaction_hashes)
+      end
+
+      it "returns all interactions if they are not outdated" do
+        subject.instance_variable_set(:@re_record_interval, 100)
+        expect(subject.serializable_hash).to include('http_interactions' => interaction_hashes)
+      end
+
+      it "rejects outdated interactions" do
+        subject.instance_variable_set(:@re_record_interval, 100)
+        allow(Time).to receive(:now).and_return(Time.now + 105)
+        expect(subject.serializable_hash['http_interactions']).to be_empty
+      end
+    end
   end
 
   describe "#recording?" do

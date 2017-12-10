@@ -34,7 +34,6 @@ module VCR
 
   module RSpec
     autoload :Metadata,              'vcr/test_frameworks/rspec'
-    autoload :Macros,                'vcr/deprecations'
   end
 
   module Middleware
@@ -189,6 +188,24 @@ module VCR
       call_block(block, cassette)
     ensure
       eject_cassette
+    end
+  end
+
+  # Inserts multiple cassettes the given names
+  #
+  # @example
+  # cassettes = [
+  #  { name: 'github' },
+  #  { name: 'apple', options: { erb: true } }
+  # ]
+  # VCR.use_cassettes() do
+  #   # make multiple HTTP requests
+  # end
+  def use_cassettes(cassettes, &block)
+    return use_cassette(cassettes.last[:name]) { block.call } if cassettes.length == 1
+    cassette = cassettes.pop
+    use_cassette(cassette[:name], cassette[:options]) do
+      use_cassettes(cassettes, &block)
     end
   end
 
