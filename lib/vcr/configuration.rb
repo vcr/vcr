@@ -77,6 +77,15 @@ module VCR
     end
     alias ignore_host ignore_hosts
 
+    # Specifies host(s) that VCR should stop ignoring.
+    #
+    # @param hosts [Array<String>] List of hosts to unignore
+    # @see #ignore_hosts
+    def unignore_hosts(*hosts)
+      VCR.request_ignorer.unignore_hosts(*hosts)
+    end
+    alias unignore_host unignore_hosts
+
     # Sets whether or not VCR should ignore localhost requests.
     #
     # @param value [Boolean] the value to set
@@ -571,4 +580,3 @@ module VCR
     define_hook :after_library_hooks_loaded
   end
 end
-

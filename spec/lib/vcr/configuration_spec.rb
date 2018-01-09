@@ -94,6 +94,13 @@ describe VCR::Configuration do
     end
   end
 
+  describe '#unignore_hosts' do
+    it 'delegates to the current request_ignorer instance' do
+      expect(VCR.request_ignorer).to receive(:unignore_hosts).with('example.com', 'example.net')
+      subject.unignore_hosts 'example.com', 'example.net'
+    end
+  end
+
   describe '#ignore_localhost=' do
     it 'delegates to the current request_ignorer instance' do
       expect(VCR.request_ignorer).to receive(:ignore_localhost=).with(true)

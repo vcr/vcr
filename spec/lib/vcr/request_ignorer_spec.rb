@@ -22,6 +22,32 @@ module VCR
       it_behaves_like "#ignore?", "http://some-other-domain.com/", false
     end
 
+    context 'when example.com is unignored' do
+      before(:each) do
+        subject.instance_variable_set(:@ignored_hosts, Set['example.com'])
+        subject.unignore_hosts 'example.com'
+      end
+
+      it_behaves_like "#ignore?", "http://example.com/foo", false
+    end
+
+    context 'when two of three example hosts are unignored' do
+      before(:each) do
+        subject.instance_variable_set(:@ignored_hosts, Set['example.com', 'example.net', 'example.org'])
+        subject.unignore_hosts 'example.com', 'example.net'
+      end
+
+      it_behaves_like "#ignore?", "http://example.com/foo", false
+      it_behaves_like "#ignore?", "http://example.net:890/foo", false
+      it_behaves_like "#ignore?", "https://example.org:890/foo", true
+    end
+
+    context 'when not ignored host is unignored' do
+      it 'no errors should be raised' do
+        expect { subject.unignore_hosts 'example.com' }.not_to raise_error
+      end
+    end
+
     context 'when ignore_localhost is set to true' do
       before(:each) { subject.ignore_localhost = true }
 
@@ -67,4 +93,3 @@ module VCR
     end
   end
 end
-
