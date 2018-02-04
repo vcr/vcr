@@ -15,6 +15,7 @@
 
 # Ignore autoset environment variables
 /.ruby-env
+/.ruby-version
 
 # Ignore all bundler caching
 /vendor/cache
