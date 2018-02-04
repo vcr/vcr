@@ -29,6 +29,10 @@ module VCR
       ignored_hosts.merge(hosts)
     end
 
+    def unignore_hosts(*hosts)
+      ignored_hosts.subtract(hosts)
+    end
+
     def ignore?(request)
       invoke_hook(:ignore_request, request).any?
     end
@@ -40,4 +44,3 @@ module VCR
     end
   end
 end
-
