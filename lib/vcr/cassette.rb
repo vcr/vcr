@@ -48,6 +48,7 @@ module VCR
     def initialize(name, options = {})
       @name    = name
       @options = VCR.configuration.default_cassette_options.merge(options)
+      @mutex   = Mutex.new
 
       assert_valid_options!
       extract_options
@@ -74,12 +75,16 @@ module VCR
 
     # @private
     def http_interactions
-      @http_interactions ||= HTTPInteractionList.new \
-        should_stub_requests? ? previously_recorded_interactions : [],
-        match_requests_on,
-        @allow_playback_repeats,
-        @parent_list,
-        log_prefix
+      # Without this mutex, under threaded access, an HTTPInteractionList will overwrite
+      # the first.
+      @mutex.synchronize do
+        @http_interactions ||= HTTPInteractionList.new \
+          should_stub_requests? ? previously_recorded_interactions : [],
+          match_requests_on,
+          @allow_playback_repeats,
+          @parent_list,
+          log_prefix
+      end
     end
 
     # @private
