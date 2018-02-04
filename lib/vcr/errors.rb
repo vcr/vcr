@@ -95,7 +95,7 @@ module VCR
             loop do
               break unless VCR.eject_cassette
             end
-          rescue EjectLinkedCassetteError
+          rescue EjectLinkedCassetteError, UnusedHTTPInteractionError
           end
 
           cassettes
