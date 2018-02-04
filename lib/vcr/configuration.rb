@@ -231,7 +231,7 @@ module VCR
 
       before_playback(tag) do |interaction|
         orig_text = call_block(block, interaction)
-        log "before_playback: replacing #{placeholder.inspect} with #{orig_text.inspect}"
+        log "before_playback: replacing #{orig_text.inspect} with #{placeholder.inspect}"
         interaction.filter!(placeholder, orig_text)
       end
     end
