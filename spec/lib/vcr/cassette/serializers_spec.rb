@@ -66,7 +66,7 @@ module VCR
         end if ''.respond_to?(:encoding)
       end if RUBY_VERSION =~ /1.9/
 
-      it_behaves_like "a serializer", :compressed, "gz",  :lazily_loaded do
+      it_behaves_like "a serializer", :compressed, "zz",  :lazily_loaded do
         it_behaves_like "encoding error handling", :compressed, ArgumentError do
           let(:string) { "\xFA".force_encoding("UTF-8") }
         end if ''.respond_to?(:encoding)
