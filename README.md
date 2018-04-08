@@ -1,14 +1,8 @@
 vcr
 ===
 
-[![Quality](https://img.shields.io/codeclimate/github/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
-[![Coverage](https://img.shields.io/codeclimate/coverage/github/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
 [![Build](https://img.shields.io/travis-ci/vcr/vcr.svg?style=flat-square)](https://travis-ci.org/vcr/vcr)
 [![Dependencies](https://img.shields.io/gemnasium/vcr/vcr.svg?style=flat-square)](https://gemnasium.com/vcr/vcr)
-[![Downloads](https://img.shields.io/gem/dtv/vcr.svg?style=flat-square)](https://rubygems.org/gems/vcr)
-[![Tags](https://img.shields.io/github/tag/vcr/vcr.svg?style=flat-square)](https://github.com/vcr/vcr/tags)
-[![Releases](https://img.shields.io/github/release/vcr/vcr.svg?style=flat-square)](http://github.com/vcr/vcr/releases)
-[![Issues](https://img.shields.io/github/issues/vcr/vcr.svg?style=flat-square)](https://github.com/vcr/vcr/issues)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 [![Version](https://img.shields.io/gem/v/vcr.svg?style=flat-square)](https://rubygems.org/gems/vcr)
 [![OpenCollective](https://opencollective.com/vcr/backers/badge.svg)](https://opencollective.com/vcr#backer)
@@ -16,10 +10,6 @@ vcr
 
 
 Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests.
-
-**Help Wanted**
-
-We're looking for new maintainers. If you'd like to help maintain a well-used gem please join the [vcr-maintainers google group](https://groups.google.com/forum/#!forum/vcr-maintainers).
 
 
 Usage
