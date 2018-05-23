@@ -83,7 +83,6 @@ Feature: EM HTTP Request
           body: 
             encoding: UTF-8
             string: Hello foo
-          http_version: 
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       - request: 
           method: get
@@ -104,7 +103,6 @@ Feature: EM HTTP Request
           body: 
             encoding: UTF-8
             string: Hello bar
-          http_version: 
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       - request: 
           method: get
@@ -125,7 +123,6 @@ Feature: EM HTTP Request
           body: 
             encoding: UTF-8
             string: Hello bazz
-          http_version: 
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0
       """
@@ -193,7 +190,6 @@ Feature: EM HTTP Request
           body: 
             encoding: UTF-8
             string: Hello foo
-          http_version: 
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       - request: 
           method: get
@@ -214,7 +210,6 @@ Feature: EM HTTP Request
           body: 
             encoding: UTF-8
             string: Hello bar
-          http_version: 
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       - request: 
           method: get
@@ -235,7 +230,6 @@ Feature: EM HTTP Request
           body: 
             encoding: UTF-8
             string: Hello bazz
-          http_version: 
         recorded_at: Tue, 01 Nov 2011 04:58:44 GMT
       recorded_with: VCR 2.0.0
       """
