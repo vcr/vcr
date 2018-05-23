@@ -85,7 +85,7 @@ module VCR
     end
 
     let(:status)      { ResponseStatus.new(200, "OK") }
-    let(:response)    { Response.new(status, { "foo" => ["bar"] }, "res body", "1.1") }
+    let(:response)    { Response.new(status, { "foo" => ["bar"] }, "res body") }
     let(:request)     { Request.new(:get, "http://foo.com/", "req body", { "bar" => ["foo"] }) }
     let(:recorded_at) { Time.utc(2011, 5, 4, 12, 30) }
     let(:interaction) { HTTPInteraction.new(request, response, recorded_at) }
@@ -105,8 +105,7 @@ module VCR
               'message'    => 'OK'
             },
             'headers'      => { "foo"     => ["bar"] },
-            'body'         => body_hash('string', 'res body'),
-            'http_version' => '1.1'
+            'body'         => body_hash('string', 'res body')
           },
           'recorded_at' => "Wed, 04 May 2011 12:30:00 GMT"
         }
@@ -120,10 +119,22 @@ module VCR
         expect(HTTPInteraction.from_hash(hash).recorded_at).to eq(recorded_at)
       end
 
+      it 'initializes the response http_version from the hash if it is included' do
+        hash['response']['http_version'] = '1.1'
+        interaction = HTTPInteraction.from_hash(hash)
+        expect(interaction.response.http_version).to eq('1.1')
+      end
+
       it 'initializes the response adapter_metadata from the hash if it is included' do
         hash['response']['adapter_metadata'] = { 'foo' => 12 }
         interaction = HTTPInteraction.from_hash(hash)
         expect(interaction.response.adapter_metadata).to eq("foo" => 12)
+      end
+
+      it 'works when the response http_version is missing' do
+        expect(hash['response'].keys).not_to include('http_version')
+        interaction = HTTPInteraction.from_hash(hash)
+        expect(interaction.response.http_version).to be_nil
       end
 
       it 'works when the response adapter_metadata is missing' do
@@ -274,8 +285,7 @@ module VCR
             'message'    => 'OK'
           },
           'headers'      => { "foo"     => ["bar"] },
-          'body'         => body_hash('string', 'res body'),
-          'http_version' => '1.1'
+          'body'         => body_hash('string', 'res body')
         })
       end
 
@@ -323,13 +333,18 @@ module VCR
       it 'yields the entries in the expected order so the hash can be serialized in that order' do
         assert_yielded_keys hash, 'request', 'response', 'recorded_at'
         assert_yielded_keys hash['request'], 'method', 'uri', 'body', 'headers'
-        assert_yielded_keys hash['response'], 'status', 'headers', 'body', 'http_version'
+        assert_yielded_keys hash['response'], 'status', 'headers', 'body'
         assert_yielded_keys hash['response']['status'], 'code', 'message'
       end
 
       it 'yields `adapter_metadata` if it has any data' do
         interaction.response.adapter_metadata['foo'] = 17
-        assert_yielded_keys hash['response'], 'status', 'headers', 'body', 'http_version', 'adapter_metadata'
+        assert_yielded_keys hash['response'], 'status', 'headers', 'body', 'adapter_metadata'
+      end
+
+      it 'yields `http_version` if it has any data' do
+        interaction.response.http_version = '1.1'
+        assert_yielded_keys hash['response'], 'status', 'headers', 'body', 'http_version'
       end
     end
 
@@ -371,8 +386,7 @@ module VCR
       VCR::Response.new(
         response_status,
         headers.dup,
-        body.dup,
-        '1.1'
+        body.dup
       )
     end
 
