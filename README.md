@@ -149,6 +149,7 @@ yard server --reload
   * [Betamax](https://github.com/betamaxteam/betamax) (Java)
   * [http_replayer](https://github.com/ucarion/http_replayer) (Rust)
   * [OkReplay](https://github.com/airbnb/okreplay) (Java/Android)
+  * [vcr](https://github.com/ropensci/vcr) (R)
 
 **Related Projects**
 
