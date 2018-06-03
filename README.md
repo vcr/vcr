@@ -1,8 +1,8 @@
 vcr
 ===
 
-[![Quality](https://img.shields.io/codeclimate/github/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
-[![Coverage](https://img.shields.io/codeclimate/coverage/github/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
+[![Maintainability](https://img.shields.io/codeclimate/maintainability/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
+[![Coverage](https://img.shields.io/codeclimate/coverage/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
 [![Build](https://img.shields.io/travis-ci/vcr/vcr.svg?style=flat-square)](https://travis-ci.org/vcr/vcr)
 [![Dependencies](https://img.shields.io/gemnasium/vcr/vcr.svg?style=flat-square)](https://gemnasium.com/vcr/vcr)
 [![Downloads](https://img.shields.io/gem/dtv/vcr.svg?style=flat-square)](https://rubygems.org/gems/vcr)
