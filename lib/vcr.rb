@@ -202,9 +202,9 @@ module VCR
   #   # make multiple HTTP requests
   # end
   def use_cassettes(cassettes, &block)
-    return use_cassette(cassettes.last[:name]) { block.call } if cassettes.length == 1
+    return use_cassette(cassettes.last[:name], cassettes.last[:options] || {}) { block.call } if cassettes.length == 1
     cassette = cassettes.pop
-    use_cassette(cassette[:name], cassette[:options]) do
+    use_cassette(cassette[:name], cassette[:options] || {}) do
       use_cassettes(cassettes, &block)
     end
   end
