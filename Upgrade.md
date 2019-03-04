@@ -215,7 +215,7 @@ purposes:
 
 ``` ruby
 VCR.configure do |c|
-  c.debug_logger = File.open('log/vcr.log')
+  c.debug_logger = File.open('log/vcr.log', 'w')
   # or...
   c.debug_logger = $stderr
 end
