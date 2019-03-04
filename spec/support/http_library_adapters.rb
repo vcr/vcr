@@ -183,7 +183,7 @@ HTTP_LIBRARY_ADAPTERS['typhoeus'] = Module.new do
   end
 
   def normalize_request_headers(headers)
-    headers.merge("User-Agent"=>["Typhoeus - https://github.com/typhoeus/typhoeus"])
+    headers.merge("User-Agent"=>["Typhoeus - https://github.com/typhoeus/typhoeus"], 'Expect' => [''])
   end
 end
 
