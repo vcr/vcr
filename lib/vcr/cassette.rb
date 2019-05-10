@@ -154,7 +154,7 @@ module VCR
         :record, :erb, :match_requests_on, :re_record_interval, :tag, :tags,
         :update_content_length_header, :allow_playback_repeats, :allow_unused_http_interactions,
         :exclusive, :serialize_with, :preserve_exact_body_bytes, :decode_compressed_response,
-        :persist_with, :clean_outdated_http_interactions
+        :recompress_response, :persist_with, :clean_outdated_http_interactions
       ]
 
       if invalid_options.size > 0
@@ -180,7 +180,7 @@ module VCR
     def assign_tags
       @tags = Array(@options.fetch(:tags) { @options[:tag] })
 
-      [:update_content_length_header, :preserve_exact_body_bytes, :decode_compressed_response].each do |tag|
+      [:update_content_length_header, :preserve_exact_body_bytes, :decode_compressed_response, :recompress_response].each do |tag|
         @tags << tag if @options[tag]
       end
     end
