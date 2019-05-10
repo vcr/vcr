@@ -22,6 +22,14 @@ VCR.configuration.after_library_hooks_loaded do
   # (i.e. to double record requests or whatever).
   if defined?(WebMock::HttpLibAdapters::ExconAdapter)
     WebMock::HttpLibAdapters::ExconAdapter.disable!
+
+    if defined?(::RSpec)
+      ::RSpec.configure do |config|
+        config.before(:suite) do
+          WebMock::HttpLibAdapters::ExconAdapter.disable!
+        end
+      end
+    end
   end
 end
 
