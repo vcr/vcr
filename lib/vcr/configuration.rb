@@ -559,6 +559,10 @@ module VCR
     end
 
     def register_built_in_hooks
+      before_playback(:recompress_response) do |interaction|
+        interaction.response.recompress if interaction.response.vcr_decompressed?
+      end
+
       before_playback(:update_content_length_header) do |interaction|
         interaction.response.update_content_length_header
       end

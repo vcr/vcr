@@ -383,6 +383,11 @@ module VCR
       %w[ gzip deflate ].include? content_encoding
     end
 
+    # Checks if VCR decompressed the response body
+    def vcr_decompressed?
+      adapter_metadata['vcr_decompressed']
+    end
+
     # Decodes the compressed body and deletes evidence that it was ever compressed.
     #
     # @return self
@@ -392,9 +397,41 @@ module VCR
       self.class.decompress(body, content_encoding) { |new_body|
         self.body = new_body
         update_content_length_header
+        adapter_metadata['vcr_decompressed'] = content_encoding
         delete_header('Content-Encoding')
       }
       return self
+    end
+
+    # Recompresses the decompressed body according to adapter metadata.
+    #
+    # @raise [VCR::Errors::UnknownContentEncodingError] if the content encoding
+    #  stored in the adapter metadata is unknown
+    def recompress
+      type = adapter_metadata['vcr_decompressed']
+      new_body = begin
+        case type
+        when 'gzip'
+          body_str = ''
+          args = [StringIO.new(body_str)]
+          args << { :encoding => 'ASCII-8BIT' } if ''.respond_to?(:encoding)
+          writer = Zlib::GzipWriter.new(*args)
+          writer.write(body)
+          writer.close
+          body_str
+        when 'deflate'
+          Zlib::Deflate.inflate(body)
+        when 'identity', NilClass
+          nil
+        else
+          raise Errors::UnknownContentEncodingError, "unknown content encoding: #{type}"
+        end
+      end
+      if new_body
+        self.body = new_body
+        update_content_length_header
+        headers['Content-Encoding'] = type
+      end
     end
 
     begin
