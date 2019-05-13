@@ -4,11 +4,7 @@ vcr
 [![Quality](https://img.shields.io/codeclimate/github/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
 [![Coverage](https://img.shields.io/codeclimate/coverage/github/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
 [![Build](https://img.shields.io/travis-ci/vcr/vcr.svg?style=flat-square)](https://travis-ci.org/vcr/vcr)
-[![Dependencies](https://img.shields.io/gemnasium/vcr/vcr.svg?style=flat-square)](https://gemnasium.com/vcr/vcr)
-[![Downloads](https://img.shields.io/gem/dtv/vcr.svg?style=flat-square)](https://rubygems.org/gems/vcr)
-[![Tags](https://img.shields.io/github/tag/vcr/vcr.svg?style=flat-square)](https://github.com/vcr/vcr/tags)
 [![Releases](https://img.shields.io/github/release/vcr/vcr.svg?style=flat-square)](http://github.com/vcr/vcr/releases)
-[![Issues](https://img.shields.io/github/issues/vcr/vcr.svg?style=flat-square)](https://github.com/vcr/vcr/issues)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 [![Version](https://img.shields.io/gem/v/vcr.svg?style=flat-square)](https://rubygems.org/gems/vcr)
 [![OpenCollective](https://opencollective.com/vcr/backers/badge.svg)](https://opencollective.com/vcr#backer)
@@ -19,7 +15,7 @@ Record your test suite's HTTP interactions and replay them during future test ru
 
 **Help Wanted**
 
-We looking for new maintainers. If you'd like to help maintain a well-used gem please join the [vcr-maintainers google group](https://groups.google.com/forum/#!forum/vcr-maintainers).
+We're looking for new maintainers. If you'd like to help maintain a well-used gem please create an issue so we can add you.
 
 
 Usage
@@ -32,7 +28,7 @@ require 'vcr'
 
 VCR.configure do |config|
   config.cassette_library_dir = "fixtures/vcr_cassettes"
-  config.hook_into :webmock # or :fakeweb
+  config.hook_into :webmock
 end
 
 class VCRTest < Test::Unit::TestCase
@@ -58,13 +54,12 @@ Do *not* use 'test/fixtures' as the directory if you're using Rails and Minitest
     * [Typhoeus](https://github.com/typhoeus/typhoeus)
     * [Faraday](https://github.com/lostisland/faraday)
     * [Excon](https://github.com/excon/excon)
-    * [FakeWeb](https://github.com/chrisk/fakeweb) (deprecated)
   * Supports multiple HTTP libraries:
     * [Patron](https://github.com/toland/patron) (when using WebMock)
     * [Curb](https://github.com/taf2/curb) (when using WebMock -- only supports Curl::Easy at the moment)
     * [HTTPClient](https://github.com/nahi/httpclient) (when using WebMock)
     * [em-http-request](https://github.com/igrigorik/em-http-request) (when using WebMock)
-    * [Net::HTTP](http://www.ruby-doc.org/stdlib/libdoc/net/http/rdoc/index.html) (when using FakeWeb and WebMock)
+    * [Net::HTTP](http://www.ruby-doc.org/stdlib/libdoc/net/http/rdoc/index.html) (when using WebMock)
     * [Typhoeus](https://github.com/typhoeus/typhoeus) (Typhoeus::Hydra, but not Typhoeus::Easy or Typhoeus::Multi)
     * [Excon](https://github.com/geemus/excon)
     * [Faraday](https://github.com/lostisland/faraday)
@@ -79,6 +74,7 @@ Do *not* use 'test/fixtures' as the directory if you're using Rails and Minitest
   * Includes convenient RSpec macros and integration with RSpec 2 metadata.
   * Known to work well with many popular Ruby libraries including RSpec 1 & 2, Cucumber, Test::Unit, Capybara, Mechanize, Rest Client and HTTParty.
   * Includes Rack and Faraday middleware.
+  * Supports filtering sensitive data from the response body
 
 The docs come in two flavors:
 
@@ -132,6 +128,7 @@ yard server --reload
   * [Go VCR](https://github.com/dnaeon/go-vcr) (Go)
   * [Betamax](https://github.com/wjlroe/betamax) (Clojure)
   * [vcr-clj](https://github.com/ifesdjeen/vcr-clj) (Clojure)
+  * [scotch](https://github.com/mleech/scotch) (C#/.NET)
   * [Betamax.NET](https://github.com/mfloryan/Betamax.Net) (C#/.NET)
   * [ExVCR](https://github.com/parroty/exvcr) (Elixir)
   * [HAVCR](https://github.com/cordawyn/havcr) (Haskell)
@@ -143,9 +140,12 @@ yard server --reload
   * [yakbak](https://github.com/flickr/yakbak) (JavaScript/Node)
   * [NSURLConnectionVCR](https://bitbucket.org/martijnthe/nsurlconnectionvcr) (Objective-C)
   * [VCRURLConnection](https://github.com/dstnbrkr/VCRURLConnection) (Objective-C)
+  * [DVR](https://github.com/venmo/DVR) (Swift)
   * [VHS](https://github.com/diegoeche/vhs) (Erlang)
   * [Betamax](https://github.com/betamaxteam/betamax) (Java)
   * [http_replayer](https://github.com/ucarion/http_replayer) (Rust)
+  * [OkReplay](https://github.com/airbnb/okreplay) (Java/Android)
+  * [vcr](https://github.com/ropensci/vcr) (R)
 
 **Related Projects**
 
@@ -321,7 +321,7 @@ Become a sponsor and get your logo on our README on Github with a link to your s
 Copyright
 =========
 
-Copyright (c) 2010-2015 Myron Marston
+Copyright (c) 2010-2018 Myron Marston
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

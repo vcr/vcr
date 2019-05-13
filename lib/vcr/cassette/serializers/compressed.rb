@@ -17,9 +17,9 @@ module VCR
 
         # The file extension to use for this serializer.
         #
-        # @return [String] "gz"
+        # @return [String] "zz"
         def file_extension
-          'gz'
+          'zz'
         end
 
         # Serializes the given hash using YAML and Zlib.

@@ -4,9 +4,12 @@ require 'vcr/library_hooks/faraday'
 describe VCR::Middleware::Faraday do
   http_libs = %w[ typhoeus net_http patron ]
   http_libs.each do |lib|
-    it_behaves_like 'a hook into an HTTP library', :faraday, "faraday (w/ #{lib})",
-      :status_message_not_exposed,
-      :does_not_support_rotating_responses
+    flags = [ :does_not_support_rotating_responses ]
+    if lib == 'typhoeus'
+      flags << :status_message_not_exposed
+    end
+
+    it_behaves_like 'a hook into an HTTP library', :faraday, "faraday (w/ #{lib})", *flags
   end
 
   context 'when performing a multipart upload' do
@@ -100,16 +103,16 @@ describe VCR::Middleware::Faraday do
       end
 
       it 'makes the faraday middleware exclusively enabled for the duration of the request' do
-        expect(VCR.library_hooks).not_to be_disabled(:fakeweb)
+        expect(VCR.library_hooks).not_to be_disabled(:webmock)
 
         hook_called = false
         VCR.configuration.after_http_request do
           hook_called = true
-          expect(VCR.library_hooks).to be_disabled(:fakeweb)
+          expect(VCR.library_hooks).to be_disabled(:webmock)
         end
 
         make_request
-        expect(VCR.library_hooks).not_to be_disabled(:fakeweb)
+        expect(VCR.library_hooks).not_to be_disabled(:webmock)
         expect(hook_called).to be true
       end
     end

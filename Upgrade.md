@@ -1,4 +1,4 @@
-See the [Changelog](changelog) for a complete list of changes from VCR
+See the [Changelog](CHANGELOG.md) for a complete list of changes from VCR
 1.x to 2.0. This file simply lists the most pertinent ones to upgrading.
 
 ## Supported Rubies
@@ -215,7 +215,7 @@ purposes:
 
 ``` ruby
 VCR.configure do |c|
-  c.debug_logger = File.open('log/vcr.log')
+  c.debug_logger = File.open('log/vcr.log', 'w')
   # or...
   c.debug_logger = $stderr
 end

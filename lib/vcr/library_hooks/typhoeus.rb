@@ -44,7 +44,7 @@ else
           end
 
           def on_stubbed_by_vcr_request
-            ::Typhoeus::Response.new \
+            response = ::Typhoeus::Response.new \
               :http_version   => stubbed_response.http_version,
               :code           => stubbed_response.status.code,
               :status_message => stubbed_response.status.message,
@@ -52,6 +52,13 @@ else
               :body           => stubbed_response.body,
               :effective_url  => stubbed_response.adapter_metadata.fetch('effective_url', request.url),
               :mock           => true
+
+            first_header_line = "HTTP/#{stubbed_response.http_version} #{response.code} #{response.status_message}\r\n"
+            response.instance_variable_set(:@first_header_line, first_header_line)
+            response.instance_variable_get(:@options)[:response_headers] =
+              first_header_line + response.headers.map { |k,v| "#{k}: #{v}"}.join("\r\n")
+
+            response
           end
 
           def stubbed_response_headers
@@ -74,17 +81,36 @@ else
         end
 
         # @private
-        def self.vcr_response_from(response)
-          VCR::Response.new \
-            VCR::ResponseStatus.new(response.code, response.status_message),
-            response.headers,
-            response.body,
-            response.http_version,
-            { "effective_url" => response.effective_url }
+        class << self
+          def vcr_response_from(response)
+            VCR::Response.new \
+              VCR::ResponseStatus.new(response.code, response.status_message),
+              response.headers,
+              response.body,
+              response.http_version,
+              { "effective_url" => response.effective_url }
+          end
+
+          def collect_chunks(request)
+            chunks = ''
+            request.on_body.unshift(
+              Proc.new do |body, response|
+                chunks += body
+                request.instance_variable_set(:@chunked_body, chunks)
+              end
+            )
+          end
+
+          def restore_body_from_chunks(response, request)
+            response.options[:response_body] = request.instance_variable_get(:@chunked_body)
+          end
         end
 
         ::Typhoeus.on_complete do |response|
           request = response.request
+
+          restore_body_from_chunks(response, request) if request.streaming?
+
           unless VCR.library_hooks.disabled?(:typhoeus)
             vcr_response = vcr_response_from(response)
             typed_vcr_request = request.send(:remove_instance_variable, :@__typed_vcr_request)
@@ -99,7 +125,10 @@ else
         end
 
         ::Typhoeus.before do |request|
+          collect_chunks(request) if request.streaming?
           if response = VCR::LibraryHooks::Typhoeus::RequestHandler.new(request).handle
+            request.on_headers.each { |cb| cb.call(response) }
+            request.on_body.each { |cb| cb.call(response.body, response) }
             request.finish(response)
           else
             true

@@ -80,7 +80,6 @@ Feature: Matching on URI
 
     Examples:
       | configuration         | http_lib              |
-      | c.hook_into :fakeweb  | net/http              |
       | c.hook_into :webmock  | net/http              |
       | c.hook_into :webmock  | httpclient            |
       | c.hook_into :webmock  | curb                  |

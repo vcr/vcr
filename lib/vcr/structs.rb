@@ -167,25 +167,6 @@ module VCR
     end
   end
 
-  # @private
-  module OrderedHashSerializer
-    def each
-      @ordered_keys.each do |key|
-        yield key, self[key] if has_key?(key)
-      end
-    end
-
-    if RUBY_VERSION.to_f > 1.8
-      # 1.9+ hashes are already ordered.
-      def self.apply_to(*args); end
-    else
-      def self.apply_to(hash, keys)
-        hash.instance_variable_set(:@ordered_keys, keys)
-        hash.extend self
-      end
-    end
-  end
-
   # The request of an {HTTPInteraction}.
   #
   # @attr [Symbol] method the HTTP method (i.e. :head, :options, :get, :post, :put, :patch or :delete)
@@ -219,7 +200,7 @@ module VCR
         'uri'     => uri,
         'body'    => serializable_body,
         'headers' => headers
-      }.tap { |h| OrderedHashSerializer.apply_to(h, members) }
+      }
     end
 
     # Constructs a new instance from a hash.
@@ -274,7 +255,7 @@ module VCR
       end
 
       # @return [Boolean] whether or not this request is being stubbed by an
-      #  external library (such as WebMock or FakeWeb).
+      #  external library (such as WebMock).
       # @see #stubbed_by_vcr?
       # @see #stubbed?
       def externally_stubbed?
@@ -369,7 +350,6 @@ module VCR
         'http_version' => http_version
       }.tap do |hash|
         hash['adapter_metadata'] = adapter_metadata unless adapter_metadata.empty?
-        OrderedHashSerializer.apply_to(hash, members)
       end
     end
 
@@ -403,6 +383,11 @@ module VCR
       %w[ gzip deflate ].include? content_encoding
     end
 
+    # Checks if VCR decompressed the response body
+    def vcr_decompressed?
+      adapter_metadata['vcr_decompressed']
+    end
+
     # Decodes the compressed body and deletes evidence that it was ever compressed.
     #
     # @return self
@@ -412,9 +397,41 @@ module VCR
       self.class.decompress(body, content_encoding) { |new_body|
         self.body = new_body
         update_content_length_header
+        adapter_metadata['vcr_decompressed'] = content_encoding
         delete_header('Content-Encoding')
       }
       return self
+    end
+
+    # Recompresses the decompressed body according to adapter metadata.
+    #
+    # @raise [VCR::Errors::UnknownContentEncodingError] if the content encoding
+    #  stored in the adapter metadata is unknown
+    def recompress
+      type = adapter_metadata['vcr_decompressed']
+      new_body = begin
+        case type
+        when 'gzip'
+          body_str = ''
+          args = [StringIO.new(body_str)]
+          args << { :encoding => 'ASCII-8BIT' } if ''.respond_to?(:encoding)
+          writer = Zlib::GzipWriter.new(*args)
+          writer.write(body)
+          writer.close
+          body_str
+        when 'deflate'
+          Zlib::Deflate.inflate(body)
+        when 'identity', NilClass
+          nil
+        else
+          raise Errors::UnknownContentEncodingError, "unknown content encoding: #{type}"
+        end
+      end
+      if new_body
+        self.body = new_body
+        update_content_length_header
+        headers['Content-Encoding'] = type
+      end
     end
 
     begin
@@ -463,7 +480,7 @@ module VCR
     def to_hash
       {
         'code' => code, 'message' => message
-      }.tap { |h| OrderedHashSerializer.apply_to(h, members) }
+      }
     end
 
     # Constructs a new instance from a hash.
@@ -496,9 +513,7 @@ module VCR
         'request'     => request.to_hash,
         'response'    => response.to_hash,
         'recorded_at' => recorded_at.httpdate
-      }.tap do |hash|
-        OrderedHashSerializer.apply_to(hash, members)
-      end
+      }
     end
 
     # Constructs a new instance from a hash.

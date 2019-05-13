@@ -23,6 +23,11 @@
 # Ignore all tempfiles
 /tmp
 
+# Ignore documentation cache and generated files
+/.yardoc/
+/_yardoc/
+/doc/
+/rdoc/
+
 # Ignores that should be in the global gitignore
 /coverage
-/doc

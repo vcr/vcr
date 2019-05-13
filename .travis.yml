@@ -1,15 +1,11 @@
 sudo: false
 language: ruby
 script: script/ci.sh
+before_install:
+  - gem update --system
+  - gem install bundler
 cache: bundler
 rvm:
-  - 1.9.3
-  - '2.0'
-  - '2.1'
-  - '2.2'
-  - '2.3.0'
-  - jruby-19mode
-  - rbx-2
-matrix:
-  allow_failures:
-    - rvm: jruby-19mode
+  - 2.4
+  - 2.5
+  - 2.6

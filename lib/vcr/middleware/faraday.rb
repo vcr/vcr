@@ -72,8 +72,12 @@ module VCR
         end
 
         def response_for(response)
+          # reason_phrase is a new addition to Faraday::Response,
+          # so maintain backward compatibility
+          reason = response.respond_to?(:reason_phrase) ? response.reason_phrase : nil
+
           VCR::Response.new(
-            VCR::ResponseStatus.new(response.status, nil),
+            VCR::ResponseStatus.new(response.status, reason),
             response.headers,
             raw_body_from(response.body),
             nil

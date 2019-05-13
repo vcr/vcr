@@ -12,17 +12,16 @@ Gem::Specification.new do |spec|
   spec.email         = ["myron.marston@gmail.com"]
   spec.summary       = %q{Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests.}
   spec.description   = spec.summary
-  spec.homepage      = "http://vcr.github.io/vcr"
+  spec.homepage      = "https://relishapp.com/vcr/vcr/docs"
   spec.license       = "MIT"
 
   spec.files         = Dir[File.join("lib", "**", "*")]
   spec.executables   = Dir[File.join("bin", "**", "*")].map! { |f| f.gsub(/bin\//, "") }
-  spec.test_files    = Dir[File.join("test", "**", "*"), File.join("spec", "**", "*"), File.join("features", "**", "*")]
   spec.require_paths = ["lib"]
 
   spec.required_ruby_version = ">= 1.9.3"
 
-  spec.add_development_dependency "bundler", "~> 1.3"
+  spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "test-unit", "~> 3.1.4"
   spec.add_development_dependency "rake", "~> 10.1"
@@ -31,13 +30,12 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "codeclimate-test-reporter", "~> 0.4"
   spec.add_development_dependency "yard"
   spec.add_development_dependency "rack"
-  spec.add_development_dependency "fakeweb"
   spec.add_development_dependency "webmock"
   spec.add_development_dependency "cucumber", "~> 2.0.2"
   spec.add_development_dependency "aruba", "~> 0.5.3"
-  spec.add_development_dependency "faraday"
+  spec.add_development_dependency "faraday", "~> 0.11.0"
   spec.add_development_dependency "httpclient"
-  spec.add_development_dependency "excon"
+  spec.add_development_dependency "excon", "0.62.0"
   spec.add_development_dependency "timecop"
   spec.add_development_dependency "multi_json"
   spec.add_development_dependency "json"

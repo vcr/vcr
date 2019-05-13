@@ -134,7 +134,6 @@ Feature: Cassette format
 
     Examples:
       | configuration         | http_lib              |
-      | c.hook_into :fakeweb  | net/http              |
       | c.hook_into :webmock  | net/http              |
       | c.hook_into :webmock  | httpclient            |
       | c.hook_into :webmock  | patron                |
@@ -275,7 +274,7 @@ Feature: Cassette format
 
       """
     When I run `ruby cassette_compressed.rb 'Hello'`
-    Then the file "cassettes/example.gz" should contain compressed YAML like:
+    Then the file "cassettes/example.zz" should contain compressed YAML like:
       """
       ---
       http_interactions:

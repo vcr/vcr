@@ -54,16 +54,14 @@ module VCR
     #
     # @example
     #   VCR.configure do |c|
-    #     c.hook_into :fakeweb, :typhoeus
+    #     c.hook_into :webmock, :typhoeus
     #   end
     #
     # @param hooks [Array<Symbol>] List of libraries. Valid values are
-    #  `:fakeweb`, `:webmock`, `:typhoeus`, `:excon` and `:faraday`.
+    #  `:webmock`, `:typhoeus`, `:excon` and `:faraday`.
     # @raise [ArgumentError] when given an unsupported library name.
     # @raise [VCR::Errors::LibraryVersionTooLowError] when the version
     #  of a library you are using is too low for VCR to support.
-    # @note `:fakeweb` and `:webmock` cannot both be used since they both monkey patch
-    #  `Net::HTTP`. Otherwise, you can use any combination of these.
     def hook_into(*hooks)
       hooks.each { |a| load_library_hook(a) }
       invoke_hook(:after_library_hooks_loaded)
@@ -78,6 +76,15 @@ module VCR
       VCR.request_ignorer.ignore_hosts(*hosts)
     end
     alias ignore_host ignore_hosts
+
+    # Specifies host(s) that VCR should stop ignoring.
+    #
+    # @param hosts [Array<String>] List of hosts to unignore
+    # @see #ignore_hosts
+    def unignore_hosts(*hosts)
+      VCR.request_ignorer.unignore_hosts(*hosts)
+    end
+    alias unignore_host unignore_hosts
 
     # Sets whether or not VCR should ignore localhost requests.
     #
@@ -224,7 +231,7 @@ module VCR
 
       before_playback(tag) do |interaction|
         orig_text = call_block(block, interaction)
-        log "before_playback: replacing #{placeholder.inspect} with #{orig_text.inspect}"
+        log "before_playback: replacing #{orig_text.inspect} with #{placeholder.inspect}"
         interaction.filter!(placeholder, orig_text)
       end
     end
@@ -502,7 +509,7 @@ module VCR
       file = "vcr/library_hooks/#{hook}"
       require file
     rescue LoadError => e
-      raise e unless e.message.include?(file) # in case FakeWeb/WebMock/etc itself is not available
+      raise e unless e.message.include?(file) # in case WebMock itself is not available
       raise ArgumentError.new("#{hook.inspect} is not a supported VCR HTTP library hook.")
     end
 
@@ -552,6 +559,10 @@ module VCR
     end
 
     def register_built_in_hooks
+      before_playback(:recompress_response) do |interaction|
+        interaction.response.recompress if interaction.response.vcr_decompressed?
+      end
+
       before_playback(:update_content_length_header) do |interaction|
         interaction.response.update_content_length_header
       end
@@ -573,4 +584,3 @@ module VCR
     define_hook :after_library_hooks_loaded
   end
 end
-

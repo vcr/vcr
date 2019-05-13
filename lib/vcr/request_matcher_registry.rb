@@ -138,7 +138,7 @@ module VCR
 
       register(:body_as_json) do |r1, r2|
         begin
-          JSON.parse(r1.body) == JSON.parse(r2.body)
+          r1.body == r2.body || JSON.parse(r1.body) == JSON.parse(r2.body)
         rescue JSON::ParserError
           false
         end

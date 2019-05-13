@@ -22,21 +22,26 @@ module VCR
         @parent_list            = parent_list
         @used_interactions      = []
         @log_prefix             = log_prefix
+        @mutex                  = Mutex.new
 
         interaction_summaries = interactions.map { |i| "#{request_summary(i.request)} => #{response_summary(i.response)}" }
         log "Initialized HTTPInteractionList with request matchers #{request_matchers.inspect} and #{interactions.size} interaction(s): { #{interaction_summaries.join(', ')} }", 1
       end
 
       def response_for(request)
-        if index = matching_interaction_index_for(request)
-          interaction = @interactions.delete_at(index)
-          @used_interactions.unshift interaction
-          log "Found matching interaction for #{request_summary(request)} at index #{index}: #{response_summary(interaction.response)}", 1
-          interaction.response
-        elsif interaction = matching_used_interaction_for(request)
-          interaction.response
-        else
-          @parent_list.response_for(request)
+        # Without this mutex, under threaded access, the wrong response may be removed
+        # out of the (remaining) interactions list (and other problems).
+        @mutex.synchronize do
+          if index = matching_interaction_index_for(request)
+            interaction = @interactions.delete_at(index)
+            @used_interactions.unshift interaction
+            log "Found matching interaction for #{request_summary(request)} at index #{index}: #{response_summary(interaction.response)}", 1
+            interaction.response
+          elsif interaction = matching_used_interaction_for(request)
+            interaction.response
+          else
+            @parent_list.response_for(request)
+          end
         end
       end
 

@@ -16,6 +16,8 @@ Feature: Ignore Request
       VCR with a javascript-enabled capybara driver, since capybara boots
       your rack app and makes localhost requests to it to check that it has
       booted.
+    * `unignore_hosts 'foo.com', 'bar.com'` makes VCR stop ignoring particular
+      hosts.
 
   Ignored requests are not recorded and are always allowed, regardless of
   the record mode, and even outside of a `VCR.use_cassette` block.
@@ -80,7 +82,6 @@ Feature: Ignore Request
 
     Examples:
       | configuration         | http_lib              |
-      | c.hook_into :fakeweb  | net/http              |
       | c.hook_into :webmock  | net/http              |
       | c.hook_into :typhoeus | typhoeus              |
       | c.hook_into :faraday  | faraday (w/ net_http) |
@@ -115,7 +116,83 @@ Feature: Ignore Request
 
     Examples:
       | configuration         | http_lib              |
-      | c.hook_into :fakeweb  | net/http              |
+      | c.hook_into :webmock  | net/http              |
+      | c.hook_into :typhoeus | typhoeus              |
+      | c.hook_into :excon    | excon                 |
+      | c.hook_into :faraday  | faraday (w/ net_http) |
+
+  Scenario Outline: unignored host requests are recorded again
+    Given a file named "unignore_hosts.rb" with:
+      """ruby
+      include_http_adapter_for("<http_lib>")
+      require 'sinatra_app.rb'
+
+      require 'vcr'
+
+      VCR.configure do |c|
+        c.ignore_hosts '127.0.0.1', 'localhost'
+        c.cassette_library_dir = 'cassettes'
+        <configuration>
+      end
+
+      VCR.use_cassette('example') do
+        puts response_body_for(:get, "http://localhost:#{$server.port}/")
+      end
+
+      VCR.configure do |c|
+        c.unignore_hosts '127.0.0.1', 'localhost'
+      end
+
+      VCR.use_cassette('example') do
+        puts response_body_for(:get, "http://localhost:#{$server.port}/")
+      end
+      """
+    When I run `ruby unignore_hosts.rb`
+    Then it should pass with:
+      """
+      Port 7777 Response 1
+      Port 7777 Response 2
+      """
+    And the file "cassettes/example.yml" should not contain "Response 1"
+    And the file "cassettes/example.yml" should contain "Response 2"
+
+    Examples:
+      | configuration         | http_lib              |
+      | c.hook_into :webmock  | net/http              |
+      | c.hook_into :typhoeus | typhoeus              |
+      | c.hook_into :excon    | excon                 |
+      | c.hook_into :faraday  | faraday (w/ net_http) |
+
+  Scenario Outline: unignored host requests are not allowed without a cassette
+    Given a file named "unignore_hosts_without_cassette.rb" with:
+      """ruby
+      include_http_adapter_for("<http_lib>")
+      require 'sinatra_app.rb'
+
+      require 'vcr'
+
+      VCR.configure do |c|
+        c.ignore_hosts '127.0.0.1', 'localhost'
+        c.cassette_library_dir = 'cassettes'
+        <configuration>
+      end
+
+      puts response_body_for(:get, "http://localhost:#{$server.port}/")
+
+      VCR.configure do |c|
+        c.unignore_hosts '127.0.0.1', 'localhost'
+      end
+
+      puts response_body_for(:get, "http://localhost:#{$server.port}/")
+      """
+    When I run `ruby unignore_hosts_without_cassette.rb`
+    Then it should fail with "An HTTP request has been made that VCR does not know how to handle"
+    And the output should contain "Response 1"
+    And the output should not contain "Response 2"
+    And the file "cassettes/example.yml" should not exist
+
+    Examples:
+      | configuration         | http_lib              |
       | c.hook_into :webmock  | net/http              |
       | c.hook_into :typhoeus | typhoeus              |
       | c.hook_into :excon    | excon                 |
@@ -148,7 +225,6 @@ Feature: Ignore Request
 
     Examples:
       | configuration         | http_lib              |
-      | c.hook_into :fakeweb  | net/http              |
       | c.hook_into :webmock  | net/http              |
       | c.hook_into :typhoeus | typhoeus              |
       | c.hook_into :excon    | excon                 |
@@ -184,9 +260,7 @@ Feature: Ignore Request
 
     Examples:
       | configuration         | http_lib              |
-      | c.hook_into :fakeweb  | net/http              |
       | c.hook_into :webmock  | net/http              |
       | c.hook_into :typhoeus | typhoeus              |
       | c.hook_into :excon    | excon                 |
       | c.hook_into :faraday  | faraday (w/ net_http) |
-

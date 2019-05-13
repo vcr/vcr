@@ -110,6 +110,49 @@ describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_INTERP
     end
   end
 
+  context 'when using on_body callback' do
+    def make_request
+      VCR.use_cassette('no_body') do
+        request = Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/localhost_test")
+        request.on_headers { on_headers_counter.increment }
+        request.on_body { on_body_counter.increment }
+        request.run
+      end
+    end
+
+    let(:on_headers_counter) { double(:increment => nil) }
+    let(:on_body_counter) { double(:increment => nil) }
+
+    it 'records and replays correctly' do
+      expect(on_headers_counter).to receive(:increment).exactly(2).times
+      expect(on_body_counter).to receive(:increment).exactly(2).times
+
+      recorded = make_request
+      played_back = make_request
+
+      expect(recorded.body).to eq('Localhost response')
+      expect(played_back.body).to eq(recorded.body)
+    end
+  end
+
+  context 'when using on_body callback returning :abort' do
+    def make_request
+      VCR.use_cassette('no_body') do
+        request = Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/localhost_test")
+        request.on_body { next :abort }
+        request.run
+      end
+    end
+
+    it 'records and replays correctly' do
+      recorded = make_request
+      played_back = make_request
+
+      expect(recorded.body).to eq('Localhost response')
+      expect(played_back.body).to eq(recorded.body)
+    end
+  end
+
   context '#effective_url' do
     ResponseValues = Struct.new(:status, :body, :effective_url)
 
