@@ -1,6 +1,29 @@
 Changelog
 =========
 
+## 5.0.0
+[Full Changelog](https://github.com/vcr/vcr/compare/v4.0.0...v5.0.0)
+
+  - [breaking] disabling webmock excon adapter due to issues
+  - [breaking] change the compressed extension from gz to zz
+  - [breaking] don't eject cassettes on UnhandledHTTPRequestError
+  - [breaking] when logging the before_playback placeholder replacement, VCR would state "replacing <PLACEHOLDER> with <VALUE>" which does not correctly represent what is actually happening, it's now semantically correct
+  - [breaking] removing more ruby 1.8 weirdness, re: ordered hashes quirk
+  - [patch] VCR.use_cassettes raises no implicit conversion of nil into Hash https://github.com/vcr/vcr/pull/730#issuecomment-454049764
+  - faster JSON comparison
+  - recompress_response option+hook
+  - unignore_hosts option: remove hosts added to @ignored_hosts Set with ignore_hosts
+  - support ruby 2.6 in test matrix
+  - support ruby 2.5 in test matrix
+  - support Typhoeus 1.1 in test matrix
+  - updating repository meta files
+  
+I want to take explicit time here to thank the wonder people who contributed these changes. Some were small and easy while others were challenging and large. They are all meaningful to me and to VCR. Those people are (in no order):
+
+@marshall-lee, @mcfiredrill, @aimerald, @saveriomiroddi, @bwilczek, @felipecsl, @jessedoyle, @raszi, @hdabrows, @nicolasleger, @sckott, @Mehonoshin, @willywg, @sathieu, @skryukov, @joshRpowell, @gregmolnar, @notEthan, @andrew-lewin, and @laserlemon.
+
+If I missed anyone I'm very sorry, you deserve credit.
+
 ## 4.0.0
 [Full Changelog](https://github.com/vcr/vcr/compare/v3.0.3...v4.0.0)
 
