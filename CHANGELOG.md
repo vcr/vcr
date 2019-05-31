@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## 5.0.0
+## 5.0.0 (May 27, 2019)
 [Full Changelog](https://github.com/vcr/vcr/compare/v4.0.0...v5.0.0)
 
   - [breaking] disabling webmock excon adapter due to issues
