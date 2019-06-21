@@ -278,14 +278,6 @@ module VCR
           )
           expect(matches).to be false
         end
-
-        it 'does not match when body is not json' do
-          matches = subject[:body_as_json].matches?(
-            request_with(:body => 'a=b'),
-            request_with(:body => 'a=b')
-          )
-          expect(matches).to be false
-        end
       end
 
       describe ":headers" do
