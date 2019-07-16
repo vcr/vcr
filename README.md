@@ -4,7 +4,7 @@ vcr
 [![Quality](https://img.shields.io/codeclimate/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
 [![Coverage](https://img.shields.io/codeclimate/coverage/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
 [![Build](https://img.shields.io/travis/vcr/vcr/master.svg?style=flat-square)](https://travis-ci.org/vcr/vcr)
-[![Releases](https://img.shields.io/github/release/vcr/vcr.svg?style=flat-square)](http://github.com/vcr/vcr/releases)
+[![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/vcr/vcr.svg?style=flat-square)](http://github.com/vcr/vcr/releases)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 [![Version](https://img.shields.io/gem/v/vcr.svg?style=flat-square)](https://rubygems.org/gems/vcr)
 [![OpenCollective](https://opencollective.com/vcr/backers/badge.svg)](https://opencollective.com/vcr#backer)
