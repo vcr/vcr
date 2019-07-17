@@ -154,7 +154,7 @@ module VCR
         :record, :erb, :match_requests_on, :re_record_interval, :tag, :tags,
         :update_content_length_header, :allow_playback_repeats, :allow_unused_http_interactions,
         :exclusive, :serialize_with, :preserve_exact_body_bytes, :decode_compressed_response,
-        :recompress_response, :persist_with, :clean_outdated_http_interactions
+        :recompress_response, :persist_with, :clean_outdated_http_interactions, :single_cassette
       ]
 
       if invalid_options.size > 0

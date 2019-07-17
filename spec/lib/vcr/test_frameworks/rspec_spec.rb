@@ -47,4 +47,13 @@ describe VCR::RSpec::Metadata, :skip_vcr_reset do
   it 'allows the cassette options to be set', :vcr => { :match_requests_on => [:method] } do
     expect(VCR.current_cassette.match_requests_on).to eq([:method])
   end
+
+  context 'with single cassette', vcr: { single_cassette: true } do
+    it 'use the same cassette from the context' do
+      expect(VCR.current_cassette.name.split('/')).to eq([
+        'VCR::RSpec::Metadata',
+        'with single cassette'
+      ])
+    end
+  end
 end
