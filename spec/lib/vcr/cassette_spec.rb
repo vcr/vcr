@@ -572,6 +572,26 @@ describe VCR::Cassette do
       expect(::File).not_to exist(cassette.file)
     end
 
+    context 'when running the wrapped block failed' do
+      context 'when record_on_error is false' do
+        it 'should not record the interactions' do
+          cassette = VCR::Cassette.new('test_cassette', :record_on_error => false)
+          cassette.run_failed!
+
+          expect(cassette.should_write_recorded_interactions_to_disk?).to be false
+        end
+      end
+
+      context 'when record_on_error is true' do
+        it 'should not record the interactions' do
+          cassette = VCR::Cassette.new('test_cassette', :record_on_error => true)
+          cassette.run_failed!
+
+          expect(cassette.should_write_recorded_interactions_to_disk?).to be true
+        end
+      end
+    end
+
     it "writes the recorded interactions to a subdirectory if the cassette name includes a directory" do
       recorded_interactions = [http_interaction { |i| i.response.body = "subdirectory response" }]
       cassette = VCR::Cassette.new('subdirectory/test_cassette')

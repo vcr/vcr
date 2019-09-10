@@ -492,6 +492,7 @@ module VCR
       @rspec_metadata_configured = false
       @default_cassette_options = {
         :record            => :once,
+        :record_on_error   => true,
         :match_requests_on => RequestMatcherRegistry::DEFAULT_MATCHERS,
         :allow_unused_http_interactions => true,
         :serialize_with    => :yaml,
