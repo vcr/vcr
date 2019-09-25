@@ -65,7 +65,7 @@ module VCRHelpers
   end
 
   def modify_file(file_name, orig_text, new_text)
-    in_current_dir do
+    cd('.') do
       file = File.read(file_name)
       regex = /#{Regexp.escape(orig_text)}/
       expect(file).to match(regex)
@@ -90,11 +90,11 @@ Given(/^a previously recorded cassette file "([^"]*)" with:$/) do |file_name, co
 end
 
 Given(/^it is (.*)$/) do |date_string|
-  set_env('DATE_STRING', date_string)
+  set_environment_variable('DATE_STRING', date_string)
 end
 
 Given(/^that port numbers in "([^"]*)" are normalized to "([^"]*)"$/) do |file_name, port|
-  in_current_dir do
+  cd('.') do
     contents = File.read(file_name)
     contents = contents.gsub(/:\d{2,}\//, ":#{port}/")
     File.open(file_name, 'w') { |f| f.write(contents) }
@@ -110,7 +110,7 @@ When(/^I append to file "([^"]*)":$/) do |file_name, content|
 end
 
 When(/^I set the "([^"]*)" environment variable to "([^"]*)"$/) do |var, value|
-  set_env(var, value)
+  set_environment_variable(var, value)
 end
 
 Then(/^the file "([^"]*)" should exist$/) do |file_name|
@@ -118,7 +118,8 @@ Then(/^the file "([^"]*)" should exist$/) do |file_name|
 end
 
 Then(/^it should (pass|fail) with "([^"]*)"$/) do |pass_fail, partial_output|
-  assert_exit_status_and_partial_output(pass_fail == 'pass', partial_output)
+  assert_success(pass_fail == 'pass')
+  assert_partial_output(partial_output, all_output)
 end
 
 Then(/^it should (pass|fail) with an error like:$/) do |pass_fail, partial_output|
@@ -142,25 +143,25 @@ Then(/^the output should contain each of the following:$/) do |table|
 end
 
 Then(/^the file "([^"]*)" should contain YAML like:$/) do |file_name, expected_content|
-  actual_content = in_current_dir { File.read(file_name) }
+  actual_content = cd('.') { File.read(file_name) }
   expect(normalize_cassette_hash(YAML.load(actual_content))).to eq(normalize_cassette_hash(YAML.load(expected_content.to_s)))
 end
 
 Then(/^the file "([^"]*)" should contain JSON like:$/) do |file_name, expected_content|
-  actual_content = in_current_dir { File.read(file_name) }
+  actual_content = cd('.') { File.read(file_name) }
   actual = MultiJson.decode(actual_content)
   expected = MultiJson.decode(expected_content.to_s)
   expect(normalize_cassette_hash(actual)).to eq(normalize_cassette_hash(expected))
 end
 
 Then(/^the file "([^"]*)" should contain compressed YAML like:$/) do |file_name, expected_content|
-  actual_content = in_current_dir { File.read(file_name) }
+  actual_content = cd('.') { File.read(file_name) }
   unzipped_content = Zlib::Inflate.inflate(actual_content)
   expect(normalize_cassette_hash(YAML.load(unzipped_content))).to eq(normalize_cassette_hash(YAML.load(expected_content.to_s)))
 end
 
 Then(/^the file "([^"]*)" should contain ruby like:$/) do |file_name, expected_content|
-  actual_content = in_current_dir { File.read(file_name) }
+  actual_content = cd('.') { File.read(file_name) }
   actual = eval(actual_content)
   expected = eval(expected_content)
   expect(normalize_cassette_hash(actual)).to eq(normalize_cassette_hash(expected))
@@ -173,7 +174,7 @@ Then(/^the file "([^"]*)" should contain each of these:$/) do |file_name, table|
 end
 
 Then(/^the file "([^"]*)" should contain a YAML fragment like:$/) do |file_name, fragment|
-  in_current_dir do
+  cd('.') do
     file_content = File.read(file_name)
 
     # Normalize by removing leading and trailing whitespace...
@@ -188,7 +189,7 @@ Then(/^the file "([^"]*)" should contain a YAML fragment like:$/) do |file_name,
 end
 
 Then(/^the cassette "([^"]*)" should have the following response bodies:$/) do |file, table|
-  interactions = in_current_dir { YAML.load_file(file) }['http_interactions'].map { |h| VCR::HTTPInteraction.from_hash(h) }
+  interactions = cd('.') { YAML.load_file(file) }['http_interactions'].map { |h| VCR::HTTPInteraction.from_hash(h) }
   actual_response_bodies = interactions.map { |i| i.response.body }
   expected_response_bodies = table.raw.flatten
   expect(actual_response_bodies).to match(expected_response_bodies)
