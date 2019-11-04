@@ -15,8 +15,7 @@ Record your test suite's HTTP interactions and replay them during future test ru
 
 **Help Wanted**
 
-We're looking for new maintainers. If you'd like to help maintain a well-used gem please create an issue so we can add you.
-
+We're looking for more maintainers. If you'd like to help maintain a well-used gem please spend some time reviewing pull requests, issues, or participating in discussions.
 
 Usage
 =====
