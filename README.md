@@ -318,7 +318,7 @@ Become a sponsor and get your logo on our README on Github with a link to your s
 Copyright
 =========
 
-Copyright (c) 2010-2018 Myron Marston
+Copyright (c) 2010-2019 Myron Marston
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
