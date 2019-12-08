@@ -81,10 +81,6 @@ Given(/the following files do not exist:/) do |files|
   check_file_presence(files.raw.map{|file_row| file_row[0]}, false)
 end
 
-Given(/^the directory "([^"]*)" does not exist$/) do |dir|
-  check_directory_presence([dir], false)
-end
-
 Given(/^a previously recorded cassette file "([^"]*)" with:$/) do |file_name, content|
   write_file(file_name, normalize_cassette_content(content))
 end
@@ -111,10 +107,6 @@ end
 
 When(/^I set the "([^"]*)" environment variable to "([^"]*)"$/) do |var, value|
   set_environment_variable(var, value)
-end
-
-Then(/^the file "([^"]*)" should exist$/) do |file_name|
-  check_file_presence([file_name], true)
 end
 
 Then(/^it should (pass|fail) with "([^"]*)"$/) do |pass_fail, partial_output|
