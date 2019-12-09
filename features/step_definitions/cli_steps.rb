@@ -110,7 +110,11 @@ When(/^I set the "([^"]*)" environment variable to "([^"]*)"$/) do |var, value|
 end
 
 Then(/^it should (pass|fail) with an error like:$/) do |pass_fail, partial_output|
-  assert_success(pass_fail == 'pass')
+  if pass_fail == 'pass'
+    expect(last_command_started).to be_successfully_executed
+  else
+    expect(last_command_started).not_to be_successfully_executed
+  end
 
   # different implementations place the exception class at different
   # places relative to the message (i.e. with a multiline error message)
@@ -120,12 +124,12 @@ Then(/^it should (pass|fail) with an error like:$/) do |pass_fail, partial_outpu
   process_output.gsub!(/^\s*/, '')
   partial_output.gsub!(/^\s*/, '')
 
-  assert_partial_output(partial_output, process_output)
+  expect(process_output).to include_output_string partial_output
 end
 
 Then(/^the output should contain each of the following:$/) do |table|
   table.raw.flatten.each do |string|
-    assert_partial_output(string, all_output)
+    expect(all_output).to include_output_string string
   end
 end
 
@@ -183,5 +187,9 @@ Then(/^the cassette "([^"]*)" should have the following response bodies:$/) do |
 end
 
 Then(/^it should (pass|fail)$/) do |pass_fail|
-  assert_success(pass_fail == 'pass')
+  if pass_fail == 'pass'
+    expect(last_command_started).to be_successfully_executed
+  else
+    expect(last_command_started).not_to be_successfully_executed
+  end
 end
