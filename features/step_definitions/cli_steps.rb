@@ -161,7 +161,7 @@ end
 
 Then(/^the file "([^"]*)" should contain each of these:$/) do |file_name, table|
   table.raw.flatten.each do |string|
-    check_file_content(file_name, string, true)
+    expect(file_name).to have_file_content /#{string}/
   end
 end
 
