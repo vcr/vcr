@@ -109,11 +109,6 @@ When(/^I set the "([^"]*)" environment variable to "([^"]*)"$/) do |var, value|
   set_environment_variable(var, value)
 end
 
-Then(/^it should (pass|fail) with "([^"]*)"$/) do |pass_fail, partial_output|
-  assert_success(pass_fail == 'pass')
-  assert_partial_output(partial_output, all_output)
-end
-
 Then(/^it should (pass|fail) with an error like:$/) do |pass_fail, partial_output|
   assert_success(pass_fail == 'pass')
 
