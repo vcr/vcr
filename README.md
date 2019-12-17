@@ -1,22 +1,19 @@
 vcr
 ===
 
-[![Quality](https://img.shields.io/codeclimate/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
-[![Coverage](https://img.shields.io/codeclimate/coverage/vcr/vcr.svg?style=flat-square)](https://codeclimate.com/github/vcr/vcr)
 [![Build](https://img.shields.io/travis/vcr/vcr/master.svg?style=flat-square)](https://travis-ci.org/vcr/vcr)
-[![Releases](https://img.shields.io/github/release/vcr/vcr.svg?style=flat-square)](http://github.com/vcr/vcr/releases)
+[![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/vcr/vcr.svg?style=flat-square)](http://github.com/vcr/vcr/releases)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 [![Version](https://img.shields.io/gem/v/vcr.svg?style=flat-square)](https://rubygems.org/gems/vcr)
-[![OpenCollective](https://opencollective.com/vcr/backers/badge.svg)](https://opencollective.com/vcr#backer)
-[![OpenCollective](https://opencollective.com/vcr/sponsors/badge.svg)](https://opencollective.com/vcr#sponsor)
+[![OpenCollective](https://opencollective.com/vcr/backers/badge.svg?style=flat-square)](https://opencollective.com/vcr#backer)
+[![OpenCollective](https://opencollective.com/vcr/sponsors/badge.svg?style=flat-square)](https://opencollective.com/vcr#sponsor)
 
 
 Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests.
 
 **Help Wanted**
 
-We're looking for new maintainers. If you'd like to help maintain a well-used gem please create an issue so we can add you.
-
+We're looking for more maintainers. If you'd like to help maintain a well-used gem please spend some time reviewing pull requests, issues, or participating in discussions.
 
 Usage
 =====
@@ -321,7 +318,7 @@ Become a sponsor and get your logo on our README on Github with a link to your s
 Copyright
 =========
 
-Copyright (c) 2010-2018 Myron Marston
+Copyright (c) 2010-2019 Myron Marston
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
