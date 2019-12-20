@@ -32,10 +32,19 @@ module VCR
           config.before(:each, when_tagged_with_vcr) do |ex|
             example = ex.respond_to?(:metadata) ? ex : ex.example
 
+            cassette_name = nil
             options = example.metadata[:vcr]
-            options = options.is_a?(Hash) ? options.dup : {} # in case it's just :vcr => true
+            options = case options
+                      when Hash #=> vcr: { cassette_name: 'foo' }
+                        options.dup
+                      when String #=> vcr: 'bar'
+                        cassette_name = options.dup
+                        {}
+                      else #=> :vcr or vcr: true
+                        {}
+                      end
 
-            cassette_name = options.delete(:cassette_name) ||
+            cassette_name ||= options.delete(:cassette_name) ||
                             vcr_cassette_name_for[example.metadata]
             VCR.insert_cassette(cassette_name, options)
           end
