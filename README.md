@@ -40,7 +40,7 @@ end
 
 Run this test once, and VCR will record the HTTP request to `fixtures/vcr_cassettes/synopsis.yml`. Run it again, and VCR will replay the response from iana.org when the HTTP request is made. This test is now fast (no real HTTP requests are made anymore), deterministic (the test will continue to pass, even if you are offline, or iana.org goes down for maintenance) and accurate (the response will contain the same headers and body you get from a real request). You can use a different cassette library directory (e.g., "test/vcr_cassettes").
 
-NOTE: To avoid storing any sensitive information in cassettes, check out [https://relishapp.com/vcr/vcr/v/1-10-0/docs/configuration/filter-sensitive-data](https://relishapp.com/vcr/vcr/v/1-10-0/docs/configuration/filter-sensitive-data)
+NOTE: To avoid storing any sensitive information in cassettes, check out [Filter Sensitive Data](https://relishapp.com/vcr/vcr/v/5-0-0/docs/configuration/filter-sensitive-data) in the documentation.
 
 **Rails and Minitest:**
 Do *not* use 'test/fixtures' as the directory if you're using Rails and Minitest (Rails will instead transitively load any files in that directory as models).
