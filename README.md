@@ -38,7 +38,9 @@ class VCRTest < Test::Unit::TestCase
 end
 ```
 
-Run this test once, and VCR will record the HTTP request to `fixtures/vcr_cassettes/synopsis.yml`.  Run it again, and VCR will replay the response from iana.org when the HTTP request is made.  This test is now fast (no real HTTP requests are made anymore), deterministic (the test will continue to pass, even if you are offline, or iana.org goes down for maintenance) and accurate (the response will contain the same headers and body you get from a real request).  You can use a different cassette library directory (e.g., "test/vcr_cassettes").
+Run this test once, and VCR will record the HTTP request to `fixtures/vcr_cassettes/synopsis.yml`. Run it again, and VCR will replay the response from iana.org when the HTTP request is made. This test is now fast (no real HTTP requests are made anymore), deterministic (the test will continue to pass, even if you are offline, or iana.org goes down for maintenance) and accurate (the response will contain the same headers and body you get from a real request). You can use a different cassette library directory (e.g., "test/vcr_cassettes").
+
+NOTE: To avoid storing any sensitive information in cassettes, check out [Filter Sensitive Data](https://relishapp.com/vcr/vcr/v/5-0-0/docs/configuration/filter-sensitive-data) in the documentation.
 
 **Rails and Minitest:**
 Do *not* use 'test/fixtures' as the directory if you're using Rails and Minitest (Rails will instead transitively load any files in that directory as models).
@@ -76,14 +78,14 @@ Do *not* use 'test/fixtures' as the directory if you're using Rails and Minitest
 The docs come in two flavors:
 
   * The [relish docs](https://relishapp.com/vcr/vcr/docs) contain example-based documentation (VCR's Cucumber suite, in fact). It's a good place to look when you are first getting started with VCR, or if you want to see an example of how to use a feature.
-  * The [rubydoc.info docs](http://www.rubydoc.info/gems/vcr/frames) contain API documentation. The API docs contain detailed info about all of VCR's public API.
-  * See the [Upgrade](https://github.com/vcr/vcr/blob/master/Upgrade.md) doc for info about what's new and changed in VCR 2.0.
+  * The [rubydoc.info docs](https://www.rubydoc.info/gems/vcr/frames) contain API documentation. The API docs contain detailed info about all of VCR's public API.
+  * See the [CHANGELOG](https://github.com/vcr/vcr/blob/master/CHANGELOG.md) doc for info about what's new and changed.
 
-There is also a Railscast, which will get you up and running in no-time http://railscasts.com/episodes/291-testing-with-vcr.
+There is also a Railscast (from 2011), which will get you up and running in no-time http://railscasts.com/episodes/291-testing-with-vcr.
 
 **Release Policy**
 
-VCR follows the principles of [semantic versioning](http://semver.org/). The [API documentation](http://rubydoc.info/gems/vcr/frames) defines VCR's public API. Patch level releases contain only bug fixes. Minor releases contain backward-compatible new features. Major new releases contain backwards-incompatible changes to the public API.
+VCR follows the principles of [semantic versioning](https://semver.org/). The [API documentation](https://rubydoc.info/gems/vcr/frames) defines VCR's public API. Patch level releases contain only bug fixes. Minor releases contain backward-compatible new features. Major new releases contain backwards-incompatible changes to the public API.
 
 **Ruby Interpreter Compatibility**
 
@@ -101,15 +103,15 @@ Note that as of VCR 3, 1.8.7 and 1.9.2 are not supported.
 
 **Development**
 
-  * Source hosted on [GitHub](http://github.com/vcr/vcr).
-  * Direct questions and discussions to the [mailing list](http://groups.google.com/group/vcr-ruby).
-  * Report issues on [GitHub Issues](http://github.com/vcr/vcr/issues).
+  * Source hosted on [GitHub](https://github.com/vcr/vcr).
+  * Direct questions and discussions on [GitHub Issues](https://github.com/vcr/vcr/issues).
+  * Report bugs/issues on [GitHub Issues](https://github.com/vcr/vcr/issues).
   * Pull requests are very welcome! Please include spec and/or feature coverage for every patch,
     and create a topic branch for every separate change you make.
   * See the [Contributing](https://github.com/vcr/vcr/blob/master/CONTRIBUTING.md)
     guide for instructions on running the specs and features.
   * Code quality metrics are checked by [Code Climate](https://codeclimate.com/github/vcr/vcr).
-  * Documentation is generated with [YARD](http://yardoc.org/) ([cheat sheet](http://cheat.errtheblog.com/s/yard)).
+  * Documentation is generated with [YARD](https://yardoc.org/) ([cheat sheet](http://cheat.errtheblog.com/s/yard)).
     To generate while developing:
 
 ```
