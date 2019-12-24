@@ -70,6 +70,24 @@ Feature: default_cassette_options
     When I run `ruby default_record_mode.rb`
     Then the output should contain "Record mode: :once"
 
+  Scenario: `:record_on_error` defaults to `true` when it has not been set
+    Given a file named "default_record_on_error.rb" with:
+      """ruby
+      require 'vcr'
+
+      VCR.configure do |c|
+        # not important for this example, but must be set to something
+        c.hook_into :webmock
+        c.cassette_library_dir = 'cassettes'
+      end
+
+      VCR.use_cassette('example') do
+        puts "Record on error: #{VCR.current_cassette.record_on_error}"
+      end
+      """
+    When I run `ruby default_record_on_error.rb`
+    Then the output should contain "Record on error: true"
+
   Scenario: cassettes can set their own options
     Given a file named "default_cassette_options.rb" with:
       """ruby

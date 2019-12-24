@@ -24,6 +24,13 @@ module VCR
     #  plays them back, or does both.
     attr_reader :record_mode
 
+    # @return [Boolean] The cassette's record_on_error mode. When the code that uses the cassette
+    #  raises an error (for example a test failure) and record_on_error is set to false, no
+    #  cassette will be recorded. This is useful when you are TDD'ing an API integration: when
+    #  an error is raised that often means your request is invalid, so you don't want the cassette
+    #  to be recorded.
+    attr_reader :record_on_error
+
     # @return [Array<Symbol, #call>] List of request matchers. Used to find a response from an
     #  existing HTTP interaction to play back.
     attr_reader :match_requests_on
@@ -66,11 +73,26 @@ module VCR
     # @param (see VCR#eject_casssette)
     # @see VCR#eject_cassette
     def eject(options = {})
-      write_recorded_interactions_to_disk
+      write_recorded_interactions_to_disk if should_write_recorded_interactions_to_disk?
 
       if should_assert_no_unused_interactions? && !options[:skip_no_unused_interactions_assertion]
         http_interactions.assert_no_unused_interactions!
       end
+    end
+
+    # @private
+    def run_failed!
+      @run_failed = true
+    end
+
+    # @private
+    def run_failed?
+      @run_failed = false unless defined?(@run_failed)
+      @run_failed
+    end
+
+    def should_write_recorded_interactions_to_disk?
+      !run_failed? || record_on_error
     end
 
     # @private
@@ -151,7 +173,7 @@ module VCR
 
     def assert_valid_options!
       invalid_options = @options.keys - [
-        :record, :erb, :match_requests_on, :re_record_interval, :tag, :tags,
+        :record, :record_on_error, :erb, :match_requests_on, :re_record_interval, :tag, :tags,
         :update_content_length_header, :allow_playback_repeats, :allow_unused_http_interactions,
         :exclusive, :serialize_with, :preserve_exact_body_bytes, :decode_compressed_response,
         :recompress_response, :persist_with, :clean_outdated_http_interactions, :single_cassette
@@ -163,7 +185,7 @@ module VCR
     end
 
     def extract_options
-      [:erb, :match_requests_on, :re_record_interval, :clean_outdated_http_interactions,
+      [:record_on_error, :erb, :match_requests_on, :re_record_interval, :clean_outdated_http_interactions,
        :allow_playback_repeats, :allow_unused_http_interactions, :exclusive].each do |name|
         instance_variable_set("@#{name}", @options[name])
       end

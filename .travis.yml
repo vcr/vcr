@@ -1,7 +1,6 @@
 language: ruby
 script: script/ci.sh
 before_install:
-  - gem update --system
   - gem install bundler
 cache: bundler
 rvm:

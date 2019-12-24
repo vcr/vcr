@@ -24,23 +24,22 @@ if RUBY_VERSION > '1.9'
 end
 
 Before do
-  @aruba_timeout_seconds = 30
   if "jruby" == ruby_engine
-    @aruba_io_wait_seconds = 0.1
+    aruba.config.io_wait_timeout = 0.1
   else
-    @aruba_io_wait_seconds = 0.02
+    aruba.config.io_wait_timeout = 0.02
   end
 end
 
 Before("~@with-bundler") do
-  set_env("RUBYLIB", load_paths.join(":"))
-  set_env("RUBYOPT", rubyopt)
-  set_env("RBXOPT", "--disable-gems #{ENV["RBXOPT"]}") if "rbx" == ruby_engine
-  set_env("GEM_HOME", nil)
+  set_environment_variable("RUBYLIB", load_paths.join(":"))
+  set_environment_variable("RUBYOPT", rubyopt)
+  set_environment_variable("RBXOPT", "--disable-gems #{ENV["RBXOPT"]}") if "rbx" == ruby_engine
+  set_environment_variable("GEM_HOME", nil)
 end
 
 Before("@with-bundler") do
-  set_env("RUBYLIB", ".:#{ENV["RUBYLIB"]}:#{load_paths.last}")
-  set_env("RUBYOPT", "#{ENV["RUBYOPT"]} -rsupport/cucumber_helpers")
-  set_env("BUNDLE_GEMFILE", Bundler.default_gemfile.expand_path.to_s)
+  set_environment_variable("RUBYLIB", ".:#{ENV["RUBYLIB"]}:#{load_paths.last}")
+  set_environment_variable("RUBYOPT", "#{ENV["RUBYOPT"]} -rsupport/cucumber_helpers")
+  set_environment_variable("BUNDLE_GEMFILE", Bundler.default_gemfile.expand_path.to_s)
 end
