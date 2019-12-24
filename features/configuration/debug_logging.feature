@@ -39,7 +39,6 @@ Feature: Debug Logging
         [Cassette: 'example'] Initialized HTTPInteractionList with request matchers [:method, :host, :path] and 0 interaction(s): {  }
       [webmock] Identified request type (recordable) for [get http://localhost:7777/]
       [Cassette: 'example'] Recorded HTTP interaction [get http://localhost:7777/] => [200 "Hello World"]
-
       """
     When I run `ruby debug_logger.rb playback.log`
     Given that port numbers in "playback.log" are normalized to "7777"
@@ -54,5 +53,4 @@ Feature: Debug Logging
           [Cassette: 'example'] path (matched): current request [get http://localhost:7777/] vs [get http://localhost:7777/]
         [Cassette: 'example'] Found matching interaction for [get http://localhost:7777/] at index 0: [200 "Hello World"]
       [webmock] Identified request type (stubbed_by_vcr) for [get http://localhost:7777/]
-
       """
