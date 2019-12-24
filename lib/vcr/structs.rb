@@ -62,7 +62,7 @@ module VCR
         super
 
         if body && !body.is_a?(String)
-          raise ArgumentError, "#{self.class} initialized with an invalid body: #{body.inspect}."
+          raise ArgumentError, "#{self.class} initialized with an invalid (non-String) body of class #{body.class}: #{body.inspect}."
         end
 
         # Ensure that the body is a raw string, in case the string instance

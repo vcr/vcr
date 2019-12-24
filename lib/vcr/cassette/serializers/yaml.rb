@@ -30,7 +30,9 @@ module VCR
         # @return [String] the YAML string
         def serialize(hash)
           handle_encoding_errors do
-            ::YAML.dump(hash)
+            result = ::YAML.dump(hash)
+            result.gsub!(": \n", ": null\n") # set canonical null value in order to avoid trailing whitespaces
+            result
           end
         end
 

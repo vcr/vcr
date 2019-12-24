@@ -40,6 +40,18 @@ describe VCR::RSpec::Metadata, :skip_vcr_reset do
     end
   end
 
+  context 'when the metadata value is a string', vcr: 'foo' do
+    it 'uses that string as the cassette name' do
+      expect(VCR.current_cassette.name).to eq('foo')
+    end
+
+    context 'when defined on the example level' do
+      it 'uses that string as the cassette name', vcr: 'bar' do
+        expect(VCR.current_cassette.name).to eq('bar')
+      end
+    end
+  end
+
   it 'allows the cassette name to be overriden', :vcr => { :cassette_name => 'foo' } do
     expect(VCR.current_cassette.name).to eq('foo')
   end

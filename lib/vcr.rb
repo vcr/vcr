@@ -186,6 +186,9 @@ module VCR
 
     begin
       call_block(block, cassette)
+    rescue StandardError
+      cassette.run_failed!
+      raise
     ensure
       eject_cassette
     end
