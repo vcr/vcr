@@ -1,6 +1,5 @@
 # encoding: UTF-8
 
-require 'spec_helper'
 require 'support/ruby_interpreter'
 
 require 'yaml'
