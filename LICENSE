@@ -4,8 +4,13 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-The software may not be used by individuals, corporations, governments, or other groups for systems or activities that actively and knowingly endanger, harm, or otherwise threaten the physical, mental, economic, or general well-being of other individuals or groups in violation of the [United Nations Universal Declaration of Human Rights](https://www.un.org/en/universal-declaration-human-rights/).
+No Harm: The software may not be used by anyone for systems or activities that actively and knowingly endanger, harm, or otherwise threaten the physical, mental, economic, or general well-being of other individuals or groups, in violation of the United Nations Universal Declaration of Human Rights (https://www.un.org/en/universal-declaration-human-rights/).
+
+Services: If the Software is used to provide a service to others, the licensee shall, as a condition of use, require those others not to use the service in any way that violates the No Harm clause above.
+
+Enforceability: If any portion or provision of this License shall to any extent be declared illegal or unenforceable by a court of competent jurisdiction, then the remainder of this License, or the application of such portion or provision in circumstances other than those as to which it is so declared illegal or unenforceable, shall not be affected thereby, and each portion and provision of this Agreement shall be valid and enforceable to the fullest extent permitted by law.
+
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-This license is derived from the MIT License, as amended to limit the impact of the unethical use of open source software. 
+This Hippocratic License is an Ethical Source license (https://ethicalsource.dev) derived from the MIT License, amended to limit the impact of the unethical use of open source software.
