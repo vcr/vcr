@@ -1,6 +1,27 @@
 Changelog
 =========
 
+## 5.1.0 (Feb 5, 2020)
+[Full Changelog](https://github.com/vcr/vcr/compare/v5.0.0...v5.1.0)
+  - Use RSpec metadata value as cassette name if value is String (#774)
+  - Include body.class feedback for non-String body error (#756) …
+  - Made our YAML output more inline with the spec to avoid issues (#782)
+  - Fix broken build due to Hashdiff deprecation (#758)
+  - Drop removed Travis directive (#751)
+  - Repair Shields.io badges (#753)
+  - Badges - swap out release for tag (#760)
+  - Removing broken badges (#777)
+  - Add record_on_error configuration option (#765)
+  - Clearing up intention of new maintainers request
+  - Avoid updating the gem gem in system during travis build (#781)
+  - Updated our version of Aruba (#780)
+  - Remove link to mailing list (#784)
+  - Add note about sensitive data in documentation (#783)
+  - [patch] Fix turning off VCR not working when server thread already started (#764)
+  - Support runnning structs_spec by itself (#791)
+  - Changing the license to an ethical license (#792)
+
+
 ## 5.0.0 (May 27, 2019)
 [Full Changelog](https://github.com/vcr/vcr/compare/v4.0.0...v5.0.0)
 
@@ -17,7 +38,7 @@ Changelog
   - support ruby 2.5 in test matrix
   - support Typhoeus 1.1 in test matrix
   - updating repository meta files
-  
+
 I want to take explicit time here to thank the wonder people who contributed these changes. Some were small and easy while others were challenging and large. They are all meaningful to me and to VCR. Those people are (in no order):
 
 @marshall-lee, @mcfiredrill, @aimerald, @saveriomiroddi, @bwilczek, @felipecsl, @jessedoyle, @raszi, @hdabrows, @nicolasleger, @sckott, @Mehonoshin, @willywg, @sathieu, @skryukov, @joshRpowell, @gregmolnar, @notEthan, @andrew-lewin, and @laserlemon.
