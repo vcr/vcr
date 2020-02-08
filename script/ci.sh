@@ -86,7 +86,7 @@ if [ "$RUBY_ENGINE" = "ruby" ]; then
     run script/test spec/lib/vcr/library_hooks/typhoeus_0.4_spec.rb
 fi
 
-BUNDLE_GEMFILE=Gemfile.faraday-0.11 fold "faraday-0.11" \
+BUNDLE_GEMFILE=Gemfile.faraday-1.0.0 fold "faraday-1.0.0" \
   run script/test spec/lib/vcr/middleware/faraday_spec.rb spec/lib/vcr/library_hooks/faraday_spec.rb \
     features/middleware/faraday.feature
 
