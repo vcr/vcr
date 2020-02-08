@@ -8,12 +8,12 @@ require "vcr/version"
 Gem::Specification.new do |spec|
   spec.name          = "vcr"
   spec.version       = VCR.version
-  spec.authors       = ["Myron Marston"]
-  spec.email         = ["myron.marston@gmail.com"]
+  spec.authors       = ["Myron Marston", "Kurtis Rainbolt-Greene", "Olle Jonsson"]
+  spec.email         = ["kurtis@rainbolt-greene.online"]
   spec.summary       = %q{Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests.}
   spec.description   = spec.summary
   spec.homepage      = "https://relishapp.com/vcr/vcr/docs"
-  spec.license       = "MIT"
+  spec.license       = "MIT-Hippocratic-1.2"
 
   spec.files         = Dir[File.join("lib", "**", "*")]
   spec.executables   = Dir[File.join("bin", "**", "*")].map! { |f| f.gsub(/bin\//, "") }
@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "hashdiff", ">= 1.0.0.beta1", "< 2.0.0"
   spec.add_development_dependency "cucumber", "~> 2.0.2"
   spec.add_development_dependency "aruba", "~> 0.14.12"
-  spec.add_development_dependency "faraday", "~> 0.11.0"
+  spec.add_development_dependency "faraday", ">= 0.11.0", "< 2.0.0"
   spec.add_development_dependency "httpclient"
   spec.add_development_dependency "excon", "0.62.0"
   spec.add_development_dependency "timecop"
