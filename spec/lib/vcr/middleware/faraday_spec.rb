@@ -181,4 +181,25 @@ describe VCR::Middleware::Faraday do
       end
     end
   end if defined?(::Typhoeus)
+
+  describe '#close' do
+    let(:faraday_app) { double }
+
+    def close
+      described_class.new(faraday_app).close
+    end
+
+    context 'when adapter supports persistent connections' do
+      it 'calls adapter close method' do
+        expect(faraday_app).to receive(:close)
+        close
+      end
+    end
+
+    context 'when adapter does not support persistent connections' do
+      it 'does not raise error' do
+        expect { close }.not_to raise_error
+      end
+    end
+  end
 end
