@@ -64,11 +64,22 @@ module VCR
 
             expected = File.join(FileSystem.storage_location, "\u842c\u570b\u78bc")
             expect(FileSystem.absolute_path_to_file("\u842c\u570b\u78bc")).to eq(expected)
+
+            expected = File.join(FileSystem.storage_location, "Uppercase_Cassette.yml")
+            expect(FileSystem.absolute_path_to_file("Uppercase_Cassette.yml")).to eq(expected)
           end
 
           it 'handles files with no extensions (even when there is a dot in the path)' do
             expected = File.join(FileSystem.storage_location, "/foo_bar/baz_qux")
             expect(FileSystem.absolute_path_to_file("/foo.bar/baz qux")).to eq(expected)
+          end
+
+          it 'downcases cassette names if the option is passed' do
+            VCR.configuration.default_cassette_options.merge!(
+              { :persister_options => { :downcase_cassette_names => true }})
+
+            expected = File.join(FileSystem.storage_location, "/path/to/cassette")
+            expect(FileSystem.absolute_path_to_file("/pAtH/tO/CaSsEtTe")).to eq(expected)
           end
         end
       end

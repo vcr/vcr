@@ -107,6 +107,8 @@ module VCR
   # @option options :persist_with [Symbol] Which cassette persister to
   #  use. Defaults to :file_system. You can also register and use a
   #  custom persister.
+  # @option options :persister_options [Hash] Pass options to the
+  # persister specified in `persist_with`.
   # @option options :preserve_exact_body_bytes [Boolean] Whether or not
   #  to base64 encode the bytes of the requests and responses for this cassette
   #  when serializing it. See also `VCR::Configuration#preserve_exact_body_bytes`.
