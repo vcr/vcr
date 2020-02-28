@@ -76,7 +76,8 @@ module VCR
 
           it 'downcases cassette names if the option is passed' do
             VCR.configuration.default_cassette_options.merge!(
-              { :persister_options => { :downcase_cassette_names => true }})
+              { :persister_options => { :downcase_cassette_names => true } }
+            )
 
             expected = File.join(FileSystem.storage_location, "/path/to/cassette")
             expect(FileSystem.absolute_path_to_file("/pAtH/tO/CaSsEtTe")).to eq(expected)
