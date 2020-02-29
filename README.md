@@ -3,7 +3,6 @@ vcr
 
 [![Build](https://img.shields.io/travis/vcr/vcr/master.svg?style=flat-square)](https://travis-ci.org/vcr/vcr)
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/vcr/vcr.svg?style=flat-square)](http://github.com/vcr/vcr/releases)
-[![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 [![Version](https://img.shields.io/gem/v/vcr.svg?style=flat-square)](https://rubygems.org/gems/vcr)
 [![OpenCollective](https://opencollective.com/vcr/backers/badge.svg?style=flat-square)](https://opencollective.com/vcr#backer)
 [![OpenCollective](https://opencollective.com/vcr/sponsors/badge.svg?style=flat-square)](https://opencollective.com/vcr#sponsor)
@@ -89,17 +88,13 @@ VCR follows the principles of [semantic versioning](https://semver.org/). The [A
 
 **Ruby Interpreter Compatibility**
 
-VCR has been tested on the following ruby interpreters:
+VCR versions 5.x are tested on the following ruby interpreters:
 
-  * MRI 1.9.3
-  * MRI 2.0.0
-  * MRI 2.1
-  * MRI 2.2
-  * MRI 2.3.0
-  * JRuby
-  * Rubinius
+  * MRI 2.4
+  * MRI 2.5
+  * MRI 2.6
 
-Note that as of VCR 3, 1.8.7 and 1.9.2 are not supported.
+Note that as of VCR 3, 1.8.7 and 1.9.2 are explicitly not supported.
 
 **Development**
 
@@ -314,29 +309,3 @@ Become a sponsor and get your logo on our README on Github with a link to your s
 <a href="https://opencollective.com/vcr/sponsor/27/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/27/avatar"></a>
 <a href="https://opencollective.com/vcr/sponsor/28/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/28/avatar"></a>
 <a href="https://opencollective.com/vcr/sponsor/29/website" target="_blank"><img src="https://opencollective.com/vcr/sponsor/29/avatar"></a>
-
-
-
-Copyright
-=========
-
-Copyright (c) 2010-2019 Myron Marston
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

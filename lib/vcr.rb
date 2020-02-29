@@ -311,6 +311,9 @@ module VCR
   # @see #turn_off!
   # @see #turned_off
   def turned_on?
+    linked_context = current_context[:linked_context]
+    return !linked_context[:turned_off] if linked_context
+
     !context_value(:turned_off)
   end
 

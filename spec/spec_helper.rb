@@ -1,5 +1,5 @@
-require "codeclimate-test-reporter"
-CodeClimate::TestReporter.start
+require 'simplecov'
+SimpleCov.start
 
 require "pry"
 require "rspec"
@@ -56,6 +56,13 @@ RSpec.configure do |config|
 
   config.filter_run :focus => true
   config.run_all_when_everything_filtered = true
+  config.order = :random
+
+  # Seed global randomization in this process using the `--seed` CLI option.
+  # Setting this allows you to use `--seed` to deterministically reproduce
+  # test failures related to randomization by passing the same `--seed` value
+  # as the one that triggered the failure.
+  Kernel.srand config.seed
 
   config.alias_it_should_behave_like_to :it_performs, 'it performs'
 end
