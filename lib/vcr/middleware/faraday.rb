@@ -31,6 +31,11 @@ module VCR
         RequestHandler.new(@app, env).handle
       end
 
+      # Close any persistent connections.
+      def close
+        @app.close if @app.respond_to?(:close)
+      end
+
       # @private
       class RequestHandler < ::VCR::RequestHandler
         attr_reader :app, :env
