@@ -61,8 +61,9 @@ module VCR
         end
 
         def downcase_cassette_names?
-          options = VCR.configuration.default_cassette_options[:persister_options]
-          options && !!options[:downcase_cassette_names]
+          !!VCR.configuration
+            .default_cassette_options
+            .dig(:persister_options, :downcase_cassette_names)
         end
       end
     end
