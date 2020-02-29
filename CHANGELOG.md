@@ -362,7 +362,7 @@ Bug Fixes:
   * Add Faraday hook that automatically inserts the VCR middleware so that you can use VCR with Faraday without needing to insert the middleware yourself. Use `VCR.configure { |c| c.hook_into :faraday }`.
   * Add `ignore_request` config option. Pass it a block that returns true if the given request should be ignored.
   * Improve the unhandled HTTP request error message so that it lists different options for how to get VCR to handle it.
-  * Add {before,after,around}_http_request hooks.
+  * Add `{before,after,around}_http_request` hooks.
   * Updated WebMock integration and bumped up required version to 1.7.8.
   * Test against latest Excon (0.7.9) and confirm that VCR works fine with it.
   * Add define_cassette_placeholder as an alias for filter_sensitive_data.
