@@ -279,7 +279,8 @@ describe VCR::Cassette do
 
           context "and re_record_interval is 7.days" do
             let(:file_name) { ::File.join(VCR.configuration.cassette_library_dir, "cassette_name.yml") }
-            subject { VCR::Cassette.new(::File.basename(file_name).gsub('.yml', ''), :record => record_mode, :re_record_interval => 7.days) }
+            let(:fail_on_re_record_option) {false}
+            subject { VCR::Cassette.new(::File.basename(file_name).gsub('.yml', ''), :record => record_mode, :re_record_interval => 7.days, fail_on_re_record: fail_on_re_record_option )}
 
             context 'when the cassette file does not exist' do
               before(:each) { allow(::File).to receive(:exist?).with(file_name).and_return(false) }
@@ -319,7 +320,12 @@ describe VCR::Cassette do
                   Time.now - 7.days - 60,
                   Time.now - 5.days - 60
                 ] end
-
+                context "config option fail_on_re_record is set to true on re_record" do
+                  let(:fail_on_re_record_option) {true}
+                    it "raises an error" do
+                      expect{subject}.to raise_error("Beyond record interval. Please re_record your cassette and commit them.")
+                    end
+                end
                 it "has :all for the record mode when there is an internet connection available" do
                   allow(VCR::InternetConnection).to receive(:available?).and_return(true)
                   expect(subject.record_mode).to eq(:all)

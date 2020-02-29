@@ -176,7 +176,7 @@ module VCR
         :record, :record_on_error, :erb, :match_requests_on, :re_record_interval, :tag, :tags,
         :update_content_length_header, :allow_playback_repeats, :allow_unused_http_interactions,
         :exclusive, :serialize_with, :preserve_exact_body_bytes, :decode_compressed_response,
-        :recompress_response, :persist_with, :clean_outdated_http_interactions
+        :recompress_response, :persist_with, :clean_outdated_http_interactions, :fail_on_re_record
       ]
 
       if invalid_options.size > 0
@@ -186,7 +186,7 @@ module VCR
 
     def extract_options
       [:record_on_error, :erb, :match_requests_on, :re_record_interval, :clean_outdated_http_interactions,
-       :allow_playback_repeats, :allow_unused_http_interactions, :exclusive].each do |name|
+       :allow_playback_repeats, :allow_unused_http_interactions, :exclusive, :fail_on_re_record].each do |name|
         instance_variable_set("@#{name}", @options[name])
       end
 
@@ -243,7 +243,11 @@ module VCR
         if !value
           log "Not re-recording since the interval has not elapsed (#{info})."
         elsif InternetConnection.available?
-          log "re-recording (#{info})."
+          if @fail_on_re_record
+              raise RuntimeError.new("Beyond record interval. Please re_record your cassette and commit them.")
+          else
+            log "re-recording (#{info})."
+          end
         else
           log "Not re-recording because no internet connection is available (#{info})."
           return false
