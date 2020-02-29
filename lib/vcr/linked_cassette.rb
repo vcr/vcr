@@ -9,8 +9,8 @@ module VCR
       include Enumerable
 
       # Creates a new list of context-owned cassettes and linked cassettes
-      # @param [Array] context-owned cassettes
-      # @param [Array] context-unowned (linked) cassettes
+      # @param cassettes [Array] context-owned cassettes
+      # @param linked_cassettes [Array] context-unowned (linked) cassettes
       def initialize(cassettes, linked_cassettes)
         @cassettes = cassettes
         @linked_cassettes = linked_cassettes
@@ -52,8 +52,8 @@ module VCR
     end
 
     # Create a new CassetteList
-    # @param [Array] context-owned cassettes
-    # @param [Array] context-unowned (linked) cassettes
+    # @param cassettes [Array] context-owned cassettes
+    # @param linked_cassettes [Array] context-unowned (linked) cassettes
     def self.list(cassettes, linked_cassettes)
       CassetteList.new(cassettes, linked_cassettes)
     end
