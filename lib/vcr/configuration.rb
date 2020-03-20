@@ -496,7 +496,8 @@ module VCR
         :match_requests_on => RequestMatcherRegistry::DEFAULT_MATCHERS,
         :allow_unused_http_interactions => true,
         :serialize_with    => :yaml,
-        :persist_with      => :file_system
+        :persist_with      => :file_system,
+        :persister_options => {}
       }
 
       self.uri_parser = URI
