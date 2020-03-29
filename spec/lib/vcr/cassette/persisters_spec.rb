@@ -2,7 +2,7 @@ require 'vcr/cassette/persisters'
 
 module VCR
   class Cassette
-    describe Persisters do
+    ::RSpec.describe Persisters do
       describe "#[]=" do
         context 'when there is already a persister registered for the given name' do
           before(:each) do

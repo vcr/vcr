@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe VCR do
+RSpec.describe VCR do
   context 'when used in a multithreaded environment', :with_monkey_patches => :excon do
     def preload_yaml_serializer_to_avoid_circular_require_warning_race_condition
       VCR.cassette_serializers[:yaml]

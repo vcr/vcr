@@ -176,10 +176,10 @@ RSpec.configure do |c|
 end
 
 # apply it to an example group
-describe MyAPIWrapper, :vcr do
+RSpec.describe MyAPIWrapper, :vcr do
 end
 
-describe MyAPIWrapper do
+RSpec.describe MyAPIWrapper do
   # apply it to an individual example
   it "does something", :vcr do
   end

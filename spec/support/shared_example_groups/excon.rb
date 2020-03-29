@@ -1,4 +1,4 @@
-shared_examples "Excon streaming" do
+RSpec.shared_examples "Excon streaming" do
   context "when Excon's streaming API is used" do
     def make_request_to(path)
       chunks = []

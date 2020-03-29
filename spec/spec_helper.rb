@@ -32,6 +32,7 @@ module VCR
 end
 
 RSpec.configure do |config|
+  config.disable_monkey_patching!
   tmp_dir = File.expand_path('../../tmp/cassette_library_dir', __FILE__)
   config.before(:each) do |example|
     unless example.metadata[:skip_vcr_reset]

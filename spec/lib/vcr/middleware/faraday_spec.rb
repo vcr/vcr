@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'vcr/library_hooks/faraday'
 
-describe VCR::Middleware::Faraday do
+RSpec.describe VCR::Middleware::Faraday do
   http_libs = %w[ typhoeus net_http patron ]
   http_libs.each do |lib|
     flags = [ :does_not_support_rotating_responses ]

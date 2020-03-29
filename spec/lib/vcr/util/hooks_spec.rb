@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe VCR::Hooks::FilteredHook do
+RSpec.describe VCR::Hooks::FilteredHook do
   describe "#conditionally_invoke" do
     it 'invokes the hook' do
       called = false
@@ -75,7 +75,7 @@ describe VCR::Hooks::FilteredHook do
   end
 end
 
-describe VCR::Hooks do
+RSpec.describe VCR::Hooks do
   let(:hooks_class) { Class.new { include VCR::Hooks } }
 
   subject { hooks_class.new }
