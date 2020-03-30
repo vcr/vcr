@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests.}
   spec.description   = spec.summary
   spec.homepage      = "https://relishapp.com/vcr/vcr/docs"
-  spec.license       = "MIT-Hippocratic-2.0"
+  spec.license       = "MIT-Hippocratic-2.1"
 
   spec.files         = Dir[File.join("lib", "**", "*")]
   spec.executables   = Dir[File.join("bin", "**", "*")].map! { |f| f.gsub(/bin\//, "") }
