@@ -346,9 +346,9 @@ module VCR
       {
         'status'       => status.to_hash,
         'headers'      => headers,
-        'body'         => serializable_body,
-        'http_version' => http_version
+        'body'         => serializable_body
       }.tap do |hash|
+        hash['http_version']     = http_version if http_version
         hash['adapter_metadata'] = adapter_metadata unless adapter_metadata.empty?
       end
     end
