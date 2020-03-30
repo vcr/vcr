@@ -29,7 +29,8 @@ describe VCR::Configuration do
         :record            => :once,
         :record_on_error   => true,
         :serialize_with    => :yaml,
-        :persist_with      => :file_system
+        :persist_with      => :file_system,
+        :persister_options => {}
       })
     end
 

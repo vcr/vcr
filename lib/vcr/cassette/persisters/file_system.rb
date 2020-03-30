@@ -55,7 +55,15 @@ module VCR
             file_extension = '.' + parts.pop
           end
 
-          parts.join('.').gsub(/[^[:word:]\-\/]+/, '_') + file_extension.to_s
+          file_name = parts.join('.').gsub(/[^[:word:]\-\/]+/, '_') + file_extension.to_s
+          file_name.downcase! if downcase_cassette_names?
+          file_name
+        end
+
+        def downcase_cassette_names?
+          !!VCR.configuration
+            .default_cassette_options
+            .dig(:persister_options, :downcase_cassette_names)
         end
       end
     end
