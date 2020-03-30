@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Typhoeus 0.4 hook", :with_monkey_patches => :typhoeus_0_4 do
+RSpec.describe "Typhoeus 0.4 hook", :with_monkey_patches => :typhoeus_0_4 do
   after(:each) do
     ::Typhoeus::Hydra.clear_stubs
   end

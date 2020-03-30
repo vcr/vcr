@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe VCR::Cassette do
+RSpec.describe VCR::Cassette do
   def http_interaction
     request = VCR::Request.new(:get)
     response = VCR::Response.new

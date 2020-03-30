@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'support/shared_example_groups/excon'
 
-describe "WebMock hook", :with_monkey_patches => :webmock do
+RSpec.describe "WebMock hook", :with_monkey_patches => :webmock do
   after(:each) do
     ::WebMock.reset!
   end

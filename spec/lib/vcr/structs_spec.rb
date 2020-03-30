@@ -10,7 +10,7 @@ require 'stringio'
 require 'support/limited_uri'
 require 'support/configuration_stubbing'
 
-shared_examples_for "a header normalizer" do
+RSpec.shared_examples_for "a header normalizer" do
   let(:instance) do
     with_headers('Some_Header' => 'value1', 'aNother' => ['a', 'b'], 'third' => [], 'fourth' => nil)
   end
@@ -42,7 +42,7 @@ shared_examples_for "a header normalizer" do
   end
 end
 
-shared_examples_for "a body normalizer" do
+RSpec.shared_examples_for "a body normalizer" do
   it "ensures the body is serialized to yaml as a raw string" do
     body = "My String"
     body.instance_variable_set(:@foo, 7)
@@ -61,7 +61,7 @@ shared_examples_for "a body normalizer" do
 end
 
 module VCR
-  describe HTTPInteraction do
+  ::RSpec.describe HTTPInteraction do
     include_context "configuration stubbing"
     before { allow(config).to receive(:uri_parser) { LimitedURI } }
 
@@ -353,7 +353,7 @@ module VCR
     end
   end
 
-  describe HTTPInteraction::HookAware do
+  ::RSpec.describe HTTPInteraction::HookAware do
     include_context "configuration stubbing"
 
     before do
@@ -440,7 +440,7 @@ module VCR
     end
   end
 
-  describe Request::Typed do
+  ::RSpec.describe Request::Typed do
     [:uri, :method, :headers, :body].each do |method|
       it "delegates ##{method} to the request" do
         request = double(method => "delegated value")
@@ -498,7 +498,7 @@ module VCR
     end
   end
 
-  describe Request do
+  ::RSpec.describe Request do
     include_context "configuration stubbing"
 
     before do
@@ -584,7 +584,7 @@ module VCR
     end
   end
 
-  describe Response do
+  ::RSpec.describe Response do
     it_behaves_like 'a header normalizer' do
       def with_headers(headers)
         described_class.new(:status, headers, nil, '1.1')

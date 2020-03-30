@@ -9,7 +9,7 @@ end
 
 module VCR
   class Cassette
-    describe Serializers do
+    ::RSpec.describe Serializers do
       shared_examples_for "encoding error handling" do |name, error_class|
         context "the #{name} serializer" do
           it 'appends info about the :preserve_exact_body_bytes option to the error' do

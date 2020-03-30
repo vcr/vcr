@@ -4,7 +4,7 @@ require 'vcr/cassette/persisters/file_system'
 module VCR
   class Cassette
     class Persisters
-      describe FileSystem do
+      ::RSpec.describe FileSystem do
         before { FileSystem.storage_location = VCR.configuration.cassette_library_dir }
 
         describe "#[]" do

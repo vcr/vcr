@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe VCR::Cassette::ERBRenderer do
+RSpec.describe VCR::Cassette::ERBRenderer do
   describe '#render' do
     def render(*args)
       described_class.new(*args).render

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module VCR
   module Errors
-    describe UnhandledHTTPRequestError do
+    ::RSpec.describe UnhandledHTTPRequestError do
       def message_for(request_values = {})
         described_class.new(request_with request_values).message
       end

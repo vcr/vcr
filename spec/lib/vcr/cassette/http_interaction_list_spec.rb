@@ -6,7 +6,7 @@ require 'support/configuration_stubbing'
 
 module VCR
   class Cassette
-    describe HTTPInteractionList do
+    ::RSpec.describe HTTPInteractionList do
       include_context "configuration stubbing"
 
       ::RSpec::Matchers.define :respond_with do |expected|

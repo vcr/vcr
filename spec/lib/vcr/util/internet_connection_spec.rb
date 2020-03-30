@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe VCR::InternetConnection do
+RSpec.describe VCR::InternetConnection do
   describe '.available?' do
     before(:each) do
       described_class.send(:remove_instance_variable, :@available) if described_class.instance_variable_defined?(:@available)

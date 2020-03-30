@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'vcr/library_hooks/faraday'
 
-describe "Faraday hook" do
+RSpec.describe "Faraday hook" do
   it 'inserts the VCR middleware just before the adapter' do
     conn = Faraday.new(:url => 'http://sushi.com') do |builder|
       builder.request  :url_encoded

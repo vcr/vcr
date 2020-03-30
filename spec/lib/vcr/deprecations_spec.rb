@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe VCR, 'deprecations', :disable_warnings do
+RSpec.describe VCR, 'deprecations', :disable_warnings do
   describe ".config" do
     it 'delegates to VCR.configure' do
       expect(VCR).to receive(:configure)

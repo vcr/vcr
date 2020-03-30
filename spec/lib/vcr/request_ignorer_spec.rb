@@ -2,7 +2,7 @@ require 'vcr/structs'
 require 'vcr/request_ignorer'
 
 module VCR
-  describe RequestIgnorer do
+  ::RSpec.describe RequestIgnorer do
     def request(uri)
       VCR::Request.new.tap { |r| r.uri = uri }
     end
