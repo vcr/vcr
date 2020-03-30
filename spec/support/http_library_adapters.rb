@@ -227,7 +227,7 @@ HTTP_LIBRARY_ADAPTERS['excon'] = Module.new do
   end
 
   def normalize_request_headers(headers)
-    if Excon::VERSION.start_with?("0.63")
+    if Gem::Version.new(Excon::VERSION) < Gem::Version.new("0.63")
       headers.merge('User-Agent' => [Excon::USER_AGENT])
     else
       headers.merge('User-Agent' => [Excon::USER_AGENT], 'Accept' => ['*/*'])
