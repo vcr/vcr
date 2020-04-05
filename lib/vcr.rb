@@ -107,6 +107,12 @@ module VCR
   # @option options :persist_with [Symbol] Which cassette persister to
   #  use. Defaults to :file_system. You can also register and use a
   #  custom persister.
+  # @option options :persister_options [Hash] Pass options to the
+  #  persister specified in `persist_with`. Currently available options for the file_system persister:
+  #    - `:downcase_cassette_names`: when `true`, names of cassettes will be
+  #      normalized in lowercase before reading and writing, which can avoid
+  #      confusion when using both case-sensitive and case-insensitive file
+  #      systems.
   # @option options :preserve_exact_body_bytes [Boolean] Whether or not
   #  to base64 encode the bytes of the requests and responses for this cassette
   #  when serializing it. See also `VCR::Configuration#preserve_exact_body_bytes`.
@@ -197,13 +203,13 @@ module VCR
   # Inserts multiple cassettes the given names
   #
   # @example
-  # cassettes = [
-  #  { name: 'github' },
-  #  { name: 'apple', options: { erb: true } }
-  # ]
-  # VCR.use_cassettes() do
-  #   # make multiple HTTP requests
-  # end
+  #   cassettes = [
+  #    { name: 'github' },
+  #    { name: 'apple', options: { erb: true } }
+  #   ]
+  #   VCR.use_cassettes(cassettes) do
+  #     # make multiple HTTP requests
+  #   end
   def use_cassettes(cassettes, &block)
     cassette = cassettes.pop
     use_cassette(cassette[:name], cassette[:options] || {}) do

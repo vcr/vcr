@@ -3,7 +3,7 @@ require 'vcr/middleware/rack'
 
 module VCR
   module Middleware
-    describe CassetteArguments do
+    ::RSpec.describe CassetteArguments do
       describe '#name' do
         it 'initially returns nil' do
           expect(subject.name).to be_nil
@@ -33,7 +33,7 @@ module VCR
       end
     end
 
-    describe Rack do
+    ::RSpec.describe Rack do
       describe '.new' do
         it 'raises an error if no cassette arguments block is provided' do
           expect {

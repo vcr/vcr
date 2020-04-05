@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe VCR::CucumberTags do
+RSpec.describe VCR::CucumberTags do
   subject { described_class.new(self) }
   let(:before_blocks_for_tags) { {} }
   let(:after_blocks_for_tags) { {} }

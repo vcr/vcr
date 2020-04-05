@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe VCR do
+RSpec.describe VCR do
   def recorded_content_for(name)
     VCR.cassette_persisters[:file_system]["#{name}.yml"].to_s
   end

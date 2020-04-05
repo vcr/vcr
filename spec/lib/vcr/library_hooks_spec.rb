@@ -1,7 +1,7 @@
 require 'vcr/library_hooks'
 
 module VCR
-  describe LibraryHooks do
+  ::RSpec.describe LibraryHooks do
     describe '#disabled?' do
       it 'returns false by default for any argument given' do
         expect(subject.disabled?(:foo)).to be false

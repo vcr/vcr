@@ -2,7 +2,7 @@ require 'spec_helper'
 
 VCR.configuration.configure_rspec_metadata!
 
-describe VCR::RSpec::Metadata, :skip_vcr_reset do
+RSpec.describe VCR::RSpec::Metadata, :skip_vcr_reset do
   before(:all) { VCR.reset! }
   after(:each) { VCR.reset! }
 

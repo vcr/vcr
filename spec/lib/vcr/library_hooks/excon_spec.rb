@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'support/shared_example_groups/excon'
 
-describe "Excon hook", :with_monkey_patches => :excon do
+RSpec.describe "Excon hook", :with_monkey_patches => :excon do
   after(:each) do
     ::Excon.stubs.clear
     ::Excon.defaults[:mock] = false

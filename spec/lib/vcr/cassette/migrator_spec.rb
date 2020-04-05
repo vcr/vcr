@@ -2,7 +2,7 @@ require 'tmpdir'
 require 'vcr/cassette/migrator'
 require 'yaml'
 
-describe VCR::Cassette::Migrator do
+RSpec.describe VCR::Cassette::Migrator do
   let(:original_contents) { <<-EOF
 ---
 - !ruby/struct:VCR::HTTPInteraction

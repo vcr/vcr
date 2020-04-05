@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "VCR.version" do
+RSpec.describe "VCR.version" do
   subject { VCR.version }
 
   it { should =~ /\A\d+\.\d+\.\d+(\.\w+)?\z/ }

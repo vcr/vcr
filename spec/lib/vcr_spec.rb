@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe VCR do
+RSpec.describe VCR do
   def insert_cassette(name = :cassette_test)
     VCR.insert_cassette(name)
   end

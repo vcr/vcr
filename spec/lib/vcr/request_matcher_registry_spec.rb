@@ -5,7 +5,7 @@ require 'cgi'
 require 'support/configuration_stubbing'
 
 module VCR
-  describe RequestMatcherRegistry do
+  ::RSpec.describe RequestMatcherRegistry do
     include_context "configuration stubbing"
 
     before do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe VCR::Configuration do
+RSpec.describe VCR::Configuration do
   describe '#cassette_library_dir=' do
     let(:tmp_dir) { VCR::SPEC_ROOT + '/../tmp/cassette_library_dir/new_dir' }
     after(:each)  { FileUtils.rm_rf tmp_dir }
@@ -29,7 +29,8 @@ describe VCR::Configuration do
         :record            => :once,
         :record_on_error   => true,
         :serialize_with    => :yaml,
-        :persist_with      => :file_system
+        :persist_with      => :file_system,
+        :persister_options => {}
       })
     end
 

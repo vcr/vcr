@@ -1,4 +1,4 @@
-shared_context "configuration stubbing" do
+RSpec.shared_context "configuration stubbing" do
   let(:config) { double("VCR::Configuration") }
 
   before do

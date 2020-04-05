@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module VCR
-  describe VersionChecker do
+  ::RSpec.describe VersionChecker do
     it 'raises an error if the major version is too low' do
       checker = VersionChecker.new('foo', '0.7.3', '1.0.0')
       expect { checker.check_version! }.to raise_error(Errors::LibraryVersionTooLowError)
