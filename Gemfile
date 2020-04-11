@@ -13,6 +13,3 @@ platform :mri do
   gem "curb", "~> 0.9.0"
 end
 
-platform :ruby do
-  gem "yajl-ruby"
-end

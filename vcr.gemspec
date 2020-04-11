@@ -38,7 +38,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "httpclient"
   spec.add_development_dependency "excon", ">= 0.62.0"
   spec.add_development_dependency "timecop"
-  spec.add_development_dependency "multi_json"
   spec.add_development_dependency "json"
   spec.add_development_dependency "relish"
   spec.add_development_dependency "mime-types"
