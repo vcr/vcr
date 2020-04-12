@@ -583,7 +583,7 @@ module VCR
         expect(Fiber).to receive(:yield)
         lambda(&subject).call
       end
-    end if RUBY_VERSION > '1.9'
+    end
 
     it_behaves_like 'a header normalizer' do
       def with_headers(headers)

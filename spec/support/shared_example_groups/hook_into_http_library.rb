@@ -314,7 +314,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
           make_http_request(:get, request_url)
           expect(order).to eq([:before_1, :after_1])
         end
-      end if RUBY_VERSION >= '1.9'
+      end
 
       it 'correctly assigns the correct type to both before and after request hooks, even if they are different' do
         before_type = after_type = nil
