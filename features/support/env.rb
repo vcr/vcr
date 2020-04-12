@@ -18,10 +18,8 @@ load_paths = Dir.glob(gem_specs.map { |spec|
 load_paths << File.expand_path("../../../spec", __FILE__)
 rubyopt = "-rsupport/cucumber_helpers"
 
-if RUBY_VERSION > '1.9'
-  load_paths.unshift(".")
-  rubyopt = "--disable-gems #{rubyopt}" unless "rbx" == ruby_engine
-end
+load_paths.unshift(".")
+rubyopt = "--disable-gems #{rubyopt}" unless "rbx" == ruby_engine
 
 Before do
   if "jruby" == ruby_engine
@@ -31,7 +29,7 @@ Before do
   end
 end
 
-Before("~@with-bundler") do
+Before("not @with-bundler") do
   set_environment_variable("RUBYLIB", load_paths.join(":"))
   set_environment_variable("RUBYOPT", rubyopt)
   set_environment_variable("RBXOPT", "--disable-gems #{ENV["RBXOPT"]}") if "rbx" == ruby_engine

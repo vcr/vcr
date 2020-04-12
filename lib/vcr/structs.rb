@@ -454,9 +454,10 @@ module VCR
 
       case type
       when 'gzip'
-        args = [StringIO.new(body)]
-        args << { :encoding => 'ASCII-8BIT' } if ''.respond_to?(:encoding)
-        yield Zlib::GzipReader.new(*args).read
+        gzip_reader_options = {}
+        gzip_reader_options[:encoding] = 'ASCII-8BIT' if ''.respond_to?(:encoding)
+        yield Zlib::GzipReader.new(StringIO.new(body),
+                                   **gzip_reader_options).read
       when 'deflate'
         yield Zlib::Inflate.inflate(body)
       when 'identity', NilClass

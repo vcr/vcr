@@ -17,7 +17,7 @@ module VCR
               result = serializer.serialize("a" => string)
               serializer.deserialize(result)
             }.to raise_error(error_class, /preserve_exact_body_bytes/)
-          end unless (RUBY_INTERPRETER == :rubinius && RUBY_VERSION =~ /^1.9/)
+          end
         end
       end
 
@@ -79,14 +79,6 @@ module VCR
           # don't test yajl on jruby
         else
           engines[:yajl] = MultiJson::LoadError
-        end
-
-        if RUBY_VERSION =~ /1.9/
-          engines[:json_gem] = EncodingError
-
-          # Disable json_pure for now due to this bug:
-          # https://github.com/flori/json/issues/186
-          # engines[:json_pure] = EncodingError
         end
 
         engines.each do |engine, error|
@@ -167,14 +159,6 @@ module VCR
         it 'raises an error if psych cannot be loaded' do
           expect { subject[:psych] }.to raise_error(LoadError)
         end unless defined?(::Psych)
-      end
-
-      describe "syck serializer" do
-        it 'forcibly serializes things using syck even if psych is the currently configured YAML engine' do
-          ::YAML::ENGINE.yamler = 'psych'
-          serialized = subject[:syck].serialize(problematic_syck_string)
-          expect(subject[:syck].deserialize(serialized)).not_to eq(problematic_syck_string)
-        end if defined?(::Psych) && (RUBY_INTERPRETER != :jruby) && (RUBY_VERSION.to_f < 2.0)
       end
     end
   end
