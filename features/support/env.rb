@@ -31,7 +31,7 @@ Before do
   end
 end
 
-Before("~@with-bundler") do
+Before("not @with-bundler") do
   set_environment_variable("RUBYLIB", load_paths.join(":"))
   set_environment_variable("RUBYOPT", rubyopt)
   set_environment_variable("RBXOPT", "--disable-gems #{ENV["RBXOPT"]}") if "rbx" == ruby_engine
