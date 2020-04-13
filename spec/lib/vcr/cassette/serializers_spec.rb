@@ -1,6 +1,6 @@
 require 'support/ruby_interpreter'
 require 'vcr/cassette/serializers'
-require 'multi_json'
+require 'json'
 
 begin
   require 'psych' # ensure psych is loaded for these tests if its available
@@ -73,21 +73,8 @@ module VCR
       end
 
       it_behaves_like "a serializer", :json,  "json", :lazily_loaded do
-        engines = {}
-
-        if RUBY_INTERPRETER == :jruby
-          # don't test yajl on jruby
-        else
-          engines[:yajl] = MultiJson::LoadError
-        end
-
-        engines.each do |engine, error|
-          context "when MultiJson is configured to use #{engine.inspect}", :unless => (RUBY_INTERPRETER == :jruby) do
-            before { MultiJson.engine = engine }
-            it_behaves_like "encoding error handling", :json, error do
-              let(:string) { "\xFA" }
-            end
-          end
+        it_behaves_like "encoding error handling", :json, ::JSON::GeneratorError do
+          let(:string) { "\xFA" }
         end
       end
 

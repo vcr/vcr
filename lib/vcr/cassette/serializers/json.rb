@@ -1,4 +1,4 @@
-require 'multi_json'
+require 'json'
 
 module VCR
   class Cassette
@@ -13,8 +13,8 @@ module VCR
         extend EncodingErrorHandling
 
         # @private
-        ENCODING_ERRORS = [MultiJson::DecodeError, ArgumentError]
-        ENCODING_ERRORS << EncodingError if defined?(EncodingError)
+        ENCODING_ERRORS = [ArgumentError]
+        ENCODING_ERRORS << ::JSON::GeneratorError
 
         # The file extension to use for this serializer.
         #
@@ -23,23 +23,23 @@ module VCR
           "json"
         end
 
-        # Serializes the given hash using `MultiJson`.
+        # Serializes the given hash using `JSON`.
         #
         # @param [Hash] hash the object to serialize
         # @return [String] the JSON string
         def serialize(hash)
           handle_encoding_errors do
-            MultiJson.encode(hash)
+            ::JSON.generate(hash)
           end
         end
 
-        # Deserializes the given string using `MultiJson`.
+        # Deserializes the given string using `JSON`.
         #
         # @param [String] string the JSON string
         # @return [Hash] the deserialized object
         def deserialize(string)
           handle_encoding_errors do
-            MultiJson.decode(string)
+            ::JSON.parse(string)
           end
         end
       end
