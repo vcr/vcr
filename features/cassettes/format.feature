@@ -35,8 +35,8 @@ Feature: Cassette format
       (such as on ruby 1.8), to ensure that syck is always used.
     - `:psych`--Uses psych (the new ruby 1.9 YAML engine). This is useful when
       you want to ensure that psych is always used.
-    - `:json`--Uses [multi_json](https://github.com/intridea/multi_json)
-      to serialize the cassette data as JSON.
+    - `:json`--Uses Ruby's standard library to serialize the cassette data as
+      JSON.
     - `:compressed`--Wraps the default YAML serializer with Zlib, writing
       compressed cassettes to disk.
 

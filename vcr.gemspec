@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.executables   = Dir[File.join("bin", "**", "*")].map! { |f| f.gsub(/bin\//, "") }
   spec.require_paths = ["lib"]
 
-  spec.required_ruby_version = ">= 1.9.3"
+  spec.required_ruby_version = ">= 2.3"
 
   spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "rspec", "~> 3.0"
@@ -32,13 +32,12 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rack"
   spec.add_development_dependency "webmock"
   spec.add_development_dependency "hashdiff", ">= 1.0.0.beta1", "< 2.0.0"
-  spec.add_development_dependency "cucumber", "~> 2.0.2"
+  spec.add_development_dependency "cucumber", "~> 3.1"
   spec.add_development_dependency "aruba", "~> 0.14.14"
   spec.add_development_dependency "faraday", ">= 0.11.0", "< 2.0.0"
   spec.add_development_dependency "httpclient"
-  spec.add_development_dependency "excon", "0.62.0"
+  spec.add_development_dependency "excon", ">= 0.62.0"
   spec.add_development_dependency "timecop"
-  spec.add_development_dependency "multi_json"
   spec.add_development_dependency "json"
   spec.add_development_dependency "relish"
   spec.add_development_dependency "mime-types"

@@ -144,7 +144,7 @@ RSpec.describe VCR::Configuration do
 
       expect(before_record_req).not_to respond_to(:type)
       expect(before_request_req).to respond_to(:type)
-    end unless (RUBY_VERSION =~ /^1\.8/ || RUBY_INTERPRETER == :jruby)
+    end unless (RUBY_INTERPRETER == :jruby)
 
     specify 'the filter_sensitive_data option works even when it modifies the URL in a way that makes it an invalid URI' do
       VCR.configure do |c|

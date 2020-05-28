@@ -114,16 +114,6 @@ EOF
     updated_contents.gsub!(/^(- |  )/, '  \1')
   end if RUBY_PLATFORM == 'java'
 
-  # Use syck on all rubies for consistent results...
-  around(:each) do |example|
-    YAML::ENGINE.yamler = 'syck'
-    begin
-      example.call
-    ensure
-      YAML::ENGINE.yamler = 'psych'
-    end
-  end if defined?(YAML::ENGINE) && RUBY_VERSION.to_f < 2.0
-
   let(:filemtime) { Time.utc(2011, 5, 4, 12, 30) }
   let(:out_io)    { StringIO.new }
   let(:file_name) { File.join(dir, "example.yml") }

@@ -1,5 +1,4 @@
 require 'vcr'
-require 'multi_json'
 
 module VCRHelpers
 
@@ -140,8 +139,8 @@ end
 
 Then(/^the file "([^"]*)" should contain JSON like:$/) do |file_name, expected_content|
   actual_content = cd('.') { File.read(file_name) }
-  actual = MultiJson.decode(actual_content)
-  expected = MultiJson.decode(expected_content.to_s)
+  actual = JSON.parse(actual_content)
+  expected = JSON.parse(expected_content.to_s)
   expect(normalize_cassette_hash(actual)).to eq(normalize_cassette_hash(expected))
 end
 
