@@ -1,6 +1,6 @@
 # Development
 
-This file details as many imporant parts of the process that you may need to know about working on VCR, should any of us get hit by a bus.
+This file details as many important parts of the process that you may need to know about working on VCR, should any of us get hit by a bus.
 
 ## Releasing
 
