@@ -1,6 +1,16 @@
 Changelog
 =========
 
+## 6.0.0 (May 28, 2020)
+[Full Changelog](https://github.com/vcr/vcr/compare/v5.1.0...v6.0.0)
+
+- [breaking] Require Ruby 2.3 or newer (#816)
+- [new] Add option to downcase cassette names before saving (#802)
+- [patch] Fix: Prevent storing empty `http_version` on cassettes (#709)
+- [patch] Support Faraday persistent connection closing (#793)
+- [patch] Support Faraday 1.0 (#794)
+- Remove `multi_json` dependency, `yajl-ruby` and use only JSON (#815)
+
 ## 5.1.0 (Feb 5, 2020)
 [Full Changelog](https://github.com/vcr/vcr/compare/v5.0.0...v5.1.0)
   - Use RSpec metadata value as cassette name if value is String (#774)
