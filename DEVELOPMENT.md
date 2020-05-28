@@ -21,7 +21,7 @@ Ancillary 2: At your leasure make a Release on Github with the changelog differe
 
 ## Changelog
 
-We use a very rudementry changelog system focusing on three primary things people care about: Breaking Changes, New Features, and Bug fixes. Anything outside of that is worthless for people looking at the changelog in my experience. Here's a snippet for a new changelog entry:
+We use a very rudimentary changelog system focusing on three primary things people care about: Breaking Changes, New Features, and Bug fixes. Anything outside of that is worthless for people looking at the changelog in my experience. Here's a snippet for a new changelog entry:
 
 ``` markdown
 ## 5.1.0 (Feb 5, 2020)
