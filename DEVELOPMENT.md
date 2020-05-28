@@ -15,7 +15,7 @@ This file details as many important parts of the process that you may need to kn
   0. Run `bundle exec rake release`
   0. Grab a drink
 
-Ancillary 1: We also have a thing called Relish, which I dislike immensley, but many people desire. It's on the last legs. You push the new relish documentation via `bundle exec rake relish`. I wish you the best of luck.
+Ancillary 1: We also have a thing called Relish, which I dislike immensely, but many people desire. It's on the last legs. You push the new relish documentation via `bundle exec rake relish`. I wish you the best of luck.
 
 Ancillary 2: At your leasure make a Release on Github with the changelog differences. It's very helpful for many people.
 
