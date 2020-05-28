@@ -13,15 +13,15 @@ Changelog
 
 ## 5.1.0 (Feb 5, 2020)
 [Full Changelog](https://github.com/vcr/vcr/compare/v5.0.0...v5.1.0)
-  - Use RSpec metadata value as cassette name if value is String (#774)
-  - Include body.class feedback for non-String body error (#756) …
-  - Made our YAML output more inline with the spec to avoid issues (#782)
-  - Fix broken build due to Hashdiff deprecation (#758)
+  - [new] Use RSpec metadata value as cassette name if value is String (#774)
+  - [new] Include body.class feedback for non-String body error (#756) …
+  - [patch] Made our YAML output more inline with the spec to avoid issues (#782)
+  - [patch] Fix broken build due to Hashdiff deprecation (#758)
   - Drop removed Travis directive (#751)
   - Repair Shields.io badges (#753)
   - Badges - swap out release for tag (#760)
   - Removing broken badges (#777)
-  - Add record_on_error configuration option (#765)
+  - [new] Add record_on_error configuration option (#765)
   - Clearing up intention of new maintainers request
   - Avoid updating the gem gem in system during travis build (#781)
   - Updated our version of Aruba (#780)
