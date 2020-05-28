@@ -88,13 +88,13 @@ VCR follows the principles of [semantic versioning](https://semver.org/). The [A
 
 **Ruby Interpreter Compatibility**
 
-VCR versions 5.x are tested on the following ruby interpreters:
+VCR versions 6.x are tested on the following ruby interpreters:
 
   * MRI 2.4
   * MRI 2.5
   * MRI 2.6
 
-Note that as of VCR 3, 1.8.7 and 1.9.2 are explicitly not supported.
+Note that as of VCR 6, only 2.3+ is explicitly supported.
 
 **Development**
 
