@@ -9,8 +9,11 @@ Feature: Usage with RSpec metadata
   string. It will set the cassette name based on the example's
   full description.
 
-  If you need to override the cassette name or options, you can pass a
-  hash (`:vcr => { ... }`).
+  You can override the cassette name by passing a string
+  (`:vcr => 'my_cassette'`).
+
+  If you need to override the other options, you can pass a hash
+  (`:vcr => { ... }`).
 
   Background:
     Given a file named "spec/spec_helper.rb" with:
@@ -77,6 +80,10 @@ Feature: Usage with RSpec metadata
           expect(make_http_request).to eq('Hello')
         end
 
+        it 'records an http request with a custom file name', :vcr => 'my_cassette' do
+          expect(make_http_request).to eql('Hello')
+        end
+
         context 'in a nested example group' do
           it 'records another one' do
             expect(make_http_request).to eq('Hello')
@@ -91,9 +98,10 @@ Feature: Usage with RSpec metadata
       end
       """
     When I run `rspec spec/vcr_example_spec.rb`
-    Then it should pass with "4 examples, 0 failures"
+    Then it should pass with "5 examples, 0 failures"
      And the file "spec/cassettes/VCR_example_group_metadata/records_an_http_request.yml" should contain "Hello"
      And the file "spec/cassettes/VCR_example_group_metadata/records_another_http_request.yml" should contain "Hello"
+     And the file "spec/cassettes/my_cassette.yml" should contain "Hello"
      And the file "spec/cassettes/VCR_example_group_metadata/in_a_nested_example_group/records_another_one.yml" should contain "Hello"
      And the file "spec/cassettes/VCR_example_metadata/records_an_http_request.yml" should contain "Hello"
 
