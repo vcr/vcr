@@ -9,6 +9,7 @@ Changelog
 - [patch] Fix: Prevent storing empty `http_version` on cassettes (#709)
 - [patch] Support Faraday persistent connection closing (#793)
 - [patch] Support Faraday 1.0 (#794)
+- Support ruby 2.7 in test matrix
 - Remove `multi_json` dependency, `yajl-ruby` and use only JSON (#815)
 
 ## 5.1.0 (Feb 5, 2020)
