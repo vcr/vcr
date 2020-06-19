@@ -320,9 +320,16 @@ RSpec.describe VCR::Cassette do
                   Time.now - 5.days - 60
                 ] end
 
-                it "has :all for the record mode when there is an internet connection available" do
-                  allow(VCR::InternetConnection).to receive(:available?).and_return(true)
-                  expect(subject.record_mode).to eq(:all)
+                if record_mode == :none
+                  it "has :none for the record mode when there is an internet connection available" do
+                    allow(VCR::InternetConnection).to receive(:available?).and_return(true)
+                    expect(subject.record_mode).to eq(:none)
+                  end
+                else
+                  it "has :all for the record mode when there is an internet connection available" do
+                    allow(VCR::InternetConnection).to receive(:available?).and_return(true)
+                    expect(subject.record_mode).to eq(:all)
+                  end
                 end
 
                 it "has :#{record_mode} for the record mode when there is no internet connection available" do
