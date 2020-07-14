@@ -192,10 +192,9 @@ module VCR
 
       assign_tags
 
-      @record_mode = @options[:record]
       @serializer  = VCR.cassette_serializers[@options[:serialize_with]]
       @persister   = VCR.cassette_persisters[@options[:persist_with]]
-      @record_mode = :all if should_re_record?
+      @record_mode = should_re_record?(@options[:record]) ? :all : @options[:record]
       @parent_list = @exclusive ? HTTPInteractionList::NullList : VCR.http_interactions
     end
 
@@ -231,9 +230,10 @@ module VCR
       end
     end
 
-    def should_re_record?
+    def should_re_record?(record_mode)
       return false unless @re_record_interval
       return false unless originally_recorded_at
+      return false if record_mode == :none
 
       now = Time.now
 
