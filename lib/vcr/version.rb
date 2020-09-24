@@ -10,7 +10,7 @@ module VCR
   #   * `parts` [Array<Integer>] List of the version parts.
   def version
     @version ||= begin
-      string = '6.0.0'
+      string = +'6.0.0'
 
       def string.parts
         split('.').map { |p| p.to_i }
@@ -28,7 +28,7 @@ module VCR
         parts[2]
       end
 
-      string
+      string.freeze
     end
   end
 end
