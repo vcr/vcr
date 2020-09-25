@@ -40,6 +40,10 @@ RSpec.describe VCR::Cassette::ERBRenderer do
         expect(render(vars_content, :var1 => 'foo', :var2 => 'bar')).to eq('foo. ERB with Vars! bar')
       end
 
+      it 'renders the file content as ERB with the passed variables having string keys' do
+        expect(render(vars_content, 'var1' => 'foo', 'var2' => 'bar')).to eq('foo. ERB with Vars! bar')
+      end
+
       it 'raises an appropriate error when one or more of the needed variables are not passed' do
         expect {
           render(vars_content, { :var1 => 'foo' }, "vars")

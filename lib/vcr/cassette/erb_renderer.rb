@@ -40,6 +40,7 @@ module VCR
       end
 
       @@struct_cache = Hash.new do |hash, attributes|
+        attributes.map!(&:to_sym)
         hash[attributes] = Struct.new(*attributes)
       end
 
