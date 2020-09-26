@@ -40,7 +40,9 @@ module VCR
       end
 
       @@struct_cache = Hash.new do |hash, attributes|
-        hash[attributes] = Struct.new(*attributes)
+        attributes = attributes.map(&:to_sym)
+        hash[attributes] = Struct.new(*attributes) unless hash.key?(attributes)
+        hash[attributes]
       end
 
       def variables_object

@@ -40,6 +40,15 @@ RSpec.describe VCR::Cassette::ERBRenderer do
         expect(render(vars_content, :var1 => 'foo', :var2 => 'bar')).to eq('foo. ERB with Vars! bar')
       end
 
+      it 'renders the file content as ERB with the passed variables having string keys' do
+        expect(render(vars_content, 'var1' => 'foo', 'var2' => 'bar')).to eq('foo. ERB with Vars! bar')
+      end
+
+      it 'reuses the struct cache for similar sets of symbol and string variable names' do
+        cache = described_class.class_variable_get('@@struct_cache')
+        expect( cache[[:var1, :var2]].object_id ).to eq cache[['var1', 'var2']].object_id
+      end
+
       it 'raises an appropriate error when one or more of the needed variables are not passed' do
         expect {
           render(vars_content, { :var1 => 'foo' }, "vars")
