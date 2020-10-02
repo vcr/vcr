@@ -266,6 +266,7 @@ module VCR
   # @see #turn_off!
   # @see #turn_on!
   # @see #turned_on?
+  # @see #turned_on
   def turned_off(options = {})
     turn_off!(options)
 
@@ -301,11 +302,28 @@ module VCR
     set_context_value(:turned_off, true)
   end
 
+  # Turns on VCR, for the duration of a block.
+  # @param (see #turn_off!)
+  # @return [void]
+  # @see #turn_off!
+  # @see #turned_off
+  # @see #turned_on?
+  def turned_on(options = {})
+    turn_on!
+
+    begin
+      yield
+    ensure
+      turn_off!(options)
+    end
+  end
+
   # Turns on VCR, if it has previously been turned off.
   # @return [void]
   # @see #turn_off!
   # @see #turned_off
   # @see #turned_on?
+  # @see #turned_on
   def turn_on!
     set_context_value(:turned_off, false)
   end

@@ -346,6 +346,28 @@ RSpec.describe VCR do
     end
   end
 
+  describe '.turned_on' do
+    before { VCR.turn_off! }
+
+    it 'yields with VCR turned on' do
+      expect(VCR).not_to be_turned_on
+      yielded = false
+
+      VCR.turned_on do
+        yielded = true
+        expect(VCR).to be_turned_on
+      end
+
+      expect(yielded).to eq(true)
+      expect(VCR).not_to be_turned_on
+    end
+
+    it 'passes options through to .turn_off!' do
+      expect(VCR).to receive(:turn_off!).with(:ignore_cassettes => true)
+      VCR.turned_on(:ignore_cassettes => true) { }
+    end
+  end
+
   describe '.turned_on?' do
     it 'is on by default' do
       expect(VCR).to be_turned_on
