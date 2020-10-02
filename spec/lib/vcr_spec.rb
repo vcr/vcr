@@ -348,6 +348,7 @@ RSpec.describe VCR do
 
   describe '.turned_on' do
     before { VCR.turn_off! }
+
     it 'yields with VCR turned on' do
       expect(VCR).not_to be_turned_on
       yielded = false
