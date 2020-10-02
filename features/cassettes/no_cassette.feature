@@ -52,7 +52,7 @@ Feature: Error for HTTP request made when no cassette is in use
       | c.hook_into :excon    | excon                 |
       | c.hook_into :faraday  | faraday (w/ net_http) |
 
-  Scenario: Temporarily turn VCR off to allow HTTP requests to procede as normal
+  Scenario: Temporarily turn VCR off to allow HTTP requests to proceed as normal
     Given a file named "turn_off_vcr.rb" with:
       """ruby
       $server = start_sinatra_app do
@@ -82,6 +82,10 @@ Feature: Error for HTTP request made when no cassette is in use
       VCR.turn_off!
       make_request "After calling VCR.turn_off!"
 
+      VCR.turned_on do
+        make_request "In VCR.turned_on block"
+      end
+
       VCR.turn_on!
       make_request "After calling VCR.turn_on!"
       """
@@ -100,6 +104,11 @@ Feature: Error for HTTP request made when no cassette is in use
       """
       After calling VCR.turn_off!
       Hello
+      """
+    And the output should contain:
+      """
+      In VCR.turned_on block
+      Error: VCR::Errors::UnhandledHTTPRequestError
       """
     And the output should contain:
       """
