@@ -23,7 +23,11 @@ module VCR
               description = metadata[:scoped_id] if description.empty?
               descriptions.unshift(description)
 
-              metadata = metadata[:example_group] || metadata[:parent_example_group]
+              metadata = if metadata.key?(:example_group)
+                           metadata[:example_group]
+                         else
+                           metadata[:parent_example_group]
+                         end
             end
 
             descriptions.join('/')
