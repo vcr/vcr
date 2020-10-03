@@ -110,12 +110,18 @@ module VCR
 
     def register_built_ins
       register(:method)  { |r1, r2| r1.method == r2.method }
-      register(:uri)     { |r1, r2| r1.uri == r2.uri }
+      register(:uri) do |r1, r2|
+        uri1 = URI(r1.uri)
+        uri2 = URI(r2.uri)
+        uri1.host = uri1.host.chomp('.')
+        uri2.host = uri2.host.chomp('.')
+        uri1 == uri2
+      end
       register(:body)    { |r1, r2| r1.body == r2.body }
       register(:headers) { |r1, r2| r1.headers == r2.headers }
 
       register(:host) do |r1, r2|
-        r1.parsed_uri.host == r2.parsed_uri.host
+        r1.parsed_uri.host.chomp('.') == r2.parsed_uri.host.chomp('.')
       end
       register(:path) do |r1, r2|
         r1.parsed_uri.path == r2.parsed_uri.path
