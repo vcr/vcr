@@ -24,10 +24,10 @@ Feature: Filter sensitive data
   substitution string so that the interaction will be identical to what was
   originally recorded.
 
-  Warning, the data you're filtering, may have be escaped or encoded.
-  Thus you may need to escape the sensitive text. For example if
-  "some&password" is in your cassette you will need to filter
-  "some&amp;password". You may wish to use `CGI::escapeHTML('some&password')`.
+  Warning, the data you're filtering may have been escaped or encoded.
+  Thus you may need to escape the sensitive text. For example, if
+  "some&password" is in your cassette, you will need to filter
+  "some&amp;password". You can also use `CGI::escapeHTML('some&password')`.
 
   You can specify as many filterings as you want.
 
