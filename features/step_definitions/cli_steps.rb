@@ -76,10 +76,6 @@ module VCRHelpers
 end
 World(VCRHelpers)
 
-Given(/the following files do not exist:/) do |files|
-  check_file_presence(files.raw.map{|file_row| file_row[0]}, false)
-end
-
 Given(/^a previously recorded cassette file "([^"]*)" with:$/) do |file_name, content|
   write_file(file_name, normalize_cassette_content(content))
 end
