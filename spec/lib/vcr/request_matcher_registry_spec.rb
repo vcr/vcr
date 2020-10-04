@@ -199,6 +199,14 @@ module VCR
           expect(matches).to be true
         end
 
+        it 'matches regardless of trailing . on host' do
+          matches = subject[:uri].matches?(
+            request_with(:uri => 'http://foo.com./bar?baz=7'),
+            request_with(:uri => 'http://foo.com/bar?baz=7')
+          )
+          expect(matches).to be true
+        end
+
         it 'does not match when it is different' do
           matches = subject[:uri].matches?(
             request_with(:uri => 'http://foo1.com/bar?baz=7'),
@@ -213,6 +221,14 @@ module VCR
           matches = subject[:host].matches?(
             request_with(:uri => 'http://foo.com/bar'),
             request_with(:uri => 'http://foo.com/car')
+          )
+          expect(matches).to be true
+        end
+
+        it 'matches when there is a trailing . on the host' do
+          matches = subject[:host].matches?(
+            request_with(:uri => 'http://foo.com/bar'),
+            request_with(:uri => 'http://foo.com./car')
           )
           expect(matches).to be true
         end
