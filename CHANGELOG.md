@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## Unreleased changes
+
+- [new] Add `VCR.turned_on` similar to `VCR.turned_off` (#681)
+- [fix] cassettes will match URIs with trailing dot. eg `example.com.` (#834)
+
 ## 6.0.0 (May 28, 2020)
 [Full Changelog](https://github.com/vcr/vcr/compare/v5.1.0...v6.0.0)
 
@@ -60,7 +65,7 @@ If I missed anyone I'm very sorry, you deserve credit.
 [Full Changelog](https://github.com/vcr/vcr/compare/v3.0.3...v4.0.0)
 
   - [Feature] Output non-matched headers on error
-  - [Fix] Allow non-latin charaters in cassette filenames
+  - [Fix] Allow non-latin characters in cassette filenames
   - [Breaking] Remove deprecated VCR::RSpec::Macros
   - [Breaking] Remove support for ruby 1.9.3
   - [Breaking] Remove support for Fakeweb
