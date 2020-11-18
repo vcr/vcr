@@ -3,7 +3,7 @@ require 'json'
 module VCR
   class Cassette
     class Serializers
-      # The JSON serializer. Uses `MultiJson` under the covers.
+      # The JSON serializer.
       #
       # @see Psych
       # @see Syck
@@ -29,7 +29,7 @@ module VCR
         # @return [String] the JSON string
         def serialize(hash)
           handle_encoding_errors do
-            ::JSON.generate(hash)
+            ::JSON.pretty_generate(hash)
           end
         end
 

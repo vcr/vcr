@@ -150,4 +150,3 @@ module VCR
     end
   end
 end
-
