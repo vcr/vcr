@@ -3,7 +3,7 @@ require 'json'
 module VCR
   class Cassette
     class Serializers
-      # The JSON serializer.
+      # The JSON serializer. Uses `MultiJson` under the covers.
       #
       # @see Psych
       # @see Syck
