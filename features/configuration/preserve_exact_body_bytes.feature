@@ -65,7 +65,10 @@ Feature: Preserve Exact Body Bytes
       """
     And the file "cassettes/example.json" should contain:
       """
-      "body":{"encoding":"ASCII-8BIT","base64_string":"YWJjIPo=\n"}
+              "body": {
+                "encoding": "ASCII-8BIT",
+                "base64_string": "YWJjIPo=\n"
+              }
       """
 
   Scenario: Preserve exact bytes for cassette with `:preserve_exact_body_bytes` option
@@ -99,10 +102,16 @@ Feature: Preserve Exact Body Bytes
     When I run `ruby preserve.rb`
     Then the file "cassettes/preserve_bytes.json" should contain:
       """
-      "body":{"encoding":"US-ASCII","base64_string":"SGVsbG8gV29ybGQ=\n"}
+              "body": {
+                "encoding": "US-ASCII",
+                "base64_string": "SGVsbG8gV29ybGQ=\n"
+              }
       """
      And the file "cassettes/dont_preserve_bytes.json" should contain:
       """
-      "body":{"encoding":"US-ASCII","string":"Hello World"}
+              "body": {
+                "encoding": "US-ASCII",
+                "string": "Hello World"
+              }
       """
 
