@@ -26,8 +26,11 @@ Feature: Filter sensitive data
 
   Warning, the data you're filtering may have been escaped or encoded.
   Thus you may need to escape the sensitive text. For example, if
-  "some&password" is in your cassette, you will need to filter
-  "some&amp;password". You can also use `CGI::escapeHTML('some&password')`.
+  "some&password" is in your cassette within a context which is html
+  escaped, you will need to filter "some&amp;password" or
+  `CGI::escapeHTML('some&password')`. Similarly if it's escaped in a
+  query string, then you will need to filter "some%26password"
+  or `CGI::escape('some&password')`
 
   You can specify as many filterings as you want.
 
