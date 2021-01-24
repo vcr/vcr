@@ -47,9 +47,20 @@ module VCR
                 scenario.scenario_outline.name,
                 scenario.name.split("\n").first
               ].join("/")
-            else
+            elsif scenario.respond_to?(:feature)
               [ scenario.feature.name.split("\n").first,
                 scenario.name.split("\n").first
+              ].join("/")
+            elsif scenario.location.lines.min == scenario.location.lines.max
+              # test case from a regular scenario in cucumber version 4
+              [ scenario.location.file.split("/").last.split(".").first,
+                scenario.name.split("\n").first
+              ].join("/")
+            else
+              # test case from a scenario with examples ("scenario outline") in cucumber version 4
+              [ scenario.location.file.split("/").last.split(".").first,
+                scenario.name.split("\n").first,
+                "Example at line #{scenario.location.lines.max}"
               ].join("/")
             end
           else
