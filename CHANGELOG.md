@@ -3,6 +3,7 @@ Changelog
 
 ## Unreleased changes
 
+- [breaking] JSON-serializer generates pretty-formatted output.
 - [new] Add `VCR.turned_on` similar to `VCR.turned_off` (#681)
 - [fix] cassettes will match URIs with trailing dot. eg `example.com.` (#834)
 
