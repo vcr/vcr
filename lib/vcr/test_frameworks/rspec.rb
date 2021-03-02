@@ -8,23 +8,29 @@ module VCR
       def configure!
         ::RSpec.configure do |config|
           vcr_cassette_name_for = lambda do |metadata|
-            description = if metadata[:description].empty?
-                            # we have an "it { is_expected.to be something }" block
-                            metadata[:scoped_id]
-                          else
-                            metadata[:description]
-                          end
-            example_group = if metadata.key?(:example_group)
-                              metadata[:example_group]
-                            else
-                              metadata[:parent_example_group]
-                            end
+            descriptions = []
 
-            if example_group
-              [vcr_cassette_name_for[example_group], description].join('/')
-            else
-              description
+            while metadata
+              vcr_options = metadata[:vcr]
+              # without vcr option or just "vcr: true/false"
+              vcr_options = {} unless vcr_options.is_a?(Hash)
+
+              # removes previous descriptions, which are below the context/describe with single cassette
+              descriptions.clear if vcr_options[:single_cassette]
+
+              description = metadata[:description]
+              # without description it is an "it { is_expected.to be something }" block
+              description = metadata[:scoped_id] if description.empty?
+              descriptions.unshift(description)
+
+              metadata = if metadata.key?(:example_group)
+                           metadata[:example_group]
+                         else
+                           metadata[:parent_example_group]
+                         end
             end
+
+            descriptions.join('/')
           end
 
           when_tagged_with_vcr = { :vcr => lambda { |v| !!v } }
