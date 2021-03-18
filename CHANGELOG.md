@@ -2,6 +2,7 @@ Changelog
 =========
 
 ## Unreleased changes
+[Full Changelog](https://github.com/vcr/vcr/compare/v6.0.0...master)
 
 - [breaking] JSON-serializer generates pretty-formatted output.
 - [new] Add `VCR.turned_on` similar to `VCR.turned_off` (#681)
