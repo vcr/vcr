@@ -6,12 +6,13 @@ module VCR
       extend self
 
       def vcr_cassette_name_for(metadata)
-        description = if metadata[:description].empty?
-                        # we have an "it { is_expected.to be something }" block
-                        metadata[:scoped_id]
-                      else
-                        metadata[:description]
-                      end
+        description = 
+          if metadata[:description].empty?
+            # we have an "it { is_expected.to be something }" block
+            metadata[:scoped_id]
+          else
+            metadata[:description]
+          end
         example_group = if metadata.key?(:example_group)
                           metadata[:example_group]
                         else
