@@ -13,11 +13,12 @@ module VCR
           else
             metadata[:description]
           end
-        example_group = if metadata.key?(:example_group)
-                          metadata[:example_group]
-                        else
-                          metadata[:parent_example_group]
-                        end
+        example_group = 
+          if metadata.key?(:example_group)
+            metadata[:example_group]
+          else
+            metadata[:parent_example_group]
+          end
 
         if example_group
           [vcr_cassette_name_for(example_group), description].join('/')
