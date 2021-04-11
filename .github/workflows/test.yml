@@ -1,0 +1,62 @@
+name: vcr ci
+
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      RUBYOPT: "-w"
+
+    strategy:
+      matrix:
+        ruby-version: ["2.5", "2.6", "2.7", "3.0"]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install OS dependencies
+      run: sudo apt-get install --assume-yes libcurl4-openssl-dev
+
+    - name: Set up Ruby ${{ matrix.ruby-version }}
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true
+
+    - name: typhoeus-0.4
+      run: |
+        bundle install
+        bundle exec rspec spec/lib/vcr/library_hooks/typhoeus_0.4_spec.rb
+      env:
+        BUNDLE_GEMFILE: Gemfile.typhoeus-0.4
+
+    - name: faraday-1.0.0
+      run: |
+        bundle install
+        bundle exec rspec spec/lib/vcr/middleware/faraday_spec.rb spec/lib/vcr/library_hooks/faraday_spec.rb
+        bundle exec cucumber features/middleware/faraday.feature
+      env:
+        BUNDLE_GEMFILE: Gemfile.faraday-1.0.0
+
+    - name: cucumber-3.1
+      run: |
+        bundle install
+        bundle exec cucumber features/test_frameworks/cucumber.feature
+      env:
+        BUNDLE_GEMFILE: Gemfile.cucumber-3.1
+
+    - name: rspec
+      run: |
+        bundle install
+        bundle exec rspec spec/
+
+    - name: cucumber
+      run: |
+        bundle install
+        bundle exec cucumber features/
