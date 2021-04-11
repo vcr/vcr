@@ -70,7 +70,13 @@ Feature: EM HTTP Request
           body: 
             encoding: UTF-8
             string: ""
-          headers: {}
+          headers:
+            Connection:
+            - close
+            User-Agent:
+            - EventMachine HttpClient
+            Accept-Encoding:
+            - gzip, compressed
         response: 
           status: 
             code: 200
@@ -90,7 +96,13 @@ Feature: EM HTTP Request
           body: 
             encoding: UTF-8
             string: ""
-          headers: {}
+          headers:
+            Connection:
+            - close
+            User-Agent:
+            - EventMachine HttpClient
+            Accept-Encoding:
+            - gzip, compressed
         response: 
           status: 
             code: 200
@@ -110,7 +122,13 @@ Feature: EM HTTP Request
           body: 
             encoding: UTF-8
             string: ""
-          headers: {}
+          headers:
+            Connection:
+            - close
+            User-Agent:
+            - EventMachine HttpClient
+            Accept-Encoding:
+            - gzip, compressed
         response: 
           status: 
             code: 200
@@ -177,7 +195,13 @@ Feature: EM HTTP Request
           body: 
             encoding: UTF-8
             string: ""
-          headers: {}
+          headers:
+            Connection:
+            - close
+            User-Agent:
+            - EventMachine HttpClient
+            Accept-Encoding:
+            - gzip, compressed
         response: 
           status: 
             code: 200
@@ -197,7 +221,13 @@ Feature: EM HTTP Request
           body: 
             encoding: UTF-8
             string: ""
-          headers: {}
+          headers:
+            Connection:
+            - close
+            User-Agent:
+            - EventMachine HttpClient
+            Accept-Encoding:
+            - gzip, compressed
         response: 
           status: 
             code: 200
@@ -217,7 +247,13 @@ Feature: EM HTTP Request
           body: 
             encoding: UTF-8
             string: ""
-          headers: {}
+          headers:
+            Connection:
+            - close
+            User-Agent:
+            - EventMachine HttpClient
+            Accept-Encoding:
+            - gzip, compressed
         response: 
           status: 
             code: 200
