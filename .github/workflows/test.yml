@@ -60,3 +60,8 @@ jobs:
       run: |
         bundle install
         bundle exec cucumber features/
+
+    - name: doc coverage
+      run: |
+        bundle install
+        bundle exec yard stats --list-undoc | tee /dev/stdout | grep -q '100.00% documented'
