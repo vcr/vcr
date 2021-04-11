@@ -14,6 +14,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
 
   describe "using #{adapter_module.http_library_name}", :unless => http_lib_unsupported do
     include adapter_module
+    let(:http_library_name) { adapter_module.http_library_name }
 
     # Necessary for ruby 1.9.2.  On 1.9.2 we get an error when we use super,
     # so this gives us another alias we can use for the original method.
@@ -426,6 +427,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
 
           valid.each do |val, response|
             it "returns the expected response for a #{val.inspect} request" do
+              skip "EM HTTP Request adds headers to requests :-(" if attribute == :headers && http_library_name == "EM HTTP Request"
               expect(get_body_string(make_http_request(val))).to eq(response)
             end
           end
