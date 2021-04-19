@@ -64,7 +64,7 @@ jobs:
 
     - name: check warnings
       run: |
-        vcr_warnings="$(grep -F "$PWD" "${ALL_WARNINGS}" | grep "warning: " | sort | uniq -c | tee /dev/stderr | wc -l)"
+        vcr_warnings="$(grep -F "$PWD" "${ALL_WARNINGS}" | grep "warning: " | grep -v "${PWD}/vendor/bundle" | sort | uniq -c | tee /dev/stderr | wc -l)"
         if [ "$vcr_warnings" -gt 0 ]; then echo "FAILED: test suite doesn't tolerate warnings"; exit 1; fi
 
     - name: doc coverage
