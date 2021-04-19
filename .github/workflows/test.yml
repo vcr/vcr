@@ -12,6 +12,7 @@ jobs:
 
     env:
       RUBYOPT: "-w"
+      ALL_WARNINGS: "/tmp/all-warnings"
 
     strategy:
       matrix:
@@ -32,34 +33,39 @@ jobs:
     - name: typhoeus-0.4
       run: |
         bundle install
-        bundle exec rspec spec/lib/vcr/library_hooks/typhoeus_0.4_spec.rb
+        bundle exec rspec spec/lib/vcr/library_hooks/typhoeus_0.4_spec.rb 2>> "${ALL_WARNINGS}"
       env:
         BUNDLE_GEMFILE: Gemfile.typhoeus-0.4
 
     - name: faraday-1.0.0
       run: |
         bundle install
-        bundle exec rspec spec/lib/vcr/middleware/faraday_spec.rb spec/lib/vcr/library_hooks/faraday_spec.rb
-        bundle exec cucumber features/middleware/faraday.feature
+        bundle exec rspec spec/lib/vcr/middleware/faraday_spec.rb spec/lib/vcr/library_hooks/faraday_spec.rb 2>> "${ALL_WARNINGS}"
+        bundle exec cucumber features/middleware/faraday.feature 2>> "${ALL_WARNINGS}"
       env:
         BUNDLE_GEMFILE: Gemfile.faraday-1.0.0
 
     - name: cucumber-3.1
       run: |
         bundle install
-        bundle exec cucumber features/test_frameworks/cucumber.feature
+        bundle exec cucumber features/test_frameworks/cucumber.feature 2>> "${ALL_WARNINGS}"
       env:
         BUNDLE_GEMFILE: Gemfile.cucumber-3.1
 
     - name: rspec
       run: |
         bundle install
-        bundle exec rspec spec/
+        bundle exec rspec spec/ 2>> "${ALL_WARNINGS}"
 
     - name: cucumber
       run: |
         bundle install
-        bundle exec cucumber features/
+        bundle exec cucumber features/ 2>> "${ALL_WARNINGS}"
+
+    - name: check warnings
+      run: |
+        vcr_warnings="$(grep -F "$PWD" "${ALL_WARNINGS}" | grep "warning: " | sort | uniq -c | tee /dev/stderr | wc -l)"
+        if [ "$vcr_warnings" -gt 0 ]; then echo "FAILED: test suite doesn't tolerate warnings"; exit 1; fi
 
     - name: doc coverage
       run: |
