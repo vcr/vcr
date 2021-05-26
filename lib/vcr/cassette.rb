@@ -14,7 +14,8 @@ module VCR
     #   * :new_episodes -- Playback previously recorded HTTP interactions and record new ones.
     #   * :once -- Record the HTTP interactions if the cassette has not already been recorded;
     #              otherwise, playback the HTTP interactions.
-    VALID_RECORD_MODES = [:all, :none, :new_episodes, :once]
+    #   * :clean -- Do not record any HTTP interactions; play them back and remove unused HTTP interactions.
+    VALID_RECORD_MODES = [:all, :none, :new_episodes, :once, :clean]
 
     # @return [#to_s] The name of the cassette. Used to determine the cassette's file name.
     # @see #file
@@ -259,8 +260,12 @@ module VCR
       record_mode == :all
     end
 
+    def should_clean_unused_interactions?
+      record_mode == :clean
+    end
+
     def should_assert_no_unused_interactions?
-      !(@allow_unused_http_interactions || $!)
+      !should_clean_unused_interactions? && !(@allow_unused_http_interactions || $!)
     end
 
     def raw_cassette_bytes
@@ -274,6 +279,12 @@ module VCR
         new_interaction_list = HTTPInteractionList.new(new_recorded_interactions, match_requests_on)
         old_interactions = old_interactions.reject do |i|
           new_interaction_list.response_for(i.request)
+        end
+      end
+
+      if should_clean_unused_interactions?
+        old_interactions = old_interactions.reject do |i|
+          http_interactions.interactions.include?(i)
         end
       end
 
@@ -294,7 +305,7 @@ module VCR
     end
 
     def write_recorded_interactions_to_disk
-      return if new_recorded_interactions.none?
+      return if new_recorded_interactions.none? && !should_clean_unused_interactions?
       hash = serializable_hash
       return if hash["http_interactions"].none?
 
