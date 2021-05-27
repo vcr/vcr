@@ -265,7 +265,7 @@ module VCR
     end
 
     def should_assert_no_unused_interactions?
-      !should_clean_unused_interactions? && !(@allow_unused_http_interactions || $!)
+      !(@allow_unused_http_interactions || $!)
     end
 
     def raw_cassette_bytes
