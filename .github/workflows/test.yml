@@ -1,0 +1,73 @@
+name: vcr ci
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      RUBYOPT: "-w"
+      ALL_WARNINGS: "/tmp/all-warnings"
+
+    strategy:
+      matrix:
+        ruby-version: ["2.4", "2.5", "2.6", "2.7"]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install OS dependencies
+      run: sudo apt-get install --assume-yes libcurl4-openssl-dev
+
+    - name: Set up Ruby ${{ matrix.ruby-version }}
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true
+
+    - name: typhoeus-0.4
+      run: |
+        bundle install
+        bundle exec rspec spec/lib/vcr/library_hooks/typhoeus_0.4_spec.rb 2>> "${ALL_WARNINGS}"
+      env:
+        BUNDLE_GEMFILE: Gemfile.typhoeus-0.4
+
+    - name: faraday-1.0.0
+      run: |
+        bundle install
+        bundle exec rspec spec/lib/vcr/middleware/faraday_spec.rb spec/lib/vcr/library_hooks/faraday_spec.rb 2>> "${ALL_WARNINGS}"
+        bundle exec cucumber features/middleware/faraday.feature 2>> "${ALL_WARNINGS}"
+      env:
+        BUNDLE_GEMFILE: Gemfile.faraday-1.0.0
+
+    - name: cucumber-3.1
+      run: |
+        bundle install
+        bundle exec cucumber features/test_frameworks/cucumber.feature 2>> "${ALL_WARNINGS}"
+      env:
+        BUNDLE_GEMFILE: Gemfile.cucumber-3.1
+
+    - name: rspec
+      run: |
+        bundle install
+        bundle exec rspec spec/ 2>> "${ALL_WARNINGS}"
+
+    - name: cucumber
+      run: |
+        bundle install
+        bundle exec cucumber features/ 2>> "${ALL_WARNINGS}"
+
+    - name: check warnings
+      run: |
+        vcr_warnings="$(grep -F "$PWD" "${ALL_WARNINGS}" | grep "warning: " | grep -v "${PWD}/vendor/bundle" | sort | uniq -c | tee /dev/stderr | wc -l)"
+        if [ "$vcr_warnings" -gt 0 ]; then echo "FAILED: test suite doesn't tolerate warnings"; exit 1; fi
+
+    - name: doc coverage
+      run: |
+        bundle install
+        bundle exec yard stats --list-undoc | tee /dev/stdout | grep -q '100.00% documented'

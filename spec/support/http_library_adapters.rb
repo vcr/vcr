@@ -109,7 +109,14 @@ HTTP_LIBRARY_ADAPTERS['em-http-request'] = Module.new do
   def make_http_request(method, url, body = nil, headers = {})
     http = nil
     EventMachine.run do
-      http = EventMachine::HttpRequest.new(url).send(method, :body => body, :head => headers)
+      # Several request options are required to prevent em-http-request from inserting headers
+      request_options = {
+        body: body,
+        head: headers.merge({"user-agent" => nil}),
+        compressed: false,
+        keepalive: true
+      }
+      http = EventMachine::HttpRequest.new(url).send(method, **request_options)
       http.callback { EventMachine.stop }
     end
     http

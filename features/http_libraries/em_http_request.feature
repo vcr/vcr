@@ -38,7 +38,13 @@ Feature: EM HTTP Request
       VCR.use_cassette('em_http') do
         EventMachine.run do
           http_array = %w[ foo bar bazz ].map do |p|
-            EventMachine::HttpRequest.new("http://localhost:#{$server.port}/#{p}").get
+            # Several request options are required to prevent em-http-request from inserting headers
+            request_options = {
+              compressed: false,
+              head: {"user-agent" => nil},
+              keepalive: true
+            }
+            EventMachine::HttpRequest.new("http://localhost:#{$server.port}/#{p}").get(**request_options)
           end
 
           http_array.each do |http|
@@ -145,7 +151,13 @@ Feature: EM HTTP Request
           multi = EventMachine::MultiRequest.new
 
           %w[ foo bar bazz ].each do |path|
-            multi.add(path, EventMachine::HttpRequest.new("http://localhost:#{$server.port}/#{path}").get)
+            # Several request options are required to prevent em-http-request from inserting headers
+            request_options = {
+              compressed: false,
+              head: {"user-agent" => nil},
+              keepalive: true
+            }
+            multi.add(path, EventMachine::HttpRequest.new("http://localhost:#{$server.port}/#{path}").get(**request_options))
           end
 
           multi.callback do
