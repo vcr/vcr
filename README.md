@@ -1,7 +1,7 @@
 vcr
 ===
 
-[![Build](https://img.shields.io/travis/vcr/vcr/master.svg?style=flat-square)](https://travis-ci.org/vcr/vcr)
+[![CI status](https://github.com/vcr/vcr/actions/workflows/test.yml/badge.svg)](https://github.com/vcr/vcr/actions/workflows/test.yml)
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/vcr/vcr.svg?style=flat-square)](http://github.com/vcr/vcr/releases)
 [![Version](https://img.shields.io/gem/v/vcr.svg?style=flat-square)](https://rubygems.org/gems/vcr)
 [![OpenCollective](https://opencollective.com/vcr/backers/badge.svg?style=flat-square)](https://opencollective.com/vcr#backer)
