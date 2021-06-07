@@ -54,6 +54,7 @@ module VCR
 
           config.after(:each, when_tagged_with_vcr) do |ex|
             example = ex.respond_to?(:metadata) ? ex : ex.example
+            VCR.current_cassette.run_failed! if !!example.exception
             VCR.eject_cassette(:skip_no_unused_interactions_assertion => !!example.exception)
           end
         end
