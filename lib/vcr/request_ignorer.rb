@@ -25,6 +25,10 @@ module VCR
       end
     end
 
+    def localhost_ignored?
+      (LOCALHOST_ALIASES & ignore_hosts.to_a).any?
+    end
+
     def ignore_hosts(*hosts)
       ignored_hosts.merge(hosts)
     end
