@@ -62,7 +62,7 @@ module VCR
     end
 
     context 'when ignore_localhost is set to false' do
-      before(:each) { subject.ignore_localhost = false }
+      before { subject.ignore_localhost = false }
 
       it 'localhost_ignored is false' do
         expect(subject.localhost_ignored?).to eq(false)
