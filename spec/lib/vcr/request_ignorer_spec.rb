@@ -55,6 +55,18 @@ module VCR
       RequestIgnorer::LOCALHOST_ALIASES.each do |host|
         it_behaves_like "#ignore?", "http://#{host}/foo", true
       end
+
+      it 'localhost_ignored is true' do
+        expect(subject.localhost_ignored?).to eq(true)
+      end
+    end
+
+    context 'when ignore_localhost is set to false' do
+      before { subject.ignore_localhost = false }
+
+      it 'localhost_ignored is false' do
+        expect(subject.localhost_ignored?).to eq(false)
+      end
     end
 
     context 'when ignore_localhost is not set' do
