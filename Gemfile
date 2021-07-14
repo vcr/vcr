@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem "faraday", ">= 0.9.2"
+gem "webmock", ">= 1.19.0"
 
 gemspec
 
