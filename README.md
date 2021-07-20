@@ -107,7 +107,7 @@ Note that as of VCR 6, only >= 2.4 is explicitly supported.
   * See the [Contributing](https://github.com/vcr/vcr/blob/master/CONTRIBUTING.md)
     guide for instructions on running the specs and features.
   * Code quality metrics are checked by [Code Climate](https://codeclimate.com/github/vcr/vcr).
-  * Documentation is generated with [YARD](https://yardoc.org/) ([cheat sheet](http://cheat.errtheblog.com/s/yard)).
+  * Documentation is generated with [YARD](https://yardoc.org/) ([cheat sheet](https://rubydoc.info/gems/yard/file/docs/GettingStarted.md)).
     To generate while developing:
 
 ```
