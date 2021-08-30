@@ -7,4 +7,5 @@ gemspec
 platform :mri do
   gem "typhoeus"
   gem "patron"
+  gem "webrick"
 end
