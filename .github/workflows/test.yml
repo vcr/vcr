@@ -32,14 +32,12 @@ jobs:
 
     - name: typhoeus-0.4
       run: |
-        bundle install
         bundle exec rspec spec/lib/vcr/library_hooks/typhoeus_0.4_spec.rb 2>> "${ALL_WARNINGS}"
       env:
         BUNDLE_GEMFILE: Gemfile.typhoeus-0.4
 
     - name: faraday-1.0.0
       run: |
-        bundle install
         bundle exec rspec spec/lib/vcr/middleware/faraday_spec.rb spec/lib/vcr/library_hooks/faraday_spec.rb 2>> "${ALL_WARNINGS}"
         bundle exec cucumber features/middleware/faraday.feature 2>> "${ALL_WARNINGS}"
       env:
@@ -47,19 +45,16 @@ jobs:
 
     - name: cucumber-3.1
       run: |
-        bundle install
         bundle exec cucumber features/test_frameworks/cucumber.feature 2>> "${ALL_WARNINGS}"
       env:
         BUNDLE_GEMFILE: Gemfile.cucumber-3.1
 
     - name: rspec
       run: |
-        bundle install
         bundle exec rspec spec/ 2>> "${ALL_WARNINGS}"
 
     - name: cucumber
       run: |
-        bundle install
         bundle exec cucumber features/ 2>> "${ALL_WARNINGS}"
 
     - name: check warnings
@@ -69,5 +64,4 @@ jobs:
 
     - name: doc coverage
       run: |
-        bundle install
         bundle exec yard stats --list-undoc | tee /dev/stdout | grep -q '100.00% documented'
