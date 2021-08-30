@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "cucumber", "~> 3.1"
+gem "cucumber", "~> 7.0"
 gem "webrick"
 
 gemspec

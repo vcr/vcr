@@ -126,7 +126,7 @@ Feature: Net::HTTP
       end
 
       VCR.use_cassette('net_http') do
-        puts open("http://localhost:#{$server.port}/").read
+        puts URI.open("http://localhost:#{$server.port}/").read
       end
       """
     When I run `ruby vcr_net_http.rb --with-server`

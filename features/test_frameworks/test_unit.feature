@@ -39,7 +39,7 @@ Feature: Usage with Test::Unit
       """
     And the directory "test/fixtures/vcr_cassettes" does not exist
     When I set the "SERVER" environment variable to "true"
-     And I run `ruby -Itest test/vcr_example_test.rb`
+    And I run `ruby -Itest test/vcr_example_test.rb`
     Then it should pass with "1 tests, 1 assertions, 0 failures, 0 errors"
     And the file "test/fixtures/vcr_cassettes/test_unit_example.yml" should contain "Hello"
 
