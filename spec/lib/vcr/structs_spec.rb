@@ -581,7 +581,8 @@ module VCR
 
       it 'can be cast to a proc' do
         expect(Fiber).to receive(:yield)
-        lambda(&subject).call
+        call_later =  subject.to_proc
+        call_later.call
       end
     end
 
