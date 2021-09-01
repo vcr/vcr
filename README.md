@@ -95,7 +95,7 @@ VCR versions 6.x are tested on the following ruby interpreters:
   * MRI 2.6
   * MRI 2.5
   
-Note that as of VCR 6, only >= 2.5 is explicitly supported.
+Note that as of after VCR 6.0.0, only >= 2.5 is explicitly supported. 6.0.0 supported >= 2.4.
 
 **Development**
 
