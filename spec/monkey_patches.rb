@@ -19,12 +19,6 @@ module MonkeyPatches
         $original_typhoeus_before_hooks.each do |hook|
           ::Typhoeus.before << hook
         end
-      when :typhoeus_0_4
-        ::Typhoeus::Hydra.global_hooks = $original_typhoeus_global_hooks
-        ::Typhoeus::Hydra.stub_finders.clear
-        $original_typhoeus_stub_finders.each do |finder|
-          ::Typhoeus::Hydra.stub_finders << finder
-        end
       when :excon
         VCR::LibraryHooks::Excon.configure_middleware
       else raise ArgumentError.new("Unexpected scope: #{scope}")
@@ -77,11 +71,11 @@ if defined?(::Typhoeus.before)
   $original_typhoeus_global_hooks = Typhoeus.on_complete.dup
   $original_typhoeus_before_hooks = Typhoeus.before.dup
 elsif defined?(::Typhoeus::Hydra.global_hooks)
-  require 'vcr/library_hooks/typhoeus'
-  $typhoeus_0_4_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].first
-  $typhoeus_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].last
-  $original_typhoeus_global_hooks = Typhoeus::Hydra.global_hooks.dup
-  $original_typhoeus_stub_finders = Typhoeus::Hydra.stub_finders.dup
+  # require 'vcr/library_hooks/typhoeus'
+  # $typhoeus_0_4_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].first
+  # $typhoeus_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].last
+  # $original_typhoeus_global_hooks = Typhoeus::Hydra.global_hooks.dup
+  # $original_typhoeus_stub_finders = Typhoeus::Hydra.stub_finders.dup
 end
 
 require 'vcr/library_hooks/webmock'
@@ -94,9 +88,8 @@ $excon_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].
 MonkeyPatches.disable_all!
 
 RSpec.configure do |config|
-  [:webmock, :typhoeus, :typhoeus_0_4, :excon].each do |scope|
+  [:webmock, :typhoeus, :excon].each do |scope|
     config.before(:all, :with_monkey_patches => scope) { MonkeyPatches.enable!(scope) }
     config.after(:all,  :with_monkey_patches => scope) { MonkeyPatches.disable_all!   }
   end
 end
-

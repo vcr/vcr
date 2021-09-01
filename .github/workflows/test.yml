@@ -30,13 +30,6 @@ jobs:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true
 
-    - name: typhoeus-0.4
-      run: |
-        bundle install
-        bundle exec rspec spec/lib/vcr/library_hooks/typhoeus_0.4_spec.rb 2>> "${ALL_WARNINGS}"
-      env:
-        BUNDLE_GEMFILE: Gemfile.typhoeus-0.4
-
     - name: faraday-1.0.0
       run: |
         bundle install
