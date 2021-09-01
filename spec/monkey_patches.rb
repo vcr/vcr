@@ -65,10 +65,12 @@ if RUBY_INTERPRETER == :mri
   end
 end
 
-require 'vcr/library_hooks/typhoeus'
-$typhoeus_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].last
-$original_typhoeus_global_hooks = Typhoeus.on_complete.dup
-$original_typhoeus_before_hooks = Typhoeus.before.dup
+if defined?(::Typhoeus)
+  require 'vcr/library_hooks/typhoeus'
+  $typhoeus_after_loaded_hook = VCR.configuration.hooks[:after_library_hooks_loaded].last
+  $original_typhoeus_global_hooks = Typhoeus.on_complete.dup
+  $original_typhoeus_before_hooks = Typhoeus.before.dup
+end
 
 require 'vcr/library_hooks/webmock'
 $original_webmock_callbacks = ::WebMock::CallbackRegistry.callbacks
