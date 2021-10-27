@@ -11,10 +11,14 @@ module VCR
       module JSON
         extend self
         extend EncodingErrorHandling
+        extend SyntaxErrorHandling
 
         # @private
         ENCODING_ERRORS = [ArgumentError]
         ENCODING_ERRORS << ::JSON::GeneratorError
+
+        # @private
+        SYNTAX_ERRORS = [::JSON::ParserError]
 
         # The file extension to use for this serializer.
         #
@@ -39,7 +43,9 @@ module VCR
         # @return [Hash] the deserialized object
         def deserialize(string)
           handle_encoding_errors do
-            ::JSON.parse(string)
+            handle_syntax_errors do
+              ::JSON.parse(string)
+            end
           end
         end
       end

@@ -11,9 +11,13 @@ module VCR
       module Psych
         extend self
         extend EncodingErrorHandling
+        extend SyntaxErrorHandling
 
         # @private
         ENCODING_ERRORS = [ArgumentError]
+
+        # @private
+        SYNTAX_ERRORS = [::Psych::SyntaxError]
 
         # The file extension to use for this serializer.
         #
@@ -40,7 +44,9 @@ module VCR
         # @return [Hash] the deserialized object
         def deserialize(string)
           handle_encoding_errors do
-            ::Psych.load(string)
+            handle_syntax_errors do
+              ::Psych.load(string)
+            end
           end
         end
       end
