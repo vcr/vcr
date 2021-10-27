@@ -32,7 +32,7 @@ module VCR
       end
 
       def erb_variables
-        @erb if @erb.is_a?(Hash)
+        @erb if @erb.is_a?(Hash) && !@erb.empty?
       end
 
       def template
