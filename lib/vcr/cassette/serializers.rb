@@ -54,6 +54,16 @@ module VCR
         raise
       end
     end
+
+    # @private
+    module SyntaxErrorHandling
+      def handle_syntax_errors
+        yield
+      rescue *self::SYNTAX_ERRORS => e
+        e.message << "\nNote: This is a VCR cassette. If it is using ERB, you may have forgotten to pass the `:erb` option to `use_cassette`."
+        raise
+      end
+    end
   end
 end
 

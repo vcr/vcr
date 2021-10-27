@@ -13,9 +13,13 @@ module VCR
       module YAML
         extend self
         extend EncodingErrorHandling
+        extend SyntaxErrorHandling
 
         # @private
         ENCODING_ERRORS = [ArgumentError]
+
+        # @private
+        SYNTAX_ERRORS = [::Psych::SyntaxError]
 
         # The file extension to use for this serializer.
         #
@@ -42,7 +46,9 @@ module VCR
         # @return [Hash] the deserialized object
         def deserialize(string)
           handle_encoding_errors do
-            ::YAML.load(string)
+            handle_syntax_errors do
+              ::YAML.load(string)
+            end
           end
         end
       end

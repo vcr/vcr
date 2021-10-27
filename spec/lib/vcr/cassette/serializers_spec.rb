@@ -21,6 +21,22 @@ module VCR
         end
       end
 
+      shared_examples_for "syntax error handling" do |name, error_class|
+        context "the #{name} serializer" do
+          it 'appends info about the :erb option to the error' do
+            expect {
+              begin
+                serialized
+              rescue => e
+                e.message << "\n#{serializer.serialize("a" => "bc").inspect}"
+                raise
+              end
+              serializer.deserialize(serialized)
+            }.to raise_error(error_class, /erb/)
+          end
+        end
+      end
+
       shared_examples_for "a serializer" do |name, file_extension, lazily_loaded|
         let(:serializer) { subject[name] }
 
@@ -52,29 +68,76 @@ module VCR
           let(:string) { "\xFA".force_encoding("UTF-8") }
           before { ::YAML::ENGINE.yamler = 'psych' if defined?(::YAML::ENGINE) }
         end if ''.respond_to?(:encoding)
+
+        it_behaves_like "syntax error handling", :yaml, ::Psych::SyntaxError do
+          let(:serialized) { <<~YAML }
+            ---
+            a: <%=
+              'bc'.to_json
+            %>
+          YAML
+          before { ::YAML::ENGINE.yamler = 'psych' if defined?(::YAML::ENGINE) }
+        end
       end
 
       it_behaves_like "a serializer", :syck,  "yml",  :lazily_loaded do
         it_behaves_like "encoding error handling", :syck, ArgumentError do
           let(:string) { "\xFA".force_encoding("UTF-8") }
         end if ''.respond_to?(:encoding)
+
+        it_behaves_like "syntax error handling", :syck, ::Psych::SyntaxError do
+          let(:serialized) { <<~YAML }
+            ---
+            a: <%=
+              'bc'.to_json
+            %>
+          YAML
+        end
       end
 
       it_behaves_like "a serializer", :psych, "yml",  :lazily_loaded do
         it_behaves_like "encoding error handling", :psych, ArgumentError do
           let(:string) { "\xFA".force_encoding("UTF-8") }
         end if ''.respond_to?(:encoding)
+
+        it_behaves_like "syntax error handling", :psych, ::Psych::SyntaxError do
+          let(:serialized) { <<~YAML }
+            ---
+            a: <%=
+              'bc'.to_json
+            %>
+          YAML
+        end
       end if defined?(::Psych)
 
       it_behaves_like "a serializer", :compressed, "zz",  :lazily_loaded do
         it_behaves_like "encoding error handling", :compressed, ArgumentError do
           let(:string) { "\xFA".force_encoding("UTF-8") }
         end if ''.respond_to?(:encoding)
+
+        it_behaves_like "syntax error handling", :compressed, ::Psych::SyntaxError do
+          let(:serialized) { Zlib::Deflate.deflate(<<~YAML) }
+            ---
+            a: <%=
+              'bc'.to_json
+            %>
+          YAML
+        end
       end
 
       it_behaves_like "a serializer", :json,  "json", :lazily_loaded do
         it_behaves_like "encoding error handling", :json, ::JSON::GeneratorError do
           let(:string) { "\xFA" }
+        end
+
+        it_behaves_like "syntax error handling", :json, ::JSON::ParserError do
+          let(:serialized) { <<~JSON }
+            {
+              "a": <%=
+                'bc'.to_json
+              %>
+            }
+          JSON
         end
       end
 
