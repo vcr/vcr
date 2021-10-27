@@ -4,9 +4,13 @@ Changelog
 ## Unreleased changes
 [Full Changelog](https://github.com/vcr/vcr/compare/v6.0.0...master)
 
+- [breaking] Remove support for Ruby 2.4, require Ruby 2.5 or newer (#900)
 - [breaking] JSON-serializer generates pretty-formatted output.
+- [breaking] Drop support for ancient typhoeus 0.4 (#905)
 - [new] Add `VCR.turned_on` similar to `VCR.turned_off` (#681)
 - [fix] cassettes will match URIs with trailing dot. eg `example.com.` (#834)
+- [patch] Improve error message for syntax error in ERB-using cassettes (#909)
+- [patch] Handle `use_cassette(..., erb: {})` (#908) 
 
 ## 6.0.0 (May 28, 2020)
 [Full Changelog](https://github.com/vcr/vcr/compare/v5.1.0...v6.0.0)
