@@ -33,6 +33,10 @@ RSpec.describe VCR::Cassette::ERBRenderer do
       it 'gracefully handles the template being nil' do
         expect(render(nil, true)).to be_nil
       end
+
+      it 'gracefully handles being passed {} instead of true' do
+        expect(render(no_vars_content, {})).to eq("7. Some ERB")
+      end
     end
 
     context 'when ERB is enabled and variables are passed' do
