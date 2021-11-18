@@ -47,7 +47,11 @@ module VCR
         def deserialize(string)
           handle_encoding_errors do
             handle_syntax_errors do
-              ::YAML.load(string)
+              if ::YAML.respond_to?(:unsafe_load)
+                ::YAML.unsafe_load(string)
+              else
+                ::YAML.load(string)
+              end
             end
           end
         end
