@@ -9,6 +9,7 @@ Changelog
 - [breaking] Drop support for ancient typhoeus 0.4 (#905)
 - [new] Add `VCR.turned_on` similar to `VCR.turned_off` (#681)
 - [fix] cassettes will match URIs with trailing dot. eg `example.com.` (#834)
+- [fix] Use `YAML.unsafe_load` if available to load cassette data (better compatibility with Psych 4.0). (#911)
 - [patch] Improve error message for syntax error in ERB-using cassettes (#909)
 - [patch] Handle `use_cassette(..., erb: {})` (#908) 
 
