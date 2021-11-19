@@ -12,8 +12,6 @@ module VCR
     module WebMock
       extend self
 
-      @global_hook_disabled_requests = {}
-
       def with_global_hook_disabled(request)
         global_hook_disabled_requests << request
 
@@ -25,19 +23,12 @@ module VCR
       end
 
       def global_hook_disabled?(request)
-        requests = @global_hook_disabled_requests[Thread.current.object_id]
+        requests = Thread.current[:_vcr_webmock_disabled_requests]
         requests && requests.include?(request)
       end
 
       def global_hook_disabled_requests
-        requests = @global_hook_disabled_requests[Thread.current.object_id]
-        return requests if requests
-
-        ObjectSpace.define_finalizer(Thread.current, lambda {
-          @global_hook_disabled_requests.delete(Thread.current.object_id)
-        })
-
-        @global_hook_disabled_requests[Thread.current.object_id] = []
+        Thread.current[:_vcr_webmock_disabled_requests] ||= []
       end
 
       # @private
