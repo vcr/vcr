@@ -12,6 +12,7 @@ Changelog
 - [fix] Use `YAML.unsafe_load` if available to load cassette data (better compatibility with Psych 4.0). (#911)
 - [patch] Improve error message for syntax error in ERB-using cassettes (#909)
 - [patch] Handle `use_cassette(..., erb: {})` (#908) 
+- [fix] Use fiber-local for `global_hook_disabled_requests` (#907) 
 
 ## 6.0.0 (May 28, 2020)
 [Full Changelog](https://github.com/vcr/vcr/compare/v5.1.0...v6.0.0)
