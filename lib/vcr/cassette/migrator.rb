@@ -50,7 +50,11 @@ module VCR
       end
 
       def load_yaml(cassette)
-        ::YAML.load_file(cassette)
+        if ::YAML.respond_to?(:unsafe_load_file)
+          ::YAML.unsafe_load_file(cassette)
+        else
+          ::YAML.load_file(cassette)
+        end
       rescue *@yaml_load_errors
         return nil
       end
