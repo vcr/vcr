@@ -32,12 +32,6 @@ if defined?(UNSUPPORTED_HTTP_LIBS)
   end
 end
 
-# Set a global based on the current stubbing lib so we can put special-case
-# logic in our step definitions based on the http stubbing library.
 Before do |scenario|
-  if scenario.respond_to?(:cell_values)
-    @scenario_parameters = scenario.cell_values
-  else
-    @scenario_parameters = nil
-  end
+  @http_lib_config = nil
 end

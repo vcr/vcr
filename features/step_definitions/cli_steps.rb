@@ -40,12 +40,12 @@ module VCRHelpers
       # Some HTTP libraries include an extra space ("OK " instead of "OK")
       i.response.status.message = i.response.status.message.strip
 
-      if @scenario_parameters.to_s =~ /excon|faraday/
+      if @http_lib_config.to_s =~ /excon|faraday/
         # Excon/Faraday do not expose the status message or http version,
         # so we have no way to record these attributes.
         i.response.status.message = nil
         i.response.http_version = nil
-      elsif @scenario_parameters.to_s.include?('webmock')
+      elsif @http_lib_config.to_s.include?('webmock')
         # WebMock does not expose the HTTP version so we have no way to record it
         i.response.http_version = nil
       end
@@ -53,7 +53,7 @@ module VCRHelpers
   end
 
   def normalize_cassette_content(content)
-    return content unless @scenario_parameters.to_s.include?('patron')
+    return content unless @http_lib_config.to_s.include?('patron')
     cassette_hash = YAML.load(content)
     cassette_hash['http_interactions'].map! do |hash|
       VCR::HTTPInteraction.from_hash(hash).tap do |i|
@@ -94,6 +94,10 @@ Given(/^that port numbers in "([^"]*)" are normalized to "([^"]*)"$/) do |file_n
     contents = contents.gsub(/:\d{2,}\//, ":#{port}/")
     File.open(file_name, 'w') { |f| f.write(contents) }
   end
+end
+
+Given(/^I am configuring with "([^"]*)" using "([^"]*)"$/) do |configuration, adapter_name|
+  @http_lib_config = [ configuration, adapter_name ]
 end
 
 When(/^I modify the file "([^"]*)" to replace "([^"]*)" with "([^"]*)"$/) do |file_name, orig_text, new_text|

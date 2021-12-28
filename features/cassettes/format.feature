@@ -78,6 +78,7 @@ Feature: Cassette format
         make_http_request(:get, "http://localhost:#{$server.port}/bar", nil, 'Accept-Encoding' => 'identity')
       end
       """
+    And I am configuring with "<configuration>" using "<http_lib>"
     When I successfully run `ruby cassette_yaml.rb 'Hello'`
     Then the file "cassettes/example.yml" should contain YAML like:
       """

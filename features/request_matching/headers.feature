@@ -3,7 +3,8 @@ Feature: Matching on Headers
   Use the `:headers` request matcher to match requests on the request headers.
 
   Scenario Outline: Replay interaction that matches the headers
-    Given a previously recorded cassette file "cassettes/example.yml" with:
+    Given I am configuring with "<configuration>" using "<http_lib>"
+    And a previously recorded cassette file "cassettes/example.yml" with:
       """
       --- 
       http_interactions: 
