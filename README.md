@@ -90,12 +90,12 @@ VCR follows the principles of [semantic versioning](https://semver.org/). The [A
 
 VCR versions 6.x are tested on the following ruby interpreters:
 
+  * MRI 3.1
   * MRI 3.0
   * MRI 2.7
   * MRI 2.6
-  * MRI 2.5
-  
-Note that as of after VCR 6.0.0, only >= 2.5 is explicitly supported. 6.0.0 supported >= 2.4.
+
+[VCR 6.0.0](https://github.com/vcr/vcr/releases/tag/v6.0.0) is the last version supporting >= 2.4. Upcoming releases will only explicitly support >= 2.6.
 
 **Development**
 

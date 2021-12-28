@@ -4,6 +4,7 @@ Changelog
 ## Unreleased changes
 [Full Changelog](https://github.com/vcr/vcr/compare/v6.0.0...master)
 
+- [breaking] Remove support for Ruby 2.5, require 2.6 or newer (#914)
 - [breaking] Remove support for Ruby 2.4, require Ruby 2.5 or newer (#900)
 - [breaking] JSON-serializer generates pretty-formatted output.
 - [breaking] Drop support for ancient typhoeus 0.4 (#905)
