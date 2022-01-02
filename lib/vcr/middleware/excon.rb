@@ -74,7 +74,7 @@ module VCR
         def after_request(response)
           vcr_response = vcr_response_for(response)
 
-          if should_record?
+          if vcr_response && should_record?
             VCR.record_http_interaction(VCR::HTTPInteraction.new(vcr_request, vcr_response))
           end
 

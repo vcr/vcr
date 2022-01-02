@@ -45,6 +45,26 @@ RSpec.describe "Excon hook", :with_monkey_patches => :excon do
     end
   end
 
+  context "when Excon raises an internal error before body is processed" do
+    let(:excon) { ::Excon.new('https://expired.badssl.com') }
+    let(:ssl_error) { OpenSSL::SSL::SSLError.new("SSL_connect returned=1 errno=0 state=error: certificate verify failed (certificate has expired)") }
+
+    before do
+      allow(excon).to receive(:socket) { raise ssl_error }
+    end
+
+    def make_request
+      VCR.use_cassette('with_errors', :record => :once) do
+        excon.request(method: :get, :expects => [200])
+      end
+    end
+
+    it 'raises SSL errors and does not try to record a cassette' do
+      expect(VCR).to_not receive(:record_http_interaction)
+      expect { make_request }.to raise_error(Excon::Error::Certificate)
+    end
+  end
+
   include_examples "Excon streaming"
 
   context 'when Excon raises an error due to an unexpected response status' do
