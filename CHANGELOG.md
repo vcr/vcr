@@ -723,7 +723,7 @@ upgrade notes for more info.
   * Changed the format of the VCR cassettes. The old format was tied directly to Net::HTTP, but webmock supports other HTTP libraries and I plan to allow VCR to use them in the future. Note that this is a breaking change--your old VCR cassettes from prior releases will not work with VCR 0.4.0. However, VCR provides a rake task to assist you in migrating your cassettes to the new format. Simply add `load 'vcr/tasks/vcr.rake'` to your project's Rakefile, and run:
 
     ```
-    $ rake vcr:migrate_cassettes DIR=path/to/cassete/library/directory
+    $ rake vcr:migrate_cassettes DIR=path/to/cassette/library/directory
     ```
 
   * The new cassette format records more information about the request (i.e. the request headers and body), so that it can potentially be used with webmock in the future.
