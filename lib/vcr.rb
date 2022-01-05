@@ -52,7 +52,7 @@ module VCR
   # Inserts the named cassette using the given cassette options.
   # New HTTP interactions, if allowed by the cassette's `:record` option, will
   # be recorded to the cassette. The cassette's existing HTTP interactions
-  # will be used to stub requests, unless prevented by the cassete's
+  # will be used to stub requests, unless prevented by the cassette's
   # `:record` option.
   #
   # @example
