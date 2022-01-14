@@ -86,4 +86,4 @@ Feature: Matching on Body
       | c.hook_into :typhoeus | typhoeus              |
       | c.hook_into :excon    | excon                 |
       | c.hook_into :faraday  | faraday (w/ net_http) |
-      | c.hook_into :faraday  | faraday (w/ typhoeus) |
+

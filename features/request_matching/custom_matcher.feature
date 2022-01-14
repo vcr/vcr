@@ -100,7 +100,7 @@ Feature: Register and use a custom matcher
       | c.hook_into :typhoeus | typhoeus              |
       | c.hook_into :excon    | excon                 |
       | c.hook_into :faraday  | faraday (w/ net_http) |
-      | c.hook_into :faraday  | faraday (w/ typhoeus) |
+
 
   Scenario: Register a named custom matcher
     And a file named "register_custom_matcher.rb" with:
