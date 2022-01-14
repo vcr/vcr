@@ -78,7 +78,6 @@ Feature: hook_into
       | c.hook_into :typhoeus | typhoeus              |
       | c.hook_into :excon    | excon                 |
       | c.hook_into :faraday  | faraday (w/ net_http) |
-      | c.hook_into :faraday  | faraday (w/ typhoeus) |
 
   @exclude-jruby @exclude-rbx
   Scenario Outline: Use Typhoeus, Excon and Faraday in combination with WebMock
@@ -162,4 +161,3 @@ Feature: hook_into
     Examples:
       | hook_into | faraday_adapter | extra_require                       |
       | :webmock  | net_http        |                                     |
-      | :webmock  | typhoeus        | require 'typhoeus/adapters/faraday' |

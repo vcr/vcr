@@ -50,7 +50,7 @@ Feature: Faraday middleware
     And the file "cassettes/example.yml" should contain "Hello foo 1"
 
     Examples:
-      | adapter  | extra_require                       |
-      | net_http |                                     |
-      | typhoeus | require 'typhoeus/adapters/faraday' |
+      | adapter  | extra_require          |
+      | net_http |                        |
+      | patron | require 'faraday/patron' |
 
