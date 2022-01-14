@@ -31,6 +31,7 @@ jobs:
         bundler-cache: true # 'bundle install' and cache
 
     - name: faraday-2.0
+      if: ${{ matrix.ruby-version != '2.5' }}
       run: |
         bundle install
         bundle exec rspec spec/lib/vcr/middleware/faraday_spec.rb spec/lib/vcr/library_hooks/faraday_spec.rb 2>> "${ALL_WARNINGS}"
