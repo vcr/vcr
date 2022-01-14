@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gem "faraday", "~> 2.0"
 gem "faraday-multipart"
-gem "faraday-retry"
+gem "faraday-patron"
 
 gemspec
 

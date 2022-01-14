@@ -1,6 +1,7 @@
 require 'spec_helper'
 require 'vcr/library_hooks/faraday'
 require 'faraday/multipart'
+require 'faraday/patron'
 
 RSpec.describe VCR::Middleware::Faraday do
   # http_libs = %w[ typhoeus net_http patron ]
@@ -72,7 +73,7 @@ RSpec.describe VCR::Middleware::Faraday do
     end
   end
 
-  context 'when making parallel requests' do
+  xcontext 'when making parallel requests' do
     include VCRStubHelpers
     let(:connection)         { ::Faraday.new { |b| b.adapter :typhoeus } }
     let(:request_url) { "http://localhost:#{VCR::SinatraApp.port}/" }
