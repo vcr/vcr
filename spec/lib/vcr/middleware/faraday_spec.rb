@@ -2,12 +2,10 @@ require 'spec_helper'
 require 'vcr/library_hooks/faraday'
 
 RSpec.describe VCR::Middleware::Faraday do
-  http_libs = %w[ typhoeus net_http patron ]
+  # http_libs = %w[ typhoeus net_http patron ]
+  http_libs = %w[ net_http patron ]
   http_libs.each do |lib|
     flags = [ :does_not_support_rotating_responses ]
-    if lib == 'typhoeus'
-      flags << :status_message_not_exposed
-    end
 
     it_behaves_like 'a hook into an HTTP library', :faraday, "faraday (w/ #{lib})", *flags
   end
