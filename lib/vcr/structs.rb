@@ -31,13 +31,16 @@ module VCR
             string.force_encoding(encoding)
           end
 
-          def try_encode_string(string, encoding)
-            return string if encoding.nil? || string.encoding.name == encoding
+          def try_encode_string(string, encoding_name)
+            return string if encoding_name.nil?
+
+            encoding = Encoding.find(encoding_name)
+            return string if string.encoding == encoding
 
             # ASCII-8BIT just means binary, so encoding to it is nonsensical
             # and yet "\u00f6".encode("ASCII-8BIT") raises an error.
             # Instead, we'll force encode it (essentially just tagging it as binary)
-            return string.force_encoding(encoding) if encoding == "ASCII-8BIT"
+            return string.force_encoding(encoding) if encoding == Encoding::BINARY
 
             string.encode(encoding)
           rescue EncodingError => e
