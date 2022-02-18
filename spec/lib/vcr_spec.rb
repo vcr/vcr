@@ -34,7 +34,7 @@ RSpec.describe VCR do
 
     it 'forwards the given options to `Cassette#eject`' do
       cassette = insert_cassette
-      expect(cassette).to receive(:eject).with(:some => :options)
+      expect(cassette).to receive(:eject).with({ :some => :options })
       VCR.eject_cassette(:some => :options)
     end
 
@@ -341,7 +341,7 @@ RSpec.describe VCR do
     end
 
     it 'passes options through to .turn_off!' do
-      expect(VCR).to receive(:turn_off!).with(:ignore_cassettes => true)
+      expect(VCR).to receive(:turn_off!).with({ :ignore_cassettes => true })
       VCR.turned_off(:ignore_cassettes => true) { }
     end
   end
@@ -363,7 +363,7 @@ RSpec.describe VCR do
     end
 
     it 'passes options through to .turn_off!' do
-      expect(VCR).to receive(:turn_off!).with(:ignore_cassettes => true)
+      expect(VCR).to receive(:turn_off!).with({ :ignore_cassettes => true })
       VCR.turned_on(:ignore_cassettes => true) { }
     end
   end

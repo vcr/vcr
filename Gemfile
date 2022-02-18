@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem "faraday", ">= 0.9.2"
+gem "faraday", ">= 0.9.2", "< 2"
 
 gemspec
 
