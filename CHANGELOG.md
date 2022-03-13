@@ -5,7 +5,7 @@ Changelog
 
 [Full Changelog](https://github.com/vcr/vcr/compare/v6.1.0...master)
 
-- _Describe your change_
+- [fix] Add support for on_data with Faraday (#823) by @zeisler
 
 ## 6.1.0 (March 13, 2022)
 
