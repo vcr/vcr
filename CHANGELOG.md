@@ -11,17 +11,26 @@ Changelog
 
 [Full Changelog](https://github.com/vcr/vcr/compare/v6.0.0...v6.1.0)
 
-- [breaking] Remove support for Ruby 2.5, require 2.6 or newer (#914)
-- [breaking] Remove support for Ruby 2.4, require Ruby 2.5 or newer (#900)
-- [breaking] JSON-serializer generates pretty-formatted output.
-- [breaking] Drop support for ancient typhoeus 0.4 (#905)
-- [new] Add `VCR.turned_on` similar to `VCR.turned_off` (#681)
-- [fix] cassettes will match URIs with trailing dot. eg `example.com.` (#834)
-- [fix] Use `YAML.unsafe_load` if available to load cassette data (better compatibility with Psych 4.0). (#911)
-- [patch] Improve error message for syntax error in ERB-using cassettes (#909)
-- [patch] Handle `use_cassette(..., erb: {})` (#908) 
-- [fix] Use fiber-local for `global_hook_disabled_requests` (#907) 
-- [fix] Dont attempt to parse a nil response when hooking into `:excon` (#916)
+- [breaking] Remove support for Ruby 2.4, require Ruby 2.5 or newer (#900) by @aka47
+- [breaking] JSON-serializer generates pretty-formatted output. (#840) by @mainameiz
+- [breaking] Drop support for ancient typhoeus 0.4 (#905) by @aka47
+- [new] Add `VCR.turned_on` similar to `VCR.turned_off` (#835) by @hirowatari
+- [fix] cassettes will match URIs with trailing dot. eg `example.com.` (#838) by @hirowatari
+- [fix] Use `YAML.unsafe_load` if available to load cassette data (better compatibility with Psych 4.0). (#911) by @casperisfine
+- [patch] Improve error message for syntax error in ERB-using cassettes (#909) by @sambostock
+- [patch] Handle `use_cassette(..., erb: {})` (#908) by @sambostock
+- [fix] Use fiber-local for `global_hook_disabled_requests` (#907) by @jhawthorn 
+- [docs] Document the RSpec cassette name shorthand (#821) by @nicolasiensen
+- [fix] Fix the behavior of the option re_record_interval "none" (#824) by @nicolasiensen
+- [fix] Fix compatibility with frozen string literals (#832) by @casperisfine
+- [fix] [Transforms ERB hash keys to symbol, in case string (#833) by @z1lk
+- [fix] Support Cucumber-Ruby v4 and later (#845) by @brasmusson 
+- [patch] Extract `#vcr_cassette_name_for` (#882) by @dabroz
+- [fix] Fix CI to use GitHub Actions (#883) by @bradshjg
+- [new] Add `#localhost_ignored?` to request_ignorer (#895) by @ThHareau
+- [docs] Remove mention of dead JS alternatives (#904) by @mtancoigne
+- [fix] Upgrade cucumber to 7.0 (#915) by @andrehjr and @aka47
+- [fix] Don't attempt to parse a nil response when hooking into Excon (#916) by @andrehjr
 
 ## 6.0.0 (May 28, 2020)
 [Full Changelog](https://github.com/vcr/vcr/compare/v5.1.0...v6.0.0)
