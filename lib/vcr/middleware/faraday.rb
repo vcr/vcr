@@ -45,9 +45,11 @@ module VCR
         end
 
         def handle
-          # Faraday must be exlusive here in case another library hook is being used.
+          # Faraday must be exclusive here in case another library hook is being used.
           # We don't want double recording/double playback.
           VCR.library_hooks.exclusive_hook = :faraday
+          collect_chunks if env.request.stream_response?
+
           super
         ensure
           response = defined?(@vcr_response) ? @vcr_response : nil
@@ -103,6 +105,7 @@ module VCR
           @vcr_response = stubbed_response
 
           faraday_response = ::Faraday::Response.new
+          env.request.on_data.call(stubbed_response.body, stubbed_response.body.length) if env.request.stream_response?
           faraday_response.finish(env)
           env[:response] = faraday_response
         end
@@ -111,6 +114,7 @@ module VCR
           @has_on_complete_hook = true
           response = app.call(env)
           response.on_complete do
+            restore_body_from_chunks(env.request) if env.request.stream_response?
             @vcr_response = response_for(response)
             VCR.record_http_interaction(VCR::HTTPInteraction.new(vcr_request, @vcr_response))
             invoke_after_request_hook(@vcr_response) if delay_finishing?
@@ -120,6 +124,20 @@ module VCR
         def invoke_after_request_hook(response)
           super
           VCR.library_hooks.exclusive_hook = nil
+        end
+
+        def collect_chunks
+          caller_on_data = env.request.on_data
+          chunks = ''
+          env.request.on_data = Proc.new do |chunk, overall_received_bytes|
+            chunks += chunk
+            env.request.instance_variable_set(:@chunked_body, chunks)
+            caller_on_data.call(chunk, overall_received_bytes)
+          end
+        end
+
+        def restore_body_from_chunks(request)
+          env[:body] = request.instance_variable_get(:@chunked_body)
         end
       end
     end
