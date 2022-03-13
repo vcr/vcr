@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## Unreleased
+
+[Full Changelog](https://github.com/vcr/vcr/compare/v6.1.0...master)
+
+- _Describe your change_
+
 ## 6.1.0 (March 13, 2022)
 
 [Full Changelog](https://github.com/vcr/vcr/compare/v6.0.0...v6.1.0)
