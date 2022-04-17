@@ -48,7 +48,6 @@ RSpec.describe "Faraday hook" do
       VCR.use_cassette('no_body') do
         conn = Faraday.new(:url => "http://localhost:#{VCR::SinatraApp.port}") do |builder|
           builder.request  :url_encoded
-          builder.response :logger
           builder.adapter  :net_http
         end
         conn.get("localhost_test") do |request|
