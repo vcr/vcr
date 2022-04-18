@@ -44,7 +44,7 @@ RSpec.describe "Faraday hook" do
   end
 
   context 'when using on_data callback' do
-    def make_request(on_data: on_data_callback)
+    def make_request(on_data: capture_arguments)
       VCR.use_cassette('no_body') do
         conn = Faraday.new(:url => "http://localhost:#{VCR::SinatraApp.port}") do |builder|
           builder.request  :url_encoded
@@ -56,7 +56,7 @@ RSpec.describe "Faraday hook" do
       end
     end
 
-    let(:on_data_callback) do
+    let(:capture_arguments) do
       Proc.new do |chunk, overall_received_bytes|
         on_data_capture.push [chunk, overall_received_bytes]
       end
@@ -67,8 +67,8 @@ RSpec.describe "Faraday hook" do
     it 'records and replays correctly' do
       expect(on_data_capture).to receive(:push).exactly(2).times.with(["Localhost response", 18])
 
-      recorded = make_request on_data: on_data_callback
-      played_back = make_request on_data: on_data_callback
+      recorded = make_request on_data: capture_arguments
+      played_back = make_request on_data: capture_arguments
 
       expect(recorded.body).to eq('Localhost response')
       expect(played_back.body).to eq(recorded.body)
