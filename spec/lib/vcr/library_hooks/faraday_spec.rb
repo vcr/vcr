@@ -51,10 +51,14 @@ RSpec.describe "Faraday hook" do
           builder.adapter  :net_http
         end
         conn.get("localhost_test") do |request|
-          request.options.on_data = Proc.new do |chunk, overall_received_bytes|
-            on_data_capture.push [chunk, overall_received_bytes]
-          end
+          request.options.on_data = on_data_callback
         end
+      end
+    end
+
+    let(:on_data_callback) do
+      Proc.new do |chunk, overall_received_bytes|
+        on_data_capture.push [chunk, overall_received_bytes]
       end
     end
 
