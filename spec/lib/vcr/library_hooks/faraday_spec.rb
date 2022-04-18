@@ -64,6 +64,14 @@ RSpec.describe "Faraday hook" do
 
     let(:on_data_capture) { [] }
 
+    it { expect { |b| make_request(&b) }.to yield_with_args('Localhost response', 18) }
+
+    context 'after recording' do
+      before { make_request {|_, _|} }
+
+      it { expect { |b| make_request(&b) }.to yield_with_args('Localhost response', 18) }
+    end
+
     it 'records and replays correctly' do
       expect(on_data_capture).to receive(:push).exactly(2).times.with(["Localhost response", 18])
 
