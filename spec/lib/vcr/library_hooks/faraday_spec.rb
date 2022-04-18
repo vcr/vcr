@@ -73,8 +73,6 @@ RSpec.describe "Faraday hook" do
     end
 
     it 'records and replays correctly' do
-      expect(on_data_capture).to receive(:push).exactly(2).times.with(["Localhost response", 18])
-
       recorded = make_request &capture_on_data_arguments
       played_back = make_request &capture_on_data_arguments
 
