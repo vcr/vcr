@@ -56,7 +56,7 @@ RSpec.describe "Faraday hook" do
       end
     end
 
-    let(:capture_arguments) do
+    let(:capture_on_data_arguments) do
       Proc.new do |chunk, overall_received_bytes|
         on_data_capture.push [chunk, overall_received_bytes]
       end
@@ -75,8 +75,8 @@ RSpec.describe "Faraday hook" do
     it 'records and replays correctly' do
       expect(on_data_capture).to receive(:push).exactly(2).times.with(["Localhost response", 18])
 
-      recorded = make_request &capture_arguments
-      played_back = make_request &capture_arguments
+      recorded = make_request &capture_on_data_arguments
+      played_back = make_request &capture_on_data_arguments
 
       expect(recorded.body).to eq('Localhost response')
       expect(played_back.body).to eq(recorded.body)
