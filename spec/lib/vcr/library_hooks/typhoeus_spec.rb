@@ -110,7 +110,7 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
     end
   end
 
-  context 'when using on_body callback' do
+  context 'when using on_body and on_headers callback' do
     def make_request
       VCR.use_cassette('no_body') do
         request = Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/localhost_test")
