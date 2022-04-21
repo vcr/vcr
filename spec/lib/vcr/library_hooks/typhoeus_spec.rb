@@ -110,30 +110,50 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
     end
   end
 
-  context 'when using on_body and on_headers callback' do
+  context 'when using on_headers callback' do
     def make_request
       VCR.use_cassette('no_body') do
         request = Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/localhost_test")
         request.on_headers { on_headers_counter.increment }
-        request.on_body { on_body_counter.increment }
         request.run
       end
     end
 
     let(:on_headers_counter) { double(:increment => nil) }
-    let(:on_body_counter) { double(:increment => nil) }
 
     it 'records and replays correctly' do
       expect(on_headers_counter).to receive(:increment).exactly(2).times
+
+      recorded = make_request
+      played_back = make_request
+
+      expect(recorded.headers).to include("Content-Length" => "18")
+      expect(played_back.headers).to match_array recorded.headers
+
+      expect(recorded.body).to eq('Localhost response')
+      expect(played_back.body).to eq(recorded.body)
+    end
+  end
+
+  context 'when using on_body callback' do
+    def make_request
+      VCR.use_cassette('no_body') do
+        request = Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/localhost_test")
+        request.on_body { on_body_counter.increment }
+        request.run
+      end
+    end
+
+    let(:on_body_counter) { double(:increment => nil) }
+
+    it 'records and replays correctly' do
       expect(on_body_counter).to receive(:increment).exactly(2).times
 
       recorded = make_request
       played_back = make_request
 
       expect(recorded.body).to eq('Localhost response')
-      expect(recorded.headers).to include("Content-Length" => "18")
       expect(played_back.body).to eq(recorded.body)
-      expect(played_back.headers).to match_array recorded.headers
     end
   end
 
