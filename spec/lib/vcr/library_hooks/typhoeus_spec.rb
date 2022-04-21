@@ -131,7 +131,9 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
       played_back = make_request
 
       expect(recorded.body).to eq('Localhost response')
+      expect(recorded.headers).to include("Content-Length" => "18")
       expect(played_back.body).to eq(recorded.body)
+      expect(played_back.headers).to match_array recorded.headers
     end
   end
 
