@@ -113,19 +113,23 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
   context 'when using on_headers callback' do
     let(:request) { Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/localhost_test") }
 
+    def use_cassette
+      VCR.use_cassette('on_headers') { yield }
+    end
+
     it { expect(request.tap { |r| r.on_headers {} }).not_to be_streaming }
-    it { VCR.use_cassette('on_headers') { expect { |b| request.tap { |r| r.on_headers(&b) }.run }.to yield_control } }
+    it { use_cassette { expect { |b| request.tap { |r| r.on_headers(&b) }.run }.to yield_control } }
 
     context 'with recorded cassette' do
       before do
-        VCR.use_cassette('on_headers') { request.tap { |r| r.on_headers {} }.run }
+        use_cassette { request.tap { |r| r.on_headers {} }.run }
       end
 
-      it { VCR.use_cassette('on_headers') { expect { |b| request.tap { |r| r.on_headers(&b) }.run }.to yield_control } }
+      it { use_cassette { expect { |b| request.tap { |r| r.on_headers(&b) }.run }.to yield_control } }
     end
 
-    it { VCR.use_cassette('on_headers') { expect(request.tap { |r| r.on_headers {} }.run.headers).to include("Content-Length" => "18") } }
-    it { expect(VCR.use_cassette('on_headers') { request.tap { |r| r.on_headers {} }.run }.headers).to match_array VCR.use_cassette('on_headers') { request.tap { |r| r.on_headers {} }.run }.headers  }
+    it { use_cassette { expect(request.tap { |r| r.on_headers {} }.run.headers).to include("Content-Length" => "18") } }
+    it { expect(use_cassette { request.tap { |r| r.on_headers {} }.run }.headers).to match_array use_cassette { request.tap { |r| r.on_headers {} }.run }.headers  }
   end
 
   context 'when using on_body callback' do
