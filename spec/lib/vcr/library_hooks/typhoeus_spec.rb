@@ -118,14 +118,14 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
     end
 
     it { expect(request.tap { |r| r.on_headers {} }).not_to be_streaming }
-    it { expect { |b| use_cassette { request.tap { |r| r.on_headers(&b) }.run }}.to yield_control }
+    it { expect { |b| use_cassette { request.tap { |r| r.on_headers(&b) }.run }}.to yield_with_args(have_attributes(headers: include('Content-Length' => '18'))) }
 
     context 'with recorded cassette' do
       before do
         use_cassette { request.tap { |r| r.on_headers {} }.run }
       end
 
-      it { expect { |b| use_cassette { request.tap { |r| r.on_headers(&b) }.run }}.to yield_control }
+      it { expect { |b| use_cassette { request.tap { |r| r.on_headers(&b) }.run }}.to yield_with_args(have_attributes(headers: include('Content-Length' => '18'))) }
     end
 
     it { expect(use_cassette { request.tap { |r| r.on_headers {} }.run }.headers).to include("Content-Length" => "18") }
