@@ -114,14 +114,10 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
     def on_headers(&callback)
       callback = Proc.new {} unless block_given?
 
-      use_cassette { request.tap { |r| r.on_headers &callback }.run }
+      VCR.use_cassette('on_headers') { request.tap { |r| r.on_headers &callback }.run }
     end
 
     let(:request) { Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/localhost_test") }
-
-    def use_cassette
-      VCR.use_cassette('on_headers') { yield }
-    end
 
     it { expect(request.tap { |r| r.on_headers {} }).not_to be_streaming }
 
