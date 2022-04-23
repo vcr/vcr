@@ -133,11 +133,8 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
     end
 
     it 'records and replays correctly' do
-      recorded = make_request
-      played_back = make_request
-
-      expect(recorded.headers).to include("Content-Length" => "18")
-      expect(played_back.headers).to match_array recorded.headers
+      expect(make_request.headers).to include("Content-Length" => "18")
+      expect(make_request.headers).to match_array make_request.headers
     end
   end
 
