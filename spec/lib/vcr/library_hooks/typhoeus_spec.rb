@@ -124,6 +124,15 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
     let(:request) { Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/localhost_test") }
 
     it { expect(request.tap { |r| r.on_headers {} }).not_to be_streaming }
+    it { VCR.use_cassette('on_headers') { expect { |b| request.tap { |r| r.on_headers(&b) }.run }.to yield_control } }
+
+    context 'with recorded cassette' do
+      before do
+        VCR.use_cassette('on_headers') { request.tap { |r| r.on_headers {} }.run }
+      end
+
+      it { VCR.use_cassette('on_headers') { expect { |b| request.tap { |r| r.on_headers(&b) }.run }.to yield_control } }
+    end
 
     it 'records and replays correctly' do
       expect(on_headers_counter).to receive(:increment).exactly(2).times
