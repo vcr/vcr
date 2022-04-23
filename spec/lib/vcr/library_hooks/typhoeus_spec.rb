@@ -122,10 +122,10 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
     it { expect(request.tap { |r| r.on_headers {} }).not_to be_streaming }
 
     it { expect { |b| on_headers(&b) }.to yield_with_args(have_attributes(headers: include('Content-Length' => '18'))) }
-    it { expect { |b| on_headers(&b) }.to yield_with_args(have_attributes(headers: on_headers.headers)) }
+    it { expect { |b| on_headers(&b) }.to yield_with_args(have_attributes(headers: match_array(on_headers.headers))) }
 
-    it { expect(on_headers.headers).to include("Content-Length" => "18") }
-    it { expect(on_headers.headers).to match_array on_headers.headers  }
+    it { expect(on_headers).to have_attributes(headers: include("Content-Length" => "18")) }
+    it { expect(on_headers).to have_attributes(headers: match_array(on_headers.headers))  }
   end
 
   context 'when using on_body callback' do
