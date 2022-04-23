@@ -132,8 +132,11 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
       it { VCR.use_cassette('on_headers') { expect { |b| request.tap { |r| r.on_headers(&b) }.run }.to yield_control } }
     end
 
-    it 'records and replays correctly' do
+    it 'records' do
       expect(make_request.headers).to include("Content-Length" => "18")
+    end
+
+    it 'replays' do
       expect(make_request.headers).to match_array make_request.headers
     end
   end
