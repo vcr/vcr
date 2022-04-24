@@ -129,6 +129,24 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
   end
 
   context 'when using on_body callback' do
+    def on_body(&callback)
+      callback = Proc.new {} unless block_given?
+
+      VCR.use_cassette('no_body') { request.tap { |r| r.on_body &callback }.run }
+    end
+
+    def request
+      Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/localhost_test")
+    end
+
+    it { expect(request.tap { |r| r.on_body {} }).to be_streaming }
+
+    it { expect(on_body).to have_attributes(body: 'Localhost response') }
+    it { expect(on_body).to have_attributes(body: on_body.body)  }
+
+    it { expect { |b| on_body(&b) }.to yield_with_args('Localhost response', have_attributes(body: '')) }
+    it { expect { |b| on_body(&b) }.to yield_with_args(on_body.body, have_attributes(body: 'Localhost response')) }
+
     def make_request
       VCR.use_cassette('no_body') do
         request = Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/localhost_test")
@@ -138,8 +156,6 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
     end
 
     let(:on_body_counter) { double(:increment => nil) }
-
-    let(:request) { Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/localhost_test") }
 
     it { expect(request.tap { |r| r.on_body {} }).to be_streaming }
 
