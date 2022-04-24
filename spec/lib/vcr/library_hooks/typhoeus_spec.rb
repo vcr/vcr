@@ -146,28 +146,6 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
 
     it { expect { |b| on_body(&b) }.to yield_with_args('Localhost response', have_attributes(body: '')) }
     it { expect { |b| on_body(&b) }.to yield_with_args(on_body.body, have_attributes(body: 'Localhost response')) }
-
-    def make_request
-      VCR.use_cassette('no_body') do
-        request = Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/localhost_test")
-        request.on_body { on_body_counter.increment }
-        request.run
-      end
-    end
-
-    let(:on_body_counter) { double(:increment => nil) }
-
-    it { expect(request.tap { |r| r.on_body {} }).to be_streaming }
-
-    it 'records and replays correctly' do
-      expect(on_body_counter).to receive(:increment).exactly(2).times
-
-      recorded = make_request
-      played_back = make_request
-
-      expect(recorded.body).to eq('Localhost response')
-      expect(played_back.body).to eq(recorded.body)
-    end
   end
 
   context 'when using on_body callback returning :abort' do
