@@ -147,6 +147,10 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
     it { expect { |b| on_body(&b) }.to yield_with_args('Localhost response', have_attributes(body: '')) }
     it { expect { |b| on_body(&b) }.to yield_with_args(on_body.body, have_attributes(body: 'Localhost response')) }
 
+    it { expect(on_body { next :abort }).to have_attributes(body: on_body.body)  }
+    it { expect(on_body { next :abort }).to have_attributes(body: on_body { next :abort }.body)  }
+    it { expect(on_body).to have_attributes(body: on_body { next :abort }.body)  }
+
     context 'when re-using single request instance' do
       let(:request) { Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/localhost_test") }
 
