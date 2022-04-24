@@ -146,6 +146,47 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
 
     it { expect { |b| on_body(&b) }.to yield_with_args('Localhost response', have_attributes(body: '')) }
     it { expect { |b| on_body(&b) }.to yield_with_args(on_body.body, have_attributes(body: 'Localhost response')) }
+
+    context 'when re-using single request instance' do
+      let(:request) { Typhoeus::Request.new("http://localhost:#{VCR::SinatraApp.port}/localhost_test") }
+
+      it { expect(on_body).to have_attributes(body: 'Localhost response') }
+      it { expect { |b| on_body(&b) }.to yield_with_args('Localhost response', have_attributes(body: '')) }
+
+      context 'after recording cassette (first request)' do
+        before { on_body }
+
+        it { expect(on_body).to have_attributes(body: 'Localhost responseLocalhost response') } # FIXME
+        it { expect { |b| on_body(&b) }.to yield_with_args('Localhost response', have_attributes(body: 'Localhost response')) }
+
+        context 'after replaying cassette (second request)' do
+          before { on_body }
+
+          it { expect(on_body).to have_attributes(body: 'Localhost responseLocalhost responseLocalhost response') } # FIXME
+          it { expect { |b| on_body(&b) }.to yield_with_args('Localhost response', have_attributes(body: 'Localhost response')) }
+        end
+      end
+
+      context 'without on_body callback' do
+        def make_request
+          VCR.use_cassette('without_on_body_callback') { request.run }
+        end
+
+        it { expect(make_request).to have_attributes(body: 'Localhost response') }
+
+        context 'after recording cassette (first request)' do
+          before { make_request }
+
+          it { expect(make_request).to have_attributes(body: 'Localhost response') }
+
+          context 'after replaying cassette (second request)' do
+            before { make_request }
+
+            it { expect(make_request).to have_attributes(body: 'Localhost response') }
+          end
+        end
+      end
+    end
   end
 
   context 'when using on_body callback returning :abort' do
