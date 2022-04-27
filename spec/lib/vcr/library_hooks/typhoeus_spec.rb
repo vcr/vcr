@@ -160,13 +160,13 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
       context 'after recording cassette (first request)' do
         before { on_body }
 
-        it { expect(on_body).to have_attributes(body: 'Localhost responseLocalhost response') } # FIXME
+        it { expect(on_body).to have_attributes(body: 'Localhost responseLocalhost response') } # FIXME so that body doesn't accumulate responses when we run the same request instance again
         it { expect { |b| on_body(&b) }.to yield_with_args('Localhost response', have_attributes(body: 'Localhost response')) }
 
         context 'after replaying cassette (second request)' do
           before { on_body }
 
-          it { expect(on_body).to have_attributes(body: 'Localhost responseLocalhost responseLocalhost response') } # FIXME
+          it { expect(on_body).to have_attributes(body: 'Localhost responseLocalhost responseLocalhost response') } # FIXME so that body doesn't accumulate responses when we run the same request instance again
           it { expect { |b| on_body(&b) }.to yield_with_args('Localhost response', have_attributes(body: 'Localhost response')) }
         end
       end
