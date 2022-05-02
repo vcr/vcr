@@ -24,7 +24,7 @@ jobs:
 
     - name: Install OS dependencies
       run: |
-        sudo apt-get update
+        sudo apt-get update -qq
         sudo apt-get install --assume-yes libcurl4-openssl-dev
 
     - name: Set up Ruby ${{ matrix.ruby-version }}
