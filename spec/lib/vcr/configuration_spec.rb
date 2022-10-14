@@ -26,6 +26,7 @@ RSpec.describe VCR::Configuration do
       expect(subject.default_cassette_options).to eq({
         :match_requests_on => VCR::RequestMatcherRegistry::DEFAULT_MATCHERS,
         :allow_unused_http_interactions => true,
+        :drop_unused_requests => false,
         :record            => :once,
         :record_on_error   => true,
         :serialize_with    => :yaml,

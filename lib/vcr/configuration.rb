@@ -495,6 +495,7 @@ module VCR
         :record_on_error   => true,
         :match_requests_on => RequestMatcherRegistry::DEFAULT_MATCHERS,
         :allow_unused_http_interactions => true,
+        :drop_unused_requests => false,
         :serialize_with    => :yaml,
         :persist_with      => :file_system,
         :persister_options => {}

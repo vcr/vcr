@@ -46,6 +46,9 @@ module VCR
     # @return [Boolean, nil] Should outdated interactions be recorded back to file
     attr_reader :clean_outdated_http_interactions
 
+    # @return [Boolean] Should unused requests be dropped from the cassette?
+    attr_reader :drop_unused_requests
+
     # @return [Array<Symbol>] If set, {VCR::Configuration#before_record} and
     #  {VCR::Configuration#before_playback} hooks with a corresponding tag will apply.
     attr_reader :tags
