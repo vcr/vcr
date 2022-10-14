@@ -612,6 +612,7 @@ RSpec.describe VCR::Cassette do
     [:all, :none, :new_episodes].each do |record_mode|
       context "for a :record => :#{record_mode} cassette with previously recorded interactions" do
         let(:drop_unused_requests) { false }
+
         subject { VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:uri], drop_unused_requests: drop_unused_requests) }
 
         before(:each) do
@@ -664,8 +665,10 @@ RSpec.describe VCR::Cassette do
                 expect(saved_recorded_interactions.last).to eq(interaction_bar)
               end
             end
+
             context "with drop_unused_requests option added to all" do
               let(:drop_unused_requests) { true }
+
               it "drops unused requests" do
                 expect(saved_recorded_interactions).to match_array([interaction_bar, interaction_foo_2])
               end
