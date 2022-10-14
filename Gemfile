@@ -11,5 +11,5 @@ platform :mri do
   gem "typhoeus", "~> 1.1.0"
   gem "patron", "0.6.3"
   gem "em-http-request"
-  gem "curb", "~> 0.9.0"
+  gem "curb", "~> 1.0.1"
 end
