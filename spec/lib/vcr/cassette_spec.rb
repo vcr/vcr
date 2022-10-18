@@ -611,7 +611,9 @@ RSpec.describe VCR::Cassette do
 
     [:all, :none, :new_episodes].each do |record_mode|
       context "for a :record => :#{record_mode} cassette with previously recorded interactions" do
-        subject { VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:uri]) }
+        let(:drop_unused_requests) { false }
+
+        subject { VCR::Cassette.new('example', :record => record_mode, :match_requests_on => [:uri], drop_unused_requests: drop_unused_requests) }
 
         before(:each) do
           base_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
@@ -636,6 +638,7 @@ RSpec.describe VCR::Cassette do
 
           let(:interaction_foo_1) { interaction("foo 1", :uri => 'http://foo.com/') }
           let(:interaction_foo_2) { interaction("foo 2", :uri => 'http://foo.com/') }
+          let(:unused_request_foo) { interaction("unused foo", :uri => 'http://foo_unused.com/') }
           let(:interaction_bar)   { interaction("bar", :uri => 'http://bar.com/') }
 
           let(:saved_recorded_interactions) { YAML.load_file(subject.file)['http_interactions'].map { |h| VCR::HTTPInteraction.from_hash(h) } }
@@ -643,24 +646,38 @@ RSpec.describe VCR::Cassette do
 
           before(:each) do
             allow(Time).to receive(:now).and_return(now)
-            allow(subject).to receive(:previously_recorded_interactions).and_return([interaction_foo_1])
+            allow(subject).to receive(:previously_recorded_interactions).and_return([interaction_foo_1,unused_request_foo])
             subject.record_http_interaction(interaction_foo_2)
             subject.record_http_interaction(interaction_bar)
             subject.eject
           end
 
           if record_mode == :all
-            it 'replaces previously recorded interactions with new ones when the requests match' do
-              expect(saved_recorded_interactions.first).to eq(interaction_foo_2)
-              expect(saved_recorded_interactions).not_to include(interaction_foo_1)
+            context "preserves old requests" do
+              it 'only replaces previously recorded interactions with new ones when the requests match' do
+                expect(saved_recorded_interactions).to include(interaction_bar)
+                expect(saved_recorded_interactions).to include(unused_request_foo)
+                expect(saved_recorded_interactions).to include(interaction_foo_2)
+                expect(saved_recorded_interactions).not_to include(interaction_foo_1)
+              end
+
+              it 'appends new recorded interactions that do not match existing ones' do
+                expect(saved_recorded_interactions.last).to eq(interaction_bar)
+              end
             end
 
-            it 'appends new recorded interactions that do not match existing ones' do
-              expect(saved_recorded_interactions.last).to eq(interaction_bar)
+            context "with drop_unused_requests option added to all" do
+              let(:drop_unused_requests) { true }
+
+              it "drops unused requests" do
+                expect(saved_recorded_interactions).to match_array([interaction_bar, interaction_foo_2])
+              end
             end
+
+
           else
             it 'appends new recorded interactions after existing ones' do
-              expect(saved_recorded_interactions).to eq([interaction_foo_1, interaction_foo_2, interaction_bar])
+              expect(saved_recorded_interactions).to eq([interaction_foo_1, unused_request_foo, interaction_foo_2, interaction_bar])
             end
           end
         end

@@ -46,6 +46,9 @@ module VCR
     # @return [Boolean, nil] Should outdated interactions be recorded back to file
     attr_reader :clean_outdated_http_interactions
 
+    # @return [Boolean] Should unused requests be dropped from the cassette?
+    attr_reader :drop_unused_requests
+
     # @return [Array<Symbol>] If set, {VCR::Configuration#before_record} and
     #  {VCR::Configuration#before_playback} hooks with a corresponding tag will apply.
     attr_reader :tags
@@ -176,7 +179,8 @@ module VCR
         :record, :record_on_error, :erb, :match_requests_on, :re_record_interval, :tag, :tags,
         :update_content_length_header, :allow_playback_repeats, :allow_unused_http_interactions,
         :exclusive, :serialize_with, :preserve_exact_body_bytes, :decode_compressed_response,
-        :recompress_response, :persist_with, :persister_options, :clean_outdated_http_interactions
+        :recompress_response, :persist_with, :persister_options, :clean_outdated_http_interactions,
+        :drop_unused_requests
       ]
 
       if invalid_options.size > 0
@@ -186,7 +190,7 @@ module VCR
 
     def extract_options
       [:record_on_error, :erb, :match_requests_on, :re_record_interval, :clean_outdated_http_interactions,
-       :allow_playback_repeats, :allow_unused_http_interactions, :exclusive].each do |name|
+       :allow_playback_repeats, :allow_unused_http_interactions, :exclusive, :drop_unused_requests].each do |name|
         instance_variable_set("@#{name}", @options[name])
       end
 
@@ -259,6 +263,10 @@ module VCR
       record_mode == :all
     end
 
+    def should_remove_unused_interactions?
+      @drop_unused_requests
+    end
+
     def should_assert_no_unused_interactions?
       !(@allow_unused_http_interactions || $!)
     end
@@ -277,7 +285,11 @@ module VCR
         end
       end
 
-      up_to_date_interactions(old_interactions) + new_recorded_interactions
+        if should_remove_unused_interactions?
+          new_recorded_interactions
+        else
+          up_to_date_interactions(old_interactions) + new_recorded_interactions
+        end
     end
 
     def up_to_date_interactions(interactions)

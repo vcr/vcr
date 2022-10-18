@@ -88,6 +88,24 @@ Feature: default_cassette_options
     When I run `ruby default_record_on_error.rb`
     Then the output should contain "Record on error: true"
 
+  Scenario: `:drop_unused_requests` defaults to `false` when it has not been set
+    Given a file named "default_drop_unused_requests.rb" with:
+      """ruby
+      require 'vcr'
+
+      VCR.configure do |c|
+        # not important for this example, but must be set to something
+        c.hook_into :webmock
+        c.cassette_library_dir = 'cassettes'
+      end
+
+      VCR.use_cassette('example') do
+        puts "Drop unused requests: #{VCR.current_cassette.drop_unused_requests}"
+      end
+      """
+    When I run `ruby default_drop_unused_requests.rb`
+    Then the output should contain "Drop unused requests: false"
+
   Scenario: cassettes can set their own options
     Given a file named "default_cassette_options.rb" with:
       """ruby
