@@ -5,6 +5,7 @@ Changelog
 
 [Full Changelog](https://github.com/vcr/vcr/compare/v6.1.0...master)
 
+- [new] Add `drop_unused_requests` option to exclude unused interactions (#946) by @ryanseys and @mhuntglickman
 - [fix] Add support for on_data with Faraday (#823) by @zeisler
 
 ## 6.1.0 (March 13, 2022)
