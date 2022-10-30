@@ -566,8 +566,10 @@ module VCR
       lambda { |arg| arg.send(object) }
     end
 
+    define_hook :recompress_response
+
     def register_built_in_hooks
-      before_playback(:recompress_response) do |interaction|
+      recompress_response(tag_filter_from(:recompress_response)) do |interaction|
         interaction.response.recompress if interaction.response.vcr_decompressed?
       end
 

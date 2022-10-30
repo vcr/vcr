@@ -398,6 +398,8 @@ RSpec.describe VCR::Cassette do
           it 'invokes the before_playback hooks' do
             VCR.configuration.cassette_library_dir = "#{VCR::SPEC_ROOT}/fixtures/cassette_spec"
 
+            allow(VCR.configuration).to receive(:invoke_hook).and_return([false])
+
             expect(VCR.configuration).to receive(:invoke_hook).with(
               :before_playback,
               an_instance_of(VCR::HTTPInteraction::HookAware),
