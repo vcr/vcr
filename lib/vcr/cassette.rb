@@ -214,6 +214,7 @@ module VCR
       @previously_recorded_interactions ||= if !raw_cassette_bytes.to_s.empty?
         deserialized_hash['http_interactions'].map { |h| HTTPInteraction.from_hash(h) }.tap do |interactions|
           invoke_hook(:before_playback, interactions)
+          invoke_hook(:recompress_response, interactions)
 
           interactions.reject! do |i|
             i.request.uri.is_a?(String) && VCR.request_ignorer.ignore?(i.request)
