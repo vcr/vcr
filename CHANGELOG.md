@@ -1,9 +1,9 @@
 Changelog
 =========
 
-## Unreleased
+## 6.2.0 (June 26, 2023)
 
-[Full Changelog](https://github.com/vcr/vcr/compare/v6.1.0...master)
+[Full Changelog](https://github.com/vcr/vcr/compare/v6.1.0...v6.2.0)
 
 - Drop support for Ruby 2.6.
 - [new] Add `drop_unused_requests` option to exclude unused interactions (#946) by @ryanseys and @mhuntglickman
