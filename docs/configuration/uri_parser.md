@@ -10,15 +10,15 @@ By default, VCR will parse URIs using `URI` from the Ruby standard
   that returns an instance of the uri. This uri instance needs to
   implement the following API:
 
-    * `#scheme` => a string
-    * `#host`   => a string
-    * `#port`   => a fixnum
-    * `#path`   => a string
-    * `#query`  => a string
-    * `#to_s`   => a string
-    * `#port=`
-    * `#query=`
-    * `#==`     => boolean
+  * `#scheme` => a string
+  * `#host`   => a string
+  * `#port`   => a fixnum
+  * `#path`   => a string
+  * `#query`  => a string
+  * `#to_s`   => a string
+  * `#port=`
+  * `#query=`
+  * `#==`     => boolean
 
 ## Background
 
