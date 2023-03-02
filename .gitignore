@@ -32,3 +32,4 @@
 # Ignores that should be in the global gitignore
 /coverage
 spec/examples.txt
+node_modules/

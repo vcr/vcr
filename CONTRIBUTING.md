@@ -24,3 +24,11 @@ If you get an error while running `bundle install`, it may be one of the "extras
 ```console
 bundle install --without extras
 ```
+
+## Doc
+
+```sh
+go install github.com/raviqqe/gherkin2markdown@latest
+gherkin2markdown gherkin2markdown features/ docs/
+npx docsify-auto-sidebar -d .
+```

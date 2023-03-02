@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>undefined documentation</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="description" content="undefined" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <link rel="stylesheet" href="_docsify/theme.css" />
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.css" />
+    <script src="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="_docsify/edit-on-github.js"></script>
+    <script>
+      window.$docsify = {
+        auto2top: true,
+        name: 'vcr',
+        repo: 'https://github.com/vcr/vcr',
+        loadSidebar: '_sidebar.md',
+        subMaxLevel: 3,
+        search: {
+          depth: 6,
+          paths: 'auto',
+        },
+        plugins: [EditOnGithubPlugin.create({repo: 'https://github.com/vcr/vcr', docDir: ''})],
+      };
+    </script>
+    <script src="_docsify/setup-mermaid.js"></script>
+    <script src="_docsify/docsify.js"></script>
+    <script src="_docsify/search.min.js"></script>
+    <script src="_docsify/front-matter.js"></script>
+
+    <script src="//unpkg.com/prismjs/components/prism-bash.min.js"></script>
+    <script src="//unpkg.com/prismjs/components/prism-ruby.min.js"></script>
+    <script src="//unpkg.com/prismjs/components/prism-yaml.min.js"></script>
+    <script src="//unpkg.com/prismjs/components/prism-gherkin.min.js"></script>
+  </body>
+</html>
