@@ -27,9 +27,10 @@ bundle install --without extras
 
 ## Doc
 
+Doc is generated using [gherkin2markdown](https://github.com/raviqqe/gherkin2markdown) and [docsify](https://docsify.js.org/).
+
+When you have edited Markdown files and `.feature` files regenerate documentation.
+
 ```sh
 ./script/doc
-gherkin2markdown features/ docs/
-npx docsify-auto-sidebar -d .
-npx docsify serve docs/
 ```
