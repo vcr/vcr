@@ -29,7 +29,7 @@ bundle install --without extras
 
 Doc is generated using [gherkin2markdown](https://github.com/raviqqe/gherkin2markdown) and [docsify](https://docsify.js.org/).
 
-When you have edited Markdown files and `.feature` files regenerate documentation.
+When you have edited Markdown files or `.feature` files regenerate documentation with this command:
 
 ```sh
 ./script/doc
