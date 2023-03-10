@@ -2,6 +2,7 @@
 
 set -e
 
+npm install
 go install github.com/raviqqe/gherkin2markdown@latest
 gherkin2markdown features/ docs/
 echo ">> Feature file to markdown ok"
