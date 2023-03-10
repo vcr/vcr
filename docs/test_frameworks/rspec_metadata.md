@@ -36,7 +36,7 @@ end
 
 _And_ a previously recorded cassette file "spec/cassettes/Group/optionally_raises_an_error.yml" with:
 
-```
+```yaml
 --- 
 http_interactions: 
 - request: 

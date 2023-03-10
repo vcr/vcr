@@ -10,7 +10,7 @@ Use the `:host` request matcher to match requests on the request host.
 
 _Given_ a previously recorded cassette file "cassettes/example.yml" with:
 
-```
+```yaml
 --- 
 http_interactions: 
 - request: 

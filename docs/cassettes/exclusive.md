@@ -18,7 +18,7 @@ VCR allows cassettes to be nested. This is particularly useful in
 
 _Given_ a previously recorded cassette file "cassettes/outer.yml" with:
 
-```
+```yaml
 --- 
 http_interactions: 
 - request: 
@@ -45,7 +45,7 @@ recorded_with: VCR 2.0.0
 
 _And_ a previously recorded cassette file "cassettes/inner.yml" with:
 
-```
+```yaml
 --- 
 http_interactions: 
 - request: 

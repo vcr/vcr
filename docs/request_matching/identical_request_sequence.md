@@ -9,7 +9,7 @@ When a cassette contains multiple HTTP interactions that match a request
 
 _Given_ a previously recorded cassette file "cassettes/example.yml" with:
 
-```
+```yaml
 --- 
 http_interactions: 
 - request: 

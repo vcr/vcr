@@ -9,7 +9,7 @@ Feature: Matching on Method
 
   Background:
     Given a previously recorded cassette file "cassettes/example.yml" with:
-      """
+      """yaml
       --- 
       http_interactions: 
       - request: 

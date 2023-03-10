@@ -6,7 +6,7 @@ Use the `:body` request matcher to match requests on the request body.
 
 _Given_ a previously recorded cassette file "cassettes/example.yml" with:
 
-```
+```yaml
 --- 
 http_interactions: 
 - request: 

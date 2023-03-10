@@ -11,7 +11,7 @@ Use the `:query` request matcher to match requests on the query string
 
 _Given_ a previously recorded cassette file "cassettes/example.yml" with:
 
-```
+```yaml
 ---
 http_interactions:
 - request:

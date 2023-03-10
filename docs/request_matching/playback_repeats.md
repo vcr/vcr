@@ -16,7 +16,7 @@ By default, each response in a cassette can only be matched and played back
 
 _Given_ a previously recorded cassette file "cassettes/example.yml" with:
 
-```
+```yaml
 --- 
 http_interactions: 
 - request: 

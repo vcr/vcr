@@ -31,7 +31,7 @@ end
 
 _And_ a previously recorded cassette file "cassettes/example.yml" with:
 
-```
+```yaml
 --- 
 http_interactions: 
 - request: 

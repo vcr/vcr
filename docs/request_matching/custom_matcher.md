@@ -16,7 +16,7 @@ If the built-in matchers do not meet your needs, you can use a custom matcher.
 
 _Given_ a previously recorded cassette file "cassettes/example.yml" with:
 
-```
+```yaml
 --- 
 http_interactions: 
 - request: 

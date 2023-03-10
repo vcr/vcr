@@ -176,7 +176,7 @@ _And_ the file "features/cassettes/vcr_example/tagged_scenario_outline/Example_a
 
 _Given_ a previously recorded cassette file "features/cassettes/cucumber_tags/example.yml" with:
 
-```
+```yaml
 --- 
 http_interactions: 
 - request: 

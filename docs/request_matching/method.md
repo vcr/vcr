@@ -11,7 +11,7 @@ Use the `:method` request matcher to match requests on the HTTP method
 
 _Given_ a previously recorded cassette file "cassettes/example.yml" with:
 
-```
+```yaml
 --- 
 http_interactions: 
 - request: 

@@ -14,7 +14,7 @@ Over time, your cassettes may get out-of-date. APIs change and sites you
 
 _Given_ a previously recorded cassette file "cassettes/example.yml" with:
 
-```
+```yaml
 --- 
 http_interactions: 
 - request: 

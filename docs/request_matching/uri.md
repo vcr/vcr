@@ -9,7 +9,7 @@ Use the `:uri` request matcher to match requests on the request URI.
 
 _Given_ a previously recorded cassette file "cassettes/example.yml" with:
 
-```
+```yaml
 --- 
 http_interactions: 
 - request: 

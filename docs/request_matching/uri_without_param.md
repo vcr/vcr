@@ -20,7 +20,7 @@ A common source of difficulty when using VCR with the default matchers
 
 _Given_ a previously recorded cassette file "cassettes/example.yml" with:
 
-```
+```yaml
 --- 
 http_interactions: 
 - request: 

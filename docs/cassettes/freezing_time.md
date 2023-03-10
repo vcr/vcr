@@ -22,7 +22,7 @@ When dealing with an HTTP API that includes time-based compontents
 
 _Given_ a previously recorded cassette file "cassettes/example.yml" with:
 
-```
+```yaml
 --- 
 http_interactions: 
 - request: 

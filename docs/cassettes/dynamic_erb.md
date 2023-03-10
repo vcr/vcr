@@ -13,7 +13,7 @@ By default, cassettes are static: the exact response that was received
 
 _Given_ a previously recorded cassette file "cassettes/dynamic.yml" with:
 
-```
+```yaml
 ---
 http_interactions:
 - request:
@@ -64,7 +64,7 @@ _Then_ it should pass with "Response: Hello bas".
 
 _Given_ a previously recorded cassette file "cassettes/dynamic.yml" with:
 
-```
+```yaml
 ---
 http_interactions:
 - request:
