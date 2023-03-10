@@ -5,7 +5,6 @@
 exports.__esModule = true;
 var fs = require("fs");
 var path = require("path");
-var yargs = require("yargs");
 var ignores = /node_modules|^\.|_sidebar|_docsify/;
 var isDoc = /.md$/;
 function niceName(name) {
@@ -66,17 +65,7 @@ function renderToMd(tree, linkDir) {
         return prefix + content;
     }
 }
-var args = yargs
-    .wrap(yargs.terminalWidth() - 1)
-    .usage('$0 [-d docsDir] ')
-    .options({
-    docsDir: {
-        alias: 'd',
-        type: 'string',
-        describe: 'Where to look for the documentation (defaults to docs subdir of repo directory)'
-    }
-}).argv;
-var dir = path.resolve(process.cwd(), args.docsDir || './docs');
+var dir = path.resolve(process.cwd(), './docs');
 try {
     var root = buildTree(dir);
     fs.writeFileSync(path.join(dir, '_sidebar.md'), renderToMd(root));

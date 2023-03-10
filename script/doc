@@ -2,12 +2,11 @@
 
 set -e
 
-npm install
 go install github.com/raviqqe/gherkin2markdown@latest
 gherkin2markdown features/ docs/
 echo ">> Feature file to markdown ok"
 cp -f CHANGELOG.md CONTRIBUTING.md DEVELOPMENT.md README.md docs/
-echo ">> Copy ok"
+echo ">> Copy files like CHANGELOG.md ok"
 node script/docsify-auto-sidebar.js -d docs
 echo ">> Sidebar ok"
 npx docsify serve docs/
