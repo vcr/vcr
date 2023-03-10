@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+
+// Extracted from https://github.com/benoittgt/docsify-tools
 "use strict";
 exports.__esModule = true;
 var fs = require("fs");

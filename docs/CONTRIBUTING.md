@@ -28,8 +28,8 @@ bundle install --without extras
 ## Doc
 
 ```sh
-go install github.com/raviqqe/gherkin2markdown@latest
+./script/doc
 gherkin2markdown features/ docs/
 npx docsify-auto-sidebar -d .
-npx http-server .
+npx docsify serve docs/
 ```
