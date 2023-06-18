@@ -39,7 +39,7 @@ end
 
 Run this test once, and VCR will record the HTTP request to `fixtures/vcr_cassettes/synopsis.yml`. Run it again, and VCR will replay the response from iana.org when the HTTP request is made. This test is now fast (no real HTTP requests are made anymore), deterministic (the test will continue to pass, even if you are offline, or iana.org goes down for maintenance) and accurate (the response will contain the same headers and body you get from a real request). You can use a different cassette library directory (e.g., "test/vcr_cassettes").
 
-NOTE: To avoid storing any sensitive information in cassettes, check out [Filter Sensitive Data](https://relishapp.com/vcr/vcr/v/5-0-0/docs/configuration/filter-sensitive-data) in the documentation.
+NOTE: To avoid storing any sensitive information in cassettes, check out [Filter Sensitive Data](https://benoittgt.github.io/vcr/#/configuration/filter_sensitive_data) in the documentation.
 
 **Rails and Minitest:**
 Do *not* use 'test/fixtures' as the directory if you're using Rails and Minitest (Rails will instead transitively load any files in that directory as models).
@@ -76,7 +76,7 @@ Do *not* use 'test/fixtures' as the directory if you're using Rails and Minitest
 
 The docs come in two flavors:
 
-  * The [relish docs](https://relishapp.com/vcr/vcr/docs) contain example-based documentation (VCR's Cucumber suite, in fact). It's a good place to look when you are first getting started with VCR, or if you want to see an example of how to use a feature.
+  * The [usage docs](https://benoittgt.github.io/vcr) contain example-based documentation (VCR's Cucumber suite, in fact). It's a good place to look when you are first getting started with VCR, or if you want to see an example of how to use a feature.
   * The [rubydoc.info docs](https://www.rubydoc.info/gems/vcr/frames) contain API documentation. The API docs contain detailed info about all of VCR's public API.
   * See the [CHANGELOG](https://github.com/vcr/vcr/blob/master/CHANGELOG.md) doc for info about what's new and changed.
 
