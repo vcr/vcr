@@ -14,41 +14,6 @@ Cucumber::Rake::Task.new
 desc "Default: run tests"
 task default: [:spec, :cucumber]
 
-def ensure_relish_doc_symlinked(filename)
-  from_filename = filename.dup
-  from_filename << '.md' unless filename =~ /\.md$/
-  from = File.expand_path("../features/#{from_filename}", __FILE__)
-  to = File.expand_path("../#{filename}", __FILE__)
-
-  if File.symlink?(from)
-    return if File.readlink(from) == to
-
-    # delete the old symlink
-    File.unlink(from)
-  end
-
-  FileUtils.ln_s to, from
-end
-
-desc "Push cukes to relishapp using the relish-client-gem"
-task :relish do
-  unless ENV['SKIP_RELISH']
-    %w[ README.md CHANGELOG.md Upgrade.md LICENSE CONTRIBUTING.md].each do |file|
-      ensure_relish_doc_symlinked(file)
-    end
-
-    require 'vcr/version'
-    sh "relish versions:add vcr/vcr:#{VCR.version}" if ENV['NEW_RELISH_RELEASE'] == 'true'
-    sh "relish push vcr/vcr:#{VCR.version}"
-  end
-end
-
-task :prep_relish_release do
-  ENV['NEW_RELISH_RELEASE'] ||= 'true'
-end
-
-task :release => [:prep_relish_release, :relish]
-
 load './lib/vcr/tasks/vcr.rake'
 namespace :vcr do
   task :reset_spec_cassettes do

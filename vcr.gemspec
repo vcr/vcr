@@ -39,7 +39,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "excon", ">= 0.62.0"
   spec.add_development_dependency "timecop"
   spec.add_development_dependency "json"
-  spec.add_development_dependency "relish"
   spec.add_development_dependency "mime-types"
   spec.add_development_dependency "sinatra"
 end
