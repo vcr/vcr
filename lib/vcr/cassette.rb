@@ -285,11 +285,11 @@ module VCR
         end
       end
 
-        if should_remove_unused_interactions?
-          new_recorded_interactions
-        else
-          up_to_date_interactions(old_interactions) + new_recorded_interactions
-        end
+      if should_remove_unused_interactions?
+        new_recorded_interactions
+      else
+        up_to_date_interactions(old_interactions) + new_recorded_interactions
+      end
     end
 
     def up_to_date_interactions(interactions)
