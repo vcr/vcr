@@ -14,7 +14,7 @@ Feature: Register and use a custom matcher
 
   Background:
     Given a previously recorded cassette file "cassettes/example.yml" with:
-      """
+      """yaml
       --- 
       http_interactions: 
       - request: 

@@ -7,7 +7,7 @@ Feature: Identical requests are replayed in sequence
 
   Scenario Outline: identical requests are replayed in sequence
     Given a previously recorded cassette file "cassettes/example.yml" with:
-      """
+      """yaml
       --- 
       http_interactions: 
       - request: 

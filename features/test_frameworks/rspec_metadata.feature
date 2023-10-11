@@ -33,7 +33,7 @@ Feature: Usage with RSpec metadata
       end
       """
     And a previously recorded cassette file "spec/cassettes/Group/optionally_raises_an_error.yml" with:
-      """
+      """yaml
       --- 
       http_interactions: 
       - request: 

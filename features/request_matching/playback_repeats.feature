@@ -15,7 +15,7 @@ Feature: Playback repeats
   @exclude-jruby
   Scenario: Responses do not repeat by default
     Given a previously recorded cassette file "cassettes/example.yml" with:
-      """
+      """yaml
       --- 
       http_interactions: 
       - request: 
