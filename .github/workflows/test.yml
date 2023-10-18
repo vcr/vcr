@@ -67,6 +67,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      BUNDLE_GEMFILE: Gemfile.cucumber
       RUBYOPT: "-w"
       ALL_WARNINGS: "/tmp/all-warnings"
 
@@ -91,10 +92,7 @@ jobs:
 
     - name: cucumber
       run: |
-        bundle install
         bundle exec cucumber features/ 2>> "${ALL_WARNINGS}"
-      env:
-        BUNDLE_GEMFILE: Gemfile.cucumber
 
     - name: check warnings
       run: |
