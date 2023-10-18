@@ -62,3 +62,10 @@ jobs:
       run: |
         bundle install
         bundle exec yard stats --list-undoc | tee /dev/stdout | grep -q '100.00% documented'
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ALL_WARNINGS
+        path: /tmp/all-warnings
+        retention-days: 7
+        if-no-files-found: ignore
