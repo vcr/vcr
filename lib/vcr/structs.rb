@@ -304,7 +304,7 @@ module VCR
       #
       # @return [Proc] the proc
       def to_proc
-        lambda { proceed }
+        proc { proceed }
       end
 
       undef method
