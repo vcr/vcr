@@ -41,13 +41,6 @@ jobs:
       env:
         BUNDLE_GEMFILE: Gemfile.faraday-1.0.0
 
-    - name: cucumber
-      run: |
-        bundle install
-        bundle exec cucumber features/test_frameworks/cucumber.feature 2>> "${ALL_WARNINGS}"
-      env:
-        BUNDLE_GEMFILE: Gemfile.cucumber
-
     - name: rspec
       run: |
         bundle install
@@ -57,6 +50,8 @@ jobs:
       run: |
         bundle install
         bundle exec cucumber features/ 2>> "${ALL_WARNINGS}"
+      env:
+        BUNDLE_GEMFILE: Gemfile.cucumber
 
     - name: check warnings
       run: |
