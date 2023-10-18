@@ -92,7 +92,7 @@ jobs:
 
     - name: cucumber
       run: |
-        bundle exec cucumber features/ 2>> "${ALL_WARNINGS}"
+        bundle exec cucumber features/
 
     - name: check warnings
       run: |
