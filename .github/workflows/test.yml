@@ -33,13 +33,11 @@ jobs:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true
 
-    - name: faraday-1.0.0
+    - name: faraday
       run: |
         bundle install
         bundle exec rspec spec/lib/vcr/middleware/faraday_spec.rb spec/lib/vcr/library_hooks/faraday_spec.rb 2>> "${ALL_WARNINGS}"
         bundle exec cucumber features/middleware/faraday.feature 2>> "${ALL_WARNINGS}"
-      env:
-        BUNDLE_GEMFILE: Gemfile.faraday-1.0.0
 
     - name: cucumber
       run: |

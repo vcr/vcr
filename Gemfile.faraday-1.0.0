@@ -1,9 +1,0 @@
-source "https://rubygems.org"
-
-gem "faraday", "~> 1.0.0"
-
-gemspec
-
-gem "typhoeus"
-gem "patron"
-gem "webrick"
