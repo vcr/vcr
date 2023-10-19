@@ -4,8 +4,6 @@ gem "faraday", "~> 1.0.0"
 
 gemspec
 
-platform :mri do
-  gem "typhoeus"
-  gem "patron"
-  gem "webrick"
-end
+gem "typhoeus"
+gem "patron"
+gem "webrick"
