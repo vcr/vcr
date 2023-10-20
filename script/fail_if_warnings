@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+
+# This script is used by CI.
+# It runs a command via `bundle exec` and then fails if stderr contains any "warning" messages.
+# The intention is to treat deprecation warnings as errors for the purpose of CI.
+
+warnings=/tmp/vcr_warnings.out
+touch "${warnings}"
+
+RUBYOPT=-w bundle exec "$@" 2> "${warnings}" || { cat "${warnings}" > /dev/stderr; exit 1; }
+
+warnings_count="$(grep -F "$PWD" "${warnings}" | grep "warning: " | grep -v "${PWD}/vendor/bundle" | sort | uniq -c | tee /dev/stderr | wc -l)"
+if [[ "${warnings_count}" -gt 0 ]]; then echo "FAILED: test suite doesn't tolerate warnings"; exit 1; fi

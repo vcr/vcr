@@ -1,18 +1,31 @@
-source 'https://rubygems.org'
-
-gem "faraday", ">= 0.9.2", "< 2"
-
+source "https://rubygems.org"
 gemspec
 
-gem 'jruby-openssl', :platforms => :jruby
+# TODO: Remove the pinned version of `ethon` once header issue affecting Typhoeus is resolved
+# https://github.com/typhoeus/typhoeus/issues/705
+gem "ethon", "0.15.0"
 
-platform :mri do
-  gem 'webrick'
-  gem "typhoeus", "~> 1.1.0"
-  gem "patron", "0.6.3"
-  # TODO: Remove the pinned version of `ethon` once header issue affecting Typhoeus is resolved
-  # https://github.com/typhoeus/typhoeus/issues/705
-  gem "ethon", "0.15.0"
-  gem "em-http-request"
-  gem "curb", "~> 1.0.1"
-end
+gem "aruba", "~> 0.14.14"
+gem "codeclimate-test-reporter", "~> 0.4"
+gem "cucumber", "~> 9.0"
+gem "curb", "~> 1.0.1"
+gem "em-http-request"
+gem "excon", ">= 0.62.0"
+gem "faraday", "~> 1.0"
+gem "hashdiff", ">= 1.0.0.beta1", "< 2.0.0"
+gem "httpclient"
+gem "json"
+gem "mime-types"
+gem "patron", "0.6.3"
+gem "pry-doc", "~> 0.6"
+gem "pry", "~> 0.9"
+gem "rack"
+gem "rake", ">= 12.3.3"
+gem "rspec", "~> 3.0"
+gem "sinatra"
+gem "test-unit", "~> 3.4.4"
+gem "timecop"
+gem "typhoeus", "~> 1.1.0"
+gem "webmock"
+gem "webrick"
+gem "yard"
