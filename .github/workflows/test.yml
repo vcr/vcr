@@ -10,10 +10,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    env:
-      RUBYOPT: "-w"
-      ALL_WARNINGS: "/tmp/all-warnings"
-
     strategy:
       fail-fast: false
       matrix:
