@@ -41,19 +41,14 @@ jobs:
 
     - name: cucumber
       run: |
-        bundle install
         bundle exec cucumber features/test_frameworks/cucumber.feature 2>> "${ALL_WARNINGS}"
-      env:
-        BUNDLE_GEMFILE: Gemfile.cucumber
 
     - name: rspec
       run: |
-        bundle install
         bundle exec rspec spec/ 2>> "${ALL_WARNINGS}"
 
     - name: cucumber
       run: |
-        bundle install
         bundle exec cucumber features/ 2>> "${ALL_WARNINGS}"
 
     - name: check warnings
