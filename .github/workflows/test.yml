@@ -7,18 +7,24 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
+  install_os_deps:
+    name: "Install OS dependencies"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install OS dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install --assume-yes libcurl4-openssl-dev
+
   cucumber:
     name: "Cucumber / ${{ matrix.ruby-version }}"
+    needs: [install_os_deps]
     runs-on: ubuntu-latest
     strategy:
       matrix:
         ruby-version: ["3.2", "3.1", "3.0", "2.7"]
     steps:
       - uses: actions/checkout@v4
-      - name: Install OS dependencies
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install --assume-yes libcurl4-openssl-dev
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
@@ -27,16 +33,13 @@ jobs:
         run: ./script/fail_if_warnings cucumber features/
   rspec:
     name: "RSpec / ${{ matrix.ruby-version }}"
+    needs: [install_os_deps]
     runs-on: ubuntu-latest
     strategy:
       matrix:
         ruby-version: ["3.2", "3.1", "3.0", "2.7"]
     steps:
       - uses: actions/checkout@v4
-      - name: Install OS dependencies
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install --assume-yes libcurl4-openssl-dev
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
@@ -45,6 +48,7 @@ jobs:
         run: ./script/fail_if_warnings rspec spec/
   doc-coverage:
     name: "Doc coverage"
+    needs: [install_os_deps]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
