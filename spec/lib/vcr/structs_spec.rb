@@ -187,7 +187,7 @@ module VCR
 
           i = HTTPInteraction.from_hash(hash)
           expect(i.request.body).to eq('foo')
-          expect(i.request.body.encoding.name).to eq("ASCII-8BIT")
+          expect(i.request.body.encoding).to eq(Encoding::BINARY)
         end
 
         it 'tries to encode strings to the original encoding' do
@@ -221,7 +221,7 @@ module VCR
           i = HTTPInteraction.from_hash(hash)
           expect(i.request.body).to eq(string)
           expect(i.request.body.bytes.to_a).to eq(string.bytes.to_a)
-          expect(i.request.body.encoding.name).to eq("ASCII-8BIT")
+          expect(i.request.body.encoding).to eq(Encoding::BINARY)
         end
 
         context 'when the string cannot be encoded as the original encoding' do
@@ -318,7 +318,7 @@ module VCR
 
       it "sets the string's original encoding", :if => ''.respond_to?(:encoding) do
         interaction.request.body.force_encoding('ISO-8859-10')
-        interaction.response.body.force_encoding('ASCII-8BIT')
+        interaction.response.body.force_encoding(Encoding::BINARY)
 
         expect(hash['request']['body']['encoding']).to eq('ISO-8859-10')
         expect(hash['response']['body']['encoding']).to eq('ASCII-8BIT')
