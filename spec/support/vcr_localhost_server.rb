@@ -1,4 +1,5 @@
 require 'rack'
+require 'rackup'
 require 'net/http'
 require 'webrick'
 
@@ -44,7 +45,7 @@ module VCR
       # Use WEBrick since it's part of the ruby standard library and is available on all ruby interpreters.
       options = { :Port => port, :ShutdownSocketWithoutClose => true }
       options.merge!(:AccessLog => [], :Logger => WEBrick::BasicLog.new(StringIO.new)) unless ENV['VERBOSE_SERVER']
-      Rack::Handler::WEBrick.run(Identify.new(@rack_app), **options)
+      Rackup::Handler::WEBrick.run(Identify.new(@rack_app), **options)
     end
 
     def booted?
