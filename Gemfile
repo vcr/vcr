@@ -21,7 +21,7 @@ gem "mutex_m"
 gem "patron", "0.6.3"
 gem "pry-doc", "~> 0.6"
 gem "pry", "~> 0.9"
-gem "rack"
+gem "rack", "< 3" # LOCKED: in order to pass tests that rely on Rack::Handlers::WEBRickHandler
 gem "rake", ">= 12.3.3"
 gem "rspec", "~> 3.0"
 gem "sinatra"
