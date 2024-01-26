@@ -6,6 +6,7 @@ gemspec
 gem "ethon", "0.15.0"
 
 gem "aruba", "~> 0.14.14"
+gem "bigdecimal"
 gem "codeclimate-test-reporter", "~> 0.4"
 gem "cucumber", "~> 9.0"
 gem "curb", "~> 1.0.1"
