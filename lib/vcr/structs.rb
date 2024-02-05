@@ -1,4 +1,3 @@
-require 'base64'
 require 'delegate'
 require 'time'
 
@@ -18,8 +17,8 @@ module VCR
           hash = hash_or_string
 
           if hash.has_key?('base64_string')
-            string = Base64.decode64(hash['base64_string'])
-            force_encode_string(string, hash['encoding'])
+            base64_decoded = hash['base64_string'].unpack1('m')
+            force_encode_string(base64_decoded, hash['encoding'])
           else
             try_encode_string(hash['string'], hash['encoding'])
           end
@@ -85,7 +84,8 @@ module VCR
         body = String.new(self.body.to_s)
 
         if VCR.configuration.preserve_exact_body_bytes_for?(self)
-          base_body_hash(body).merge('base64_string' => Base64.encode64(body))
+          base64_encoded = [body].pack('m')
+          base_body_hash(body).merge('base64_string' => base64_encoded)
         else
           base_body_hash(body).merge('string' => body)
         end
