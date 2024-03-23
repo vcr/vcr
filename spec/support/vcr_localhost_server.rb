@@ -1,6 +1,7 @@
 require 'rack'
-require 'rack/handler/webrick'
+require 'rackup'
 require 'net/http'
+require 'webrick'
 
 # The code for this is inspired by Capybara's server:
 #   http://github.com/jnicklas/capybara/blob/0.3.9/lib/capybara/server.rb
@@ -44,7 +45,7 @@ module VCR
       # Use WEBrick since it's part of the ruby standard library and is available on all ruby interpreters.
       options = { :Port => port, :ShutdownSocketWithoutClose => true }
       options.merge!(:AccessLog => [], :Logger => WEBrick::BasicLog.new(StringIO.new)) unless ENV['VERBOSE_SERVER']
-      Rack::Handler::WEBrick.run(Identify.new(@rack_app), **options)
+      Rackup::Handler::WEBrick.run(Identify.new(@rack_app), **options)
     end
 
     def booted?
