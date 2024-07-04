@@ -335,10 +335,11 @@ module VCR
   # @see #turn_off!
   # @see #turned_off
   def turned_on?
-    linked_context = current_context[:linked_context]
-    return !linked_context[:turned_off] if linked_context
-
-    !context_value(:turned_off)
+    if !context_value(:turned_off).nil?
+      !context_value(:turned_off)
+    else
+      !current_context.dig(:linked_context, :turned_off)
+    end
   end
 
   # @private
@@ -434,15 +435,19 @@ private
 
   def dup_context(context)
     {
-      :turned_off => context[:turned_off],
-      :ignore_cassettes => context[:ignore_cassettes],
+      :turned_off => nil,
+      :ignore_cassettes => nil,
       :cassettes => [],
       :linked_context => context
     }
   end
 
   def ignore_cassettes?
-    context_value(:ignore_cassettes)
+    if !context_value(:ignore_cassettes).nil?
+      context_value(:ignore_cassettes)
+    else
+      current_context.dig(:linked_context, :ignore_cassettes)
+    end
   end
 
   def context_cassettes
