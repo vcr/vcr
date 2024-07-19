@@ -35,17 +35,6 @@ module VCR
     end
 
     # NetHttp2 middleware that uses a VCR cassette for each incoming HTTP request.
-    #
-    # @example
-    #   app = NetHttp2::Builder.new do
-    #     use VCR::Middleware::NetHttp2 do |cassette, env|
-    #       cassette.name "rack/#{env['SERVER_NAME']}"
-    #       cassette.options :record => :new_episodes
-    #     end
-    #
-    #     run MyRackApp
-    #   end
-    #
     # @note This will record/replay _outbound_ HTTP requests made by your rack app.
     class NetHttp2
       include VCR::VariableArgsBlockCaller
