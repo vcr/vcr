@@ -31,3 +31,4 @@ gem "typhoeus", "~> 1.1.0"
 gem "webmock"
 gem "webrick"
 gem "yard"
+gem 'net-http2'
