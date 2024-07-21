@@ -12,7 +12,16 @@ gem "cucumber", "~> 9.0"
 gem "curb", "~> 1.0.1"
 gem "em-http-request"
 gem "excon", ">= 0.62.0"
-gem "faraday", "~> 1.0"
+
+if ENV['FARADAY_VERSION'] == '1.0'
+  gem "faraday", "~> 1.0"
+else
+  gem "faraday", "~> 2.0"
+  gem "faraday-typhoeus"
+  gem "faraday-patron", '~> 2.0'
+  gem 'faraday-multipart'
+end
+
 gem "hashdiff", ">= 1.0.0.beta1", "< 2.0.0"
 gem "httpclient"
 gem "json"
