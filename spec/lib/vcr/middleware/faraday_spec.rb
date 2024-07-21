@@ -21,7 +21,7 @@ RSpec.describe VCR::Middleware::Faraday do
 
     def self.test_recording
       it 'records the request body correctly' do
-        payload = { :file => Faraday::UploadIO.new(__FILE__, 'text/plain') }
+        payload = { :file => Faraday::FilePart.new(__FILE__, 'text/plain') }
 
         expect(VCR).to receive(:record_http_interaction) do |i|
           expect(i.request.headers['Content-Type'].first).to include("multipart")

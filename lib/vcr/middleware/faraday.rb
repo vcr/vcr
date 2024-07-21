@@ -1,4 +1,5 @@
 require 'faraday'
+require 'faraday/multipart'
 require 'vcr/util/version_checker'
 require 'vcr/request_handler'
 
