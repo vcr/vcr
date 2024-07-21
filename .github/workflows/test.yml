@@ -8,14 +8,16 @@ on:
 
 jobs:
   cucumber:
-    name: "Cucumber / Ruby ${{ matrix.ruby-version }} / Faraday ${{ matrix.faraday }}"
+    name: "Cucumber / Ruby ${{ matrix.ruby-version }} / Rack ${{ matrix.rack }} / Faraday ${{ matrix.faraday }}"
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby-version: ["3.2", "3.1", "3.0", "2.7"]
+        ruby-version: ["3.3", "3.2", "3.1", "3.0", "2.7"]
         faraday: ["1.0", "2.0"]
+        rack: ["2.0", "3.0"]
     env:
       FARADAY_VERSION: ${{ matrix.faraday }}
+      RACK_VERSION: ${{ matrix.rack }}
     steps:
       - uses: actions/checkout@v4
       - run: ./script/install-apt-deps.sh
@@ -26,14 +28,16 @@ jobs:
       - name: cucumber
         run: ./script/fail_if_warnings cucumber features/
   rspec:
-    name: "RSpec / Ruby ${{ matrix.ruby-version }} / Faraday ${{ matrix.faraday }}"
+    name: "RSpec / Ruby ${{ matrix.ruby-version }} / Rack ${{ matrix.rack }} / Faraday ${{ matrix.faraday }}"
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby-version: ["3.2", "3.1", "3.0", "2.7"]
+        ruby-version: ["3.3", "3.2", "3.1", "3.0", "2.7"]
         faraday: ["1.0", "2.0"]
+        rack: ["2.0", "3.0"]
     env:
       FARADAY_VERSION: ${{ matrix.faraday }}
+      RACK_VERSION: ${{ matrix.rack }}
     steps:
       - uses: actions/checkout@v4
       - run: ./script/install-apt-deps.sh
