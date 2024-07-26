@@ -7,6 +7,7 @@ RSpec.describe "Net::HTTP/2 hook" do
       VCR.use_cassette('nghttp2', :record => :once) do
         client = NetHttp2::Client.new("http://nghttp2.org")
         response = client.call(:get, '/')
+        client.close
 
         response.body
       end
