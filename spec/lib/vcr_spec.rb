@@ -23,6 +23,18 @@ RSpec.describe VCR do
         insert_cassette(:foo)
       }.to raise_error(/There is already a cassette with the same name/)
     end
+
+    it 'does not mask the error if ignore_cassettes is true' do
+      expect {
+        VCR.turn_off!(ignore_cassettes: true)
+
+        VCR.use_cassette(:foo) do
+          raise StandardError, 'Original Error'
+        end
+
+        VCR.turn_on!
+     }.to raise_error(/Original Error/)
+    end
   end
 
   describe '.eject_cassette' do
