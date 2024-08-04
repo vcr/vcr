@@ -212,6 +212,14 @@ module VCR
           "https://benoittgt.github.io/vcr/?v=%s#/record_modes/none"
         ],
 
+        :none_without_file => [
+          ["The current record mode (:none) does not allow requests to be recorded.",
+           "One or more cassette names registered was not found. Use ",
+           ":new_episodes or :once record modes to record a new cassette"],
+          "https://benoittgt.github.io/vcr/?v=%s#/record_modes/none"
+        ],
+          
+
         :use_a_cassette => [
           ["If you want VCR to record this request and play it back during future test",
            "runs, you should wrap your test (or this portion of your test) in a",
@@ -284,11 +292,19 @@ module VCR
         record_modes = current_cassettes.map(&:record_mode)
 
         if record_modes.all?{|r| r == :none }
-          [:deal_with_none]
+          none_suggestion
         elsif record_modes.all?{|r| r == :once }
           [:delete_cassette_for_once]
         else
           []
+        end
+      end
+
+      def none_suggestion
+        if current_cassettes.any? {|c| !File.exist?(c.file) }
+          [:none_without_file]
+        else
+          [:deal_with_none]
         end
       end
 
