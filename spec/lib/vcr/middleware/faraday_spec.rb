@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'faraday/multipart'
 require 'vcr/library_hooks/faraday'
 
 RSpec.describe VCR::Middleware::Faraday do
