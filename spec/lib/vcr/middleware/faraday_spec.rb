@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'vcr/library_hooks/faraday'
+require 'faraday/multipart'
 
 RSpec.describe VCR::Middleware::Faraday do
   http_libs = %w[ typhoeus net_http patron ]
