@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## 6.3.1 (Aug 20, 2024)
+[Full Changelog](https://github.com/vcr/vcr/compare/v6.3.0...v6.3.1)
+
+ - [fix] Fix regression reported by @myronmarson in #1031, by requiring test dependency faraday-multipart in tests only. (#1032) Thanks, @colinbruce!
+
 ## 6.3.0 (Aug 19, 2024)
 [Full Changelog](https://github.com/vcr/vcr/compare/v6.2.0...v6.3.0)
 
