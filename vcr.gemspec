@@ -22,4 +22,6 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 2.7"
 
   spec.add_dependency "base64"
+
+  spec.metadata["changelog_uri"] = "https://github.com/vcr/vcr/blob/master/CHANGELOG.md"
 end
