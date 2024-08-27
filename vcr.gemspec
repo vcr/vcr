@@ -23,5 +23,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "base64"
 
-  spec.metadata["changelog_uri"] = "https://github.com/vcr/vcr/blob/master/CHANGELOG.md"
+  spec.metadata["changelog_uri"] = "https://github.com/vcr/vcr/blob/v#{spec.version}/CHANGELOG.md"
 end
