@@ -58,5 +58,25 @@ RSpec.describe VCR do
 
       thread.join
     end
+
+    it 'can turn on VCR in a new thread' do
+      VCR.turn_off!
+
+      Thread.new do
+        expect { VCR.turn_on! }.to change { VCR.turned_on? }.from(false).to(true)
+      end.join
+
+      expect(VCR.turned_on?).to eq(false)
+    end
+
+    it 'can turn on VCR in a new thread' do
+      expect(VCR.turned_on?).to eq(true)
+
+      Thread.new do
+        expect { VCR.turn_off! }.to change { VCR.turned_on? }.from(true).to(false)
+      end.join
+
+      expect(VCR.turned_on?).to eq(true)
+    end
   end
 end
