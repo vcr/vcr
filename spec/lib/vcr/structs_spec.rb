@@ -149,6 +149,13 @@ module VCR
         expect(i.response).to eq(Response.new(ResponseStatus.new))
       end
 
+      it 'uses a blank body if it is missing from the response' do
+        hash['response']['body'] = { 'encoding' => 'US-ASCII' }
+
+        i = HTTPInteraction.from_hash(hash)
+        expect(i.response.body).to eq('')
+      end
+
       it 'decodes the base64 body string' do
         hash['request']['body'] = body_hash('base64_string', Base64.encode64('req body'))
         hash['response']['body'] = body_hash('base64_string', Base64.encode64('res body'))

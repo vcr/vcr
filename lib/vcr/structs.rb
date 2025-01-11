@@ -31,7 +31,7 @@ module VCR
         end
 
         def try_encode_string(string, encoding_name)
-          return string if encoding_name.nil?
+          return string if encoding_name.nil? || string.nil?
 
           encoding = Encoding.find(encoding_name)
           return string if string.encoding == encoding
