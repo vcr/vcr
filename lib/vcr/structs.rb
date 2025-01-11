@@ -400,9 +400,7 @@ module VCR
         case type
         when 'gzip'
           body_str = ''
-          args = [StringIO.new(body_str)]
-          args << { :encoding => 'ASCII-8BIT' }
-          writer = Zlib::GzipWriter.new(*args)
+          writer = Zlib::GzipWriter.new(StringIO.new(body_str), encoding: 'ASCII-8BIT')
           writer.write(body)
           writer.close
           body_str
@@ -441,10 +439,7 @@ module VCR
 
       case type
       when 'gzip'
-        gzip_reader_options = {}
-        gzip_reader_options[:encoding] = 'ASCII-8BIT'
-        yield Zlib::GzipReader.new(StringIO.new(body),
-                                   **gzip_reader_options).read
+        yield Zlib::GzipReader.new(StringIO.new(body), encoding: 'ASCII-8BIT').read
       when 'deflate'
         yield Zlib::Inflate.inflate(body)
       when 'identity', NilClass
