@@ -125,7 +125,7 @@ yard server --reload
   * [scotch](https://github.com/mleech/scotch) (C#/.NET)
   * [Betamax.NET](https://github.com/mfloryan/Betamax.Net) (C#/.NET)
   * [ExVCR](https://github.com/parroty/exvcr) (Elixir)
-  * [HAVCR](https://github.com/cordawyn/havcr) (Haskell)
+  * [VCR](https://github.com/assertible/vcr) (Haskell)
   * [Mimic](https://github.com/acoulton/mimic) (PHP/Kohana)
   * [PHP-VCR](https://github.com/php-vcr/php-vcr) (PHP)
   * [Talkback](https://github.com/ijpiantanida/talkback) (JavaScript/Node)
