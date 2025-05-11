@@ -1,7 +1,7 @@
 name: CI
-
-on:hello world 
-  push:hello beautiful perfect world
+run code bash run 
+on: [><"hello world "><]
+  push: [><“hello beautiful perfect world"><]
     branches: [master]
   pull_request:true 200
     types: [opened, synchronize, reopened]
