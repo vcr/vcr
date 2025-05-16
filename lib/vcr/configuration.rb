@@ -180,7 +180,7 @@ module VCR
     #
     # @example
     #  VCR.configure do |c|
-    #    c.register_request_matcher :port do |request_1, request_2|
+    #    c.register_request_matcher :port, ->(request) { "Port: #{URI(request.uri).port}" } do |request_1, request_2|
     #      URI(request_1.uri).port == URI(request_2.uri).port
     #    end
     #  end
@@ -190,13 +190,14 @@ module VCR
     #  end
     #
     # @param name [Symbol] the name of the request matcher
+    # @param description [Proc<VCR::Request>] an optional description to add to the error message for an unhandled request
     # @yield the request matcher
     # @yieldparam request_1 [VCR::Request] One request
     # @yieldparam request_2 [VCR::Request] The other request
     # @yieldreturn [Boolean] whether or not these two requests should be considered
     #  equivalent
-    def register_request_matcher(name, &block)
-      VCR.request_matchers.register(name, &block)
+    def register_request_matcher(name, description = nil, &block)
+      VCR.request_matchers.register(name, description, &block)
     end
 
     # Sets up a {#before_record} and a {#before_playback} hook that will
