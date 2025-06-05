@@ -20,7 +20,7 @@ Feature: Update content_length header
 
   Background:
     Given a previously recorded cassette file "cassettes/example.yml" with:
-      """
+      """yaml
       --- 
       http_interactions: 
       - request: 

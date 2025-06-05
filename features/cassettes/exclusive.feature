@@ -16,7 +16,7 @@ Feature: exclusive cassette
 
   Background:
     Given a previously recorded cassette file "cassettes/outer.yml" with:
-      """
+      """yaml
       --- 
       http_interactions: 
       - request: 
@@ -41,7 +41,7 @@ Feature: exclusive cassette
       recorded_with: VCR 2.0.0
       """
     And a previously recorded cassette file "cassettes/inner.yml" with:
-      """
+      """yaml
       --- 
       http_interactions: 
       - request: 

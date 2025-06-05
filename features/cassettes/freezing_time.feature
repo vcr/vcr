@@ -20,7 +20,7 @@ Feature: Freezing Time
 
   Scenario: Previously recorded responses are replayed
     Given a previously recorded cassette file "cassettes/example.yml" with:
-      """
+      """yaml
       --- 
       http_interactions: 
       - request: 

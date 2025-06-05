@@ -153,7 +153,7 @@ Feature: Usage with Cucumber
 
   Scenario: `:allow_unused_http_interactions => false` does not raise if the scenario already failed
     Given a previously recorded cassette file "features/cassettes/cucumber_tags/example.yml" with:
-      """
+      """yaml
       --- 
       http_interactions: 
       - request: 

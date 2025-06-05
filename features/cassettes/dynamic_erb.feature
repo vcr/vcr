@@ -11,7 +11,7 @@ Feature: Dynamic ERB cassettes
 
   Scenario: Enable dynamic ERB cassette evalutation using :erb => true
     Given a previously recorded cassette file "cassettes/dynamic.yml" with:
-      """
+      """yaml
       ---
       http_interactions:
       - request:
@@ -56,7 +56,7 @@ Feature: Dynamic ERB cassettes
 
   Scenario: Pass arguments to the ERB using :erb => { ... }
     Given a previously recorded cassette file "cassettes/dynamic.yml" with:
-      """
+      """yaml
       ---
       http_interactions:
       - request:
