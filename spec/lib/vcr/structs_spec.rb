@@ -65,14 +65,8 @@ module VCR
     include_context "configuration stubbing"
     before { allow(config).to receive(:uri_parser) { LimitedURI } }
 
-    if ''.respond_to?(:encoding)
-      def body_hash(key, value)
-        { key => value, 'encoding' => 'UTF-8' }
-      end
-    else
-      def body_hash(key, value)
-        { key => value }
-      end
+    def body_hash(key, value)
+      { key => value, 'encoding' => 'UTF-8' }
     end
 
     describe "#recorded_at" do
@@ -155,6 +149,13 @@ module VCR
         expect(i.response).to eq(Response.new(ResponseStatus.new))
       end
 
+      it 'uses a blank body if it is missing from the response' do
+        hash['response']['body'] = { 'encoding' => 'US-ASCII' }
+
+        i = HTTPInteraction.from_hash(hash)
+        expect(i.response.body).to eq('')
+      end
+
       it 'decodes the base64 body string' do
         hash['request']['body'] = body_hash('base64_string', Base64.encode64('req body'))
         hash['response']['body'] = body_hash('base64_string', Base64.encode64('res body'))
@@ -164,95 +165,93 @@ module VCR
         expect(i.response.body).to eq('res body')
       end
 
-      if ''.respond_to?(:encoding)
-        it 'force encodes the decoded base64 string as the original encoding' do
-          string = "café"
-          string.force_encoding("US-ASCII")
-          expect(string).not_to be_valid_encoding
+      it 'force encodes the decoded base64 string as the original encoding' do
+        string = "café"
+        string.force_encoding("US-ASCII")
+        expect(string).not_to be_valid_encoding
 
-          hash['request']['body']  = { 'base64_string' => Base64.encode64(string.dup), 'encoding' => 'US-ASCII' }
-          hash['response']['body'] = { 'base64_string' => Base64.encode64(string.dup), 'encoding' => 'US-ASCII' }
+        hash['request']['body']  = { 'base64_string' => Base64.encode64(string.dup), 'encoding' => 'US-ASCII' }
+        hash['response']['body'] = { 'base64_string' => Base64.encode64(string.dup), 'encoding' => 'US-ASCII' }
 
-          i = HTTPInteraction.from_hash(hash)
-          expect(i.request.body.encoding.name).to eq("US-ASCII")
-          expect(i.response.body.encoding.name).to eq("US-ASCII")
-          expect(i.request.body.bytes.to_a).to eq(string.bytes.to_a)
-          expect(i.response.body.bytes.to_a).to eq(string.bytes.to_a)
-          expect(i.request.body).not_to be_valid_encoding
-          expect(i.response.body).not_to be_valid_encoding
+        i = HTTPInteraction.from_hash(hash)
+        expect(i.request.body.encoding.name).to eq("US-ASCII")
+        expect(i.response.body.encoding.name).to eq("US-ASCII")
+        expect(i.request.body.bytes.to_a).to eq(string.bytes.to_a)
+        expect(i.response.body.bytes.to_a).to eq(string.bytes.to_a)
+        expect(i.request.body).not_to be_valid_encoding
+        expect(i.response.body).not_to be_valid_encoding
+      end
+
+      it 'does not attempt to force encode the decoded base64 string when there is no encoding given (i.e. if the cassette was recorded on ruby 1.8)' do
+        hash['request']['body']  = { 'base64_string' => Base64.encode64('foo') }
+
+        i = HTTPInteraction.from_hash(hash)
+        expect(i.request.body).to eq('foo')
+        expect(i.request.body.encoding).to eq(Encoding::BINARY)
+      end
+
+      it 'tries to encode strings to the original encoding' do
+        hash['request']['body']  = { 'string' => "abc", 'encoding' => 'ISO-8859-1' }
+        hash['response']['body'] = { 'string' => "abc", 'encoding' => 'ISO-8859-1' }
+
+        i = HTTPInteraction.from_hash(hash)
+        expect(i.request.body).to eq("abc")
+        expect(i.response.body).to eq("abc")
+        expect(i.request.body.encoding.name).to eq("ISO-8859-1")
+        expect(i.response.body.encoding.name).to eq("ISO-8859-1")
+      end
+
+      it 'does not attempt to encode the string when there is no encoding given (i.e. if the cassette was recorded on ruby 1.8)' do
+        string = 'foo'
+        string.force_encoding("ISO-8859-1")
+        hash['request']['body']  = { 'string' => string }
+
+        i = HTTPInteraction.from_hash(hash)
+        expect(i.request.body).to eq('foo')
+        expect(i.request.body.encoding.name).to eq("ISO-8859-1")
+      end
+
+      it 'force encodes to ASCII-8BIT (since it just means "no encoding" or binary)' do
+        string = "\u00f6"
+        string.encode("UTF-8")
+        expect(string).to be_valid_encoding
+        hash['request']['body']  = { 'string' => string, 'encoding' => 'ASCII-8BIT' }
+
+        expect(Request).not_to receive(:warn)
+        i = HTTPInteraction.from_hash(hash)
+        expect(i.request.body).to eq(string)
+        expect(i.request.body.bytes.to_a).to eq(string.bytes.to_a)
+        expect(i.request.body.encoding).to eq(Encoding::BINARY)
+      end
+
+      context 'when the string cannot be encoded as the original encoding' do
+        def verify_encoding_error
+          expect { "\xFAbc".encode("ISO-8859-1") }.to raise_error(EncodingError)
         end
 
-        it 'does not attempt to force encode the decoded base64 string when there is no encoding given (i.e. if the cassette was recorded on ruby 1.8)' do
-          hash['request']['body']  = { 'base64_string' => Base64.encode64('foo') }
+        before do
+          allow(Request).to receive(:warn)
+          allow(Response).to receive(:warn)
 
-          i = HTTPInteraction.from_hash(hash)
-          expect(i.request.body).to eq('foo')
-          expect(i.request.body.encoding.name).to eq("ASCII-8BIT")
+          hash['request']['body']  = { 'string' => "\xFAbc", 'encoding' => 'ISO-8859-1' }
+          hash['response']['body']  = { 'string' => "\xFAbc", 'encoding' => 'ISO-8859-1' }
+
+          verify_encoding_error
         end
 
-        it 'tries to encode strings to the original encoding' do
-          hash['request']['body']  = { 'string' => "abc", 'encoding' => 'ISO-8859-1' }
-          hash['response']['body'] = { 'string' => "abc", 'encoding' => 'ISO-8859-1' }
-
+        it 'does not force the encoding' do
           i = HTTPInteraction.from_hash(hash)
-          expect(i.request.body).to eq("abc")
-          expect(i.response.body).to eq("abc")
-          expect(i.request.body.encoding.name).to eq("ISO-8859-1")
-          expect(i.response.body.encoding.name).to eq("ISO-8859-1")
+          expect(i.request.body).to eq("\xFAbc")
+          expect(i.response.body).to eq("\xFAbc")
+          expect(i.request.body.encoding.name).not_to eq("ISO-8859-1")
+          expect(i.response.body.encoding.name).not_to eq("ISO-8859-1")
         end
 
-        it 'does not attempt to encode the string when there is no encoding given (i.e. if the cassette was recorded on ruby 1.8)' do
-          string = 'foo'
-          string.force_encoding("ISO-8859-1")
-          hash['request']['body']  = { 'string' => string }
+        it 'prints a warning and informs users of the :preserve_exact_body_bytes option' do
+          expect(Request).to receive(:warn).with(/ISO-8859-1.*preserve_exact_body_bytes/)
+          expect(Response).to receive(:warn).with(/ISO-8859-1.*preserve_exact_body_bytes/)
 
-          i = HTTPInteraction.from_hash(hash)
-          expect(i.request.body).to eq('foo')
-          expect(i.request.body.encoding.name).to eq("ISO-8859-1")
-        end
-
-        it 'force encodes to ASCII-8BIT (since it just means "no encoding" or binary)' do
-          string = "\u00f6"
-          string.encode("UTF-8")
-          expect(string).to be_valid_encoding
-          hash['request']['body']  = { 'string' => string, 'encoding' => 'ASCII-8BIT' }
-
-          expect(Request).not_to receive(:warn)
-          i = HTTPInteraction.from_hash(hash)
-          expect(i.request.body).to eq(string)
-          expect(i.request.body.bytes.to_a).to eq(string.bytes.to_a)
-          expect(i.request.body.encoding.name).to eq("ASCII-8BIT")
-        end
-
-        context 'when the string cannot be encoded as the original encoding' do
-          def verify_encoding_error
-            expect { "\xFAbc".encode("ISO-8859-1") }.to raise_error(EncodingError)
-          end
-
-          before do
-            allow(Request).to receive(:warn)
-            allow(Response).to receive(:warn)
-
-            hash['request']['body']  = { 'string' => "\xFAbc", 'encoding' => 'ISO-8859-1' }
-            hash['response']['body']  = { 'string' => "\xFAbc", 'encoding' => 'ISO-8859-1' }
-
-            verify_encoding_error
-          end
-
-          it 'does not force the encoding' do
-            i = HTTPInteraction.from_hash(hash)
-            expect(i.request.body).to eq("\xFAbc")
-            expect(i.response.body).to eq("\xFAbc")
-            expect(i.request.body.encoding.name).not_to eq("ISO-8859-1")
-            expect(i.response.body.encoding.name).not_to eq("ISO-8859-1")
-          end
-
-          it 'prints a warning and informs users of the :preserve_exact_body_bytes option' do
-            expect(Request).to receive(:warn).with(/ISO-8859-1.*preserve_exact_body_bytes/)
-            expect(Response).to receive(:warn).with(/ISO-8859-1.*preserve_exact_body_bytes/)
-
-            HTTPInteraction.from_hash(hash)
-          end
+          HTTPInteraction.from_hash(hash)
         end
       end
     end
@@ -316,9 +315,9 @@ module VCR
         expect(hash['response']['body']).to eq(body_hash('base64_string', Base64.encode64('res body')))
       end
 
-      it "sets the string's original encoding", :if => ''.respond_to?(:encoding) do
+      it "sets the string's original encoding" do
         interaction.request.body.force_encoding('ISO-8859-10')
-        interaction.response.body.force_encoding('ASCII-8BIT')
+        interaction.response.body.force_encoding(Encoding::BINARY)
 
         expect(hash['request']['body']['encoding']).to eq('ISO-8859-10')
         expect(hash['response']['body']['encoding']).to eq('ASCII-8BIT')
@@ -744,4 +743,3 @@ module VCR
     end
   end
 end
-

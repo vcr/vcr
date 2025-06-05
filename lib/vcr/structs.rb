@@ -25,36 +25,29 @@ module VCR
           end
         end
 
-        if "".respond_to?(:encoding)
-          def force_encode_string(string, encoding)
-            return string unless encoding
-            string.force_encoding(encoding)
-          end
+        def force_encode_string(string, encoding)
+          return string unless encoding
+          string.force_encoding(encoding)
+        end
 
-          def try_encode_string(string, encoding)
-            return string if encoding.nil? || string.encoding.name == encoding
+        def try_encode_string(string, encoding_name)
+          return string if encoding_name.nil? || string.nil?
 
-            # ASCII-8BIT just means binary, so encoding to it is nonsensical
-            # and yet "\u00f6".encode("ASCII-8BIT") raises an error.
-            # Instead, we'll force encode it (essentially just tagging it as binary)
-            return string.force_encoding(encoding) if encoding == "ASCII-8BIT"
+          encoding = Encoding.find(encoding_name)
+          return string if string.encoding == encoding
 
-            string.encode(encoding)
-          rescue EncodingError => e
-            struct_type = name.split('::').last.downcase
-            warn "VCR: got `#{e.class.name}: #{e.message}` while trying to encode the #{string.encoding.name} " +
-                 "#{struct_type} body to the original body encoding (#{encoding}). Consider using the " +
-                 "`:preserve_exact_body_bytes` option to work around this."
-            return string
-          end
-        else
-          def force_encode_string(string, encoding)
-            string
-          end
+          # ASCII-8BIT just means binary, so encoding to it is nonsensical
+          # and yet "\u00f6".encode("ASCII-8BIT") raises an error.
+          # Instead, we'll force encode it (essentially just tagging it as binary)
+          return string.force_encoding(encoding) if encoding == Encoding::BINARY
 
-          def try_encode_string(string, encoding)
-            string
-          end
+          string.encode(encoding)
+        rescue EncodingError => e
+          struct_type = name.split('::').last.downcase
+          warn "VCR: got `#{e.class.name}: #{e.message}` while trying to encode the #{string.encoding.name} " +
+                "#{struct_type} body to the original body encoding (#{encoding}). Consider using the " +
+                "`:preserve_exact_body_bytes` option to work around this."
+          return string
         end
       end
 
@@ -88,14 +81,8 @@ module VCR
         end
       end
 
-      if ''.respond_to?(:encoding)
-        def base_body_hash(body)
-          { 'encoding' => body.encoding.name }
-        end
-      else
-        def base_body_hash(body)
-          { }
-        end
+      def base_body_hash(body)
+        { 'encoding' => body.encoding.name }
       end
     end
 
@@ -304,7 +291,7 @@ module VCR
       #
       # @return [Proc] the proc
       def to_proc
-        lambda { proceed }
+        proc { proceed }
       end
 
       undef method
@@ -413,9 +400,7 @@ module VCR
         case type
         when 'gzip'
           body_str = ''
-          args = [StringIO.new(body_str)]
-          args << { :encoding => 'ASCII-8BIT' } if ''.respond_to?(:encoding)
-          writer = Zlib::GzipWriter.new(*args)
+          writer = Zlib::GzipWriter.new(StringIO.new(body_str), encoding: 'ASCII-8BIT')
           writer.write(body)
           writer.close
           body_str
@@ -454,10 +439,7 @@ module VCR
 
       case type
       when 'gzip'
-        gzip_reader_options = {}
-        gzip_reader_options[:encoding] = 'ASCII-8BIT' if ''.respond_to?(:encoding)
-        yield Zlib::GzipReader.new(StringIO.new(body),
-                                   **gzip_reader_options).read
+        yield Zlib::GzipReader.new(StringIO.new(body), encoding: 'ASCII-8BIT').read
       when 'deflate'
         yield Zlib::Inflate.inflate(body)
       when 'identity', NilClass

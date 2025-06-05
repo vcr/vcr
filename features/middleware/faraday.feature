@@ -21,7 +21,14 @@ Feature: Faraday middleware
 
       require 'faraday'
       require 'vcr'
-      <extra_require>
+
+      if '<adapter>' == 'typhoeus'
+        if Faraday::VERSION > '2.0'
+          require "faraday/typhoeus"
+        else
+          require 'typhoeus/adapters/faraday'
+        end
+      end
 
       VCR.configure do |c|
         c.default_cassette_options = { :serialize_with => :syck }
@@ -50,7 +57,6 @@ Feature: Faraday middleware
     And the file "cassettes/example.yml" should contain "Hello foo 1"
 
     Examples:
-      | adapter  | extra_require                       |
-      | net_http |                                     |
-      | typhoeus | require 'typhoeus/adapters/faraday' |
-
+      | adapter  |
+      | net_http |
+      | typhoeus |

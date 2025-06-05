@@ -5,12 +5,12 @@ Feature: Filter sensitive data
 
   The `filter_sensitive_data` configuration option can be used to prevent
   sensitive data from being written to your cassette files.  This may be
-  important if you commit your cassettes files to source control and do
+  important if you commit your cassette files to source control and do
   not want your sensitive data exposed.  Pass the following arguments to
   `filter_sensitive_data`:
 
     - A substitution string.  This is the string that will be written to
-      the cassettte file as a placeholder.  It should be unique and you
+      the cassette file as a placeholder.  It should be unique and you
       may want to wrap it in special characters like `{ }` or `< >`.
     - A symbol specifying a tag (optional).  If a tag is given, the
       filtering will only be applied to cassettes with the given tag.

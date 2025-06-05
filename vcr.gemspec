@@ -19,27 +19,10 @@ Gem::Specification.new do |spec|
   spec.executables   = Dir[File.join("bin", "**", "*")].map! { |f| f.gsub(/bin\//, "") }
   spec.require_paths = ["lib"]
 
-  spec.required_ruby_version = ">= 2.6"
+  spec.required_ruby_version = ">= 2.7"
 
-  spec.add_development_dependency "bundler", "~> 2.0"
-  spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_development_dependency "test-unit", "~> 3.4.4"
-  spec.add_development_dependency "rake", ">= 12.3.3"
-  spec.add_development_dependency "pry", "~> 0.9"
-  spec.add_development_dependency "pry-doc", "~> 0.6"
-  spec.add_development_dependency "codeclimate-test-reporter", "~> 0.4"
-  spec.add_development_dependency "yard"
-  spec.add_development_dependency "rack"
-  spec.add_development_dependency "webmock"
-  spec.add_development_dependency "hashdiff", ">= 1.0.0.beta1", "< 2.0.0"
-  spec.add_development_dependency "cucumber", "~> 7.0"
-  spec.add_development_dependency "aruba", "~> 0.14.14"
-  spec.add_development_dependency "faraday", ">= 0.11.0", "< 2.0.0"
-  spec.add_development_dependency "httpclient"
-  spec.add_development_dependency "excon", ">= 0.62.0"
-  spec.add_development_dependency "timecop"
-  spec.add_development_dependency "json"
-  spec.add_development_dependency "relish"
-  spec.add_development_dependency "mime-types"
-  spec.add_development_dependency "sinatra"
+  spec.add_dependency "base64"
+
+  spec.metadata["changelog_uri"] = "https://github.com/vcr/vcr/blob/v#{spec.version}/CHANGELOG.md"
+  spec.metadata["funding_uri"] = "https://opencollective.com/vcr"
 end

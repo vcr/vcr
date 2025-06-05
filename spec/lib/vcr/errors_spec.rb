@@ -120,6 +120,21 @@ module VCR
           end
         end
 
+        it 'mentions that one of the files does not exist when using :none and file does not exist' do
+          VCR.use_cassette('example', :record => :none) do
+            expect(message).to include('One or more cassette names registered was not found.')
+          end
+        end
+
+        it 'mentions legacy message when file exists' do
+          VCR.configure do |c|
+            c.cassette_library_dir = File.join(VCR::SPEC_ROOT, 'fixtures')
+          end
+          VCR.use_cassette('fake_example_responses', :record => :none) do
+            expect(message).to include('can temporarily change the record mode to :once, delete the cassette file')
+          end
+        end
+
         it 'does not mention the :once or :none record modes if using the :new_episodes record mode' do
           VCR.use_cassette('example', :record => :new_episodes) do
             expect(message).not_to include(':once', ':none')
