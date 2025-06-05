@@ -1,6 +1,27 @@
 Changelog
 =========
 
+## 6.3.1 (Aug 20, 2024)
+[Full Changelog](https://github.com/vcr/vcr/compare/v6.3.0...v6.3.1)
+
+ - [fix] Fix regression reported by @myronmarston in #1031, by requiring test dependency faraday-multipart in tests only. (#1032) Thanks, @colinbruce!
+
+## 6.3.0 (Aug 19, 2024)
+[Full Changelog](https://github.com/vcr/vcr/compare/v6.2.0...v6.3.0)
+
+  - [fix] Handle the potential renaming of ASCII-8BIT (#924) by @casperisfine
+  - Use `Hash#transform_keys` from Ruby 2.5 (#1015) by @notapatch
+  - [fix] Adds host.docker.internal to list of LOCALHOST_ALIASES (#1016) by @jamesmcguirepro
+  - [fix] Make VCR CI compatible with Faraday 1 and 2 (#1024) by @andrehjr
+  - [fix] Allow usage of typhoeus >= 1.2 (#1023) by @andrehjr
+  - [new] Add an error message when cassette file does not exist (#1028) by @PauloVilarinho
+  - [docs] Updates links in README to VCR in Clojure (#1005) by @simonneutert
+  - [docs] Fix typos in filter_sensitive_data.feature (#990) by @albertchae
+  - [docs] Remove the relish gem, update Web references to point to new docs (#980) by @olleolleolle
+  - Upgrade cucumber to fix CI failures (#998) by @mattbrictson
+  - Consolidate Gemfiles; improve and simplify CI workflow (#1002) by @mattbrictson
+  - Add Rack 2 and Rack 3 to the CI (#1025) by @andrehjr
+
 ## 6.2.0 (June 26, 2023)
 
 [Full Changelog](https://github.com/vcr/vcr/compare/v6.1.0...v6.2.0)

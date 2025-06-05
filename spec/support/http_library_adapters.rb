@@ -1,18 +1,6 @@
-module HeaderDowncaser
-  def downcase_headers(headers)
-    {}.tap do |downcased|
-      headers.each do |k, v|
-        downcased[k.downcase] = v
-      end
-    end
-  end
-end
-
 HTTP_LIBRARY_ADAPTERS = {}
 
 HTTP_LIBRARY_ADAPTERS['net/http'] = Module.new do
-  include HeaderDowncaser
-
   def self.http_library_name; 'Net::HTTP'; end
 
   def get_body_string(response); response.body; end
@@ -40,7 +28,7 @@ HTTP_LIBRARY_ADAPTERS['net/http'] = Module.new do
 
   def normalize_request_headers(headers)
     defined?(super) ? super :
-    downcase_headers(headers.merge(DEFAULT_REQUEST_HEADERS))
+    headers.merge(DEFAULT_REQUEST_HEADERS).transform_keys(&:downcase)
   end
 end
 
@@ -221,8 +209,12 @@ HTTP_LIBRARY_ADAPTERS['excon'] = Module.new do
   end
 end
 
+require 'faraday'
+
 %w[ net_http typhoeus patron ].each do |_faraday_adapter|
-  if _faraday_adapter == 'typhoeus' &&
+  if Faraday::VERSION > '2.0'
+    require "faraday/#{_faraday_adapter}"
+  elsif _faraday_adapter == 'typhoeus' &&
      defined?(::Typhoeus::VERSION) &&
      ::Typhoeus::VERSION.to_f >= 0.5
     require 'typhoeus/adapters/faraday'

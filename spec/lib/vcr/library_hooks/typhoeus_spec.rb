@@ -92,11 +92,14 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
   end
 
   context 'when a request is made with a hash for the POST body' do
+    let(:body) { { foo: "17" }.to_json }
+
     def make_request
       VCR.use_cassette("hash_body") do
         Typhoeus::Request.post(
           "http://localhost:#{VCR::SinatraApp.port}/return-request-body",
-          :body => { :foo => "17" }
+          headers: {'Content-Type'=> "application/json"},
+          body: body
         )
       end
     end
@@ -105,7 +108,7 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
       recorded = make_request
       played_back = make_request
 
-      expect(recorded.body).to eq("foo=17")
+      expect(recorded.body).to eq(body)
       expect(played_back.body).to eq(recorded.body)
     end
   end
@@ -121,10 +124,10 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
 
     it { expect(request.tap { |r| r.on_headers {} }).not_to be_streaming }
 
-    it { expect { |b| on_headers(&b) }.to yield_with_args(have_attributes(headers: include('Content-Length' => '18'))) }
+    it { expect { |b| on_headers(&b) }.to yield_with_args(have_attributes(headers: hash_including('Content-Length' => '18'))) }
     it { expect { |b| on_headers(&b) }.to yield_with_args(have_attributes(headers: match_array(on_headers.headers))) }
 
-    it { expect(on_headers).to have_attributes(headers: include("Content-Length" => "18")) }
+    it { expect(on_headers).to have_attributes(headers: hash_including("Content-Length" => "18")) }
     it { expect(on_headers).to have_attributes(headers: match_array(on_headers.headers))  }
   end
 

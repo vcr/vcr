@@ -20,4 +20,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.required_ruby_version = ">= 2.7"
+
+  spec.metadata["changelog_uri"] = "https://github.com/vcr/vcr/blob/v#{spec.version}/CHANGELOG.md"
+  spec.metadata["funding_uri"] = "https://opencollective.com/vcr"
 end

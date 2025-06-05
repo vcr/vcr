@@ -101,11 +101,6 @@ EOF
     FileUtils.mkdir_p dir
   end
 
-  before(:each) do
-    # the encoding won't be set on rubies that don't support it
-    updated_contents.gsub!(/^\s+encoding:.*$/, '')
-  end unless ''.respond_to?(:encoding)
-
   # JRuby serializes YAML with some slightly different whitespace.
   before(:each) do
     [original_contents, updated_contents].each do |contents|
@@ -191,4 +186,3 @@ EOF
     it_behaves_like "ignoring invalid YAML"
   end if defined?(YAML::ENGINE)
 end
-

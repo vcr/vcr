@@ -3,7 +3,6 @@ require 'cgi'
 NET_CONNECT_NOT_ALLOWED_ERROR = /An HTTP request has been made that VCR does not know how to handle/
 
 shared_examples_for "a hook into an HTTP library" do |library_hook_name, library, *other|
-  include HeaderDowncaser
   include VCRStubHelpers
 
   unless adapter_module = HTTP_LIBRARY_ADAPTERS[library]
@@ -510,7 +509,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
           end
 
           it 'records the request headers' do
-            headers = downcase_headers(recorded_interaction.request.headers)
+            headers = recorded_interaction.request.headers.transform_keys(&:downcase)
             expect(headers).to include('x-http-foo' => ['bar'])
           end
 
@@ -527,7 +526,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
           end
 
           it 'records the response headers' do
-            headers = downcase_headers(recorded_interaction.response.headers)
+            headers = recorded_interaction.response.headers.transform_keys(&:downcase)
             expect(headers).to include('content-type' => ["text/html;charset=utf-8"])
           end
         end

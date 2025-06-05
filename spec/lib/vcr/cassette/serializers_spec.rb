@@ -67,7 +67,7 @@ module VCR
         it_behaves_like "encoding error handling", :yaml, ArgumentError do
           let(:string) { "\xFA".force_encoding("UTF-8") }
           before { ::YAML::ENGINE.yamler = 'psych' if defined?(::YAML::ENGINE) }
-        end if ''.respond_to?(:encoding)
+        end
 
         it_behaves_like "syntax error handling", :yaml, ::Psych::SyntaxError do
           let(:serialized) { <<~YAML }
@@ -83,7 +83,7 @@ module VCR
       it_behaves_like "a serializer", :syck,  "yml",  :lazily_loaded do
         it_behaves_like "encoding error handling", :syck, ArgumentError do
           let(:string) { "\xFA".force_encoding("UTF-8") }
-        end if ''.respond_to?(:encoding)
+        end
 
         it_behaves_like "syntax error handling", :syck, ::Psych::SyntaxError do
           let(:serialized) { <<~YAML }
@@ -98,7 +98,7 @@ module VCR
       it_behaves_like "a serializer", :psych, "yml",  :lazily_loaded do
         it_behaves_like "encoding error handling", :psych, ArgumentError do
           let(:string) { "\xFA".force_encoding("UTF-8") }
-        end if ''.respond_to?(:encoding)
+        end
 
         it_behaves_like "syntax error handling", :psych, ::Psych::SyntaxError do
           let(:serialized) { <<~YAML }
@@ -113,7 +113,7 @@ module VCR
       it_behaves_like "a serializer", :compressed, "zz",  :lazily_loaded do
         it_behaves_like "encoding error handling", :compressed, ArgumentError do
           let(:string) { "\xFA".force_encoding("UTF-8") }
-        end if ''.respond_to?(:encoding)
+        end
 
         it_behaves_like "syntax error handling", :compressed, ::Psych::SyntaxError do
           let(:serialized) { Zlib::Deflate.deflate(<<~YAML) }
