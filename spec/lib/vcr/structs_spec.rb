@@ -2,6 +2,7 @@
 
 require 'support/ruby_interpreter'
 
+require 'base64'
 require 'yaml'
 require 'vcr/structs'
 require 'vcr/errors'
