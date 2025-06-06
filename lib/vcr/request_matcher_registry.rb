@@ -9,7 +9,7 @@ module VCR
     DEFAULT_MATCHERS = [:method, :uri]
 
     # @private
-    class Matcher < Struct.new(:callable)
+    class Matcher < Struct.new(:callable, :description)
       def matches?(request_1, request_2)
         callable.call(request_1, request_2)
       end
@@ -52,19 +52,19 @@ module VCR
     end
 
     # @private
-    def register(name, &block)
+    def register(name, description = nil, &block)
       if @registry.has_key?(name)
         warn "WARNING: There is already a VCR request matcher registered for #{name.inspect}. Overriding it."
       end
 
-      @registry[name] = Matcher.new(block)
+      @registry[name] = Matcher.new(block, description)
     end
 
     # @private
     def [](matcher)
       @registry.fetch(matcher) do
         matcher.respond_to?(:call) ?
-          Matcher.new(matcher) :
+          Matcher.new(matcher, nil) :
           raise_unregistered_matcher_error(matcher)
       end
     end
@@ -111,8 +111,24 @@ module VCR
     def register_built_ins
       register(:method)  { |r1, r2| r1.method == r2.method }
       register(:uri)     { |r1, r2| r1.parsed_uri == r2.parsed_uri }
-      register(:body)    { |r1, r2| r1.body == r2.body }
-      register(:headers) { |r1, r2| r1.headers == r2.headers }
+
+      register(:body, ->(request) { "Body: #{request.body}" }) do |r1, r2|
+        r1.body == r2.body
+      end
+      register(
+        :headers,
+        lambda do |request|
+          formatted_headers = request.headers.flat_map do |header, values|
+            values.map do |val|
+              "    #{header}: #{val.inspect}"
+            end
+          end.join("\n")
+
+          "Headers:\n#{formatted_headers}"
+        end
+      ) do |r1, r2|
+        r1.headers == r2.headers
+      end
 
       register(:host) do |r1, r2|
         r1.parsed_uri.host.chomp('.') == r2.parsed_uri.host.chomp('.')
