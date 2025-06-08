@@ -1,7 +1,7 @@
 Feature: Custom Metadata
 
   Custom metadata can be used to store extra data alongside
-  the recordings for later retrievel using `VCR::Cassette#metadata`.
+  the recordings for later retrieval using `VCR::Cassette#metadata`.
 
   This can be useful for example when writing tests against an API that
   does not allow the same data, such as an email, to be added twice.
