@@ -155,7 +155,7 @@ module VCR
     end
 
     def metadata
-      @metadata ||= recording? ? {} : deserialized_hash['metadata'] 
+      @metadata ||= recording? ? {} : (deserialized_hash['metadata'] || {})
     end
 
     # @return [Time, nil] The `recorded_at` time of the first HTTP interaction
