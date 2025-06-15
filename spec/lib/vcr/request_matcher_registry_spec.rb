@@ -54,7 +54,7 @@ module VCR
       it 'returns a previously registered matcher' do
         matcher = lambda { }
         subject.register(:my_matcher, &matcher)
-        expect(subject[:my_matcher]).to eq(RequestMatcherRegistry::Matcher.new(matcher))
+        expect(subject[:my_matcher]).to eq(RequestMatcherRegistry::Matcher.new(matcher, nil))
       end
 
       it 'raises an ArgumentError when no matcher has been registered for the given name' do
