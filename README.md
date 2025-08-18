@@ -16,6 +16,7 @@ We're looking for more maintainers. If you'd like to help maintain a well-used g
 
 Usage
 =====
+Add the below to your `spec_helper.rb` file:
 
 ``` ruby
 require 'rubygems'
