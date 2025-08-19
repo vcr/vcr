@@ -1,7 +1,6 @@
 require 'vcr/request_matcher_registry'
 require 'vcr/structs'
 require 'support/limited_uri'
-require 'cgi'
 require 'support/configuration_stubbing'
 
 module VCR
@@ -10,7 +9,13 @@ module VCR
 
     before do
       allow(config).to receive(:uri_parser) { LimitedURI }
-      allow(config).to receive(:query_parser) { CGI.method(:parse) }
+      allow(config).to receive(:query_parser) { 
+        lambda do |query_string|
+          result = Hash.new { |h, k| h[k] = [] }
+          URI.decode_www_form(query_string.to_s).each { |k, v| result[k] << v }
+          result
+        end
+      }
     end
 
     def request_with(values)
