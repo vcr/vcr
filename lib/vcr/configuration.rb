@@ -1,6 +1,5 @@
 require 'vcr/util/hooks'
 require 'uri'
-require 'cgi'
 
 module VCR
   # Stores the VCR configuration.
@@ -142,7 +141,7 @@ module VCR
     # The `#==` method must return true if both objects represent the
     # same query string.
     #
-    # This defaults to `CGI.parse` from the ruby standard library.
+    # This defaults to `URI.decode_www_form` from the ruby standard library.
     #
     # @overload query_parser
     #  @return [#call] the current query string parser object
@@ -502,7 +501,13 @@ module VCR
       }
 
       self.uri_parser = URI
-      self.query_parser = CGI.method(:parse)
+      # Use URI.decode_www_form instead of CGI.parse for Ruby 3.5+ compatibility
+      # Convert the array of pairs format to CGI.parse's hash of arrays format
+      self.query_parser = lambda do |query_string|
+        result = Hash.new { |h, k| h[k] = [] }
+        URI.decode_www_form(query_string.to_s).each { |k, v| result[k] << v }
+        result
+      end
       self.debug_logger = nil
 
       register_built_in_hooks
