@@ -142,6 +142,9 @@ yard server --reload
   * [http_replayer](https://github.com/ucarion/http_replayer) (Rust)
   * [OkReplay](https://github.com/airbnb/okreplay) (Java/Android)
   * [vcr](https://github.com/ropensci/vcr) (R)
+  * [hi8.cr](https://github.com/vonKingsley/hi8.cr) (Crystal)
+  * [eighttrack](https://github.com/russ/eighttrack) (Crystal)
+  * [VCR](https://github.com/crystal-ports/vcr-vcr) (Crystal fork)
 
 **Related Projects**
 
