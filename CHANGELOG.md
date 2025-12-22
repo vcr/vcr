@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## 6.4.0 (Dec 11, 2025)
+[Full Changelog](https://github.com/vcr/vcr/compare/v6.3.1...v6.4.0)
+
+ - [fix] Don't raise an exception if body is missing from the response. [#1044](https://github.com/vcr/vcr/pull/1044). Thanks, @andrehjr!
+ - [fix] Replace CGI.parse with URI.decode_www_form for Ruby 3.5+ compatibility [#1059](https://github.com/vcr/vcr/pull/1059). Thanks, @mmenanno!
+ - [docs] Migrate docs to GitHub Pages. [#968](https://github.com/vcr/vcr/pull/968). Thanks, @benoittgt!
+ - No longer depend on base64 gem. [#1014](https://github.com/vcr/vcr/pull/1014). Thanks, @Earlopain!
+
 ## 6.3.1 (Aug 20, 2024)
 [Full Changelog](https://github.com/vcr/vcr/compare/v6.3.0...v6.3.1)
 
