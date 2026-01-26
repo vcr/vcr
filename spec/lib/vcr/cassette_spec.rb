@@ -70,7 +70,7 @@ RSpec.describe VCR::Cassette do
       end
     end
 
-    let(:metadata) { subject.serializable_hash.reject { |k,v| k == "http_interactions" } }
+    let(:additional_data) { subject.serializable_hash.reject { |k,v| k == "http_interactions" } }
 
     it 'includes the hash form of all recorded interactions' do
       hash_1 = interaction_1.to_hash
@@ -78,8 +78,8 @@ RSpec.describe VCR::Cassette do
       expect(subject.serializable_hash).to include('http_interactions' => [hash_1, hash_2])
     end
 
-    it 'includes additional metadata about the cassette' do
-      expect(metadata).to eq("recorded_with" => "VCR #{VCR.version}")
+    it 'includes VCR version with the cassette' do
+      expect(additional_data).to eq("recorded_with" => "VCR #{VCR.version}")
     end
 
     it 'does not allow the interactions to be mutated by configured hooks' do
