@@ -48,3 +48,6 @@ gem "typhoeus", ">= 1.1.0"
 gem "webmock"
 gem "webrick"
 gem "yard"
+
+gem "irb" if RUBY_VERSION > "4"
+gem "rdoc" if RUBY_VERSION > "4"
