@@ -155,6 +155,7 @@ module VCR
       hash
     end
 
+    # @return [Hash] Custom metadata associated with the cassette.
     def metadata
       @metadata ||= recording? ? {} : (deserialized_hash['metadata'] || {})
     end
