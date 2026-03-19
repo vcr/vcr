@@ -147,10 +147,17 @@ module VCR
 
     # @return [Hash] The hash that will be serialized when the cassette is written to disk.
     def serializable_hash
-      {
+      hash = {
         "http_interactions" => interactions_to_record.map(&:to_hash),
         "recorded_with"     => "VCR #{VCR.version}"
       }
+      hash["metadata"] = metadata unless metadata.empty?
+      hash
+    end
+
+    # @return [Hash] Custom metadata associated with the cassette.
+    def metadata
+      @metadata ||= recording? ? {} : (deserialized_hash['metadata'] || {})
     end
 
     # @return [Time, nil] The `recorded_at` time of the first HTTP interaction
