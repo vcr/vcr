@@ -81,7 +81,7 @@ VCR.use_cassette('example') do
 end
 ```
 
-_And_ I am configuring with "\<configuration\>" using "\<http_lib\>"
+_And_ I am configuring with "&lt;configuration&gt;" using "&lt;http_lib&gt;"
 
 _When_ I successfully run `ruby cassette_yaml.rb 'Hello'`
 

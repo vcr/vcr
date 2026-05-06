@@ -64,7 +64,7 @@ _When_ I run `ruby filtering.rb --with-server`
 
 _Then_ the output should contain "Response: Hello World"
 
-_And_ the file "cassettes/filtering.yml" should contain "\<GREETING\> \<LOCATION\>"
+_And_ the file "cassettes/filtering.yml" should contain "&lt;GREETING&gt; &lt;LOCATION&gt;"
 
 _And_ the file "cassettes/filtering.yml" should not contain "Hello"
 

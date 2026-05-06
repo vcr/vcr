@@ -4,7 +4,7 @@ Use the `:headers` request matcher to match requests on the request headers.
 
 ## Replay interaction that matches the headers
 
-_Given_ I am configuring with "\<configuration\>" using "\<http_lib\>"
+_Given_ I am configuring with "&lt;configuration&gt;" using "&lt;http_lib&gt;"
 
 _And_ a previously recorded cassette file "cassettes/example.yml" with:
 
