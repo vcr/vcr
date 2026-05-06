@@ -56,7 +56,7 @@ _Given_ a file named "replay_recorded_response.rb" with:
 ```ruby
 require 'vcr_config'
 
-VCR.use_cassette('example', :record => :none) do
+VCR.use_cassette('example', record: :none) do
   response = Net::HTTP.get_response('example.com', '/foo')
   puts "Response: #{response.body}"
 end
@@ -73,7 +73,7 @@ _Given_ a file named "prevent_new_request.rb" with:
 ```ruby
 require 'vcr_config'
 
-VCR.use_cassette('example', :record => :none) do
+VCR.use_cassette('example', record: :none) do
   Net::HTTP.get_response('example.com', '/bar')
 end
 ```

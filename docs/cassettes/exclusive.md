@@ -85,8 +85,8 @@ VCR.configure do |c|
   c.hook_into :webmock
   c.cassette_library_dir = 'cassettes'
   c.default_cassette_options = {
-    :record => :new_episodes,
-    :match_requests_on => [:method, :host, :path]
+    record: :new_episodes,
+    match_requests_on: [:method, :host, :path]
   }
 end
 ```
@@ -123,7 +123,7 @@ _Given_ a file named "exclusive.rb" with:
 require 'setup'
 
 VCR.use_cassette('outer') do
-  VCR.use_cassette('inner', :exclusive => true) do
+  VCR.use_cassette('inner', exclusive: true) do
     puts response_body_for(:get, "http://localhost:#{$server.port}/outer")
     puts response_body_for(:get, "http://localhost:#{$server.port}/inner")
   end

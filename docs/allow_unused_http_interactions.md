@@ -72,7 +72,7 @@ _Given_ a file named "disallowed_with_no_requests.rb" with:
 ```ruby
 require 'vcr_config'
 
-VCR.use_cassette("example", :allow_unused_http_interactions => false) do
+VCR.use_cassette("example", allow_unused_http_interactions: false) do
   # no requests
 end
 ```
@@ -93,7 +93,7 @@ _Given_ a file named "disallowed_with_all_requests.rb" with:
 ```ruby
 require 'vcr_config'
 
-VCR.use_cassette("example", :allow_unused_http_interactions => false) do
+VCR.use_cassette("example", allow_unused_http_interactions: false) do
   Net::HTTP.get_response(URI("http://example.com/foo"))
 end
 ```
@@ -109,7 +109,7 @@ _Given_ a file named "does_not_silence_other_errors.rb" with:
 ```ruby
 require 'vcr_config'
 
-VCR.use_cassette("example", :allow_unused_http_interactions => false) do
+VCR.use_cassette("example", allow_unused_http_interactions: false) do
   raise "boom"
 end
 ```

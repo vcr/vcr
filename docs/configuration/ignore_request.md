@@ -53,7 +53,7 @@ VCR.configure do |c|
     URI(request.uri).port == $server.port
   end
 
-  c.default_cassette_options = { :serialize_with => :syck }
+  c.default_cassette_options = { serialize_with: :syck }
   c.cassette_library_dir = 'cassettes'
   <configuration>
 end
@@ -248,7 +248,7 @@ require 'vcr'
 
 VCR.configure do |c|
   c.cassette_library_dir = 'cassettes'
-  c.default_cassette_options = { :serialize_with => :syck }
+  c.default_cassette_options = { serialize_with: :syck }
   <configuration>
 end
 

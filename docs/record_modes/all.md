@@ -61,7 +61,7 @@ _Given_ a file named "re_record.rb" with:
 ```ruby
 require 'setup'
 
-VCR.use_cassette('example', :record => :all, :match_requests_on => [:method, :host, :path]) do
+VCR.use_cassette('example', record: :all, match_requests_on: [:method, :host, :path]) do
   response = Net::HTTP.get_response('localhost', '/', $server.port)
   puts "Response: #{response.body}"
 end
@@ -82,7 +82,7 @@ _Given_ a file named "record_new.rb" with:
 ```ruby
 require 'setup'
 
-VCR.use_cassette('example', :record => :all) do
+VCR.use_cassette('example', record: :all) do
   response = Net::HTTP.get_response('localhost', '/foo', $server.port)
   puts "Response: #{response.body}"
 end
@@ -94,5 +94,7 @@ _Then_ it should pass with "Response: Goodbye"
 
 _And_ the file "cassettes/example.yml" should contain each of these:
 
+|              |
+|--------------|
 | old response |
 | Goodbye      |

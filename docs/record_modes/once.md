@@ -63,7 +63,7 @@ _Given_ a file named "replay_recorded_response.rb" with:
 ```ruby
 require 'setup'
 
-VCR.use_cassette('example', :record => :once) do
+VCR.use_cassette('example', record: :once) do
   response = Net::HTTP.get_response('example.com', '/foo')
   puts "Response: #{response.body}"
 end
@@ -80,7 +80,7 @@ _Given_ a file named "error_for_new_requests_when_cassette_exists.rb" with:
 ```ruby
 require 'setup'
 
-VCR.use_cassette('example', :record => :once) do
+VCR.use_cassette('example', record: :once) do
   response = Net::HTTP.get_response('localhost', '/', $server.port)
   puts "Response: #{response.body}"
 end
@@ -97,7 +97,7 @@ _Given_ a file named "record_new_requests.rb" with:
 ```ruby
 require 'setup'
 
-VCR.use_cassette('example', :record => :once) do
+VCR.use_cassette('example', record: :once) do
   response = Net::HTTP.get_response('localhost', '/', $server.port)
   puts "Response: #{response.body}"
 end

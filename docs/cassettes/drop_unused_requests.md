@@ -62,7 +62,7 @@ VCR.configure do |c|
   c.cassette_library_dir = 'cassettes'
 end
 
-VCR.use_cassette('example', :record => :all) do
+VCR.use_cassette('example', record: :all) do
   puts Net::HTTP.get_response('localhost', '/', $server.port).body
 end
 ```
@@ -89,7 +89,7 @@ VCR.configure do |c|
   c.cassette_library_dir = 'cassettes'
 end
 
-VCR.use_cassette('example', :record => :all, :drop_unused_requests => true) do
+VCR.use_cassette('example', record: :all, drop_unused_requests: true) do
   puts Net::HTTP.get_response('localhost', '/', $server.port).body
 end
 ```

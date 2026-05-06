@@ -87,14 +87,14 @@ Body length: 16
 Header value: 11
 ```
 
-## :update_content_length_header => false
+## update_content_length_header: false
 
 _Given_ a file named "false.rb" with:
 
 ```ruby
 require 'common_stuff'
 
-VCR.use_cassette('example', :update_content_length_header => false) do
+VCR.use_cassette('example', update_content_length_header: false) do
   make_request_and_print_results
 end
 ```
@@ -108,14 +108,14 @@ Body length: 16
 Header value: 11
 ```
 
-## :update_content_length_header => true
+## update_content_length_header: true
 
 _Given_ a file named "true.rb" with:
 
 ```ruby
 require 'common_stuff'
 
-VCR.use_cassette('example', :update_content_length_header => true) do
+VCR.use_cassette('example', update_content_length_header: true) do
   make_request_and_print_results
 end
 ```

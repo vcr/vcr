@@ -13,9 +13,9 @@ VCR can be used with cucumber in two basic ways:
     t.tag  '@tag1'
     t.tags '@tag2', '@tag3'
 
-    t.tag  '@tag3', :cassette => :options
-    t.tags '@tag4', '@tag5', :cassette => :options
-    t.tag  '@vcr', :use_scenario_name => true
+    t.tag  '@tag3', cassette: :options
+    t.tags '@tag4', '@tag5', cassette: :options
+    t.tag  '@vcr', use_scenario_name: true
   end
   ```
 
@@ -25,7 +25,7 @@ VCR can be used with cucumber in two basic ways:
   options by passing a hash as the last argument to `#tag` or `#tags`.
 
   You can also have VCR name your cassettes automatically according to the feature
-  and scenario name by providing `:use_scenario_name => true` to `#tag` or `#tags`.
+  and scenario name by providing `use_scenario_name: true` to `#tag` or `#tags`.
   In this case, the cassette will be named `<feature_name>/<scenario_name>`.
   For scenario outlines, VCR will record one cassette per row, and the cassettes
   will be named `<feature_name>/<scenario_name>/<row_name>`.
@@ -52,14 +52,14 @@ VCR.configure do |c|
   c.hook_into :webmock
   c.cassette_library_dir     = 'features/cassettes'
   c.default_cassette_options = {
-    :match_requests_on => [:method, :host, :path]
+    match_requests_on: [:method, :host, :path]
   }
 end
 
 VCR.cucumber_tags do |t|
   t.tag  '@localhost_request' # uses default record mode since no options are given
-  t.tags '@disallowed_1', '@disallowed_2', :record => :none
-  t.tag  '@vcr', :use_scenario_name => true
+  t.tags '@disallowed_1', '@disallowed_2', record: :none
+  t.tag  '@vcr', use_scenario_name: true
 end
 ```
 
@@ -155,6 +155,8 @@ _Then_ it should fail with "5 scenarios (2 failed, 3 passed)"
 
 _And_ the output should contain each of the following:
 
+|                                                                     |
+|---------------------------------------------------------------------|
 | An HTTP request has been made that VCR does not know how to handle: |
 | GET http://localhost:7777/disallowed_1                              |
 | An HTTP request has been made that VCR does not know how to handle: |
@@ -172,7 +174,7 @@ _And_ the file "features/cassettes/vcr_example/tagged_scenario.yml" should conta
 
 _And_ the file "features/cassettes/vcr_example/tagged_scenario_outline/Example_at_line_33.yml" should contain "Hello localhost_request_1".
 
-## `:allow_unused_http_interactions => false` does not raise if the scenario already failed
+## `allow_unused_http_interactions: false` does not raise if the scenario already failed
 
 _Given_ a previously recorded cassette file "features/cassettes/cucumber_tags/example.yml" with:
 
@@ -212,7 +214,7 @@ VCR.configure do |c|
 end
 
 VCR.cucumber_tags do |t|
-  t.tag '@example', :allow_unused_http_interactions => false
+  t.tag '@example', allow_unused_http_interactions: false
 end
 ```
 

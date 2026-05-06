@@ -5,6 +5,7 @@
   - Cassettes
     - [Allow unused http interactions](/cassettes/allow_unused_http_interactions.md)
     - [Automatic re recording](/cassettes/automatic_re_recording.md)
+    - [Custom metadata](/cassettes/custom_metadata.md)
     - [Decompress](/cassettes/decompress.md)
     - [Drop unused requests](/cassettes/drop_unused_requests.md)
     - [Dynamic erb](/cassettes/dynamic_erb.md)
@@ -13,6 +14,7 @@
     - [Freezing time](/cassettes/freezing_time.md)
     - [Naming](/cassettes/naming.md)
     - [No cassette](/cassettes/no_cassette.md)
+    - [Recompress](/cassettes/recompress.md)
     - [Update content length header](/cassettes/update_content_length_header.md)
   - Configuration
     - [Allow http connections when no cassette](/configuration/allow_http_connections_when_no_cassette.md)

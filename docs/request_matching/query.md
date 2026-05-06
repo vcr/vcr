@@ -66,15 +66,15 @@ require 'vcr'
 
 VCR.configure do |c|
   <configuration>
-  c.default_cassette_options = { :match_requests_on => [:query] }
+  c.default_cassette_options = { match_requests_on: [:query] }
   c.cassette_library_dir = 'cassettes'
 end
 
-VCR.use_cassette('example', :match_requests_on => [:query]) do
+VCR.use_cassette('example', match_requests_on: [:query]) do
   puts "Response for 2011-09-01 /query: " + response_body_for(:get, "http://example.com/query?date=2011-09-01")
 end
 
-VCR.use_cassette('example', :match_requests_on => [:query]) do
+VCR.use_cassette('example', match_requests_on: [:query]) do
   puts "Response for 2011-09-02 /query: " + response_body_for(:get,  "http://example.com/query?date=2011-09-02")
 end
 ```

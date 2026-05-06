@@ -1,12 +1,44 @@
 Changelog
 =========
 
-## Unreleased
+- [fix] Fix recompressing response to happen after replacing sensitive data (#951) by @cgunther
 
-[Full Changelog](https://github.com/vcr/vcr/compare/v6.1.0...master)
+## 6.4.0 (Dec 11, 2025)
+[Full Changelog](https://github.com/vcr/vcr/compare/v6.3.1...v6.4.0)
 
+ - [fix] Don't raise an exception if body is missing from the response. [#1044](https://github.com/vcr/vcr/pull/1044). Thanks, @andrehjr!
+ - [fix] Replace CGI.parse with URI.decode_www_form for Ruby 3.5+ compatibility [#1059](https://github.com/vcr/vcr/pull/1059). Thanks, @mmenanno!
+ - [docs] Migrate docs to GitHub Pages. [#968](https://github.com/vcr/vcr/pull/968). Thanks, @benoittgt!
+ - No longer depend on base64 gem. [#1014](https://github.com/vcr/vcr/pull/1014). Thanks, @Earlopain!
+
+## 6.3.1 (Aug 20, 2024)
+[Full Changelog](https://github.com/vcr/vcr/compare/v6.3.0...v6.3.1)
+
+ - [fix] Fix regression reported by @myronmarston in #1031, by requiring test dependency faraday-multipart in tests only. (#1032) Thanks, @colinbruce!
+
+## 6.3.0 (Aug 19, 2024)
+[Full Changelog](https://github.com/vcr/vcr/compare/v6.2.0...v6.3.0)
+
+  - [fix] Handle the potential renaming of ASCII-8BIT (#924) by @casperisfine
+  - Use `Hash#transform_keys` from Ruby 2.5 (#1015) by @notapatch
+  - [fix] Adds host.docker.internal to list of LOCALHOST_ALIASES (#1016) by @jamesmcguirepro
+  - [fix] Make VCR CI compatible with Faraday 1 and 2 (#1024) by @andrehjr
+  - [fix] Allow usage of typhoeus >= 1.2 (#1023) by @andrehjr
+  - [new] Add an error message when cassette file does not exist (#1028) by @PauloVilarinho
+  - [docs] Updates links in README to VCR in Clojure (#1005) by @simonneutert
+  - [docs] Fix typos in filter_sensitive_data.feature (#990) by @albertchae
+  - [docs] Remove the relish gem, update Web references to point to new docs (#980) by @olleolleolle
+  - Upgrade cucumber to fix CI failures (#998) by @mattbrictson
+  - Consolidate Gemfiles; improve and simplify CI workflow (#1002) by @mattbrictson
+  - Add Rack 2 and Rack 3 to the CI (#1025) by @andrehjr
+
+## 6.2.0 (June 26, 2023)
+
+[Full Changelog](https://github.com/vcr/vcr/compare/v6.1.0...v6.2.0)
+
+- Drop support for Ruby 2.6.
 - [new] Add `drop_unused_requests` option to exclude unused interactions (#946) by @ryanseys and @mhuntglickman
-- [fix] Add support for on_data with Faraday (#823) by @zeisler
+- [fix] Add support for `on_data` with Faraday (#823) by @zeisler
 
 ## 6.1.0 (March 13, 2022)
 
@@ -20,12 +52,12 @@ Changelog
 - [fix] Use `YAML.unsafe_load` if available to load cassette data (better compatibility with Psych 4.0). (#911) by @casperisfine
 - [patch] Improve error message for syntax error in ERB-using cassettes (#909) by @sambostock
 - [patch] Handle `use_cassette(..., erb: {})` (#908) by @sambostock
-- [fix] Use fiber-local for `global_hook_disabled_requests` (#907) by @jhawthorn 
+- [fix] Use fiber-local for `global_hook_disabled_requests` (#907) by @jhawthorn
 - [docs] Document the RSpec cassette name shorthand (#821) by @nicolasiensen
 - [fix] Fix the behavior of the option re_record_interval "none" (#824) by @nicolasiensen
 - [fix] Fix compatibility with frozen string literals (#832) by @casperisfine
 - [fix] [Transforms ERB hash keys to symbol, in case string (#833) by @z1lk
-- [fix] Support Cucumber-Ruby v4 and later (#845) by @brasmusson 
+- [fix] Support Cucumber-Ruby v4 and later (#845) by @brasmusson
 - [patch] Extract `#vcr_cassette_name_for` (#882) by @dabroz
 - [fix] Fix CI to use GitHub Actions (#883) by @bradshjg
 - [new] Add `#localhost_ignored?` to request_ignorer (#895) by @ThHareau

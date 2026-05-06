@@ -49,7 +49,7 @@ VCR.configure do |c|
   <configuration>
   c.cassette_library_dir = 'vcr_cassettes'
   c.ignore_localhost = false
-  c.default_cassette_options = { :serialize_with => :syck }
+  c.default_cassette_options = { serialize_with: :syck }
 end
 
 VCR.use_cassette('example') do
@@ -61,6 +61,8 @@ _When_ I run `ruby hook_into_http_lib_combo.rb 'Hello World'`
 
 _Then_ the output should contain each of the following:
 
+|                                             |
+|---------------------------------------------|
 | The response for request 1 was: Hello World |
 | The response for request 2 was: Hello World |
 
@@ -70,6 +72,8 @@ _When_ I run `ruby hook_into_http_lib_combo.rb 'Goodbye World'`
 
 _Then_ the output should contain each of the following:
 
+|                                               |
+|-----------------------------------------------|
 | The response for request 1 was: Goodbye World |
 | The response for request 2 was: Hello World   |
 
@@ -100,7 +104,14 @@ require 'typhoeus'
 require 'excon'
 require 'faraday'
 require 'vcr'
-<extra_require>
+
+if '<faraday_adapter>' == 'typhoeus'
+  if Faraday::VERSION > '2.0'
+    require "faraday/typhoeus"
+  else
+    require 'typhoeus/adapters/faraday'
+  end
+end
 
 VCR.configure { |c| c.ignore_localhost = true }
 
@@ -121,7 +132,7 @@ def excon_response
 end
 
 def faraday_response
-  Faraday::Connection.new(:url => "http://localhost:#{$server.port}") do |builder|
+  Faraday::Connection.new(url: "http://localhost:#{$server.port}") do |builder|
     builder.adapter :<faraday_adapter>
   end.get('/faraday').body
 end
@@ -149,6 +160,8 @@ _When_ I run `ruby hook_into_multiple.rb 'Hello'`
 
 _Then_ the output should contain each of the following:
 
+|                             |
+|-----------------------------|
 | Net::HTTP 1: Hello net_http |
 | Typhoeus 1: Hello typhoeus  |
 | Excon 1: Hello excon        |
@@ -160,6 +173,8 @@ _Then_ the output should contain each of the following:
 
 _And_ the cassette "vcr_cassettes/example.yml" should have the following response bodies:
 
+|                |
+|----------------|
 | Hello net_http |
 | Hello typhoeus |
 | Hello excon    |
@@ -169,6 +184,8 @@ _When_ I run `ruby hook_into_multiple.rb 'Goodbye'`
 
 _Then_ the output should contain each of the following:
 
+|                               |
+|-------------------------------|
 | Net::HTTP 1: Goodbye net_http |
 | Typhoeus 1: Goodbye typhoeus  |
 | Excon 1: Goodbye excon        |
@@ -180,7 +197,7 @@ _Then_ the output should contain each of the following:
 
 ### Examples
 
-| hook_into | faraday_adapter | extra_require                       |
-|-----------|-----------------|-------------------------------------|
-| :webmock  | net_http        |                                     |
-| :webmock  | typhoeus        | require 'typhoeus/adapters/faraday' |
+| hook_into | faraday_adapter |
+|-----------|-----------------|
+| :webmock  | net_http        |
+| :webmock  | typhoeus        |
