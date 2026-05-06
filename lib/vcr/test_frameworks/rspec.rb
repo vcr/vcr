@@ -30,7 +30,7 @@ module VCR
       def configure!
         ::RSpec.configure do |config|
 
-          when_tagged_with_vcr = { :vcr => lambda { |v| !!v } }
+          when_tagged_with_vcr = { vcr: lambda { |v| !!v } }
 
           config.before(:each, when_tagged_with_vcr) do |ex|
             example = ex.respond_to?(:metadata) ? ex : ex.example
@@ -54,7 +54,7 @@ module VCR
 
           config.after(:each, when_tagged_with_vcr) do |ex|
             example = ex.respond_to?(:metadata) ? ex : ex.example
-            VCR.eject_cassette(:skip_no_unused_interactions_assertion => !!example.exception)
+            VCR.eject_cassette(skip_no_unused_interactions_assertion: !!example.exception)
           end
         end
       end

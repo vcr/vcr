@@ -10,7 +10,7 @@ Feature: Playback repeats
 
   If you want to allow playback repeats, VCR has a cassette option for this:
 
-      :allow_playback_repeats => true
+      allow_playback_repeats: true
 
   @exclude-jruby
   Scenario: Responses do not repeat by default
@@ -70,7 +70,7 @@ Feature: Playback repeats
       end
 
       puts "== With :allow_playback_repeats =="
-      VCR.use_cassette('example', :allow_playback_repeats => true) do
+      VCR.use_cassette('example', allow_playback_repeats: true) do
         puts response_body_for(:get, 'http://example.com/foo')
         puts response_body_for(:get, 'http://example.com/foo')
         puts response_body_for(:get, 'http://example.com/foo')

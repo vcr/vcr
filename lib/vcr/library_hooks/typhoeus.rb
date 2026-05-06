@@ -40,13 +40,13 @@ module VCR
 
         def on_stubbed_by_vcr_request
           response = ::Typhoeus::Response.new \
-            :http_version   => stubbed_response.http_version,
-            :code           => stubbed_response.status.code,
-            :status_message => stubbed_response.status.message,
-            :headers        => stubbed_response_headers,
-            :body           => stubbed_response.body,
-            :effective_url  => stubbed_response.adapter_metadata.fetch('effective_url', request.url),
-            :mock           => true
+            http_version:   stubbed_response.http_version,
+            code:           stubbed_response.status.code,
+            status_message: stubbed_response.status.message,
+            headers:        stubbed_response_headers,
+            body:           stubbed_response.body,
+            effective_url:  stubbed_response.adapter_metadata.fetch('effective_url', request.url),
+            mock:           true
 
           first_header_line = "HTTP/#{stubbed_response.http_version} #{response.code} #{response.status_message}\r\n"
           response.instance_variable_set(:@first_header_line, first_header_line)

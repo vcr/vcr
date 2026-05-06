@@ -50,7 +50,7 @@ Feature: :none
       """ruby
       require 'vcr_config'
 
-      VCR.use_cassette('example', :record => :none) do
+      VCR.use_cassette('example', record: :none) do
         response = Net::HTTP.get_response('example.com', '/foo')
         puts "Response: #{response.body}"
       end
@@ -64,7 +64,7 @@ Feature: :none
       """ruby
       require 'vcr_config'
 
-      VCR.use_cassette('example', :record => :none) do
+      VCR.use_cassette('example', record: :none) do
         Net::HTTP.get_response('example.com', '/bar')
       end
       """

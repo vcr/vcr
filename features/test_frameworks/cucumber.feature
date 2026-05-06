@@ -14,9 +14,9 @@ Feature: Usage with Cucumber
     t.tag  '@tag1'
     t.tags '@tag2', '@tag3'
 
-    t.tag  '@tag3', :cassette => :options
-    t.tags '@tag4', '@tag5', :cassette => :options
-    t.tag  '@vcr', :use_scenario_name => true
+    t.tag  '@tag3', cassette: :options
+    t.tags '@tag4', '@tag5', cassette: :options
+    t.tag  '@vcr', use_scenario_name: true
   end
   ```
 
@@ -26,7 +26,7 @@ Feature: Usage with Cucumber
   options by passing a hash as the last argument to `#tag` or `#tags`.
 
   You can also have VCR name your cassettes automatically according to the feature
-  and scenario name by providing `:use_scenario_name => true` to `#tag` or `#tags`.
+  and scenario name by providing `use_scenario_name: true` to `#tag` or `#tags`.
   In this case, the cassette will be named `<feature_name>/<scenario_name>`.
   For scenario outlines, VCR will record one cassette per row, and the cassettes
   will be named `<feature_name>/<scenario_name>/<row_name>`.
@@ -51,14 +51,14 @@ Feature: Usage with Cucumber
         c.hook_into :webmock
         c.cassette_library_dir     = 'features/cassettes'
         c.default_cassette_options = {
-          :match_requests_on => [:method, :host, :path]
+          match_requests_on: [:method, :host, :path]
         }
       end
 
       VCR.cucumber_tags do |t|
         t.tag  '@localhost_request' # uses default record mode since no options are given
-        t.tags '@disallowed_1', '@disallowed_2', :record => :none
-        t.tag  '@vcr', :use_scenario_name => true
+        t.tags '@disallowed_1', '@disallowed_2', record: :none
+        t.tag  '@vcr', use_scenario_name: true
       end
       """
     And a file named "features/step_definitions/steps.rb" with:
@@ -151,7 +151,7 @@ Feature: Usage with Cucumber
     And the file "features/cassettes/vcr_example/tagged_scenario.yml" should contain "Hello localhost_request_1"
     And the file "features/cassettes/vcr_example/tagged_scenario_outline/Example_at_line_33.yml" should contain "Hello localhost_request_1"
 
-  Scenario: `:allow_unused_http_interactions => false` does not raise if the scenario already failed
+  Scenario: `allow_unused_http_interactions: false` does not raise if the scenario already failed
     Given a previously recorded cassette file "features/cassettes/cucumber_tags/example.yml" with:
       """yaml
       --- 
@@ -187,7 +187,7 @@ Feature: Usage with Cucumber
       end
 
       VCR.cucumber_tags do |t|
-        t.tag '@example', :allow_unused_http_interactions => false
+        t.tag '@example', allow_unused_http_interactions: false
       end
       """
     And a file named "features/step_definitions/steps.rb" with:

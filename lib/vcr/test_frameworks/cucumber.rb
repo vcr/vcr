@@ -25,7 +25,7 @@ module VCR
     #
     # @param tag_names [Array<String,Hash>] the cucumber scenario tags. If
     #  the last argument is a hash it is treated as cassette options.
-    #   - `:use_scenario_name => true` to automatically name the
+    #   - `use_scenario_name: true` to automatically name the
     #     cassette according to the scenario name.
     def tags(*tag_names)
       original_options = tag_names.last.is_a?(::Hash) ? tag_names.pop : {}
@@ -71,7 +71,7 @@ module VCR
         end
 
         @main_object.After(tag_name) do |scenario|
-          VCR.eject_cassette(:skip_no_unused_interactions_assertion => scenario.failed?)
+          VCR.eject_cassette(skip_no_unused_interactions_assertion: scenario.failed?)
         end
 
         self.class.add_tag(tag_name)

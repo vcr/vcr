@@ -60,11 +60,11 @@ Feature: Matching on Body
         c.cassette_library_dir = 'cassettes'
       end
 
-      VCR.use_cassette('example', :match_requests_on => [:body_as_json]) do
+      VCR.use_cassette('example', match_requests_on: [:body_as_json]) do
         puts "Response for body as json 2: " + response_body_for(:put, "http://example.com/", '{ "a" : "1", "b" : "2" }')
       end
 
-      VCR.use_cassette('example', :match_requests_on => [:body_as_json]) do
+      VCR.use_cassette('example', match_requests_on: [:body_as_json]) do
         puts "Response for body as json 1: " + response_body_for(:put, "http://example.com/", '{ "a" : "1" }')
       end
       """

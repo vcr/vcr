@@ -43,7 +43,7 @@ Feature: Rack
       $proxy = start_sinatra_app do
         use VCR::Middleware::Rack do |cassette|
           cassette.name    'proxied'
-          cassette.options :record => :new_episodes
+          cassette.options record: :new_episodes
         end
 
         get('/') { Net::HTTP.get_response(URI.parse(params[:url])).body }

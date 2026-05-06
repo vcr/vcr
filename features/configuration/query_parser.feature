@@ -47,7 +47,7 @@ Feature: query_parser
 
       VCR.configure do |c|
         c.query_parser = lambda { |query| raise query.inspect }
-        c.default_cassette_options = {:match_requests_on => [:query]}
+        c.default_cassette_options = { match_requests_on: [:query] }
         c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
       end
@@ -71,7 +71,7 @@ Feature: query_parser
 
       VCR.configure do |c|
         c.hook_into :webmock
-        c.default_cassette_options = {:match_requests_on => [:query]}
+        c.default_cassette_options = { match_requests_on: [:query] }
         c.cassette_library_dir = 'cassettes'
       end
 

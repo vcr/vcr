@@ -83,7 +83,7 @@ MonkeyPatches.disable_all!
 
 RSpec.configure do |config|
   [:webmock, :typhoeus, :excon].each do |scope|
-    config.before(:all, :with_monkey_patches => scope) { MonkeyPatches.enable!(scope) }
-    config.after(:all,  :with_monkey_patches => scope) { MonkeyPatches.disable_all!   }
+    config.before(:all, with_monkey_patches: scope) { MonkeyPatches.enable!(scope) }
+    config.after(:all,  with_monkey_patches: scope) { MonkeyPatches.disable_all!   }
   end
 end

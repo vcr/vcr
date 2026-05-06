@@ -5,7 +5,7 @@ RSpec.describe VCR do
     VCR.cassette_persisters[:file_system]["#{name}.yml"].to_s
   end
 
-  context 'when used in a multithreaded environment with an around_http_request', :with_monkey_patches => :excon do
+  context 'when used in a multithreaded environment with an around_http_request', with_monkey_patches: :excon do
     def preload_yaml_serializer_to_avoid_circular_require_warning_race_condition
       VCR.cassette_serializers[:yaml]
     end
@@ -33,7 +33,7 @@ RSpec.describe VCR do
     end
   end
 
-  context 'when used in a multithreaded environment with a cassette', :with_monkey_patches => :excon do
+  context 'when used in a multithreaded environment with a cassette', with_monkey_patches: :excon do
     it 'properly stubs threaded requests' do
       VCR.use_cassette('/foo') do
         threads = 50.times.map do

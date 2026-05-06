@@ -23,7 +23,7 @@ module VCR
 
         raise Errors::MissingERBVariableError.new(
           "The ERB in the #{@cassette_name} cassette file references undefined variable #{e.name}.  " +
-          "Pass it to the cassette using :erb => #{ example_hash.inspect }."
+          "Pass it to the cassette using erb: #{ example_hash.inspect }."
         )
       end
 

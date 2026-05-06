@@ -60,11 +60,11 @@ Feature: Matching on Body
         c.cassette_library_dir = 'cassettes'
       end
 
-      VCR.use_cassette('example', :match_requests_on => [:body]) do
+      VCR.use_cassette('example', match_requests_on: [:body]) do
         puts "Response for body2: " + response_body_for(:put, "http://example.com/", "body2")
       end
 
-      VCR.use_cassette('example', :match_requests_on => [:body]) do
+      VCR.use_cassette('example', match_requests_on: [:body]) do
         puts "Response for body1: " + response_body_for(:put, "http://example.com/", "body1")
       end
       """

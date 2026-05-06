@@ -23,7 +23,7 @@ Feature: :record_on_error
       """ruby
       require 'setup'
 
-      VCR.use_cassette('example', :record_on_error => false) do
+      VCR.use_cassette('example', record_on_error: false) do
         response = Net::HTTP.get_response('localhost', '/', $server.port)
         puts "Response: #{response.body}"
       end
@@ -37,7 +37,7 @@ Feature: :record_on_error
       """ruby
       require 'setup'
 
-      VCR.use_cassette('example', :record => :once, :record_on_error => false) do
+      VCR.use_cassette('example', record: :once, record_on_error: false) do
         Net::HTTP.get_response('localhost', '/', $server.port)
         raise StandardError, 'The example failed'
       end
@@ -51,7 +51,7 @@ Feature: :record_on_error
       """ruby
       require 'setup'
 
-      VCR.use_cassette('example', :record => :once, :record_on_error => true) do
+      VCR.use_cassette('example', record: :once, record_on_error: true) do
         Net::HTTP.get_response('localhost', '/', $server.port)
         raise StandardError, 'The example failed'
       end

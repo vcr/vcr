@@ -9,7 +9,7 @@ Feature: URI without param(s)
   common need to match on a URI and ignore particular query parameters, VCR
   provides an easier way:
 
-      :match_requests_on => [
+      match_requests_on: [
         :method,
         VCR.request_matchers.uri_without_param(:timestamp)
       ]
@@ -73,7 +73,7 @@ Feature: URI without param(s)
         c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
         c.default_cassette_options = {
-          :match_requests_on => [:method,
+          match_requests_on: [:method,
             VCR.request_matchers.uri_without_param(:timestamp)]
         }
       end

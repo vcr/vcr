@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_INTERPRETER == :mri) do
+RSpec.describe "Typhoeus hook", with_monkey_patches: :typhoeus, if: (RUBY_INTERPRETER == :mri) do
   after(:each) do
     ::Typhoeus::Expectation.clear
   end
@@ -15,8 +15,8 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
   end
 
   def directly_stub_request(method, url, response_body)
-    response = ::Typhoeus::Response.new(:code => 200, :body => response_body)
-    ::Typhoeus.stub(url, :method => method).and_return(response)
+    response = ::Typhoeus::Response.new(code: 200, body: response_body)
+    ::Typhoeus.stub(url, method: method).and_return(response)
   end
 
   it_behaves_like 'a hook into an HTTP library', :typhoeus, 'typhoeus'
@@ -69,7 +69,7 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
     let(:base_url) { "http://localhost:#{VCR::SinatraApp.port}" }
 
     let(:conn) do
-      Faraday.new(:url => base_url) do |faraday|
+      Faraday.new(url: base_url) do |faraday|
         faraday.adapter  :typhoeus
       end
     end
@@ -195,8 +195,8 @@ RSpec.describe "Typhoeus hook", :with_monkey_patches => :typhoeus, :if => (RUBY_
 
     context "when following redirects" do
       it 'records and plays back properly' do
-        recorded = make_single_request('/redirect-to-root', :followlocation => true)
-        played_back = make_single_request('/redirect-to-root', :followlocation => true)
+        recorded = make_single_request('/redirect-to-root', followlocation: true)
+        played_back = make_single_request('/redirect-to-root', followlocation: true)
 
         expect(recorded.effective_url).to eq(url_for('/'))
         expect(played_back).to eq(recorded)

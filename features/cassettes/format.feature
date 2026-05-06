@@ -163,11 +163,11 @@ Feature: Cassette format
           i.request.uri.sub!(/:\d+/, ':7777')
         end
         c.default_cassette_options = {
-          :match_requests_on => [:method, :host, :path]
+          match_requests_on: [:method, :host, :path]
         }
       end
 
-      VCR.use_cassette('example', :serialize_with => :json) do
+      VCR.use_cassette('example', serialize_with: :json) do
         puts response_body_for(:get, "http://localhost:#{$server.port}/foo", nil, 'Accept-Encoding' => 'identity')
         puts response_body_for(:get, "http://localhost:#{$server.port}/bar", nil, 'Accept-Encoding' => 'identity')
       end
@@ -264,11 +264,11 @@ Feature: Cassette format
           i.request.uri.sub!(/:\d+/, ':7777')
         end
         c.default_cassette_options = {
-          :match_requests_on => [:method, :host, :path]
+          match_requests_on: [:method, :host, :path]
         }
       end
 
-      VCR.use_cassette('example', :serialize_with => :compressed) do
+      VCR.use_cassette('example', serialize_with: :compressed) do
         puts response_body_for(:get, "http://localhost:#{$server.port}/foo", nil, 'Accept-Encoding' => 'identity')
         puts response_body_for(:get, "http://localhost:#{$server.port}/bar", nil, 'Accept-Encoding' => 'identity')
       end
@@ -360,11 +360,11 @@ Feature: Cassette format
           i.request.uri.sub!(/:\d+/, ':7777')
         end
         c.default_cassette_options = {
-          :match_requests_on => [:method, :host, :path]
+          match_requests_on: [:method, :host, :path]
         }
       end
 
-      VCR.use_cassette('example', :serialize_with => :ruby) do
+      VCR.use_cassette('example', serialize_with: :ruby) do
         puts response_body_for(:get, "http://localhost:#{$server.port}/foo", nil, 'Accept-Encoding' => 'identity')
         puts response_body_for(:get, "http://localhost:#{$server.port}/bar", nil, 'Accept-Encoding' => 'identity')
       end

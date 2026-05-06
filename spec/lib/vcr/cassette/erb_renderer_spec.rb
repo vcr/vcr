@@ -26,7 +26,7 @@ RSpec.describe VCR::Cassette::ERBRenderer do
           render(vars_content, true, "vars")
         }.to raise_error(VCR::Errors::MissingERBVariableError,
           %{The ERB in the vars cassette file references undefined variable var1.  } +
-          %{Pass it to the cassette using :erb => #{ {:var1=>"some value"}.inspect }.}
+          %{Pass it to the cassette using erb: #{ {var1: "some value"}.inspect }.}
         )
       end
 
@@ -41,7 +41,7 @@ RSpec.describe VCR::Cassette::ERBRenderer do
 
     context 'when ERB is enabled and variables are passed' do
       it 'renders the file content as ERB with the passed variables' do
-        expect(render(vars_content, :var1 => 'foo', :var2 => 'bar')).to eq('foo. ERB with Vars! bar')
+        expect(render(vars_content, var1: 'foo', var2: 'bar')).to eq('foo. ERB with Vars! bar')
       end
 
       it 'renders the file content as ERB with the passed variables having string keys' do
@@ -55,10 +55,10 @@ RSpec.describe VCR::Cassette::ERBRenderer do
 
       it 'raises an appropriate error when one or more of the needed variables are not passed' do
         expect {
-          render(vars_content, { :var1 => 'foo' }, "vars")
+          render(vars_content, { var1: 'foo' }, "vars")
         }.to raise_error(VCR::Errors::MissingERBVariableError,
           %{The ERB in the vars cassette file references undefined variable var2.  } +
-          %{Pass it to the cassette using :erb => #{ {:var1 => "foo", :var2 => "some value"}.inspect }.}
+          %{Pass it to the cassette using erb: #{ {var1: "foo", var2: "some value"}.inspect }.}
         )
       end
     end

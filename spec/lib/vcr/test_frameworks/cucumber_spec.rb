@@ -6,7 +6,7 @@ RSpec.describe VCR::CucumberTags do
   let(:after_blocks_for_tags) { {} }
 
   def scenario(name)
-    double(:name => name, :feature => double(:name => "My feature name\nThe preamble text is not included"), :failed? => false)
+    double(name: name, feature: double(name: "My feature name\nThe preamble text is not included"), failed?: false)
   end
 
   let(:current_scenario) { scenario "My scenario name\nThe preamble text is not included" }
@@ -47,8 +47,8 @@ RSpec.describe VCR::CucumberTags do
       end
 
       it "passes along the given options to the cassette" do
-        subject.send(tag_method, 'tag1', :record => :none)
-        subject.send(tag_method, 'tag2', :record => :new_episodes)
+        subject.send(tag_method, 'tag1', record: :none)
+        subject.send(tag_method, 'tag2', record: :new_episodes)
 
         test_tag(:record_mode, 'tag1', :none)
         test_tag(:record_mode, 'tag2', :new_episodes)
@@ -57,50 +57,50 @@ RSpec.describe VCR::CucumberTags do
       context 'with :use_scenario_name as an option' do
         context 'for cucumber version <= 3' do
           it "uses the feature's name and scenario's name as the cassette name" do
-            subject.send(tag_method, 'tag1', :use_scenario_name => true)
+            subject.send(tag_method, 'tag1', use_scenario_name: true)
 
             test_tag(:name, 'tag1', 'My feature name/My scenario name')
           end
 
           it "makes a unique name for each element of scenario outline" do
-            subject.send(tag_method, 'tag1', :use_scenario_name => true)
+            subject.send(tag_method, 'tag1', use_scenario_name: true)
 
-            scenario_with_outline = double(:name => "My row name", :failed? => false,
-                                           :scenario_outline => double(:feature => double(:name => "My feature name\nThe preamble text is not included"),
-                                                                       :name => "My scenario outline name"))
+            scenario_with_outline = double(name: "My row name", failed?: false,
+                                           scenario_outline: double(feature: double(name: "My feature name\nThe preamble text is not included"),
+                                                                    name: "My scenario outline name"))
             test_tag(:name, 'tag1', 'My feature name/My scenario outline name/My row name', scenario_with_outline)
           end
         end
 
         context 'for cucumber version >= 4' do
           it "uses the feature file's name and the scenario's name as the cassette name" do
-            subject.send(tag_method, 'tag1', :use_scenario_name => true)
+            subject.send(tag_method, 'tag1', use_scenario_name: true)
 
-            cucumber_v4_scenario = double(:name => "My scenario name", :failed? => false,
-                                          :location => double(:file => "dir1/dir2/feature_file_name.feature",
-                                                              :lines => double(:min => 10, :max => 10)))
+            cucumber_v4_scenario = double(name: "My scenario name", failed?: false,
+                                          location: double(file: "dir1/dir2/feature_file_name.feature",
+                                                           lines: double(min: 10, max: 10)))
             test_tag(:name, 'tag1', 'feature_file_name/My scenario name', cucumber_v4_scenario)
           end
 
           it 'makes a unique name for each row of the examples' do
-            subject.send(tag_method, 'tag1', :use_scenario_name => true)
+            subject.send(tag_method, 'tag1', use_scenario_name: true)
 
-            cucumber_v4_scenario = double(:name => "My scenario name", :failed? => false,
-                                          :location => double(:file => "dir1/dir2/feature_file_name.feature",
-                                                              :lines => double(:min => 10, :max => 15)))
+            cucumber_v4_scenario = double(name: "My scenario name", failed?: false,
+                                          location: double(file: "dir1/dir2/feature_file_name.feature",
+                                                           lines: double(min: 10, max: 15)))
             test_tag(:name, 'tag1', 'feature_file_name/My scenario name/Example at line 15', cucumber_v4_scenario)
           end
         end
 
         it 'does not pass :use_scenario_name along the given options to the cassette' do
-          subject.send(tag_method, 'tag1', :use_scenario_name => true)
+          subject.send(tag_method, 'tag1', use_scenario_name: true)
 
           expect(VCR::Cassette).to receive(:new).with(anything, hash_not_including(:use_scenario_name))
           before_blocks_for_tags['tag1'].call(current_scenario)
         end
 
         it 'does not modify the options passed to the cassette' do
-          original_options = { :use_scenario_name => true, :record => :none }
+          original_options = { use_scenario_name: true, record: :none }
           subject.send(tag_method, 'tag1', original_options)
           before_blocks_for_tags['tag1'].call(current_scenario)
 
@@ -110,7 +110,7 @@ RSpec.describe VCR::CucumberTags do
         end
 
         it "works properly when multiple scenarios use the tag" do
-          subject.send(tag_method, 'tag1', :use_scenario_name => true)
+          subject.send(tag_method, 'tag1', use_scenario_name: true)
 
           test_tag(:name, 'tag1', 'My feature name/Foo', scenario("Foo"))
           test_tag(:name, 'tag1', 'My feature name/Bar', scenario("Bar"))

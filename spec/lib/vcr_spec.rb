@@ -34,8 +34,8 @@ RSpec.describe VCR do
 
     it 'forwards the given options to `Cassette#eject`' do
       cassette = insert_cassette
-      expect(cassette).to receive(:eject).with({ :some => :options })
-      VCR.eject_cassette(:some => :options)
+      expect(cassette).to receive(:eject).with({ some: :options })
+      VCR.eject_cassette(some: :options)
     end
 
     it 'returns the ejected cassette' do
@@ -81,13 +81,13 @@ RSpec.describe VCR do
     end
 
     it 'yields the cassette instance if the block expects an argument' do
-      VCR.use_cassette('name', :record => :new_episodes, &lambda do |cassette|
+      VCR.use_cassette('name', record: :new_episodes, &lambda do |cassette|
         expect(cassette).to equal(VCR.current_cassette)
       end)
     end
 
     it 'yields the cassette instance if the block expects a variable number of args' do
-      VCR.use_cassette('name', :record => :new_episodes) do |*args|
+      VCR.use_cassette('name', record: :new_episodes) do |*args|
         expect(args.size).to eq(1)
         expect(args.first).to equal(VCR.current_cassette)
       end
@@ -132,13 +132,13 @@ RSpec.describe VCR do
   describe '.real_http_connections_allowed?' do
     context 'when a cassette is inserted' do
       it 'returns true if the cassette is recording' do
-        VCR.insert_cassette('foo', :record => :all)
+        VCR.insert_cassette('foo', record: :all)
         expect(VCR.current_cassette).to be_recording
         expect(VCR.real_http_connections_allowed?).to be true
       end
 
       it 'returns false if the cassette is not recording' do
-        VCR.insert_cassette('foo', :record => :none)
+        VCR.insert_cassette('foo', record: :none)
         expect(VCR.current_cassette).not_to be_recording
         expect(VCR.real_http_connections_allowed?).to be false
       end
@@ -236,7 +236,7 @@ RSpec.describe VCR do
 
   describe '.record_http_interaction' do
     before(:each) { allow(VCR).to receive(:current_cassette).and_return(current_cassette) }
-    let(:interaction) { double(:request => double) }
+    let(:interaction) { double(request: double) }
 
     context 'when there is not a current cassette' do
       let(:current_cassette) { nil }
@@ -287,7 +287,7 @@ RSpec.describe VCR do
 
     it 'raises an ArgumentError when given an invalid option' do
       expect {
-        VCR.turn_off!(:invalid_option => true)
+        VCR.turn_off!(invalid_option: true)
       }.to raise_error(ArgumentError)
     end
 
@@ -296,8 +296,8 @@ RSpec.describe VCR do
       expect(VCR.send(:ignore_cassettes?)).to equal(false)
     end
 
-    context 'when `:ignore_cassettes => true` is passed' do
-      before(:each) { VCR.turn_off!(:ignore_cassettes => true) }
+    context 'when `ignore_cassettes: true` is passed' do
+      before(:each) { VCR.turn_off!(ignore_cassettes: true) }
 
       it 'ignores cassette insertions' do
         VCR.insert_cassette('foo')
@@ -341,8 +341,8 @@ RSpec.describe VCR do
     end
 
     it 'passes options through to .turn_off!' do
-      expect(VCR).to receive(:turn_off!).with({ :ignore_cassettes => true })
-      VCR.turned_off(:ignore_cassettes => true) { }
+      expect(VCR).to receive(:turn_off!).with({ ignore_cassettes: true })
+      VCR.turned_off(ignore_cassettes: true) { }
     end
   end
 
@@ -363,8 +363,8 @@ RSpec.describe VCR do
     end
 
     it 'passes options through to .turn_off!' do
-      expect(VCR).to receive(:turn_off!).with({ :ignore_cassettes => true })
-      VCR.turned_on(:ignore_cassettes => true) { }
+      expect(VCR).to receive(:turn_off!).with({ ignore_cassettes: true })
+      VCR.turned_on(ignore_cassettes: true) { }
     end
   end
 

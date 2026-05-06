@@ -77,14 +77,14 @@ module VCR
     #   without_timestamp = VCR.request_matchers.uri_without_param(:timestamp)
     #
     #   # use it directly...
-    #   VCR.use_cassette('example', :match_requests_on => [:method, without_timestamp]) { }
+    #   VCR.use_cassette('example', match_requests_on: [:method, without_timestamp]) { }
     #
     #   # ...or register it as a named matcher
     #   VCR.configure do |c|
     #     c.register_request_matcher(:uri_without_timestamp, &without_timestamp)
     #   end
     #
-    #   VCR.use_cassette('example', :match_requests_on => [:method, :uri_without_timestamp]) { }
+    #   VCR.use_cassette('example', match_requests_on: [:method, :uri_without_timestamp]) { }
     #
     # @param ignores [Array<#to_s>] The names of the query parameters to ignore
     # @return [#call] the request matcher

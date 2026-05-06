@@ -40,9 +40,9 @@ module VCR
       end
 
       let(:original_list_array) do [
-        interaction('put response', :method => :put),
-        interaction('post response 1', :method => :post),
-        interaction('post response 2', :method => :post)
+        interaction('put response', method: :put),
+        interaction('post response 1', method: :post),
+        interaction('post response 2', method: :post)
       ] end
 
       let(:allow_playback_repeats) { false } # the default
@@ -50,17 +50,17 @@ module VCR
 
       describe "#has_used_interaction_matching?" do
         it 'returns false when no interactions have been used' do
-          expect(list).not_to have_used_interaction_matching(request_with(:method => :put))
+          expect(list).not_to have_used_interaction_matching(request_with(method: :put))
         end
 
         it 'returns true when there is a matching used interaction (even if there is also an unused one that matches)' do
-          list.response_for(request_with(:method => :post))
-          expect(list).to have_used_interaction_matching(request_with(:method => :post))
+          list.response_for(request_with(method: :post))
+          expect(list).to have_used_interaction_matching(request_with(method: :post))
         end
 
         it 'returns false when none of the used interactions match' do
-          list.response_for(request_with(:method => :put))
-          expect(list).not_to have_used_interaction_matching(request_with(:method => :post))
+          list.response_for(request_with(method: :put))
+          expect(list).not_to have_used_interaction_matching(request_with(method: :post))
         end
       end
 
@@ -68,22 +68,22 @@ module VCR
         it 'returns the number of unused interactions' do
           expect(list.remaining_unused_interaction_count).to eq(3)
 
-          list.response_for(request_with(:method => :get))
+          list.response_for(request_with(method: :get))
           expect(list.remaining_unused_interaction_count).to eq(3)
 
-          list.response_for(request_with(:method => :put))
+          list.response_for(request_with(method: :put))
           expect(list.remaining_unused_interaction_count).to eq(2)
 
-          list.response_for(request_with(:method => :put))
+          list.response_for(request_with(method: :put))
           expect(list.remaining_unused_interaction_count).to eq(2)
 
-          list.response_for(request_with(:method => :post))
+          list.response_for(request_with(method: :post))
           expect(list.remaining_unused_interaction_count).to eq(1)
 
-          list.response_for(request_with(:method => :post))
+          list.response_for(request_with(method: :post))
           expect(list.remaining_unused_interaction_count).to eq(0)
 
-          list.response_for(request_with(:method => :post))
+          list.response_for(request_with(method: :post))
           expect(list.remaining_unused_interaction_count).to eq(0)
         end
       end
@@ -94,7 +94,7 @@ module VCR
             list.assert_no_unused_interactions!
           }.to raise_error(Errors::UnusedHTTPInteractionError)
 
-          list.response_for(request_with(:method => :put))
+          list.response_for(request_with(method: :put))
           expect {
             list.assert_no_unused_interactions!
           }.to raise_error(Errors::UnusedHTTPInteractionError)
@@ -102,7 +102,7 @@ module VCR
 
         it 'should raise nothing when there are no unused interactions left' do
           [:put, :post, :post].each do |method|
-            list.response_for(request_with(:method => method))
+            list.response_for(request_with(method: method))
           end
 
           expect {
@@ -133,17 +133,17 @@ module VCR
         end
 
         it 'returns false when there is no matching interaction' do
-          expect(list).not_to have_interaction_matching(request_with(:method => :get))
+          expect(list).not_to have_interaction_matching(request_with(method: :get))
         end
 
         it 'returns true when there is a matching interaction' do
-          expect(list).to have_interaction_matching(request_with(:method => :post))
+          expect(list).to have_interaction_matching(request_with(method: :post))
         end
 
         it 'does not consume the interactions when they match' do
-          expect(list).to have_interaction_matching(request_with(:method => :post))
+          expect(list).to have_interaction_matching(request_with(method: :post))
           expect(list.remaining_unused_interaction_count).to eq(3)
-          expect(list).to have_interaction_matching(request_with(:method => :post))
+          expect(list).to have_interaction_matching(request_with(method: :post))
           expect(list.remaining_unused_interaction_count).to eq(3)
         end
 
@@ -155,17 +155,17 @@ module VCR
           VCR.request_matchers.register(:baz) { |r1, r2| calls += 1; calls == 2 }
 
           list = HTTPInteractionList.new([
-            interaction('response', :method => :put)
+            interaction('response', method: :put)
           ], [:foo, :bar, :baz])
 
-          expect(list).not_to have_interaction_matching(request_with(:method => :post))
-          expect(list).to     have_interaction_matching(request_with(:method => :post))
+          expect(list).not_to have_interaction_matching(request_with(method: :post))
+          expect(list).to     have_interaction_matching(request_with(method: :post))
         end
 
         it "delegates to the parent list when it can't find a matching interaction" do
-          parent_list = double(:has_interaction_matching? => true)
+          parent_list = double(has_interaction_matching?: true)
           expect(HTTPInteractionList.new( [], [:method], false, parent_list)).to have_interaction_matching(double)
-          parent_list = double(:has_interaction_matching? => false)
+          parent_list = double(has_interaction_matching?: false)
           expect(HTTPInteractionList.new( [], [:method], false, parent_list)).not_to have_interaction_matching(double)
         end
 
@@ -173,10 +173,10 @@ module VCR
           let(:allow_playback_repeats) { true }
 
           it 'considers used interactions' do
-            list.response_for(request_with(:method => :put))
+            list.response_for(request_with(method: :put))
 
             results = 10.times.map do
-              list.has_interaction_matching?(request_with(:method => :put))
+              list.has_interaction_matching?(request_with(method: :put))
             end
 
             expect(results).to eq([true] * 10)
@@ -187,10 +187,10 @@ module VCR
           let(:allow_playback_repeats) { false }
 
           it 'does not consider used interactions' do
-            list.response_for(request_with(:method => :put))
+            list.response_for(request_with(method: :put))
 
             result = 10.times.map do
-              list.has_interaction_matching?(request_with(:method => :put))
+              list.has_interaction_matching?(request_with(method: :put))
             end
 
             expect(result).to eq([false] * 10)
@@ -205,10 +205,10 @@ module VCR
 
         it 'returns nil when there is no matching interaction' do
           response = HTTPInteractionList.new([
-            interaction('foo', :method => :post),
-            interaction('foo', :method => :put)
+            interaction('foo', method: :post),
+            interaction('foo', method: :put)
           ], [:method]).response_for(
-            request_with(:method => :get)
+            request_with(method: :get)
           )
 
           expect(response).to respond_with(nil)
@@ -216,12 +216,12 @@ module VCR
 
         it 'returns the first matching interaction' do
           list = HTTPInteractionList.new([
-            interaction('put response', :method => :put),
-            interaction('post response 1', :method => :post),
-            interaction('post response 2', :method => :post)
+            interaction('put response', method: :put),
+            interaction('post response 1', method: :post),
+            interaction('post response 2', method: :post)
           ], [:method])
 
-          expect(list.response_for(request_with(:method => :post))).to respond_with("post response 1")
+          expect(list.response_for(request_with(method: :post))).to respond_with("post response 1")
         end
 
         it 'invokes each matcher block to find the matching interaction' do
@@ -232,15 +232,15 @@ module VCR
           VCR.request_matchers.register(:baz) { |r1, r2| calls += 1; calls == 2 }
 
           list = HTTPInteractionList.new([
-            interaction('response', :method => :put)
+            interaction('response', method: :put)
           ], [:foo, :bar, :baz])
 
-          expect(list.response_for(request_with(:method => :post))).to respond_with(nil)
-          expect(list.response_for(request_with(:method => :post))).to respond_with('response')
+          expect(list.response_for(request_with(method: :post))).to respond_with(nil)
+          expect(list.response_for(request_with(method: :post))).to respond_with('response')
         end
 
         it "delegates to the parent list when it can't find a matching interaction" do
-          parent_list = double(:response_for => response('parent'))
+          parent_list = double(response_for: response('parent'))
           result = HTTPInteractionList.new(
             [], [:method], false, parent_list
           ).response_for(double)
@@ -249,18 +249,18 @@ module VCR
         end
 
         it 'consumes the first matching interaction so that it will not be used again' do
-          expect(list.response_for(request_with(:method => :post)).body).to eq("post response 1")
-          expect(list.response_for(request_with(:method => :post)).body).to eq("post response 2")
+          expect(list.response_for(request_with(method: :post)).body).to eq("post response 1")
+          expect(list.response_for(request_with(method: :post)).body).to eq("post response 2")
         end
 
         context 'when allow_playback_repeats is set to true' do
           let(:allow_playback_repeats) { true }
 
           it 'continues to return the response from the last matching interaction when there are no more' do
-            list.response_for(request_with(:method => :post))
+            list.response_for(request_with(method: :post))
 
             results = 10.times.map do
-              response = list.response_for(request_with(:method => :post))
+              response = list.response_for(request_with(method: :post))
               response ? response.body : nil
             end
 
@@ -272,11 +272,11 @@ module VCR
           let(:allow_playback_repeats) { false }
 
           it 'returns nil when there are no more unused interactions' do
-            list.response_for(request_with(:method => :post))
-            list.response_for(request_with(:method => :post))
+            list.response_for(request_with(method: :post))
+            list.response_for(request_with(method: :post))
 
             results = 10.times.map do
-              list.response_for(request_with(:method => :post))
+              list.response_for(request_with(method: :post))
             end
 
             expect(results).to eq([nil] * 10)
@@ -285,7 +285,7 @@ module VCR
 
         it 'does not modify the original interaction array the list was initialized with' do
           original_dup = original_list_array.dup
-          list.response_for(request_with(:method => :post))
+          list.response_for(request_with(method: :post))
           expect(original_list_array).to eq original_dup
         end
       end

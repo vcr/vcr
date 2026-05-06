@@ -22,7 +22,7 @@ RSpec.describe VCR::Middleware::Faraday do
 
     def self.test_recording
       it 'records the request body correctly' do
-        payload = { :file => Faraday::FilePart.new(__FILE__, 'text/plain') }
+        payload = { file: Faraday::FilePart.new(__FILE__, 'text/plain') }
 
         expect(VCR).to receive(:record_http_interaction) do |i|
           expect(i.request.headers['Content-Type'].first).to include("multipart")
@@ -55,7 +55,7 @@ RSpec.describe VCR::Middleware::Faraday do
 
     it 'does not record the body extensions to the cassette' do
       3.times do |i|
-        VCR.use_cassette("hack", :record => :new_episodes) do
+        VCR.use_cassette("hack", record: :new_episodes) do
           response = connection.get("/foo")
           process_response(response)
 

@@ -88,88 +88,88 @@ module VCR
           matcher = subject.send(meth, :foo)
           subject.register(:uri_without_foo, &matcher)
           matches = subject[:uri_without_foo].matches?(
-            request_with(:uri => 'http://example.com/search?foo=123'),
-            request_with(:uri => 'http://example.com/search?foo=123')
+            request_with(uri: 'http://example.com/search?foo=123'),
+            request_with(uri: 'http://example.com/search?foo=123')
           )
           expect(matches).to be true
         end
 
         it 'matches two requests with URIs that are identical' do
           matches = subject[subject.send(meth, :foo)].matches?(
-            request_with(:uri => 'http://example.com/search?foo=123'),
-            request_with(:uri => 'http://example.com/search?foo=123')
+            request_with(uri: 'http://example.com/search?foo=123'),
+            request_with(uri: 'http://example.com/search?foo=123')
           )
           expect(matches).to be true
         end
 
         it 'does not match two requests with different path parts' do
           matches = subject[subject.send(meth, :foo)].matches?(
-            request_with(:uri => 'http://example.com/search?foo=123'),
-            request_with(:uri => 'http://example.com/find?foo=123')
+            request_with(uri: 'http://example.com/search?foo=123'),
+            request_with(uri: 'http://example.com/find?foo=123')
           )
           expect(matches).to be false
         end
 
         it 'ignores the given query parameters when it is at the start' do
           matches = subject[subject.send(meth, :foo)].matches?(
-            request_with(:uri => 'http://example.com/search?foo=123&bar=r'),
-            request_with(:uri => 'http://example.com/search?foo=124&bar=r')
+            request_with(uri: 'http://example.com/search?foo=123&bar=r'),
+            request_with(uri: 'http://example.com/search?foo=124&bar=r')
           )
           expect(matches).to be true
         end
 
         it 'ignores the given query parameters when it is at the end' do
           matches = subject[subject.send(meth, :bar)].matches?(
-            request_with(:uri => 'http://example.com/search?foo=124&bar=r'),
-            request_with(:uri => 'http://example.com/search?foo=124&bar=q')
+            request_with(uri: 'http://example.com/search?foo=124&bar=r'),
+            request_with(uri: 'http://example.com/search?foo=124&bar=q')
           )
           expect(matches).to be true
         end
 
         it 'still takes into account other query params' do
           matches = subject[subject.send(meth, :bar)].matches?(
-            request_with(:uri => 'http://example.com/search?foo=123&bar=r'),
-            request_with(:uri => 'http://example.com/search?foo=124&bar=q')
+            request_with(uri: 'http://example.com/search?foo=123&bar=r'),
+            request_with(uri: 'http://example.com/search?foo=124&bar=q')
           )
           expect(matches).to be false
         end
 
         it 'handles multiple query params of the same name' do
           matches = subject[subject.send(meth, :tag)].matches?(
-            request_with(:uri => 'http://example.com/search?foo=124&tag[]=a&tag[]=b'),
-            request_with(:uri => 'http://example.com/search?foo=124&tag[]=d&tag[]=e')
+            request_with(uri: 'http://example.com/search?foo=124&tag[]=a&tag[]=b'),
+            request_with(uri: 'http://example.com/search?foo=124&tag[]=d&tag[]=e')
           )
           expect(matches).to be true
         end
 
         it 'can ignore multiple named parameters' do
           matches = subject[subject.send(meth, :foo, :bar)].matches?(
-            request_with(:uri => 'http://example.com/search?foo=123&bar=r&baz=9'),
-            request_with(:uri => 'http://example.com/search?foo=124&baz=9&bar=q')
+            request_with(uri: 'http://example.com/search?foo=123&bar=r&baz=9'),
+            request_with(uri: 'http://example.com/search?foo=124&baz=9&bar=q')
           )
           expect(matches).to be true
         end
 
         it 'matches two requests with URIs that have no params' do
           matches = subject[subject.send(meth, :foo, :bar)].matches?(
-            request_with(:uri => 'http://example.com/search'),
-            request_with(:uri => 'http://example.com/search')
+            request_with(uri: 'http://example.com/search'),
+            request_with(uri: 'http://example.com/search')
           )
           expect(matches).to be true
         end
 
         it 'does not match two requests with URIs that have no params but different paths' do
           matches = subject[subject.send(meth, :foo, :bar)].matches?(
-            request_with(:uri => 'http://example.com/foo'),
-            request_with(:uri => 'http://example.com/bar')
+            request_with(uri: 'http://example.com/foo'),
+            request_with(uri: 'http://example.com/bar')
           )
           expect(matches).to be false
         end
 
         it 'matches a second request when all parameters are filtered' do
           matches = subject[subject.send(meth, :q, :oq)].matches?(
-            request_with(:uri => 'http://example.com/search'),
-            request_with(:uri => 'http://example.com/search?q=vcr&oq=vcr')
+            request_with(uri: 'http://example.com/search'),
+            request_with(uri: 'http://example.com/search?q=vcr&oq=vcr')
           )
           expect(matches).to be true
         end
@@ -180,16 +180,16 @@ module VCR
       describe ":method" do
         it 'matches when it is the same' do
           matches = subject[:method].matches?(
-            request_with(:method => :get),
-            request_with(:method => :get)
+            request_with(method: :get),
+            request_with(method: :get)
           )
           expect(matches).to be true
         end
 
         it 'does not match when it is not the same' do
           matches = subject[:method].matches?(
-            request_with(:method => :get),
-            request_with(:method => :post)
+            request_with(method: :get),
+            request_with(method: :post)
           )
           expect(matches).to be false
         end
@@ -198,24 +198,24 @@ module VCR
       describe ":uri" do
         it 'matches when it is exactly the same' do
           matches = subject[:uri].matches?(
-            request_with(:uri => 'http://foo.com/bar?baz=7'),
-            request_with(:uri => 'http://foo.com/bar?baz=7')
+            request_with(uri: 'http://foo.com/bar?baz=7'),
+            request_with(uri: 'http://foo.com/bar?baz=7')
           )
           expect(matches).to be true
         end
 
         it 'matches regardless of trailing . on host' do
           matches = subject[:uri].matches?(
-            request_with(:uri => 'http://foo.com./bar?baz=7'),
-            request_with(:uri => 'http://foo.com/bar?baz=7')
+            request_with(uri: 'http://foo.com./bar?baz=7'),
+            request_with(uri: 'http://foo.com/bar?baz=7')
           )
           expect(matches).to be true
         end
 
         it 'does not match when it is different' do
           matches = subject[:uri].matches?(
-            request_with(:uri => 'http://foo1.com/bar?baz=7'),
-            request_with(:uri => 'http://foo2.com/bar?baz=7')
+            request_with(uri: 'http://foo1.com/bar?baz=7'),
+            request_with(uri: 'http://foo2.com/bar?baz=7')
           )
           expect(matches).to be false
         end
@@ -224,24 +224,24 @@ module VCR
       describe ":host" do
         it 'matches when it is the same' do
           matches = subject[:host].matches?(
-            request_with(:uri => 'http://foo.com/bar'),
-            request_with(:uri => 'http://foo.com/car')
+            request_with(uri: 'http://foo.com/bar'),
+            request_with(uri: 'http://foo.com/car')
           )
           expect(matches).to be true
         end
 
         it 'matches when there is a trailing . on the host' do
           matches = subject[:host].matches?(
-            request_with(:uri => 'http://foo.com/bar'),
-            request_with(:uri => 'http://foo.com./car')
+            request_with(uri: 'http://foo.com/bar'),
+            request_with(uri: 'http://foo.com./car')
           )
           expect(matches).to be true
         end
 
         it 'does not match when it is not the same' do
           matches = subject[:host].matches?(
-            request_with(:uri => 'http://foo.com/bar'),
-            request_with(:uri => 'http://goo.com/bar')
+            request_with(uri: 'http://foo.com/bar'),
+            request_with(uri: 'http://goo.com/bar')
           )
           expect(matches).to be false
         end
@@ -250,16 +250,16 @@ module VCR
       describe ":path" do
         it 'matches when it is the same' do
           matches = subject[:path].matches?(
-            request_with(:uri => 'http://foo.com/bar?a=8'),
-            request_with(:uri => 'http://goo.com/bar?a=9')
+            request_with(uri: 'http://foo.com/bar?a=8'),
+            request_with(uri: 'http://goo.com/bar?a=9')
           )
           expect(matches).to be true
         end
 
         it 'does not match when it is not the same' do
           matches = subject[:path].matches?(
-            request_with(:uri => 'http://foo.com/bar?a=8'),
-            request_with(:uri => 'http://foo.com/car?a=8')
+            request_with(uri: 'http://foo.com/bar?a=8'),
+            request_with(uri: 'http://foo.com/car?a=8')
           )
           expect(matches).to be false
         end
@@ -268,16 +268,16 @@ module VCR
       describe ":body" do
         it 'matches when it is the same' do
           matches = subject[:body].matches?(
-            request_with(:body => 'foo'),
-            request_with(:body => 'foo')
+            request_with(body: 'foo'),
+            request_with(body: 'foo')
           )
           expect(matches).to be true
         end
 
         it 'does not match when it is not the same' do
           matches = subject[:body].matches?(
-            request_with(:body => 'foo'),
-            request_with(:body => 'bar')
+            request_with(body: 'foo'),
+            request_with(body: 'bar')
           )
           expect(matches).to be false
         end
@@ -286,16 +286,16 @@ module VCR
       describe ":body_as_json" do
         it 'matches when the body json is reordered' do
           matches = subject[:body_as_json].matches?(
-            request_with(:body => '{ "a": "1", "b": "2" }'),
-            request_with(:body => '{ "b": "2", "a": "1" }')
+            request_with(body: '{ "a": "1", "b": "2" }'),
+            request_with(body: '{ "b": "2", "a": "1" }')
           )
           expect(matches).to be true
         end
 
         it 'does not match when json is not the same' do
           matches = subject[:body_as_json].matches?(
-            request_with(:body => '{ "a": "1", "b": "2" }'),
-            request_with(:body => '{ "a": "1", "b": "1" }')
+            request_with(body: '{ "a": "1", "b": "2" }'),
+            request_with(body: '{ "a": "1", "b": "1" }')
           )
           expect(matches).to be false
         end
@@ -304,16 +304,16 @@ module VCR
       describe ":headers" do
         it 'matches when it is the same' do
           matches = subject[:headers].matches?(
-            request_with(:headers => { 'a' => 1, 'b' => 2 }),
-            request_with(:headers => { 'b' => 2, 'a' => 1 })
+            request_with(headers: { 'a' => 1, 'b' => 2 }),
+            request_with(headers: { 'b' => 2, 'a' => 1 })
           )
           expect(matches).to be true
         end
 
         it 'does not match when it is not the same' do
           matches = subject[:headers].matches?(
-            request_with(:headers => { 'a' => 3, 'b' => 2 }),
-            request_with(:headers => { 'b' => 2, 'a' => 1 })
+            request_with(headers: { 'a' => 3, 'b' => 2 }),
+            request_with(headers: { 'b' => 2, 'a' => 1 })
           )
           expect(matches).to be false
         end
@@ -322,32 +322,32 @@ module VCR
       describe ":query" do
         it 'matches when it is identical' do
           matches = subject[:query].matches?(
-            request_with(:uri => 'http://foo.com/bar?a=8'),
-            request_with(:uri => 'http://goo.com/car?a=8')
+            request_with(uri: 'http://foo.com/bar?a=8'),
+            request_with(uri: 'http://goo.com/car?a=8')
           )
           expect(matches).to be true
         end
 
         it 'matches when empty' do
           matches = subject[:query].matches?(
-            request_with(:uri => 'http://foo.com/bar'),
-            request_with(:uri => 'http://goo.com/car')
+            request_with(uri: 'http://foo.com/bar'),
+            request_with(uri: 'http://goo.com/car')
           )
           expect(matches).to be true
         end
 
         it 'matches when parameters are reordered' do
           matches = subject[:query].matches?(
-            request_with(:uri => 'http://foo.com/bar?a=8&b=9'),
-            request_with(:uri => 'http://goo.com/car?b=9&a=8')
+            request_with(uri: 'http://foo.com/bar?a=8&b=9'),
+            request_with(uri: 'http://goo.com/car?b=9&a=8')
           )
           expect(matches).to be true
         end
 
         it 'does not match when it is not the same' do
           matches = subject[:query].matches?(
-            request_with(:uri => 'http://foo.com/bar?a=8'),
-            request_with(:uri => 'http://goo.com/car?b=8')
+            request_with(uri: 'http://foo.com/bar?a=8'),
+            request_with(uri: 'http://goo.com/car?b=8')
           )
           expect(matches).to be false
         end

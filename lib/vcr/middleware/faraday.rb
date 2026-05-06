@@ -100,7 +100,7 @@ module VCR
         def on_stubbed_by_vcr_request
           headers = env[:response_headers] ||= ::Faraday::Utils::Headers.new
           headers.update stubbed_response.headers if stubbed_response.headers
-          env.update :status => stubbed_response.status.code, :body => stubbed_response.body
+          env.update status: stubbed_response.status.code, body: stubbed_response.body
 
           @vcr_response = stubbed_response
 

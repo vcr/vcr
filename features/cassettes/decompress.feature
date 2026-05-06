@@ -33,7 +33,7 @@ Feature: Decode compressed response
       VCR.configure do |c|
         c.cassette_library_dir = 'cassettes'
         c.hook_into :webmock
-        c.default_cassette_options = { :serialize_with => :syck }
+        c.default_cassette_options = { serialize_with: :syck }
       end
       """
 
@@ -56,7 +56,7 @@ Feature: Decode compressed response
   Scenario: The option is enabled
     When I append to file "decompress.rb":
       """ruby
-      VCR.use_cassette(:decompress, :decode_compressed_response => true) do
+      VCR.use_cassette(:decompress, decode_compressed_response: true) do
         Net::HTTP.start('localhost', $server.port) do |http|
           http.get('/', 'accept-encoding' => 'identity')
         end

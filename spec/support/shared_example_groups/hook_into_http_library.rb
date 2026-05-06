@@ -11,7 +11,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
 
   http_lib_unsupported = (RUBY_INTERPRETER != :mri && library =~ /(typhoeus|curb|patron|em-http)/)
 
-  describe "using #{adapter_module.http_library_name}", :unless => http_lib_unsupported do
+  describe "using #{adapter_module.http_library_name}", unless: http_lib_unsupported do
     include adapter_module
 
     # Necessary for ruby 1.9.2.  On 1.9.2 we get an error when we use super,
@@ -21,7 +21,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
     1.upto(2) do |header_count|
       describe "making an HTTP request that responds with #{header_count} Set-Cookie header(s)" do
         define_method :get_set_cookie_header do
-          VCR.use_cassette('header_test', :record => :once) do
+          VCR.use_cassette('header_test', record: :once) do
             get_header 'Set-Cookie', make_http_request(:get, "http://localhost:#{VCR::SinatraApp.port}/set-cookie-headers/#{header_count}")
           end
         end
@@ -37,7 +37,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
     def self.test_record_and_playback(description, query)
       describe "a request to a URL #{description}" do
         define_method :get_body do
-          VCR.use_cassette('record_and_playback', :record => :once) do
+          VCR.use_cassette('record_and_playback', record: :once) do
             get_body_string make_http_request(:get, "http://localhost:#{VCR::SinatraApp.port}/record-and-playback?#{query}")
           end
         end
@@ -57,7 +57,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
     it 'plays back an empty body response exactly as it was recorded (e.g. nil vs empty string)' do
       skip "Faraday 0.8 may return nil bodies" if library_hook_name == :faraday && !defined?(::Faraday::RackBuilder)
       get_body = lambda do
-        VCR.use_cassette('empty_body', :record => :once) do
+        VCR.use_cassette('empty_body', record: :once) do
           get_body_object make_http_request(:get, "http://localhost:#{VCR::SinatraApp.port}/204")
         end
       end
@@ -359,7 +359,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
             VCR.configure do |c|
               c.cassette_library_dir = File.join(VCR::SPEC_ROOT, 'fixtures')
               c.before_http_request do |request|
-                VCR.insert_cassette('fake_example_responses', :record => :none)
+                VCR.insert_cassette('fake_example_responses', record: :none)
               end
             end
             expect(get_body_string(make_http_request(:get, 'http://example.com/foo'))).to eq(string_in_cassette)
@@ -435,7 +435,7 @@ shared_examples_for "a hook into an HTTP library" do |library_hook_name, library
         end
       end
 
-      matching_on :method, { :get => "get method response", :post => "post method response" }, :put do
+      matching_on :method, { get: "get method response", post: "post method response" }, :put do
         def make_http_request(http_method)
           make_request(http_method, 'http://some-wrong-domain.com/', nil, {})
         end

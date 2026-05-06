@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'support/shared_example_groups/excon'
 
-RSpec.describe "Excon hook", :with_monkey_patches => :excon do
+RSpec.describe "Excon hook", with_monkey_patches: :excon do
   after(:each) do
     ::Excon.stubs.clear
     ::Excon.defaults[:mock] = false
@@ -9,7 +9,7 @@ RSpec.describe "Excon hook", :with_monkey_patches => :excon do
 
   def directly_stub_request(method, url, response_body)
     ::Excon.defaults[:mock] = true
-    ::Excon.stub({ :method => method, :url => url }, { :body => response_body })
+    ::Excon.stub({ method: method, url: url }, { body: response_body })
   end
 
   it_behaves_like 'a hook into an HTTP library', :excon, 'excon', :status_message_not_exposed
@@ -20,8 +20,8 @@ RSpec.describe "Excon hook", :with_monkey_patches => :excon do
     it 'properly records and plays back the response' do
       allow(VCR).to receive(:real_http_connections_allowed?).and_return(true)
       recorded, played_back = [1, 2].map do
-        VCR.use_cassette('excon_query', :record => :once) do
-          excon.request(:method => :get, :query => { :q => 'Tolkien' }).body
+        VCR.use_cassette('excon_query', record: :once) do
+          excon.request(method: :get, query: { q: 'Tolkien' }).body
         end
       end
 
@@ -34,8 +34,8 @@ RSpec.describe "Excon hook", :with_monkey_patches => :excon do
     let(:excon) { ::Excon.new("http://localhost:#{VCR::SinatraApp.port}/404_not_200") }
 
     def make_request
-      VCR.use_cassette('with_errors', :record => :once) do
-        excon.request(:method => :get, :expects => [200], :idempotent => true).body
+      VCR.use_cassette('with_errors', record: :once) do
+        excon.request(method: :get, expects: [200], idempotent: true).body
       end
     end
 
@@ -54,8 +54,8 @@ RSpec.describe "Excon hook", :with_monkey_patches => :excon do
     end
 
     def make_request
-      VCR.use_cassette('with_errors', :record => :once) do
-        excon.request(method: :get, :expects => [200])
+      VCR.use_cassette('with_errors', record: :once) do
+        excon.request(method: :get, expects: [200])
       end
     end
 
@@ -79,7 +79,7 @@ RSpec.describe "Excon hook", :with_monkey_patches => :excon do
       end
 
       expect {
-        Excon.get("http://localhost:#{VCR::SinatraApp.port}/404_not_200", :expects => 200)
+        Excon.get("http://localhost:#{VCR::SinatraApp.port}/404_not_200", expects: 200)
       }.to raise_error(Excon::Errors::Error)
     end
 
@@ -94,8 +94,8 @@ RSpec.describe "Excon hook", :with_monkey_patches => :excon do
     it 'raises the same error class as excon itself raises' do
       real_error, stubbed_error = 2.times.map do
         error_raised_by do
-          VCR.use_cassette('excon_error', :record => :once) do
-            Excon.get("http://localhost:#{VCR::SinatraApp.port}/not_found", :expects => 200)
+          VCR.use_cassette('excon_error', record: :once) do
+            Excon.get("http://localhost:#{VCR::SinatraApp.port}/not_found", expects: 200)
           end
         end
       end
@@ -107,7 +107,7 @@ RSpec.describe "Excon hook", :with_monkey_patches => :excon do
       undef make_request
       def make_request(disabled = false)
         expect {
-          Excon.get(request_url, :expects => 404)
+          Excon.get(request_url, expects: 404)
         }.to raise_error(Excon::Errors::Error)
       end
     end
