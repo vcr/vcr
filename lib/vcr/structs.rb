@@ -399,7 +399,7 @@ module VCR
       new_body = begin
         case type
         when 'gzip'
-          body_str = ''
+          body_str = String.new
           writer = Zlib::GzipWriter.new(StringIO.new(body_str), encoding: 'ASCII-8BIT')
           writer.write(body)
           writer.close
