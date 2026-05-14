@@ -47,7 +47,7 @@ Feature: hook_into
         <configuration>
         c.cassette_library_dir = 'vcr_cassettes'
         c.ignore_localhost = false
-        c.default_cassette_options = { :serialize_with => :syck }
+        c.default_cassette_options = { serialize_with: :syck }
       end
 
       VCR.use_cassette('example') do
@@ -116,7 +116,7 @@ Feature: hook_into
       end
 
       def faraday_response
-        Faraday::Connection.new(:url => "http://localhost:#{$server.port}") do |builder|
+        Faraday::Connection.new(url: "http://localhost:#{$server.port}") do |builder|
           builder.adapter :<faraday_adapter>
         end.get('/faraday').body
       end

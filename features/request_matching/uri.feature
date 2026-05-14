@@ -63,11 +63,11 @@ Feature: Matching on URI
         c.cassette_library_dir = 'cassettes'
       end
 
-      VCR.use_cassette('example', :match_requests_on => [:uri]) do
+      VCR.use_cassette('example', match_requests_on: [:uri]) do
         puts "Response for /bar: " + response_body_for(:get, "http://example.com/bar")
       end
 
-      VCR.use_cassette('example', :match_requests_on => [:uri]) do
+      VCR.use_cassette('example', match_requests_on: [:uri]) do
         puts "Response for /foo: " + response_body_for(:get,  "http://example.com/foo")
       end
       """

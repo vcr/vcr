@@ -46,17 +46,17 @@ RSpec.configure do |config|
     FileUtils.rm_rf tmp_dir
   end
 
-  config.before(:all, :disable_warnings => true) do
+  config.before(:all, disable_warnings: true) do
     @orig_std_err = $stderr
     $stderr = StringIO.new
   end
 
-  config.after(:all, :disable_warnings => true) do
+  config.after(:all, disable_warnings: true) do
     $stderr = @orig_std_err
   end
 
   config.example_status_persistence_file_path = 'spec/examples.txt'
-  config.filter_run :focus => true
+  config.filter_run focus: true
   config.run_all_when_everything_filtered = true
   config.order = :random
 

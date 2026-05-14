@@ -13,7 +13,7 @@ Some HTTP servers are not well-behaved and respond with invalid data: the respon
   default, since base64-encoding the string removes the human readability of the cassette.
 
   Alternately, if you want to force an entire cassette to preserve the exact body bytes,
-  you can pass the `:preserve_exact_body_bytes => true` cassette option when inserting your
+  you can pass the `preserve_exact_body_bytes: true` cassette option when inserting your
   cassette.
 
 ## Preserve exact bytes for response body with invalid encoding
@@ -35,7 +35,7 @@ VCR.configure do |c|
   c.cassette_library_dir = 'cassettes'
   c.hook_into :webmock
   c.preserve_exact_body_bytes do |http_message|
-    http_message.body.encoding.name == 'ASCII-8BIT' ||
+    http_message.body.encoding == Encoding::BINARY ||
     !http_message.body.valid_encoding?
   end
 end
@@ -43,7 +43,7 @@ end
 def make_request(label)
   puts
   puts label
-  VCR.use_cassette('example', :serialize_with => :json) do
+  VCR.use_cassette('example', serialize_with: :json) do
     body = Net::HTTP.get_response('localhost', '/', $server.port).body
     puts "Body: #{body.inspect}"
   end
@@ -91,7 +91,7 @@ require 'vcr'
 VCR.configure do |c|
   c.cassette_library_dir = 'cassettes'
   c.hook_into :webmock
-  c.default_cassette_options = { :serialize_with => :json }
+  c.default_cassette_options = { serialize_with: :json }
 
   c.before_record do |i|
     # otherwise Ruby 2.0 will default to UTF-8:
@@ -99,7 +99,7 @@ VCR.configure do |c|
   end
 end
 
-VCR.use_cassette('preserve_bytes', :preserve_exact_body_bytes => true) do
+VCR.use_cassette('preserve_bytes', preserve_exact_body_bytes: true) do
   Net::HTTP.get_response('localhost', '/', $server.port)
 end
 

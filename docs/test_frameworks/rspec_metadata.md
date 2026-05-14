@@ -9,10 +9,10 @@ VCR provides easy integration with RSpec using metadata. To set this
   full description.
 
   You can override the cassette name by passing a string
-  (`:vcr => 'my_cassette'`).
+  (`vcr: 'my_cassette'`).
 
   If you need to override the other options, you can pass a hash
-  (`:vcr => { ... }`).
+  (`vcr: { ... }`).
 
 ## Background
 
@@ -28,7 +28,7 @@ VCR.configure do |c|
 end
 
 RSpec.configure do |c|
-  # so we can use `:vcr` rather than `:vcr => true`;
+  # so we can use `:vcr` rather than `vcr: true`;
   # in RSpec 3 this will no longer be necessary.
   c.treat_symbols_as_metadata_keys_with_true_values = true
 end
@@ -85,7 +85,7 @@ describe "VCR example group metadata", :vcr do
     expect(make_http_request).to eq('Hello')
   end
 
-  it 'records an http request with a custom file name', :vcr => 'my_cassette' do
+  it 'records an http request with a custom file name', vcr: 'my_cassette' do
     expect(make_http_request).to eql('Hello')
   end
 
@@ -117,14 +117,14 @@ _And_ the file "spec/cassettes/VCR_example_group_metadata/in_a_nested_example_gr
 
 _And_ the file "spec/cassettes/VCR_example_metadata/records_an_http_request.yml" should contain "Hello".
 
-## `:allow_unused_http_interactions => false` causes a failure if there are unused interactions
+## `allow_unused_http_interactions: false` causes a failure if there are unused interactions
 
 _And_ a file named "spec/vcr_example_spec.rb" with:
 
 ```ruby
 require 'spec_helper'
 
-describe "Group", :vcr => { :allow_unused_http_interactions => false } do
+describe "Group", vcr: { allow_unused_http_interactions: false } do
   it 'optionally raises an error' do
     # don't fail
   end
@@ -140,14 +140,14 @@ There are unused HTTP interactions left in the cassette:
   - [get http://example.com/foo] => [200 "Hello"]
 ```
 
-## `:allow_unused_http_interactions => false` does not raise if the example already failed
+## `allow_unused_http_interactions: false` does not raise if the example already failed
 
 _And_ a file named "spec/vcr_example_spec.rb" with:
 
 ```ruby
 require 'spec_helper'
 
-describe "Group", :vcr => { :allow_unused_http_interactions => false } do
+describe "Group", vcr: { allow_unused_http_interactions: false } do
   it 'optionally raises an error' do
     raise "boom"
   end
@@ -167,8 +167,8 @@ _Given_ a file named "spec/vcr_example_spec.rb" with:
 ```ruby
 require 'spec_helper'
 
-vcr_options = { :cassette_name => "example", :record => :new_episodes }
-describe "Using an options hash", :vcr => vcr_options do
+vcr_options = { cassette_name: "example", record: :new_episodes }
+describe "Using an options hash", vcr: vcr_options do
   it 'uses the provided cassette name' do
     expect(VCR.current_cassette.name).to eq("example")
   end

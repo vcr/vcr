@@ -30,7 +30,7 @@ RSpec.describe VCR::RSpec::Metadata, :skip_vcr_reset do
     end
   end
 
-  context 'with the cassette name overridden at the example group level', :vcr => { :cassette_name => 'foo' } do
+  context 'with the cassette name overridden at the example group level', vcr: { cassette_name: 'foo' } do
     it 'overrides the cassette name for an example' do
       expect(VCR.current_cassette.name).to eq('foo')
     end
@@ -52,11 +52,11 @@ RSpec.describe VCR::RSpec::Metadata, :skip_vcr_reset do
     end
   end
 
-  it 'allows the cassette name to be overriden', :vcr => { :cassette_name => 'foo' } do
+  it 'allows the cassette name to be overriden', vcr: { cassette_name: 'foo' } do
     expect(VCR.current_cassette.name).to eq('foo')
   end
 
-  it 'allows the cassette options to be set', :vcr => { :match_requests_on => [:method] } do
+  it 'allows the cassette options to be set', vcr: { match_requests_on: [:method] } do
     expect(VCR.current_cassette.match_requests_on).to eq([:method])
   end
 end

@@ -78,11 +78,11 @@ port_matcher = lambda do |request_1, request_2|
   URI(request_1.uri).port == URI(request_2.uri).port
 end
 
-VCR.use_cassette('example', :match_requests_on => [:method, port_matcher]) do
+VCR.use_cassette('example', match_requests_on: [:method, port_matcher]) do
   puts "Response for port 8000: " + response_body_for(:get, "http://example.com:8000/")
 end
 
-VCR.use_cassette('example', :match_requests_on => [:method, port_matcher]) do
+VCR.use_cassette('example', match_requests_on: [:method, port_matcher]) do
   puts "Response for port 9000: " + response_body_for(:get, "http://example.com:9000/")
 end
 ```
@@ -128,11 +128,11 @@ VCR.configure do |c|
   end
 end
 
-VCR.use_cassette('example', :match_requests_on => [:method, :port]) do
+VCR.use_cassette('example', match_requests_on: [:method, :port]) do
   puts "Response for port 8000: " + response_body_for(:get, "http://example.com:8000/")
 end
 
-VCR.use_cassette('example', :match_requests_on => [:method, :port]) do
+VCR.use_cassette('example', match_requests_on: [:method, :port]) do
   puts "Response for port 9000: " + response_body_for(:get, "http://example.com:9000/")
 end
 ```

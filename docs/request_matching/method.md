@@ -69,11 +69,11 @@ VCR.configure do |c|
   c.cassette_library_dir = 'cassettes'
 end
 
-VCR.use_cassette('example', :match_requests_on => [:method]) do
+VCR.use_cassette('example', match_requests_on: [:method]) do
   puts "Response for GET: " + response_body_for(:get, "http://example.com/")
 end
 
-VCR.use_cassette('example', :match_requests_on => [:method]) do
+VCR.use_cassette('example', match_requests_on: [:method]) do
   puts "Response for POST: " + response_body_for(:post,  "http://example.com/")
 end
 ```

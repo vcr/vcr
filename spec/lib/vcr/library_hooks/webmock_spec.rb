@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'support/shared_example_groups/excon'
 
-RSpec.describe "WebMock hook", :with_monkey_patches => :webmock do
+RSpec.describe "WebMock hook", with_monkey_patches: :webmock do
   after(:each) do
     ::WebMock.reset!
   end
@@ -16,16 +16,16 @@ RSpec.describe "WebMock hook", :with_monkey_patches => :webmock do
   end
 
   def directly_stub_request(method, url, response_body)
-    ::WebMock.stub_request(method, url).to_return(:body => response_body)
+    ::WebMock.stub_request(method, url).to_return(body: response_body)
   end
 
   describe "our WebMock.after_request hook" do
-    let(:webmock_request) { ::WebMock::RequestSignature.new(:get, "http://foo.com/", :body => "", :headers => {}) }
-    let(:webmock_response) { ::WebMock::Response.new(:body => 'OK', :status => [200, '']) }
+    let(:webmock_request) { ::WebMock::RequestSignature.new(:get, "http://foo.com/", body: "", headers: {}) }
+    let(:webmock_response) { ::WebMock::Response.new(body: 'OK', status: [200, '']) }
 
     def run_after_request_callback
       ::WebMock::CallbackRegistry.invoke_callbacks(
-        { :real_request => true },
+        { real_request: true },
         webmock_request,
         webmock_response)
     end
@@ -85,7 +85,7 @@ RSpec.describe "WebMock hook", :with_monkey_patches => :webmock do
     http_lib_unsupported = (RUBY_INTERPRETER != :mri && lib =~ /(typhoeus|curb|patron|em-http)/)
 
     adapter_module = HTTP_LIBRARY_ADAPTERS.fetch(lib)
-    describe "using #{adapter_module.http_library_name}", :unless => http_lib_unsupported do
+    describe "using #{adapter_module.http_library_name}", unless: http_lib_unsupported do
       include adapter_module
 
       let!(:request_url) { "http://localhost:#{VCR::SinatraApp.port}/foo" }
@@ -93,7 +93,7 @@ RSpec.describe "WebMock hook", :with_monkey_patches => :webmock do
       context 'when real connections are disabled and VCR is turned off' do
         it 'can allow connections to localhost' do
           VCR.turn_off!
-          disable_real_connections(:allow_localhost => true)
+          disable_real_connections(allow_localhost: true)
 
           expect {
             make_http_request(:get, request_url)
@@ -102,7 +102,7 @@ RSpec.describe "WebMock hook", :with_monkey_patches => :webmock do
 
         it 'can allow connections to matching urls' do
           VCR.turn_off!
-          disable_real_connections(:allow => /foo/)
+          disable_real_connections(allow: /foo/)
 
           expect {
             make_http_request(:get, request_url)

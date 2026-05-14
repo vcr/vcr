@@ -43,7 +43,7 @@ HTTP_LIBRARY_ADAPTERS['patron'] = Module.new do
   end
 
   def make_http_request(method, url, body = nil, headers = {})
-    Patron::Session.new.request(method, url, headers, :data => body || '')
+    Patron::Session.new.request(method, url, headers, data: body || '')
   end
 
   def normalize_request_headers(headers)
@@ -172,7 +172,7 @@ HTTP_LIBRARY_ADAPTERS['typhoeus'] = Module.new do
   end
 
   def make_http_request(method, url, body = nil, headers = {})
-    request = Typhoeus::Request.new(url, :method => method, :body => body, :headers => headers)
+    request = Typhoeus::Request.new(url, method: method, body: body, headers: headers)
     request.run
     request.response
   end
@@ -197,7 +197,7 @@ HTTP_LIBRARY_ADAPTERS['excon'] = Module.new do
   def make_http_request(method, url, body = nil, headers = {})
     # There are multiple ways to use Excon but this is how fog (the main user of excon) uses it:
     # https://github.com/fog/fog/blob/v1.1.1/lib/fog/aws/rds.rb#L139-147
-    Excon.new(url).request(:method => method.to_s.upcase, :body => body, :headers => headers)
+    Excon.new(url).request(method: method.to_s.upcase, body: body, headers: headers)
   end
 
   def normalize_request_headers(headers)
@@ -258,7 +258,7 @@ require 'faraday'
     end
 
     def faraday_connection(url_root)
-      Faraday::Connection.new(:url => url_root) do |builder|
+      Faraday::Connection.new(url: url_root) do |builder|
         builder.adapter faraday_adapter
       end
     end

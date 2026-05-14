@@ -35,7 +35,7 @@ require 'vcr'
 VCR.configure do |c|
   c.cassette_library_dir = 'cassettes'
   c.hook_into :webmock
-  c.default_cassette_options = { :serialize_with => :syck }
+  c.default_cassette_options = { serialize_with: :syck }
 end
 ```
 
@@ -65,7 +65,7 @@ Content-Encoding:
 _When_ I append to file "decompress.rb":
 
 ```ruby
-VCR.use_cassette(:decompress, :decode_compressed_response => true) do
+VCR.use_cassette(:decompress, decode_compressed_response: true) do
   Net::HTTP.start('localhost', $server.port) do |http|
     http.get('/', 'accept-encoding' => 'identity')
   end

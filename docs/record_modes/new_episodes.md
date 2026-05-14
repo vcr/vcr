@@ -60,7 +60,7 @@ _Given_ a file named "replay_recorded_response.rb" with:
 ```ruby
 require 'setup'
 
-VCR.use_cassette('example', :record => :new_episodes) do
+VCR.use_cassette('example', record: :new_episodes) do
   response = Net::HTTP.get_response('example.com', '/foo')
   puts "Response: #{response.body}"
 end
@@ -77,7 +77,7 @@ _Given_ a file named "record_new_requests.rb" with:
 ```ruby
 require 'setup'
 
-VCR.use_cassette('example', :record => :new_episodes) do
+VCR.use_cassette('example', record: :new_episodes) do
   response = Net::HTTP.get_response('localhost', '/', $server.port)
   puts "Response: #{response.body}"
 end
@@ -89,5 +89,7 @@ _Then_ it should pass with "Response: Hello"
 
 _And_ the file "cassettes/example.yml" should contain each of these:
 
+|                      |
+|----------------------|
 | example.com response |
 | Hello                |

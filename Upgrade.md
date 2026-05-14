@@ -67,7 +67,7 @@ port_matcher = lambda do |request_1, request_2|
   URI(request_1.uri).port == URI(request_2.uri).port
 end
 
-VCR.use_cassette("example", :match_requests_on => [:host, port_matcher, :method]) do
+VCR.use_cassette("example", match_requests_on: [:host, port_matcher, :method]) do
   # make an HTTP request
 end
 ```
@@ -90,7 +90,7 @@ own. Custom serializers must implement `#file_extension`, `#serialize`
 and `#deserialize`:
 
 ``` ruby
-VCR.use_cassette("example", :serialize_with => :json) do
+VCR.use_cassette("example", serialize_with: :json) do
   # make an HTTP request
 end
 
@@ -111,7 +111,7 @@ end
 
 VCR.configure do |c|
   c.cassette_serializers[:marshal] = marshal_serializer
-  c.default_cassette_options = { :serialize_with => :marshal }
+  c.default_cassette_options = { serialize_with: :marshal }
 end
 ```
 
@@ -170,7 +170,7 @@ VCR.configure do |c|
 end
 
 RSpec.configure do |c|
-  # so we can use `:vcr` rather than `:vcr => true`;
+  # so we can use `:vcr` rather than `vcr: true`;
   # in RSpec 3 this will no longer be necessary.
   c.treat_symbols_as_metadata_keys_with_true_values = true
 end
@@ -185,11 +185,11 @@ RSpec.describe MyAPIWrapper do
   end
 
   # set some cassette options
-  it "does something", :vcr => { :record => :new_episodes } do
+  it "does something", vcr: { record: :new_episodes } do
   end
 
   # override the cassette name
-  it "does something", :vcr => { :cassette_name => "something" } do
+  it "does something", vcr: { cassette_name: "something" } do
   end
 end
 ```
@@ -282,7 +282,7 @@ end
 
 # or....
 
-VCR.use_cassette("my_cassette", :preserve_exact_body_bytes => true) do
+VCR.use_cassette("my_cassette", preserve_exact_body_bytes: true) do
   # ...
 end
 ```

@@ -5,12 +5,12 @@ Note: this config option is also available as `define_cassette_placeholder`
 
   The `filter_sensitive_data` configuration option can be used to prevent
   sensitive data from being written to your cassette files.  This may be
-  important if you commit your cassettes files to source control and do
+  important if you commit your cassette files to source control and do
   not want your sensitive data exposed.  Pass the following arguments to
   `filter_sensitive_data`:
 
     - A substitution string.  This is the string that will be written to
-      the cassettte file as a placeholder.  It should be unique and you
+      the cassette file as a placeholder.  It should be unique and you
       may want to wrap it in special characters like `{ }` or `< >`.
     - A symbol specifying a tag (optional).  If a tag is given, the
       filtering will only be applied to cassettes with the given tag.
@@ -64,7 +64,7 @@ _When_ I run `ruby filtering.rb --with-server`
 
 _Then_ the output should contain "Response: Hello World"
 
-_And_ the file "cassettes/filtering.yml" should contain "<GREETING> <LOCATION>"
+_And_ the file "cassettes/filtering.yml" should contain "&lt;GREETING&gt; &lt;LOCATION&gt;"
 
 _And_ the file "cassettes/filtering.yml" should not contain "Hello"
 
@@ -94,12 +94,12 @@ VCR.configure do |c|
   c.filter_sensitive_data('<LOCATION>', :my_tag) { 'World' }
 end
 
-VCR.use_cassette('tagged', :tag => :my_tag) do
+VCR.use_cassette('tagged', tag: :my_tag) do
   response = Net::HTTP.get_response('localhost', '/', $server ? $server.port : 0)
   puts "Tagged Response: #{response.body}"
 end
 
-VCR.use_cassette('untagged', :record => :new_episodes) do
+VCR.use_cassette('untagged', record: :new_episodes) do
   response = Net::HTTP.get_response('localhost', '/', $server ? $server.port : 0)
   puts "Untagged Response: #{response.body}"
 end
@@ -109,10 +109,12 @@ _When_ I run `ruby tagged_filtering.rb --with-server`
 
 _Then_ the output should contain each of the following:
 
+|                                  |
+|----------------------------------|
 | Tagged Response: Hello World 1   |
 | Untagged Response: Hello World 2 |
 
-_And_ the file "cassettes/tagged.yml" should contain "Hello <LOCATION> 1"
+_And_ the file "cassettes/tagged.yml" should contain "Hello \<LOCATION\> 1"
 
 _And_ the file "cassettes/untagged.yml" should contain "Hello World 2"
 
@@ -120,6 +122,8 @@ _When_ I run `ruby tagged_filtering.rb`
 
 _Then_ the output should contain each of the following:
 
+|                                  |
+|----------------------------------|
 | Tagged Response: Hello World 1   |
 | Untagged Response: Hello World 2 |
 
@@ -158,7 +162,7 @@ VCR.configure do |c|
   end
 end
 
-VCR.use_cassette('example', :match_requests_on => [:method, :uri, :headers]) do
+VCR.use_cassette('example', match_requests_on: [:method, :uri, :headers]) do
   port = $server ? $server.port : 0
   puts "Response: " + response_body_for(
     :get, "http://localhost:#{port}/", nil,
@@ -172,7 +176,7 @@ _When_ I run `ruby dynamic_filtering.rb --with-server`
 
 _Then_ the output should contain "john.doe/monkey"
 
-_And_ the file "cassettes/example.yml" should contain "john.doe/<PASSWORD>"
+_And_ the file "cassettes/example.yml" should contain "john.doe/\<PASSWORD\>"
 
 _And_ the file "cassettes/example.yml" should contain a YAML fragment like:
 

@@ -81,7 +81,7 @@ VCR.use_cassette('example') do
 end
 ```
 
-_And_ I am configuring with "<configuration>" using "<http_lib>"
+_And_ I am configuring with "&lt;configuration&gt;" using "&lt;http_lib&gt;"
 
 _When_ I successfully run `ruby cassette_yaml.rb 'Hello'`
 
@@ -173,11 +173,11 @@ VCR.configure do |c|
     i.request.uri.sub!(/:\d+/, ':7777')
   end
   c.default_cassette_options = {
-    :match_requests_on => [:method, :host, :path]
+    match_requests_on: [:method, :host, :path]
   }
 end
 
-VCR.use_cassette('example', :serialize_with => :json) do
+VCR.use_cassette('example', serialize_with: :json) do
   puts response_body_for(:get, "http://localhost:#{$server.port}/foo", nil, 'Accept-Encoding' => 'identity')
   puts response_body_for(:get, "http://localhost:#{$server.port}/bar", nil, 'Accept-Encoding' => 'identity')
 end
@@ -282,11 +282,11 @@ VCR.configure do |c|
     i.request.uri.sub!(/:\d+/, ':7777')
   end
   c.default_cassette_options = {
-    :match_requests_on => [:method, :host, :path]
+    match_requests_on: [:method, :host, :path]
   }
 end
 
-VCR.use_cassette('example', :serialize_with => :compressed) do
+VCR.use_cassette('example', serialize_with: :compressed) do
   puts response_body_for(:get, "http://localhost:#{$server.port}/foo", nil, 'Accept-Encoding' => 'identity')
   puts response_body_for(:get, "http://localhost:#{$server.port}/bar", nil, 'Accept-Encoding' => 'identity')
 end
@@ -386,11 +386,11 @@ VCR.configure do |c|
     i.request.uri.sub!(/:\d+/, ':7777')
   end
   c.default_cassette_options = {
-    :match_requests_on => [:method, :host, :path]
+    match_requests_on: [:method, :host, :path]
   }
 end
 
-VCR.use_cassette('example', :serialize_with => :ruby) do
+VCR.use_cassette('example', serialize_with: :ruby) do
   puts response_body_for(:get, "http://localhost:#{$server.port}/foo", nil, 'Accept-Encoding' => 'identity')
   puts response_body_for(:get, "http://localhost:#{$server.port}/bar", nil, 'Accept-Encoding' => 'identity')
 end

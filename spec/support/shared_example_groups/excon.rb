@@ -3,7 +3,7 @@ RSpec.shared_examples "Excon streaming" do
     def make_request_to(path)
       chunks = []
 
-      Excon.get "http://localhost:#{VCR::SinatraApp.port}#{path}", :response_block => lambda { |chunk, remaining_bytes, total_bytes|
+      Excon.get "http://localhost:#{VCR::SinatraApp.port}#{path}", response_block: lambda { |chunk, remaining_bytes, total_bytes|
         chunks << chunk
       }
 
@@ -25,9 +25,9 @@ RSpec.shared_examples "Excon streaming" do
       recorded, played_back = [1, 2].map do
         chunks = []
 
-        VCR.use_cassette('excon_streaming_error', :record => :once) do
+        VCR.use_cassette('excon_streaming_error', record: :once) do
           begin
-            Excon.get "http://localhost:#{VCR::SinatraApp.port}/404_not_200", :expects => 200, :response_block => lambda { |chunk, remaining_bytes, total_bytes|
+            Excon.get "http://localhost:#{VCR::SinatraApp.port}/404_not_200", expects: 200, response_block: lambda { |chunk, remaining_bytes, total_bytes|
               chunks << chunk
             }
           rescue Excon::Errors::Error => e
@@ -44,16 +44,16 @@ RSpec.shared_examples "Excon streaming" do
 
     context "when a cassette is played back and appended to" do
       it 'does not allow Excon to mutate the response body in the cassette' do
-        VCR.use_cassette('excon_streaming', :record => :new_episodes) do
+        VCR.use_cassette('excon_streaming', record: :new_episodes) do
           expect(make_request_to('/')).to eq('GET to root')
         end
 
-        VCR.use_cassette('excon_streaming', :record => :new_episodes) do
+        VCR.use_cassette('excon_streaming', record: :new_episodes) do
           expect(make_request_to('/')).to eq('GET to root')
           expect(make_request_to('/foo')).to eq('FOO!') # so it will save to disk again
         end
 
-        VCR.use_cassette('excon_streaming', :record => :new_episodes) do
+        VCR.use_cassette('excon_streaming', record: :new_episodes) do
           expect(make_request_to('/')).to eq('GET to root')
         end
       end

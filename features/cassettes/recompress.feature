@@ -29,11 +29,11 @@ Feature: Recompress response
         VCR.configure do |c|
           c.cassette_library_dir = 'cassettes'
           c.hook_into :webmock
-          c.default_cassette_options = { :serialize_with => :syck }
+          c.default_cassette_options = { serialize_with: :syck }
           c.filter_sensitive_data('<COLOR>') { 'brown' }
         end
 
-        VCR.use_cassette(:recompress, :decode_compressed_response => true) do
+        VCR.use_cassette(:recompress, decode_compressed_response: true) do
           Net::HTTP.start('localhost', $server.port) do |http|
             http.get('/', 'accept-encoding' => 'identity')
           end
@@ -54,7 +54,7 @@ Feature: Recompress response
   Scenario: The option is enabled
     When I append to file "recompress.rb":
       """ruby
-      VCR.use_cassette(:recompress, :recompress_response => true) do
+      VCR.use_cassette(:recompress, recompress_response: true) do
         response = Net::HTTP.get_response('localhost', '/', $server.port)
         puts "Content-Encoding: #{response['Content-Encoding'] || 'none'}"
       end
@@ -65,7 +65,7 @@ Feature: Recompress response
   Scenario: The recompressing happens after replacing filtered sensitive data
     When I append to file "recompress.rb":
       """ruby
-      VCR.use_cassette(:recompress, :recompress_response => true) do
+      VCR.use_cassette(:recompress, recompress_response: true) do
         VCR::Response.decompress(Net::HTTP.get_response('localhost', '/', $server.port).body, 'gzip') do |body|
           puts body
         end

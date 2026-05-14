@@ -56,7 +56,7 @@ module VCR
   # `:record` option.
   #
   # @example
-  #   VCR.insert_cassette('twitter', :record => :new_episodes)
+  #   VCR.insert_cassette('twitter', record: :new_episodes)
   #
   #   # ...later, after making an HTTP request:
   #
@@ -140,7 +140,7 @@ module VCR
       cassette
     elsif !ignore_cassettes?
       message = "VCR is turned off.  You must turn it on before you can insert a cassette.  " +
-                "Or you can use the `:ignore_cassettes => true` option to completely ignore cassette insertions."
+                "Or you can use the `ignore_cassettes: true` option to completely ignore cassette insertions."
       raise TurnedOffError.new(message)
     end
   end
@@ -152,7 +152,7 @@ module VCR
   # @param options [Hash] Eject options.
   # @option options :skip_no_unused_interactions_assertion [Boolean]
   #  If `true` is given, this will skip the "no unused HTTP interactions"
-  #  assertion enabled by the `:allow_unused_http_interactions => false`
+  #  assertion enabled by the `allow_unused_http_interactions: false`
   #  cassette option. This is intended for use when your test has had
   #  an error, but your test framework has already handled it.
   # @return [VCR::Cassette, nil] the ejected cassette if there was one
@@ -168,7 +168,7 @@ module VCR
   # block, and ejects the cassette.
   #
   # @example
-  #   VCR.use_cassette('twitter', :record => :new_episodes) do
+  #   VCR.use_cassette('twitter', record: :new_episodes) do
   #     # make an HTTP request
   #   end
   #
@@ -246,7 +246,7 @@ module VCR
   # @example
   #   VCR.cucumber_tags do |t|
   #     t.tags "tag1", "tag2"
-  #     t.tag "@some_other_tag", :record => :new_episodes
+  #     t.tag "@some_other_tag", record: :new_episodes
   #   end
   #
   # @yield the cucumber tags configuration block
@@ -434,10 +434,10 @@ private
 
   def dup_context(context)
     {
-      :turned_off => context[:turned_off],
-      :ignore_cassettes => context[:ignore_cassettes],
-      :cassettes => [],
-      :linked_context => context
+      turned_off:       context[:turned_off],
+      ignore_cassettes: context[:ignore_cassettes],
+      cassettes:        [],
+      linked_context:   context
     }
   end
 
@@ -462,10 +462,10 @@ private
     initialize_fibers
     @context = {
       MainThread => {
-        :turned_off => false,
-        :ignore_cassettes => false,
-        :cassettes => [],
-        :linked_context => nil
+        turned_off:       false,
+        ignore_cassettes: false,
+        cassettes:        [],
+        linked_context:   nil
       }
     }
     @configuration = Configuration.new

@@ -3,7 +3,7 @@ require 'vcr/library_hooks/faraday'
 
 RSpec.describe "Faraday hook" do
   it 'inserts the VCR middleware just before the adapter' do
-    conn = Faraday.new(:url => 'http://sushi.com') do |builder|
+    conn = Faraday.new(url: 'http://sushi.com') do |builder|
       builder.request  :url_encoded
       builder.response :logger
       builder.adapter  :net_http
@@ -21,7 +21,7 @@ RSpec.describe "Faraday hook" do
   end
 
   it 'does nothing if the VCR middleware has already been included' do
-    conn = Faraday.new(:url => 'http://sushi.com') do |builder|
+    conn = Faraday.new(url: 'http://sushi.com') do |builder|
       builder.use VCR::Middleware::Faraday
     end
 
@@ -30,7 +30,7 @@ RSpec.describe "Faraday hook" do
   end
 
   it 'gracefully handles the case where there is no explicit HTTP adapter' do
-    conn = Faraday.new(:url => 'http://sushi.com') do |builder|
+    conn = Faraday.new(url: 'http://sushi.com') do |builder|
       builder.request  :url_encoded
       builder.response :logger
     end
@@ -46,7 +46,7 @@ RSpec.describe "Faraday hook" do
   context 'when using on_data callback' do
     def make_request(&on_data_callback)
       VCR.use_cassette('no_body') do
-        conn = Faraday.new(:url => "http://localhost:#{VCR::SinatraApp.port}") do |builder|
+        conn = Faraday.new(url: "http://localhost:#{VCR::SinatraApp.port}") do |builder|
           builder.request  :url_encoded
           builder.adapter  :net_http
         end

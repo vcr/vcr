@@ -10,7 +10,7 @@ By default, each response in a cassette can only be matched and played back
 
   If you want to allow playback repeats, VCR has a cassette option for this:
 
-      :allow_playback_repeats => true
+      allow_playback_repeats: true
 
 ## Responses do not repeat by default
 
@@ -73,7 +73,7 @@ VCR.configure do |c|
 end
 
 puts "== With :allow_playback_repeats =="
-VCR.use_cassette('example', :allow_playback_repeats => true) do
+VCR.use_cassette('example', allow_playback_repeats: true) do
   puts response_body_for(:get, 'http://example.com/foo')
   puts response_body_for(:get, 'http://example.com/foo')
   puts response_body_for(:get, 'http://example.com/foo')

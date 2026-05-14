@@ -23,14 +23,21 @@ end
 
 require 'faraday'
 require 'vcr'
-<extra_require>
+
+if '<adapter>' == 'typhoeus'
+  if Faraday::VERSION > '2.0'
+    require "faraday/typhoeus"
+  else
+    require 'typhoeus/adapters/faraday'
+  end
+end
 
 VCR.configure do |c|
-  c.default_cassette_options = { :serialize_with => :syck }
+  c.default_cassette_options = { serialize_with: :syck }
   c.cassette_library_dir = 'cassettes'
 end
 
-conn = Faraday::Connection.new(:url => "http://localhost:#{$server.port}") do |builder|
+conn = Faraday::Connection.new(url: "http://localhost:#{$server.port}") do |builder|
   builder.use VCR::Middleware::Faraday
   builder.adapter :<adapter>
 end
@@ -57,7 +64,7 @@ _And_ the file "cassettes/example.yml" should contain "Hello foo 1".
 
 ### Examples
 
-| adapter  | extra_require                       |
-|----------|-------------------------------------|
-| net_http |                                     |
-| typhoeus | require 'typhoeus/adapters/faraday' |
+| adapter  |
+|----------|
+| net_http |
+| typhoeus |

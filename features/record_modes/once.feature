@@ -57,7 +57,7 @@ Feature: :once
       """ruby
       require 'setup'
 
-      VCR.use_cassette('example', :record => :once) do
+      VCR.use_cassette('example', record: :once) do
         response = Net::HTTP.get_response('example.com', '/foo')
         puts "Response: #{response.body}"
       end
@@ -71,7 +71,7 @@ Feature: :once
       """ruby
       require 'setup'
 
-      VCR.use_cassette('example', :record => :once) do
+      VCR.use_cassette('example', record: :once) do
         response = Net::HTTP.get_response('localhost', '/', $server.port)
         puts "Response: #{response.body}"
       end
@@ -84,7 +84,7 @@ Feature: :once
       """ruby
       require 'setup'
 
-      VCR.use_cassette('example', :record => :once) do
+      VCR.use_cassette('example', record: :once) do
         response = Net::HTTP.get_response('localhost', '/', $server.port)
         puts "Response: #{response.body}"
       end

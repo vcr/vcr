@@ -17,7 +17,7 @@ Feature: before_record hook
         c.before_record(:twitter) { ... } # modify the interactions somehow
       end
 
-      VCR.use_cassette('cassette_1', :tag => :twitter) { ... }
+      VCR.use_cassette('cassette_1', tag: :twitter) { ... }
       VCR.use_cassette('cassette_2') { ... }
 
   In this example, the hook would apply to the first cassette but not the
@@ -115,7 +115,7 @@ Feature: before_record hook
         c.before_record { puts "In before_record hook 2" }
       end
 
-      VCR.use_cassette('example', :record => :new_episodes) do
+      VCR.use_cassette('example', record: :new_episodes) do
         response = Net::HTTP.get_response('localhost', '/', $server.port)
         puts "Response: #{response.body}"
       end
@@ -150,7 +150,7 @@ Feature: before_record hook
         puts
         puts "Using tag: #{tag.inspect}"
 
-        VCR.use_cassette('example', :record => :new_episodes, :tag => tag) do
+        VCR.use_cassette('example', record: :new_episodes, tag: tag) do
           response = Net::HTTP.get_response('localhost', '/', $server.port)
           puts "Response: #{response.body}"
         end

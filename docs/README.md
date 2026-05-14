@@ -16,6 +16,7 @@ We're looking for more maintainers. If you'd like to help maintain a well-used g
 
 Usage
 =====
+Add the below to your `spec_helper.rb` file:
 
 ``` ruby
 require 'rubygems'
@@ -39,7 +40,7 @@ end
 
 Run this test once, and VCR will record the HTTP request to `fixtures/vcr_cassettes/synopsis.yml`. Run it again, and VCR will replay the response from iana.org when the HTTP request is made. This test is now fast (no real HTTP requests are made anymore), deterministic (the test will continue to pass, even if you are offline, or iana.org goes down for maintenance) and accurate (the response will contain the same headers and body you get from a real request). You can use a different cassette library directory (e.g., "test/vcr_cassettes").
 
-NOTE: To avoid storing any sensitive information in cassettes, check out [Filter Sensitive Data](https://vcr.github.io/vcr/#/configuration/filter_sensitive_data?id=filter-sensitive-data) in the documentation.
+NOTE: To avoid storing any sensitive information in cassettes, check out [Filter Sensitive Data](https://benoittgt.github.io/vcr/#/configuration/filter_sensitive_data) in the documentation.
 
 **Rails and Minitest:**
 Do *not* use 'test/fixtures' as the directory if you're using Rails and Minitest (Rails will instead transitively load any files in that directory as models).
@@ -76,7 +77,7 @@ Do *not* use 'test/fixtures' as the directory if you're using Rails and Minitest
 
 The docs come in two flavors:
 
-  * The [VCR docs](https://vcr.github.io/vcr) contain example-based documentation (VCR's Cucumber suite, in fact). It's a good place to look when you are first getting started with VCR, or if you want to see an example of how to use a feature.
+  * The [usage docs](https://benoittgt.github.io/vcr) contain example-based documentation (VCR's Cucumber suite, in fact). It's a good place to look when you are first getting started with VCR, or if you want to see an example of how to use a feature.
   * The [rubydoc.info docs](https://www.rubydoc.info/gems/vcr/frames) contain API documentation. The API docs contain detailed info about all of VCR's public API.
   * See the [CHANGELOG](https://github.com/vcr/vcr/blob/master/CHANGELOG.md) doc for info about what's new and changed.
 
@@ -90,12 +91,16 @@ VCR follows the principles of [semantic versioning](https://semver.org/). The [A
 
 VCR versions 6.x are tested on the following ruby interpreters:
 
+  * MRI 3.3
+  * MRI 3.2
   * MRI 3.1
   * MRI 3.0
   * MRI 2.7
   * MRI 2.6
 
-[VCR 6.0.0](https://github.com/vcr/vcr/releases/tag/v6.0.0) is the last version supporting >= 2.4. Upcoming releases will only explicitly support >= 2.6.
+[VCR 6.0.0](https://github.com/vcr/vcr/releases/tag/v6.0.0) is the last version supporting >= 2.3.
+[VCR 6.1.0](https://github.com/vcr/vcr/releases/tag/v6.1.0) is the last version supporting >= 2.6.
+Upcoming releases will only explicitly support >= 2.7.
 
 **Development**
 
@@ -121,12 +126,12 @@ yard server --reload
   * [Betamax](https://github.com/thegreatape/betamax) (Go)
   * [DVR](https://github.com/orchestrate-io/dvr) (Go)
   * [Go VCR](https://github.com/dnaeon/go-vcr) (Go)
-  * [Betamax](https://github.com/wjlroe/betamax) (Clojure)
-  * [vcr-clj](https://github.com/ifesdjeen/vcr-clj) (Clojure)
+  * [vcr-clj](https://github.com/gfredericks/vcr-clj) (Clojure)
   * [scotch](https://github.com/mleech/scotch) (C#/.NET)
   * [Betamax.NET](https://github.com/mfloryan/Betamax.Net) (C#/.NET)
+  * [Vcr.HttpRecorder](https://github.com/GeorgopoulosGiannis/Vcr.HttpRecorder) (C#/.NET)
   * [ExVCR](https://github.com/parroty/exvcr) (Elixir)
-  * [HAVCR](https://github.com/cordawyn/havcr) (Haskell)
+  * [VCR](https://github.com/assertible/vcr) (Haskell)
   * [Mimic](https://github.com/acoulton/mimic) (PHP/Kohana)
   * [PHP-VCR](https://github.com/php-vcr/php-vcr) (PHP)
   * [Talkback](https://github.com/ijpiantanida/talkback) (JavaScript/Node)
@@ -138,6 +143,9 @@ yard server --reload
   * [http_replayer](https://github.com/ucarion/http_replayer) (Rust)
   * [OkReplay](https://github.com/airbnb/okreplay) (Java/Android)
   * [vcr](https://github.com/ropensci/vcr) (R)
+  * [hi8.cr](https://github.com/vonKingsley/hi8.cr) (Crystal)
+  * [eighttrack](https://github.com/russ/eighttrack) (Crystal)
+  * [VCR](https://github.com/crystal-ports/vcr-vcr) (Crystal fork)
 
 **Related Projects**
 

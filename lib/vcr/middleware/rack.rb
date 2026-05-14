@@ -33,7 +33,7 @@ module VCR
     #   app = Rack::Builder.new do
     #     use VCR::Middleware::Rack do |cassette, env|
     #       cassette.name "rack/#{env['SERVER_NAME']}"
-    #       cassette.options :record => :new_episodes
+    #       cassette.options record: :new_episodes
     #     end
     #
     #     run MyRackApp

@@ -122,9 +122,9 @@ module VCR
 
         def on_stubbed_by_vcr_request
           {
-            :body    => stubbed_response.body.dup, # Excon mutates the body, so we must dup it :-(
-            :status  => [stubbed_response.status.code.to_i, stubbed_response.status.message],
-            :headers => stubbed_response.headers
+            body:    stubbed_response.body.dup, # Excon mutates the body, so we must dup it :-(
+            status:  [stubbed_response.status.code.to_i, stubbed_response.status.message],
+            headers: stubbed_response.headers
           }
         end
       end
@@ -135,7 +135,7 @@ module VCR
         global_hook_disabled?(req) ? nil : RequestHandler.new(req).handle
       end
 
-      ::WebMock.after_request(:real_requests_only => true) do |request, response|
+      ::WebMock.after_request(real_requests_only: true) do |request, response|
         unless VCR.library_hooks.disabled?(:webmock)
           http_interaction = VCR::HTTPInteraction.new \
             typed_request_for(request), vcr_response_for(response)

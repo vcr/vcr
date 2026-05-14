@@ -13,7 +13,7 @@ module VCR
       end
 
       it 'identifies the request by method and URI' do
-        expect(message_for(:method => :post, :uri => 'http://foo.com/')).to include(
+        expect(message_for(method: :post, uri: 'http://foo.com/')).to include(
           'POST http://foo.com/'
         )
       end
@@ -22,7 +22,7 @@ module VCR
         it 'identifies the request by its body when the default_cassette_options include the body in the match_requests_on option' do
           VCR.configuration.default_cassette_options[:match_requests_on] = [:body]
 
-          expect(message_for(:body => 'param=val1')).to include(
+          expect(message_for(body: 'param=val1')).to include(
             "Body: param=val1"
           )
         end
@@ -30,7 +30,7 @@ module VCR
         it 'identifies the request by its headers when the default_cassette_options include the headers in the match_requests_on option' do
           VCR.configuration.default_cassette_options[:match_requests_on] = [:headers]
 
-          expect(message_for(:headers => { "Content-Type" => "application/json", "X-Custom" => ["123", "ab\"c"]})).to include(
+          expect(message_for(headers: { "Content-Type" => "application/json", "X-Custom" => ["123", "ab\"c"]})).to include(
             'Content-Type: "application/json"',
             'X-Custom: "123"',
             'X-Custom: "ab\"c"'
@@ -64,16 +64,16 @@ module VCR
 
       context 'when there are cassettes' do
         it 'identifies the request by its body when the match_requests_on option includes the body' do
-          VCR.use_cassette('example', :match_requests_on => [:body]) do
-            expect(message_for(:body => 'param=val1')).to include(
+          VCR.use_cassette('example', match_requests_on: [:body]) do
+            expect(message_for(body: 'param=val1')).to include(
               "Body: param=val1"
             )
           end
         end
 
         it 'identifies the request by its headers when the match_requests_on option includes the headers' do
-          VCR.use_cassette('example', :match_requests_on => [:headers]) do
-            expect(message_for(:headers => { "Content-Type" => "application/json", "X-Custom" => ["123", "ab\"c"]})).to include(
+          VCR.use_cassette('example', match_requests_on: [:headers]) do
+            expect(message_for(headers: { "Content-Type" => "application/json", "X-Custom" => ["123", "ab\"c"]})).to include(
               'Content-Type: "application/json"',
               'X-Custom: "123"',
               'X-Custom: "ab\"c"'
@@ -83,8 +83,8 @@ module VCR
 
         it 'does not identify the request by its body when the cassette match_requests_on option does not include the body but the default_cassette_options do' do
           VCR.configuration.default_cassette_options[:match_requests_on] = [:body]
-          VCR.use_cassette('example', :match_requests_on => [:uri]) do
-            expect(message_for(:body => 'param=val1')).to_not match(/body/i)
+          VCR.use_cassette('example', match_requests_on: [:uri]) do
+            expect(message_for(body: 'param=val1')).to_not match(/body/i)
           end
         end
 
@@ -109,19 +109,19 @@ module VCR
         end
 
         it 'mentions that :once does not allow a cassette to be re-recorded' do
-          VCR.use_cassette('example', :record => :once) do
+          VCR.use_cassette('example', record: :once) do
             expect(message).to include('(:once) does not allow new requests to be recorded')
           end
         end
 
         it 'mentions that :none does not allow any recording' do
-          VCR.use_cassette('example', :record => :none) do
+          VCR.use_cassette('example', record: :none) do
             expect(message).to include('(:none) does not allow requests to be recorded')
           end
         end
 
         it 'mentions that one of the files does not exist when using :none and file does not exist' do
-          VCR.use_cassette('example', :record => :none) do
+          VCR.use_cassette('example', record: :none) do
             expect(message).to include('One or more cassette names registered was not found.')
           end
         end
@@ -130,19 +130,19 @@ module VCR
           VCR.configure do |c|
             c.cassette_library_dir = File.join(VCR::SPEC_ROOT, 'fixtures')
           end
-          VCR.use_cassette('fake_example_responses', :record => :none) do
+          VCR.use_cassette('fake_example_responses', record: :none) do
             expect(message).to include('can temporarily change the record mode to :once, delete the cassette file')
           end
         end
 
         it 'does not mention the :once or :none record modes if using the :new_episodes record mode' do
-          VCR.use_cassette('example', :record => :new_episodes) do
+          VCR.use_cassette('example', record: :new_episodes) do
             expect(message).not_to include(':once', ':none')
           end
         end
 
         it 'does not mention the :once or :none record modes if using the :new_episodes record mode at least in one cassette' do
-          VCR.use_cassette('example', :record => :new_episodes) do
+          VCR.use_cassette('example', record: :new_episodes) do
             VCR.use_cassette('sample') do
               expect(message).not_to include('current record mode (:once)', 'current record mode (:none)')
             end
@@ -198,7 +198,7 @@ module VCR
         end
 
         it 'mentions the debug logging configuration option' do
-          VCR.use_cassette('example', :record => :new_episodes) do
+          VCR.use_cassette('example', record: :new_episodes) do
             expect(message).to include('debug_logger')
           end
         end

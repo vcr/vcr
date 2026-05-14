@@ -24,11 +24,11 @@ module VCR
         end
 
         it 'merges the given hash options, returning them when no arg is given' do
-          subject.options :record => :new_episodes
-          expect(subject.options).to eq({ :record => :new_episodes })
+          subject.options record: :new_episodes
+          expect(subject.options).to eq({ record: :new_episodes })
 
-          subject.options :erb => true
-          expect(subject.options).to eq({ :record => :new_episodes, :erb => true })
+          subject.options erb: true
+          expect(subject.options).to eq({ record: :new_episodes, erb: true })
         end
       end
     end
@@ -43,7 +43,7 @@ module VCR
       end
 
       describe '#call' do
-        let(:env_hash) { { :env => :hash } }
+        let(:env_hash) { { env: :hash } }
         it 'calls the provided rack app and returns its response' do
           rack_app = double
           expect(rack_app).to receive(:call).with(env_hash).and_return(:response)
@@ -69,12 +69,12 @@ module VCR
 
         it 'sets the cassette options based on the provided block' do
           rack_app = lambda do |env|
-            expect(VCR.current_cassette.erb).to eq({ :foo => :bar })
+            expect(VCR.current_cassette.erb).to eq({ foo: :bar })
           end
 
           instance = described_class.new(rack_app, &lambda do |c|
             c.name    'c'
-            c.options :erb => { :foo => :bar }
+            c.options erb: { foo: :bar }
           end)
 
           instance.call({})

@@ -4,7 +4,7 @@ Use the `:headers` request matcher to match requests on the request headers.
 
 ## Replay interaction that matches the headers
 
-_Given_ I am configuring with "<configuration>" using "<http_lib>"
+_Given_ I am configuring with "&lt;configuration&gt;" using "&lt;http_lib&gt;"
 
 _And_ a previously recorded cassette file "cassettes/example.yml" with:
 
@@ -68,11 +68,11 @@ VCR.configure do |c|
   c.cassette_library_dir = 'cassettes'
 end
 
-VCR.use_cassette('example', :match_requests_on => [:headers]) do
+VCR.use_cassette('example', match_requests_on: [:headers]) do
   puts "Response for user 2: " + response_body_for(:get, "http://example.com/", nil, 'X-User-Id' => '2')
 end
 
-VCR.use_cassette('example', :match_requests_on => [:headers]) do
+VCR.use_cassette('example', match_requests_on: [:headers]) do
   puts "Response for user 1: " + response_body_for(:get, "http://example.com/", nil, 'X-User-Id' => '1')
 end
 ```

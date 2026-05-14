@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe VCR do
-  context 'when used in a multithreaded environment', :with_monkey_patches => :excon do
+  context 'when used in a multithreaded environment', with_monkey_patches: :excon do
     def preload_yaml_serializer_to_avoid_circular_require_warning_race_condition
       VCR.cassette_serializers[:yaml]
     end
@@ -24,7 +24,7 @@ RSpec.describe VCR do
       end
 
       Excon.get "http://localhost:#{VCR::SinatraApp.port}/foo",
-        :response_block => Proc.new { thread.join }
+        response_block: Proc.new { thread.join }
 
       expect(recorded_content_for("search") +
              recorded_content_for("foo")).to include("query: thread", "FOO!")

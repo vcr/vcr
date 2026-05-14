@@ -53,7 +53,7 @@ VCR.configure do |c|
   c.cassette_library_dir = 'cassettes'
 end
 
-VCR.use_cassette('example', :re_record_interval => 7.days, :match_requests_on => [:method, :host, :path]) do
+VCR.use_cassette('example', re_record_interval: 7.days, match_requests_on: [:method, :host, :path]) do
   puts Net::HTTP.get_response('localhost', '/', $server.port).body
 end
 ```

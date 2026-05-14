@@ -24,35 +24,35 @@ RSpec.describe VCR::Configuration do
   describe '#default_cassette_options' do
     it 'has a hash with some defaults' do
       expect(subject.default_cassette_options).to eq({
-        :match_requests_on => VCR::RequestMatcherRegistry::DEFAULT_MATCHERS,
-        :allow_unused_http_interactions => true,
-        :drop_unused_requests => false,
-        :record            => :once,
-        :record_on_error   => true,
-        :serialize_with    => :yaml,
-        :persist_with      => :file_system,
-        :persister_options => {}
+        match_requests_on: VCR::RequestMatcherRegistry::DEFAULT_MATCHERS,
+        allow_unused_http_interactions: true,
+        drop_unused_requests: false,
+        record:            :once,
+        record_on_error:   true,
+        serialize_with:    :yaml,
+        persist_with:      :file_system,
+        persister_options: {}
       })
     end
 
     it "returns #{VCR::RequestMatcherRegistry::DEFAULT_MATCHERS.inspect} for :match_requests_on when other defaults have been set" do
-      subject.default_cassette_options = { :record => :none }
-      expect(subject.default_cassette_options).to include(:match_requests_on => VCR::RequestMatcherRegistry::DEFAULT_MATCHERS)
+      subject.default_cassette_options = { record: :none }
+      expect(subject.default_cassette_options).to include(match_requests_on: VCR::RequestMatcherRegistry::DEFAULT_MATCHERS)
     end
 
     it "returns :once for :record when other defaults have been set" do
-      subject.default_cassette_options = { :erb => :true }
-      expect(subject.default_cassette_options).to include(:record => :once)
+      subject.default_cassette_options = { erb: :true }
+      expect(subject.default_cassette_options).to include(record: :once)
     end
 
     it "allows defaults to be overriden" do
-      subject.default_cassette_options = { :record => :all }
-      expect(subject.default_cassette_options).to include(:record => :all)
+      subject.default_cassette_options = { record: :all }
+      expect(subject.default_cassette_options).to include(record: :all)
     end
 
     it "allows other keys to be set" do
-      subject.default_cassette_options = { :re_record_interval => 10 }
-      expect(subject.default_cassette_options).to include(:re_record_interval => 10)
+      subject.default_cassette_options = { re_record_interval: 10 }
+      expect(subject.default_cassette_options).to include(re_record_interval: 10)
     end
   end
 
@@ -117,7 +117,7 @@ RSpec.describe VCR::Configuration do
     it 'registers the given block with the request ignorer' do
       block_called = false
       subject.ignore_request { |r| block_called = true }
-      VCR.request_ignorer.ignore?(double(:parsed_uri => uri))
+      VCR.request_ignorer.ignore?(double(parsed_uri: uri))
       expect(block_called).to be true
     end
   end
@@ -131,7 +131,7 @@ RSpec.describe VCR::Configuration do
     end
   end
 
-  describe "request/configuration interactions", :with_monkey_patches => :webmock do
+  describe "request/configuration interactions", with_monkey_patches: :webmock do
     specify 'the request on the yielded interaction is not typed even though the request given to before_http_request is' do
       before_record_req = before_request_req = nil
       VCR.configure do |c|
@@ -165,9 +165,9 @@ RSpec.describe VCR::Configuration do
       it 'sets up a tag filter' do
         called = false
         VCR.configuration.send(hook_type, :my_tag) { called = true }
-        VCR.configuration.invoke_hook(hook_type, double, double(:tags => []))
+        VCR.configuration.invoke_hook(hook_type, double, double(tags: []))
         expect(called).to be false
-        VCR.configuration.invoke_hook(hook_type, double, double(:tags => [:my_tag]))
+        VCR.configuration.invoke_hook(hook_type, double, double(tags: [:my_tag]))
         expect(called).to be true
       end
     end
@@ -268,7 +268,7 @@ RSpec.describe VCR::Configuration do
 
   describe "#preserve_exact_body_bytes_for?" do
     def message_for(body)
-      double(:body => body)
+      double(body: body)
     end
 
     context "default hook" do
@@ -282,7 +282,7 @@ RSpec.describe VCR::Configuration do
       end
 
       it 'returns true when the current cassette has been created with the :preserve_exact_body_bytes option' do
-        VCR.insert_cassette('foo', :preserve_exact_body_bytes => true)
+        VCR.insert_cassette('foo', preserve_exact_body_bytes: true)
         expect(subject.preserve_exact_body_bytes_for?(message_for "string")).to be true
       end
     end

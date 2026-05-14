@@ -17,14 +17,14 @@ if ARGV[0] == '--with-server'
     post('/') { 'VCR works with Net::HTTP posts!' }
   end
 else
-  $server = OpenStruct(:port => 0)
+  $server = OpenStruct(port: 0)
 end
 
 require 'vcr'
 
 VCR.configure do |c|
   c.default_cassette_options = {
-    :match_requests_on => [:method, :host, :path]
+    match_requests_on: [:method, :host, :path]
   }
 end
 ```

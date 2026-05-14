@@ -62,7 +62,7 @@ Feature: Allow Unused HTTP Interactions
       """ruby
       require 'vcr_config'
 
-      VCR.use_cassette("example", :allow_unused_http_interactions => false) do
+      VCR.use_cassette("example", allow_unused_http_interactions: false) do
         # no requests
       end
       """
@@ -78,7 +78,7 @@ Feature: Allow Unused HTTP Interactions
       """ruby
       require 'vcr_config'
 
-      VCR.use_cassette("example", :allow_unused_http_interactions => false) do
+      VCR.use_cassette("example", allow_unused_http_interactions: false) do
         Net::HTTP.get_response(URI("http://example.com/foo"))
       end
       """
@@ -90,7 +90,7 @@ Feature: Allow Unused HTTP Interactions
       """ruby
       require 'vcr_config'
 
-      VCR.use_cassette("example", :allow_unused_http_interactions => false) do
+      VCR.use_cassette("example", allow_unused_http_interactions: false) do
         raise "boom"
       end
       """

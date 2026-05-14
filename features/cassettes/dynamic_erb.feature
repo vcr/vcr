@@ -5,11 +5,11 @@ Feature: Dynamic ERB cassettes
   Usually, this is fine, but in some cases you need something more dynamic.
   You can use ERB for this.
 
-  To enable ERB evaluation of a cassette, pass the `:erb => true` option
+  To enable ERB evaluation of a cassette, pass the `erb: true` option
   to a cassette.  If you want to pass variables to the cassette, you can
-  pass the names and values of the variables in a hash (`:erb => { ... }`).
+  pass the names and values of the variables in a hash (`erb: { ... }`).
 
-  Scenario: Enable dynamic ERB cassette evalutation using :erb => true
+  Scenario: Enable dynamic ERB cassette evalutation using erb: true
     Given a previously recorded cassette file "cassettes/dynamic.yml" with:
       """yaml
       ---
@@ -46,7 +46,7 @@ Feature: Dynamic ERB cassettes
         c.cassette_library_dir = 'cassettes'
       end
 
-      VCR.use_cassette('dynamic', :erb => true) do
+      VCR.use_cassette('dynamic', erb: true) do
         response = Net::HTTP.get_response('example.com', '/foo?a=bbb')
         puts "Response: #{response.body}"
       end
@@ -54,7 +54,7 @@ Feature: Dynamic ERB cassettes
     When I run `ruby dynamic_erb_example.rb`
     Then it should pass with "Response: Hello bas"
 
-  Scenario: Pass arguments to the ERB using :erb => { ... }
+  Scenario: Pass arguments to the ERB using erb: { ... }
     Given a previously recorded cassette file "cassettes/dynamic.yml" with:
       """yaml
       ---
@@ -91,7 +91,7 @@ Feature: Dynamic ERB cassettes
         c.cassette_library_dir = 'cassettes'
       end
 
-      VCR.use_cassette('dynamic', :erb => { :arg1 => 7, :arg2 => 'baz' }) do
+      VCR.use_cassette('dynamic', erb: { arg1: 7, arg2: 'baz' }) do
         response = Net::HTTP.get_response('example.com', '/foo?a=7')
         puts "Response: #{response.body}"
       end

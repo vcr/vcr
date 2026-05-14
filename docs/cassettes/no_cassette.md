@@ -16,7 +16,7 @@ VCR is designed to help you remove all HTTP dependencies from your
 
     - `VCR.turn_off!` => turn VCR off so HTTP requests are allowed.
       Cassette insertions will trigger an error.
-    - `VCR.turn_off!(:ignore_cassettes => true)` => turn
+    - `VCR.turn_off!(ignore_cassettes: true)` => turn
       VCR off and ignore cassette insertions (so that no error is raised).
     - `VCR.turn_on!` => turn VCR back on
     - `VCR.turned_off { ... }` => turn VCR off for the duration of the
@@ -154,7 +154,7 @@ _When_ I run `ruby turn_off_vcr_and_insert_cassette.rb`
 
 _Then_ it should fail with "VCR is turned off.  You must turn it on before you can insert a cassette.".
 
-## Turning VCR off with `:ignore_cassettes => true` ignores cassettes
+## Turning VCR off with `ignore_cassettes: true` ignores cassettes
 
 _Given_ a file named "turn_off_vcr_and_insert_cassette.rb" with:
 
@@ -171,7 +171,7 @@ VCR.configure do |c|
 end
 WebMock.allow_net_connect!
 
-VCR.turn_off!(:ignore_cassettes => true)
+VCR.turn_off!(ignore_cassettes: true)
 
 VCR.use_cassette('example') do
   response = Net::HTTP.get_response('localhost', '/', $server.port).body

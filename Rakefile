@@ -22,7 +22,7 @@ namespace :vcr do
     sh "git checkout v2.0.0.beta1 -- spec/fixtures"
   end
 
-  task :migrate_cassettes => :reset_spec_cassettes
+  task migrate_cassettes: :reset_spec_cassettes
 end
 
 desc "Migrate cucumber cassettes"
@@ -32,7 +32,7 @@ task :migrate_cucumber_cassettes do
 
   VCR.configure do |c|
     c.cassette_library_dir = 'tmp/migrate'
-    c.default_cassette_options = { :serialize_with => :syck }
+    c.default_cassette_options = { serialize_with: :syck }
   end
 
   # We want 2.0.0 in the cucumber cassettes instead of 2.0.0.rc1

@@ -9,4 +9,4 @@ cp -f CHANGELOG.md CONTRIBUTING.md DEVELOPMENT.md README.md docs/
 echo ">> Copy files like CHANGELOG.md ok"
 node script/docsify-auto-sidebar.js -d docs
 echo ">> Sidebar ok"
-npx docsify serve docs/
+npx docsify-cli serve docs/

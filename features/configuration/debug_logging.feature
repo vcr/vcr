@@ -21,7 +21,7 @@ Feature: Debug Logging
         c.cassette_library_dir = 'cassettes'
         c.debug_logger = File.open(ARGV.first, 'w')
         c.default_cassette_options = {
-          :match_requests_on => [:method, :host, :path]
+          match_requests_on: [:method, :host, :path]
         }
       end
 

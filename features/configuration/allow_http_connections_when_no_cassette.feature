@@ -21,7 +21,7 @@ Feature: Allow HTTP connections when no cassette
         c.hook_into :webmock
         c.cassette_library_dir = 'cassettes'
         c.default_cassette_options = {
-          :match_requests_on => [:method, :host, :path]
+          match_requests_on: [:method, :host, :path]
         }
       end
       """

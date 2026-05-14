@@ -31,11 +31,11 @@ Feature: Faraday middleware
       end
 
       VCR.configure do |c|
-        c.default_cassette_options = { :serialize_with => :syck }
+        c.default_cassette_options = { serialize_with: :syck }
         c.cassette_library_dir = 'cassettes'
       end
 
-      conn = Faraday::Connection.new(:url => "http://localhost:#{$server.port}") do |builder|
+      conn = Faraday::Connection.new(url: "http://localhost:#{$server.port}") do |builder|
         builder.use VCR::Middleware::Faraday
         builder.adapter :<adapter>
       end

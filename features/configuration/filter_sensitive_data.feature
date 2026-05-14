@@ -84,12 +84,12 @@ Feature: Filter sensitive data
         c.filter_sensitive_data('<LOCATION>', :my_tag) { 'World' }
       end
 
-      VCR.use_cassette('tagged', :tag => :my_tag) do
+      VCR.use_cassette('tagged', tag: :my_tag) do
         response = Net::HTTP.get_response('localhost', '/', $server ? $server.port : 0)
         puts "Tagged Response: #{response.body}"
       end
 
-      VCR.use_cassette('untagged', :record => :new_episodes) do
+      VCR.use_cassette('untagged', record: :new_episodes) do
         response = Net::HTTP.get_response('localhost', '/', $server ? $server.port : 0)
         puts "Untagged Response: #{response.body}"
       end
@@ -139,7 +139,7 @@ Feature: Filter sensitive data
         end
       end
 
-      VCR.use_cassette('example', :match_requests_on => [:method, :uri, :headers]) do
+      VCR.use_cassette('example', match_requests_on: [:method, :uri, :headers]) do
         port = $server ? $server.port : 0
         puts "Response: " + response_body_for(
           :get, "http://localhost:#{port}/", nil,

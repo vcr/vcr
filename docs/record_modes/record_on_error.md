@@ -27,7 +27,7 @@ _Given_ a file named "record_when_no_error.rb" with:
 ```ruby
 require 'setup'
 
-VCR.use_cassette('example', :record_on_error => false) do
+VCR.use_cassette('example', record_on_error: false) do
   response = Net::HTTP.get_response('localhost', '/', $server.port)
   puts "Response: #{response.body}"
 end
@@ -46,7 +46,7 @@ _Given_ a file named "do_not_record_on_error.rb" with:
 ```ruby
 require 'setup'
 
-VCR.use_cassette('example', :record => :once, :record_on_error => false) do
+VCR.use_cassette('example', record: :once, record_on_error: false) do
   Net::HTTP.get_response('localhost', '/', $server.port)
   raise StandardError, 'The example failed'
 end
@@ -65,7 +65,7 @@ _Given_ a file named "record_on_error.rb" with:
 ```ruby
 require 'setup'
 
-VCR.use_cassette('example', :record => :once, :record_on_error => true) do
+VCR.use_cassette('example', record: :once, record_on_error: true) do
   Net::HTTP.get_response('localhost', '/', $server.port)
   raise StandardError, 'The example failed'
 end

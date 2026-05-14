@@ -157,8 +157,8 @@ module VCR
         lines = current_cassettes.inject(lines) do |memo, cassette|
           memo.concat([
              "  - #{cassette.file}",
-             "    - :record => #{cassette.record_mode.inspect}",
-             "    - :match_requests_on => #{cassette.match_requests_on.inspect}"
+             "    - record: #{cassette.record_mode.inspect}",
+             "    - match_requests_on: #{cassette.match_requests_on.inspect}"
           ])
         end
 
@@ -192,27 +192,27 @@ module VCR
 
       # List of suggestions for how to configure VCR to handle the request.
       ALL_SUGGESTIONS = {
-        :use_new_episodes => [
+        use_new_episodes: [
           ["You can use the :new_episodes record mode to allow VCR to",
            "record this new request to the existing cassette"],
           "https://benoittgt.github.io/vcr/?v=%s#/record_modes/new_episodes"
         ],
 
-        :delete_cassette_for_once => [
+        delete_cassette_for_once: [
           ["The current record mode (:once) does not allow new requests to be recorded",
            "to a previously recorded cassette. You can delete the cassette file and re-run",
            "your tests to allow the cassette to be recorded with this request"],
           "https://benoittgt.github.io/vcr/?v=%s#/record_modes/once"
         ],
 
-        :deal_with_none => [
+        deal_with_none: [
           ["The current record mode (:none) does not allow requests to be recorded. You",
            "can temporarily change the record mode to :once, delete the cassette file ",
            "and re-run your tests to allow the cassette to be recorded with this request"],
           "https://benoittgt.github.io/vcr/?v=%s#/record_modes/none"
         ],
 
-        :none_without_file => [
+        none_without_file: [
           ["The current record mode (:none) does not allow requests to be recorded.",
            "One or more cassette names registered was not found. Use ",
            ":new_episodes or :once record modes to record a new cassette"],
@@ -220,27 +220,27 @@ module VCR
         ],
           
 
-        :use_a_cassette => [
+        use_a_cassette: [
           ["If you want VCR to record this request and play it back during future test",
            "runs, you should wrap your test (or this portion of your test) in a",
            "`VCR.use_cassette` block"],
           "https://benoittgt.github.io/vcr/?v=%s#/getting_started"
         ],
 
-        :allow_http_connections_when_no_cassette => [
+        allow_http_connections_when_no_cassette: [
           ["If you only want VCR to handle requests made while a cassette is in use,",
            "configure `allow_http_connections_when_no_cassette = true`. VCR will",
            "ignore this request since it is made when there is no cassette"],
           "https://benoittgt.github.io/vcr/?v=%s#/configuration/allow_http_connections_when_no_cassette"
         ],
 
-        :ignore_request => [
+        ignore_request: [
           ["If you want VCR to ignore this request (and others like it), you can",
            "set an `ignore_request` callback"],
           "https://benoittgt.github.io/vcr/?v=%s#/configuration/ignore_request"
         ],
 
-        :allow_playback_repeats => [
+        allow_playback_repeats: [
           ["The cassette contains an HTTP interaction that matches this request,",
            "but it has already been played back. If you wish to allow a single HTTP",
            "interaction to be played back multiple times, set the `:allow_playback_repeats`",
@@ -248,7 +248,7 @@ module VCR
           "https://benoittgt.github.io/vcr/?v=%s#/request_matching/playback_repeats"
         ],
 
-        :match_requests_on => [
+        match_requests_on: [
           ["The cassette contains %s not been",
            "played back. If your request is non-deterministic, you may need to",
            "change your :match_requests_on cassette option to be more lenient",
@@ -256,7 +256,7 @@ module VCR
           "https://benoittgt.github.io/vcr/?v=%s#/request_matching"
         ],
 
-        :try_debug_logger => [
+        try_debug_logger: [
           ["If you're surprised VCR is raising this error",
            "and want insight about how VCR attempted to handle the request,",
            "you can use the debug_logger configuration option to log more details"],

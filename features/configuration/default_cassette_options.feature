@@ -15,7 +15,7 @@ Feature: default_cassette_options
       require 'vcr'
 
       VCR.configure do |c|
-        c.default_cassette_options = { :record => :new_episodes, :erb => true }
+        c.default_cassette_options = { record: :new_episodes, erb: true }
 
         # not important for this example, but must be set to something
         c.hook_into :webmock
@@ -111,7 +111,7 @@ Feature: default_cassette_options
       """ruby
       require 'vcr_setup.rb'
 
-      VCR.use_cassette('example', :re_record_interval => 10000) do
+      VCR.use_cassette('example', re_record_interval: 10000) do
         puts "Re-record Interval: #{VCR.current_cassette.re_record_interval}"
       end
       """
@@ -123,7 +123,7 @@ Feature: default_cassette_options
       """ruby
       require 'vcr_setup.rb'
 
-      VCR.use_cassette('example', :record => :none, :erb => false) do
+      VCR.use_cassette('example', record: :none, erb: false) do
         puts "Record Mode: #{VCR.current_cassette.record_mode}"
         puts "ERB: #{VCR.current_cassette.erb}"
       end

@@ -39,7 +39,7 @@ module VCR
     #   @return [void]
     # @example
     #   VCR.configure do |c|
-    #     c.default_cassette_options = { :record => :new_episodes }
+    #     c.default_cassette_options = { record: :new_episodes }
     #   end
     # @note {VCR#insert_cassette} for the list of valid options.
     attr_reader :default_cassette_options
@@ -184,7 +184,7 @@ module VCR
     #    end
     #  end
     #
-    #  VCR.use_cassette("my_cassette", :match_requests_on => [:method, :host, :port]) do
+    #  VCR.use_cassette("my_cassette", match_requests_on: [:method, :host, :port]) do
     #    # ...
     #  end
     #
@@ -490,14 +490,14 @@ module VCR
       @allow_http_connections_when_no_cassette = nil
       @rspec_metadata_configured = false
       @default_cassette_options = {
-        :record            => :once,
-        :record_on_error   => true,
-        :match_requests_on => RequestMatcherRegistry::DEFAULT_MATCHERS,
-        :allow_unused_http_interactions => true,
-        :drop_unused_requests => false,
-        :serialize_with    => :yaml,
-        :persist_with      => :file_system,
-        :persister_options => {}
+        record:            :once,
+        record_on_error:   true,
+        match_requests_on: RequestMatcherRegistry::DEFAULT_MATCHERS,
+        allow_unused_http_interactions: true,
+        drop_unused_requests: false,
+        serialize_with:    :yaml,
+        persist_with:      :file_system,
+        persister_options: {}
       }
 
       self.uri_parser = URI
