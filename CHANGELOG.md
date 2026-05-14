@@ -2,6 +2,7 @@ Changelog
 =========
 
 - [fix] Fix recompressing response to happen after replacing sensitive data (#951) by @cgunther
+- [fix] Fix frozen string literal warning when recompressing response (#1073) by @cgunther
 
 ## 6.4.0 (Dec 11, 2025)
 [Full Changelog](https://github.com/vcr/vcr/compare/v6.3.1...v6.4.0)
