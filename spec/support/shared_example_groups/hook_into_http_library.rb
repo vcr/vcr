@@ -1,4 +1,4 @@
-require 'cgi'
+require 'cgi/escape'
 
 NET_CONNECT_NOT_ALLOWED_ERROR = /An HTTP request has been made that VCR does not know how to handle/
 
