@@ -57,7 +57,7 @@ module VCR
     # @see VCR#insert_cassette
     def initialize(name, options = {})
       @name    = name
-      @options = VCR.configuration.default_cassette_options.merge(options)
+      @options = default_options.merge(options)
       @mutex   = Mutex.new
 
       assert_valid_options!
@@ -192,6 +192,15 @@ module VCR
 
       if invalid_options.size > 0
         raise ArgumentError.new("You passed the following invalid options to VCR::Cassette.new: #{invalid_options.inspect}.")
+      end
+    end
+
+    # Copies the configured defaults so that modifying a cassette's option
+    # (e.g. `cassette.match_requests_on << :body`) does not change the
+    # defaults used by every other cassette.
+    def default_options
+      VCR.configuration.default_cassette_options.transform_values do |value|
+        Array === value || Hash === value ? value.dup : value
       end
     end
 

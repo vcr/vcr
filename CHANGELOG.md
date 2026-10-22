@@ -3,6 +3,7 @@ Changelog
 
 - [fix] Fix recompressing response to happen after replacing sensitive data (#951) by @cgunther
 - [fix] Fix frozen string literal warning when recompressing response (#1073) by @cgunther
+- [fix] Don't let changes to a cassette's `match_requests_on`/`tags` modify `default_cassette_options` (#1006) by @anyingiit
 
 ## 6.4.0 (Dec 11, 2025)
 [Full Changelog](https://github.com/vcr/vcr/compare/v6.3.1...v6.4.0)
