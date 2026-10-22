@@ -45,6 +45,16 @@ RSpec.describe VCR::Cassette do
     it 'accepts an array as the :tags option' do
       expect(VCR::Cassette.new("name", tags: [:foo]).tags).to eq([:foo])
     end
+
+    it 'does not change the default :tags when adding tags for other options' do
+      VCR.configuration.default_cassette_options.merge!(tags: [:foo])
+
+      cassette = VCR::Cassette.new("name", preserve_exact_body_bytes: true)
+      expect(cassette.tags).to eq([:foo, :preserve_exact_body_bytes])
+
+      expect(VCR.configuration.default_cassette_options[:tags]).to eq([:foo])
+      expect(VCR::Cassette.new("another").tags).to eq([:foo])
+    end
   end
 
   describe '#record_http_interaction' do
@@ -169,6 +179,14 @@ RSpec.describe VCR::Cassette do
     it "returns a the default #match_requests_on when it has not been specified for the cassette" do
       c = VCR::Cassette.new('example')
       expect(c.match_requests_on).to eq([:uri, :method])
+    end
+
+    it "does not change the default #match_requests_on when the cassette's list is modified" do
+      c = VCR::Cassette.new('example')
+      c.match_requests_on << :body
+
+      expect(VCR.configuration.default_cassette_options[:match_requests_on]).to eq([:uri, :method])
+      expect(VCR::Cassette.new('another').match_requests_on).to eq([:uri, :method])
     end
   end
 
