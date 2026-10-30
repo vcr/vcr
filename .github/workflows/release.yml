@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+permissions: {}
+
+jobs:
+  push:
+    name: Push gem to RubyGems.org
+    runs-on: ubuntu-latest
+    environment: release
+    env:
+      BUNDLE_GEMFILE: release/Gemfile
+      VCR_RELEASE: "true"
+
+    # The release tag already exists, so `rake release` never pushes to git.
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: ruby/setup-ruby@7f797815d8adceb1c412e7abefdd1ab4abc47a5f # v1.335.0
+        with:
+          ruby-version: "ruby"
+          bundler-cache: true
+
+      - name: Check that the tag matches VCR.version
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          version="$(ruby -Ilib -rvcr/version -e 'puts VCR.version')"
+          if [ "$TAG" != "v$version" ]; then
+            echo "::error::Release tag $TAG does not match VCR.version v$version"
+            exit 1
+          fi
+
+      - uses: rubygems/release-gem@7f9650160c1a4e7989fdc9855807bdbd421d8b6b # v1.4.1

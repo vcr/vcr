@@ -5,19 +5,19 @@ This file details as many important parts of the process that you may need to kn
 ## Releasing
 
   0. Make a branch from the base branch
-  0. Change the version in the gemspec, based on SEMVER
+  0. Change the version in `lib/vcr/version.rb`, based on SEMVER
   0. Denote changes since last release in changelog file (see changelog notation below)
   0. Commit the changes with the body "Bumping to version X.Y.Z"
   0. Push the branch
   0. Make a pull request
   0. Get it merged
-  0. Pull down the new master
-  0. Run `bundle exec rake release`
+  0. Make a Release on GitHub, creating the tag `vX.Y.Z` on master, with the changelog differences as the release notes
+  0. Publishing the Release runs the Release workflow (`.github/workflows/release.yml`), which pushes the gem to RubyGems.org through Trusted Publishing
   0. Grab a drink
 
-Ancillary 1: Our documentation pages are have been automated as GitHub Pages, by wonderful community member Benoit Tigeot. Thank you.
+The workflow fails without pushing anything if the tag does not match `VCR.version`. It runs in the `release` GitHub environment, which a maintainer may need to approve.
 
-Ancillary 2: At your leisure make a Release on GitHub with the changelog differences. It's very helpful for many people.
+Ancillary: Our documentation pages are have been automated as GitHub Pages, by wonderful community member Benoit Tigeot. Thank you.
 
 ## Changelog
 

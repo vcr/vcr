@@ -1,0 +1,12 @@
+# Minimal dependency set used by the release workflow (BUNDLE_GEMFILE=release/Gemfile),
+# so the OIDC-authorized release job doesn't resolve the full development toolchain.
+#
+# This deliberately doesn't use `gemspec`: that would record VCR's own version in the
+# lockfile and make it stale on every version bump. `rake build` and `rake release` read
+# the gemspec directly, and its runtime dependencies aren't needed to build the gem.
+#
+# Dependabot keeps release/Gemfile.lock up to date (see .github/dependabot.yml).
+source "https://rubygems.org"
+
+# The Rakefile skips loading RSpec and Cucumber when VCR_RELEASE is set, so Rake is all that's needed.
+gem "rake", "~> 13.4"
