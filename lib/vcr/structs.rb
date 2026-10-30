@@ -366,8 +366,10 @@ module VCR
     end
 
     # Checks if the type of encoding is one of "gzip" or "deflate".
+    # An empty body is never compressed, whatever the header says: a HEAD
+    # response carries the Content-Encoding of the GET it describes.
     def compressed?
-      %w[ gzip deflate ].include? content_encoding
+      !body.to_s.empty? && %w[ gzip deflate ].include?(content_encoding)
     end
 
     # Checks if VCR decompressed the response body
@@ -381,6 +383,8 @@ module VCR
     # @raise [VCR::Errors::UnknownContentEncodingError] if the content encoding
     #  is not a known encoding.
     def decompress
+      return self if body.to_s.empty?
+
       self.class.decompress(body, content_encoding) { |new_body|
         self.body = new_body
         update_content_length_header
