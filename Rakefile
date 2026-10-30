@@ -1,18 +1,22 @@
 #!/usr/bin/env rake
 
 require "bundler/gem_tasks"
-require "rspec/core/rake_task"
 
-desc "Run all the tests in spec"
-RSpec::Core::RakeTask.new(:spec)
+# The release workflow sets VCR_RELEASE because its bundle (release/Gemfile) doesn't include RSpec or Cucumber.
+unless ENV["VCR_RELEASE"]
+  require "rspec/core/rake_task"
+
+  desc "Run all the tests in spec"
+  RSpec::Core::RakeTask.new(:spec)
+
+  require "cucumber/rake/task"
+  Cucumber::Rake::Task.new
+
+  desc "Default: run tests"
+  task default: [:spec, :cucumber]
+end
 
 using_git = File.exist?(File.expand_path('../.git/', __FILE__))
-
-require "cucumber/rake/task"
-Cucumber::Rake::Task.new
-
-desc "Default: run tests"
-task default: [:spec, :cucumber]
 
 load './lib/vcr/tasks/vcr.rake'
 namespace :vcr do

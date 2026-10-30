@@ -4,3 +4,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+  # Locked dependencies of the release workflow, see release/Gemfile
+  - package-ecosystem: "bundler"
+    directory: "/release"
+    schedule:
+      interval: "weekly"
