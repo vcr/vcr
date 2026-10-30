@@ -1,6 +1,9 @@
 Changelog
 =========
 
+## 6.4.1 (Oct 30, 2026)
+[Full Changelog](https://github.com/vcr/vcr/compare/v6.4.0...v6.4.1)
+
 - [fix] Fix recompressing response to happen after replacing sensitive data (#951) by @cgunther
 - [fix] Fix frozen string literal warning when recompressing response (#1073) by @cgunther
 - [fix] Don't decompress an empty body that carries a Content-Encoding header, as a HEAD response does (#1080) by @jakeonfire
