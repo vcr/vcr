@@ -701,6 +701,15 @@ module VCR
             }.to_not change { resp.headers['content-length'] }
           end
 
+          it "does nothing when the body is empty, as for a HEAD response" do
+            resp = instance('', 'gzip')
+            expect(resp).not_to be_compressed
+            expect {
+              expect(resp.decompress).to equal(resp)
+            }.to_not change { resp.headers['content-length'] }
+            expect(resp.body).to eq('')
+          end
+
           it "raises error for unrecognized encoding" do
             resp = instance('Hello', 'flabbergaster')
             expect(resp).not_to be_compressed
