@@ -451,6 +451,22 @@ module VCR
         subject.filter!(9000, "<PORT>")
         expect(request.uri).to eq("http://foo.com:<PORT>/bar")
       end
+
+      it 'replaces the sensitive text in frozen strings' do
+        request.uri = "http://foo.com/".freeze
+        response.body = "The body foo".freeze
+
+        expect(filtered.request.uri).to eq("http://AAA.com/")
+        expect(filtered.response.body).to eq("The body AAA")
+      end
+
+      it 'leaves the strings that do not contain the text untouched' do
+        body = response.body
+
+        subject.filter!('not present', 'AAA')
+
+        expect(response.body).to be(body)
+      end
     end
   end
 
