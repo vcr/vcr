@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## Unreleased
+
+- [fix] Re-enable WebMock when a cassette is inserted after `WebMock.disable!`, so VCR no longer silently lets requests through (#1062)
+
 ## 6.4.1 (Oct 30, 2026)
 [Full Changelog](https://github.com/vcr/vcr/compare/v6.4.0...v6.4.1)
 

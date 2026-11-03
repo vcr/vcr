@@ -70,6 +70,45 @@ RSpec.describe "WebMock hook", with_monkey_patches: :webmock do
     end
   end
 
+  describe "inserting a cassette after WebMock.disable!" do
+    let(:net_http_adapter) { ::WebMock::HttpLibAdapters::NetHttpAdapter }
+
+    before { ::WebMock.disable! }
+
+    after do
+      ::WebMock::HttpLibAdapterRegistry.instance.each_adapter { |_name, adapter| adapter.enable! }
+    end
+
+    it "re-enables WebMock so that VCR handles requests again" do
+      VCR.use_cassette("example", record: :none) do
+        expect(net_http_adapter).to be_enabled
+        expect {
+          Net::HTTP.get_response(URI("http://localhost:#{VCR::SinatraApp.port}/foo"))
+        }.to raise_error(VCR::Errors::UnhandledHTTPRequestError)
+      end
+    end
+
+    it "keeps the WebMock adapters of libraries VCR hooks into directly disabled" do
+      expect(::WebMock).to receive(:enable!).with(except: [:excon, :typhoeus])
+
+      VCR.insert_cassette("example")
+    end
+
+    it "leaves WebMock disabled when the cassette is ignored because VCR is turned off" do
+      VCR.turned_off(ignore_cassettes: true) do
+        VCR.insert_cassette("example")
+      end
+
+      expect(net_http_adapter).not_to be_enabled
+    end
+  end
+
+  it "does not re-enable WebMock on cassette insertion when it is already enabled" do
+    expect(::WebMock).not_to receive(:enable!)
+
+    VCR.insert_cassette("example")
+  end
+
   http_libs = %w[net/http patron httpclient em-http-request curb typhoeus excon]
   http_libs.each do |lib|
     other = []

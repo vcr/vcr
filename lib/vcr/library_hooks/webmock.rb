@@ -31,6 +31,23 @@ module VCR
         Thread.current[:_vcr_webmock_disabled_requests] ||= []
       end
 
+      # WebMock.disable! also removes the hook VCR relies on, so a cassette
+      # inserted afterwards would silently let requests through (#1062).
+      def reenable_webmock_if_disabled
+        net_http_adapter = ::WebMock::HttpLibAdapters::NetHttpAdapter
+        return unless net_http_adapter.respond_to?(:enabled?)
+        return if net_http_adapter.enabled?
+
+        ::WebMock.enable!(except: adapters_hooked_directly_by_vcr)
+      end
+
+      def adapters_hooked_directly_by_vcr
+        [].tap do |adapters|
+          adapters << :excon if defined?(::VCR::LibraryHooks::Excon)
+          adapters << :typhoeus if defined?(::VCR::LibraryHooks::Typhoeus)
+        end
+      end
+
       # @private
       module Helpers
         def vcr_request_for(webmock_request)
