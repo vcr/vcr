@@ -559,16 +559,14 @@ module VCR
       # Ruby 3.4+), and copying every string of every interaction for each filter
       # dominates cassette loading for suites declaring many filters.
       def filter_object!(object, text, replacement_text)
-        return object.include?(text) ? object.gsub(text, replacement_text) : object if object.respond_to?(:gsub)
-
-        if ::Hash === object
+        if object.respond_to?(:gsub)
+          object = object.gsub(text, replacement_text) if object.include?(text)
+        elsif ::Hash === object
           filter_hash!(object, text, replacement_text)
         elsif object.respond_to?(:each_pair) && object.respond_to?(:[]=)
           object.each_pair { |name, value| object[name] = filter_object!(value, text, replacement_text) }
         elsif ::Array === object
           object.map! { |value| filter_object!(value, text, replacement_text) }
-        elsif object.respond_to?(:each)
-          object.each { |value| filter_object!(value, text, replacement_text) }
         end
 
         object
