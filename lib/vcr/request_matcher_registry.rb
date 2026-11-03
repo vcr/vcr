@@ -28,12 +28,24 @@ module VCR
               [key, value]
             end
 
-            params.reject! { |p| params_to_ignore.include?(p.first) }
+            params.reject! { |p| ignored_param?(p.first) }
             params.map!    { |p| p.join('=') }
           }.join('&')
 
           uri.query = nil if uri.query.empty?
         end
+      end
+
+      # Recorded URIs are usually percent-encoded (WebMock writes `tag[]` as
+      # `tag%5B%5D`), so an ignored name matches either spelling.
+      def ignored_param?(key)
+        params_to_ignore.include?(key) || params_to_ignore.include?(decoded_param_name(key))
+      end
+
+      def decoded_param_name(key)
+        URI.decode_www_form_component(key).sub(/\[\]\z/, '')
+      rescue ArgumentError # invalid %-encoding
+        key
       end
 
       def call(request_1, request_2)
