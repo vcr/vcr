@@ -166,13 +166,18 @@ module VCR
           expect(matches).to be false
         end
 
-        it 'does not choke on an invalid percent-encoding accepted by the URI parser' do
-          require 'addressable/uri'
-          allow(config).to receive(:uri_parser) { Addressable::URI }
+        it 'ignores params given with their trailing brackets' do
+          matches = subject[subject.send(meth, 'tag[]')].matches?(
+            request_with(uri: 'http://example.com/search?foo=124&tag%5B%5D=a'),
+            request_with(uri: 'http://example.com/search?foo=124&tag[]=b')
+          )
+          expect(matches).to be true
+        end
 
-          matches = subject[subject.send(meth, :foo)].matches?(
-            request_with(uri: 'http://example.com/search?foo=1&bar%zz=1'),
-            request_with(uri: 'http://example.com/search?foo=2&bar%zz=1')
+        it 'ignores raw query params given by their encoded name' do
+          matches = subject[subject.send(meth, 'date%5Bgte%5D')].matches?(
+            request_with(uri: 'http://example.com/search?foo=124&date[gte]=1'),
+            request_with(uri: 'http://example.com/search?foo=124&date[gte]=2')
           )
           expect(matches).to be true
         end

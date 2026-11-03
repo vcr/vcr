@@ -37,15 +37,13 @@ module VCR
       end
 
       # Recorded URIs are usually percent-encoded (WebMock writes `tag[]` as
-      # `tag%5B%5D`), so an ignored name matches either spelling.
-      def ignored_param?(key)
-        params_to_ignore.include?(key) || params_to_ignore.include?(decoded_param_name(key))
+      # `tag%5B%5D`), so names are compared once decoded, on both sides.
+      def self.normalized_param_name(name)
+        URI::DEFAULT_PARSER.unescape(name.to_s).delete_suffix('[]')
       end
 
-      def decoded_param_name(key)
-        URI.decode_www_form_component(key).sub(/\[\]\z/, '')
-      rescue ArgumentError # invalid %-encoding
-        key
+      def ignored_param?(key)
+        params_to_ignore.include?(self.class.normalized_param_name(key))
       end
 
       def call(request_1, request_2)
@@ -109,8 +107,7 @@ module VCR
 
     def uri_without_param_matchers
       @uri_without_param_matchers ||= Hash.new do |hash, params|
-        params = params.map(&:to_s)
-        hash[params] = URIWithoutParamsMatcher.new(params)
+        hash[params] = URIWithoutParamsMatcher.new(params.map { |param| URIWithoutParamsMatcher.normalized_param_name(param) })
       end
     end
 
