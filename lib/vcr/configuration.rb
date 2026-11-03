@@ -574,7 +574,8 @@ module VCR
       end
 
       before_playback(:update_content_length_header) do |interaction|
-        interaction.response.update_content_length_header
+        # A HEAD response has no body but carries the Content-Length of the GET it describes.
+        interaction.response.update_content_length_header unless interaction.request.method == :head
       end
 
       before_record(:decode_compressed_response) do |interaction|
