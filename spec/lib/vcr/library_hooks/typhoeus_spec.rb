@@ -26,6 +26,12 @@ RSpec.describe "Typhoeus hook", with_monkey_patches: :typhoeus, if: (RUBY_INTERP
       expect(::WebMock::HttpLibAdapters::TyphoeusAdapter).to receive(:disable!)
       $typhoeus_after_loaded_hook.conditionally_invoke
     end
+
+    it 'prevents WebMock.enable! from re-enabling the typhoeus adapter' do
+      $typhoeus_after_loaded_hook.conditionally_invoke
+      ::WebMock.enable!
+      expect(::WebMock::HttpLibAdapters::TyphoeusAdapter).to be_disabled
+    end
   end
 
   context 'when there are nested hydra queues' do

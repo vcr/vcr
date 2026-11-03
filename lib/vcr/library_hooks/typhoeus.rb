@@ -7,6 +7,14 @@ module VCR
     # @private
     module Typhoeus
       # @private
+      module WebMockEnableGuard
+        def enable!(options = {})
+          except = [options[:except]].flatten.compact | [:typhoeus]
+          super(options.merge(except: except))
+        end
+      end
+
+      # @private
       class RequestHandler < ::VCR::RequestHandler
         attr_reader :request
         def initialize(request)
@@ -128,5 +136,12 @@ VCR.configuration.after_library_hooks_loaded do
   # (i.e. to double record requests or whatever).
   if defined?(WebMock::HttpLibAdapters::TyphoeusAdapter)
     WebMock::HttpLibAdapters::TyphoeusAdapter.disable!
+
+    # Guard against anything that calls WebMock.enable! later (e.g.
+    # webmock/rspec's before(:suite) hook) re-enabling the Typhoeus
+    # adapter and bringing both hooks back into conflict.
+    unless ::WebMock.singleton_class < VCR::LibraryHooks::Typhoeus::WebMockEnableGuard
+      ::WebMock.singleton_class.prepend(VCR::LibraryHooks::Typhoeus::WebMockEnableGuard)
+    end
   end
 end
