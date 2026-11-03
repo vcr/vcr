@@ -267,6 +267,17 @@ RSpec.describe VCR::Cassette do
             VCR::Cassette.new('example', record: record_mode, update_content_length_header: true).http_interactions
           end
 
+          it 'leaves the content_length header of a HEAD response untouched when given update_content_length_header: true' do
+            head_interaction = VCR::HTTPInteraction.new(
+              VCR::Request.new(:head),
+              VCR::Response.new(VCR::ResponseStatus.new, { 'Content-Length' => ['42'] }, '')
+            )
+            stub_old_interactions([head_interaction])
+
+            VCR::Cassette.new('example', record: record_mode, update_content_length_header: true).http_interactions
+            expect(head_interaction.response.headers['Content-Length']).to eq(['42'])
+          end
+
           [nil, false].each do |val|
             it "does not update the content_lenth headers when given update_content_length_header: #{val.inspect}" do
               stub_old_interactions(interactions)

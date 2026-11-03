@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## Unreleased
+
+- [fix] Leave the Content-Length header of a HEAD response untouched when `update_content_length_header` is enabled (#779)
+
 ## 6.4.1 (Oct 30, 2026)
 [Full Changelog](https://github.com/vcr/vcr/compare/v6.4.0...v6.4.1)
 

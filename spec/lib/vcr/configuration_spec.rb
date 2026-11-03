@@ -175,7 +175,7 @@ RSpec.describe VCR::Configuration do
 
   %w[ filter_sensitive_data define_cassette_placeholder ].each do |method|
     describe "##{method}" do
-      let(:interaction) { double('interaction').as_null_object }
+      let(:interaction) { double('interaction', request: VCR::Request.new(:get)).as_null_object }
       before(:each) { allow(interaction).to receive(:filter!) }
 
       it 'adds a before_record hook that replaces the string returned by the block with the given string' do
