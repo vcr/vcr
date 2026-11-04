@@ -549,42 +549,35 @@ module VCR
       def filter!(text, replacement_text)
         text, replacement_text = text.to_s, replacement_text.to_s
         return self if [text, replacement_text].any? { |t| t.empty? }
-        ensure_mutable_strings!(self)
         filter_object!(self, text, replacement_text)
       end
 
     private
 
-      # Walk the interaction and replace any String values with a dup'd copy
-      # so that subsequent in-place mutations (e.g. gsub!) don't trigger
-      # "literal string will be frozen" warnings on Ruby 3.4+.
-      def ensure_mutable_strings!(object)
-        if object.respond_to?(:each_pair) && object.respond_to?(:[]=)
-          object.each_pair { |name, v| v.is_a?(String) ? object[name] = v.dup : ensure_mutable_strings!(v) }
-        elsif object.is_a?(Array)
-          object.each_with_index { |o, i| o.is_a?(String) ? object[i] = o.dup : ensure_mutable_strings!(o) }
-        end
-      end
-
+      # Strings are replaced rather than mutated with gsub!, and only when they
+      # contain the text: cassette strings may be frozen (or chilled literals on
+      # Ruby 3.4+), and copying every string of every interaction for each filter
+      # dominates cassette loading for suites declaring many filters.
       def filter_object!(object, text, replacement_text)
         if object.respond_to?(:gsub)
-          object.gsub!(text, replacement_text) if object.include?(text)
-        elsif Hash === object
+          object = object.gsub(text, replacement_text) if object.include?(text)
+        elsif ::Hash === object
           filter_hash!(object, text, replacement_text)
-        elsif object.respond_to?(:each)
-          # This handles nested arrays and structs
-          object.each { |o| filter_object!(o, text, replacement_text) }
+        elsif object.respond_to?(:each_pair) && object.respond_to?(:[]=)
+          object.each_pair { |name, value| object[name] = filter_object!(value, text, replacement_text) }
+        elsif ::Array === object
+          object.map! { |value| filter_object!(value, text, replacement_text) }
         end
 
         object
       end
 
       def filter_hash!(hash, text, replacement_text)
-        filter_object!(hash.values, text, replacement_text)
+        hash.transform_values! { |value| filter_object!(value, text, replacement_text) }
 
-        hash.keys.each do |k|
-          new_key = filter_object!(k.dup, text, replacement_text)
-          hash[new_key] = hash.delete(k) unless k == new_key
+        hash.keys.each do |key|
+          new_key = filter_object!(key, text, replacement_text)
+          hash[new_key] = hash.delete(key) unless key.equal?(new_key)
         end
       end
     end
