@@ -24,6 +24,16 @@ Feature: Filter sensitive data
   substitution string so that the interaction will be identical to what was
   originally recorded.
 
+  Because of this, a block that reads the sensitive text from the very
+  field being filtered (e.g. a query parameter parsed from
+  `interaction.request.uri`) cannot round-trip: on playback, the block is
+  yielded the interaction loaded from the cassette, which already contains
+  the substitution string, so the original value can no longer be
+  recovered. Read the sensitive text from somewhere that is not filtered
+  (an environment variable, a lookup table), or leave that parameter out
+  of request matching with
+  `match_requests_on: [:method, VCR.request_matchers.uri_without_param(:secret)]`.
+
   Warning, the data you're filtering may have been escaped or encoded.
   Thus you may need to escape the sensitive text. For example, if
   "some&password" is in your cassette within a context which is html
