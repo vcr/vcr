@@ -267,6 +267,27 @@ RSpec.describe VCR::Cassette do
             VCR::Cassette.new('example', record: record_mode, update_content_length_header: true).http_interactions
           end
 
+          it 'leaves the content_length header of HEAD and 304 responses untouched when given update_content_length_header: true' do
+            head_interaction = VCR::HTTPInteraction.new(
+              VCR::Request.new(:head),
+              VCR::Response.new(VCR::ResponseStatus.new(200), { 'Content-Length' => ['42'] }, '')
+            )
+            not_modified_interaction = VCR::HTTPInteraction.new(
+              VCR::Request.new(:get),
+              VCR::Response.new(VCR::ResponseStatus.new(304), { 'Content-Length' => ['42'] }, '')
+            )
+            get_interaction = VCR::HTTPInteraction.new(
+              VCR::Request.new(:get),
+              VCR::Response.new(VCR::ResponseStatus.new(200), { 'Content-Length' => ['42'] }, 'body')
+            )
+            stub_old_interactions([head_interaction, not_modified_interaction, get_interaction])
+
+            VCR::Cassette.new('example', record: record_mode, update_content_length_header: true).http_interactions
+            expect(head_interaction.response.headers['Content-Length']).to eq(['42'])
+            expect(not_modified_interaction.response.headers['Content-Length']).to eq(['42'])
+            expect(get_interaction.response.headers['Content-Length']).to eq(['4'])
+          end
+
           [nil, false].each do |val|
             it "does not update the content_lenth headers when given update_content_length_header: #{val.inspect}" do
               stub_old_interactions(interactions)

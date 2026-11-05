@@ -574,7 +574,11 @@ module VCR
       end
 
       before_playback(:update_content_length_header) do |interaction|
-        interaction.response.update_content_length_header
+        # HEAD and 304 responses have no body, yet their Content-Length is the size
+        # of the resource they describe (RFC 9110 §8.6).
+        unless interaction.request.method == :head || interaction.response.status.code == 304
+          interaction.response.update_content_length_header
+        end
       end
 
       before_record(:decode_compressed_response) do |interaction|

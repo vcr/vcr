@@ -4,7 +4,7 @@ Feature: Update content_length header
   VCR will ensure that the `Content-Length` header will have the correct
   value.  This is useful in several situations:
 
-    - When you manually edit the cassette file and change the resonse body
+    - When you manually edit the cassette file and change the response body
       length.  You can use this option so you don't have to manually calculate
       and update the body length.
     - When you use ERB, the response body length may vary.  This will ensure
@@ -13,6 +13,9 @@ Feature: Update content_length header
       it to use Psych), has a bug where it sometimes will remove some
       whitespace strings when you serialize them.  This may cause the
       `Content-Length` header to have the wrong value.
+
+  HEAD and 304 Not Modified responses are left untouched: they have no body,
+  but their `Content-Length` is the size of the resource they describe.
 
   This is especially important when you use a client that checks the
   `Content-Length` header.  Mechanize, for example, will raise an `EOFError`
