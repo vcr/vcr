@@ -1,3 +1,4 @@
+require 'uri'
 require 'vcr/errors'
 
 module VCR
@@ -36,10 +37,13 @@ module VCR
         end
       end
 
+      # URI::DEFAULT_PARSER.unescape warns as obsolete since uri 1.0 (Ruby 3.4)
+      PARAM_NAME_UNESCAPER = URI::RFC2396_Parser.new
+
       # Recorded URIs are usually percent-encoded (WebMock writes `tag[]` as
       # `tag%5B%5D`), so names are compared once decoded, on both sides.
       def self.normalized_param_name(name)
-        URI::DEFAULT_PARSER.unescape(name.to_s).delete_suffix('[]')
+        PARAM_NAME_UNESCAPER.unescape(name.to_s).delete_suffix('[]')
       end
 
       def ignored_param?(key)
