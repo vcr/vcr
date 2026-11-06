@@ -1,3 +1,4 @@
+require 'uri'
 require 'vcr/errors'
 
 module VCR
@@ -28,12 +29,25 @@ module VCR
               [key, value]
             end
 
-            params.reject! { |p| params_to_ignore.include?(p.first) }
+            params.reject! { |p| ignored_param?(p.first) }
             params.map!    { |p| p.join('=') }
           }.join('&')
 
           uri.query = nil if uri.query.empty?
         end
+      end
+
+      # URI::DEFAULT_PARSER.unescape warns as obsolete since uri 1.0 (Ruby 3.4)
+      PARAM_NAME_UNESCAPER = URI::RFC2396_Parser.new
+
+      # Recorded URIs are usually percent-encoded (WebMock writes `tag[]` as
+      # `tag%5B%5D`), so names are compared once decoded, on both sides.
+      def self.normalized_param_name(name)
+        PARAM_NAME_UNESCAPER.unescape(name.to_s).delete_suffix('[]')
+      end
+
+      def ignored_param?(key)
+        params_to_ignore.include?(self.class.normalized_param_name(key))
       end
 
       def call(request_1, request_2)
@@ -97,8 +111,7 @@ module VCR
 
     def uri_without_param_matchers
       @uri_without_param_matchers ||= Hash.new do |hash, params|
-        params = params.map(&:to_s)
-        hash[params] = URIWithoutParamsMatcher.new(params)
+        hash[params] = URIWithoutParamsMatcher.new(params.map { |param| URIWithoutParamsMatcher.normalized_param_name(param) })
       end
     end
 

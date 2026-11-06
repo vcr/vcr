@@ -142,6 +142,46 @@ module VCR
           expect(matches).to be true
         end
 
+        it 'ignores percent-encoded query params given by their decoded name' do
+          matches = subject[subject.send(meth, 'date[gte]', :tag)].matches?(
+            request_with(uri: 'http://example.com/search?foo=124&date%5Bgte%5D=1&tag%5B%5D=a&tag%5B%5D=b'),
+            request_with(uri: 'http://example.com/search?foo=124&date%5Bgte%5D=2&tag%5B%5D=c')
+          )
+          expect(matches).to be true
+        end
+
+        it 'still ignores percent-encoded query params given by their encoded name' do
+          matches = subject[subject.send(meth, 'date%5Bgte%5D')].matches?(
+            request_with(uri: 'http://example.com/search?foo=124&date%5Bgte%5D=1'),
+            request_with(uri: 'http://example.com/search?foo=124&date%5Bgte%5D=2')
+          )
+          expect(matches).to be true
+        end
+
+        it 'still takes into account percent-encoded query params that are not ignored' do
+          matches = subject[subject.send(meth, :foo)].matches?(
+            request_with(uri: 'http://example.com/search?foo=1&date%5Bgte%5D=1'),
+            request_with(uri: 'http://example.com/search?foo=2&date%5Bgte%5D=2')
+          )
+          expect(matches).to be false
+        end
+
+        it 'ignores params given with their trailing brackets' do
+          matches = subject[subject.send(meth, 'tag[]')].matches?(
+            request_with(uri: 'http://example.com/search?foo=124&tag%5B%5D=a'),
+            request_with(uri: 'http://example.com/search?foo=124&tag[]=b')
+          )
+          expect(matches).to be true
+        end
+
+        it 'ignores raw query params given by their encoded name' do
+          matches = subject[subject.send(meth, 'date%5Bgte%5D')].matches?(
+            request_with(uri: 'http://example.com/search?foo=124&date[gte]=1'),
+            request_with(uri: 'http://example.com/search?foo=124&date[gte]=2')
+          )
+          expect(matches).to be true
+        end
+
         it 'can ignore multiple named parameters' do
           matches = subject[subject.send(meth, :foo, :bar)].matches?(
             request_with(uri: 'http://example.com/search?foo=123&bar=r&baz=9'),
