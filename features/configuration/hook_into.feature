@@ -23,6 +23,13 @@ Feature: hook_into
     - WebMock uses extensive monkey patching to hook into supported HTTP
       libraries.  No monkey patching is used for Typhoeus, Excon or Faraday.
     - Typhoeus, Excon, Faraday can be used together, and with WebMock.
+    - WebMock normalizes request URIs before VCR sees them. With its default
+      `query_values_notation` (`:subscript`), only the last value of a repeated
+      query parameter is kept (`?loc=1&loc=2&loc=3` becomes `?loc=3`), so such
+      requests are recorded and matched incorrectly. Setting
+      `WebMock::Config.instance.query_values_notation = :flat_array` before any
+      request is made keeps every value, but also changes how WebMock's own
+      `hash_including` query stubs behave (see bblimke/webmock#764).
 
   Regardless of which library you use, VCR takes care of all of the configuration
   for you.  You should not need to interact directly with WebMock or the
