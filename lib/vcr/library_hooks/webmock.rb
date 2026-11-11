@@ -33,12 +33,16 @@ module VCR
 
       # WebMock.disable! also removes the hook VCR relies on, so a cassette
       # inserted afterwards would silently let requests through (#1062).
-      # WebMock is disabled again once every cassette inserted since then,
-      # in any thread, is ejected.
+      # Once every cassette inserted since then, in any thread, is ejected,
+      # WebMock is disabled again with the options of the user's last
+      # WebMock.disable!, unless the user enabled or disabled WebMock in
+      # the meantime. A disable! that VCR did not see, made before this
+      # hook was loaded, is detected through Net::HTTP.
       def reenable_webmock_if_disabled(cassette)
         REENABLED_WEBMOCK_MUTEX.synchronize do
-          if ::Net::HTTP.equal?(::WebMock::HttpLibAdapters::NetHttpAdapter::OriginalNetHTTP)
-            ::WebMock.enable!(except: adapters_hooked_directly_by_vcr)
+          if ::Net::HTTP.equal?(::WebMock::HttpLibAdapters::NetHttpAdapter::OriginalNetHTTP) ||
+             (cassettes_keeping_webmock_enabled.empty? && @webmock_disable_options)
+            toggling_webmock { ::WebMock.enable!(except: adapters_hooked_directly_by_vcr) }
             cassettes_keeping_webmock_enabled.clear
           elsif cassettes_keeping_webmock_enabled.empty?
             return
@@ -52,7 +56,22 @@ module VCR
         REENABLED_WEBMOCK_MUTEX.synchronize do
           return unless cassettes_keeping_webmock_enabled.delete(cassette)
 
-          ::WebMock.disable! if cassettes_keeping_webmock_enabled.empty?
+          if cassettes_keeping_webmock_enabled.empty?
+            toggling_webmock { ::WebMock.disable!(@webmock_disable_options || {}) }
+          end
+        end
+      end
+
+      # The user's own WebMock.enable! (no disable options) or disable! wins
+      # over the state VCR would restore on eject. It runs under the lock,
+      # so no cassette is inserted between the bookkeeping and the toggle.
+      def webmock_toggled_by_user(disable_options)
+        return yield if Thread.current[:_vcr_toggling_webmock]
+
+        REENABLED_WEBMOCK_MUTEX.synchronize do
+          cassettes_keeping_webmock_enabled.clear
+          @webmock_disable_options = disable_options
+          yield
         end
       end
 
@@ -60,6 +79,28 @@ module VCR
 
       def cassettes_keeping_webmock_enabled
         @cassettes_keeping_webmock_enabled ||= []
+      end
+
+      def toggling_webmock
+        Thread.current[:_vcr_toggling_webmock] = true
+        yield
+      ensure
+        Thread.current[:_vcr_toggling_webmock] = nil
+      end
+
+      # @private
+      module WebMockToggleGuard
+        def enable!(options = {})
+          VCR::LibraryHooks::WebMock.webmock_toggled_by_user(nil) { super }
+        end
+
+        def disable!(options = {})
+          VCR::LibraryHooks::WebMock.webmock_toggled_by_user(options) { super }
+        end
+      end
+
+      unless ::WebMock.singleton_class < WebMockToggleGuard
+        ::WebMock.singleton_class.prepend(WebMockToggleGuard)
       end
 
       def adapters_hooked_directly_by_vcr

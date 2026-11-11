@@ -83,6 +83,8 @@ RSpec.describe "WebMock hook", with_monkey_patches: :webmock do
 
     after do
       ::WebMock::HttpLibAdapterRegistry.instance.each_adapter { |_name, adapter| adapter.enable! }
+      VCR::LibraryHooks::WebMock.cassettes_keeping_webmock_enabled.clear
+      VCR::LibraryHooks::WebMock.instance_variable_set(:@webmock_disable_options, nil)
     end
 
     it "re-enables WebMock so that VCR handles requests again" do
@@ -119,6 +121,43 @@ RSpec.describe "WebMock hook", with_monkey_patches: :webmock do
       eject << true
       other_thread.join
       expect(webmock_enabled?).to be false
+    end
+
+    it "leaves WebMock enabled when the user enabled it while the cassette was in" do
+      VCR.use_cassette("example", record: :none) { ::WebMock.enable! }
+
+      expect(webmock_enabled?).to be true
+    end
+
+    it "restores the adapters a partial WebMock.disable! left enabled" do
+      original_http_client = ::WebMock::HttpLibAdapters::HTTPClientAdapter::OriginalHttpClient
+      ::WebMock.disable!(except: [:httpclient])
+
+      VCR.use_cassette("example", record: :none) do
+        expect(webmock_enabled?).to be true
+      end
+
+      expect(webmock_enabled?).to be false
+      expect(::HTTPClient).not_to equal(original_http_client)
+    end
+
+    it "re-enables WebMock after a partial WebMock.disable! that leaves Net::HTTP hooked" do
+      ::WebMock.disable!(except: [:net_http])
+
+      VCR.use_cassette("example", record: :none) do
+        expect {
+          HTTPClient.new.get("http://localhost:#{VCR::SinatraApp.port}/foo")
+        }.to raise_error(VCR::Errors::UnhandledHTTPRequestError)
+      end
+
+      expect(HTTPClient.new.get("http://localhost:#{VCR::SinatraApp.port}/foo").body).to eq("FOO!")
+    end
+
+    it "does not insert the cassette when re-enabling WebMock fails" do
+      allow(::WebMock).to receive(:enable!).and_raise("boom")
+
+      expect { VCR.insert_cassette("example") }.to raise_error("boom")
+      expect(VCR.current_cassette).to be_nil
     end
 
     it "keeps the WebMock adapters of libraries VCR hooks into directly disabled" do
