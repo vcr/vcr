@@ -84,7 +84,8 @@ module VCR
   #  will apply to the cassette.
   # @option options :update_content_length_header [Boolean] Whether or
   #  not to overwrite the Content-Length header of the responses to
-  #  match the length of the response body. Defaults to false.
+  #  match the length of the response body, except for HEAD and
+  #  304 Not Modified responses. Defaults to false.
   # @option options :decode_compressed_response [Boolean] Whether or
   #  not to decode compressed responses before recording the cassette.
   #  This makes the cassette more human readable. Defaults to false.
