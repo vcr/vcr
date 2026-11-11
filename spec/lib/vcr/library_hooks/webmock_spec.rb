@@ -71,7 +71,13 @@ RSpec.describe "WebMock hook", with_monkey_patches: :webmock do
   end
 
   describe "inserting a cassette after WebMock.disable!" do
-    let(:net_http_adapter) { ::WebMock::HttpLibAdapters::NetHttpAdapter }
+    def make_request
+      Net::HTTP.get_response(URI("http://localhost:#{VCR::SinatraApp.port}/foo")).body
+    end
+
+    def webmock_enabled?
+      !::Net::HTTP.equal?(::WebMock::HttpLibAdapters::NetHttpAdapter::OriginalNetHTTP)
+    end
 
     before { ::WebMock.disable! }
 
@@ -81,11 +87,19 @@ RSpec.describe "WebMock hook", with_monkey_patches: :webmock do
 
     it "re-enables WebMock so that VCR handles requests again" do
       VCR.use_cassette("example", record: :none) do
-        expect(net_http_adapter).to be_enabled
-        expect {
-          Net::HTTP.get_response(URI("http://localhost:#{VCR::SinatraApp.port}/foo"))
-        }.to raise_error(VCR::Errors::UnhandledHTTPRequestError)
+        expect(webmock_enabled?).to be true
+        expect { make_request }.to raise_error(VCR::Errors::UnhandledHTTPRequestError)
       end
+    end
+
+    it "disables WebMock again when that cassette is ejected" do
+      VCR.use_cassette("outer", record: :none) do
+        VCR.use_cassette("inner", record: :none) { }
+        expect(webmock_enabled?).to be true
+      end
+
+      expect(webmock_enabled?).to be false
+      expect(make_request).to eq("FOO!")
     end
 
     it "keeps the WebMock adapters of libraries VCR hooks into directly disabled" do
@@ -99,7 +113,7 @@ RSpec.describe "WebMock hook", with_monkey_patches: :webmock do
         VCR.insert_cassette("example")
       end
 
-      expect(net_http_adapter).not_to be_enabled
+      expect(webmock_enabled?).to be false
     end
   end
 

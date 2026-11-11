@@ -138,7 +138,7 @@ module VCR
 
       cassette = Cassette.new(name, options)
       context_cassettes.push(cassette)
-      LibraryHooks::WebMock.reenable_webmock_if_disabled if defined?(LibraryHooks::WebMock)
+      LibraryHooks::WebMock.reenable_webmock_if_disabled(cassette) if defined?(LibraryHooks::WebMock)
       cassette
     elsif !ignore_cassettes?
       message = "VCR is turned off.  You must turn it on before you can insert a cassette.  " +
@@ -164,6 +164,7 @@ module VCR
     cassette
   ensure
     context_cassettes.delete(cassette)
+    LibraryHooks::WebMock.restore_disabled_webmock(cassette) if defined?(LibraryHooks::WebMock)
   end
 
   # Inserts a cassette using the given name and options, runs the given
