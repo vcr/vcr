@@ -36,16 +36,13 @@ module VCR
       # Once every cassette inserted since then, in any thread, is ejected,
       # WebMock is disabled again with the options of the user's last
       # WebMock.disable!, unless the user enabled or disabled WebMock in
-      # the meantime. A disable! that VCR did not see, made before this
-      # hook was loaded, is detected through Net::HTTP.
+      # the meantime.
       def reenable_webmock_if_disabled(cassette)
         REENABLED_WEBMOCK_MUTEX.synchronize do
-          if ::Net::HTTP.equal?(::WebMock::HttpLibAdapters::NetHttpAdapter::OriginalNetHTTP) ||
-             (cassettes_keeping_webmock_enabled.empty? && @webmock_disable_options)
+          if cassettes_keeping_webmock_enabled.empty?
+            return unless @webmock_disable_options
+
             toggling_webmock { ::WebMock.enable!(except: adapters_hooked_directly_by_vcr) }
-            cassettes_keeping_webmock_enabled.clear
-          elsif cassettes_keeping_webmock_enabled.empty?
-            return
           end
 
           cassettes_keeping_webmock_enabled << cassette
@@ -57,22 +54,36 @@ module VCR
           return unless cassettes_keeping_webmock_enabled.delete(cassette)
 
           if cassettes_keeping_webmock_enabled.empty?
-            toggling_webmock { ::WebMock.disable!(@webmock_disable_options || {}) }
+            toggling_webmock { ::WebMock.disable!(@webmock_disable_options) }
           end
         end
       end
 
       # The user's own WebMock.enable! (no disable options) or disable! wins
-      # over the state VCR would restore on eject. It runs under the lock,
-      # so no cassette is inserted between the bookkeeping and the toggle.
+      # over the state VCR would restore on eject. The lock is held while
+      # WebMock is toggled, so that a cassette inserted meanwhile in another
+      # thread cannot be left with WebMock disabled. A signal handler cannot
+      # take the lock, so there the state is updated without it.
       def webmock_toggled_by_user(disable_options)
         return yield if Thread.current[:_vcr_toggling_webmock]
 
-        REENABLED_WEBMOCK_MUTEX.synchronize do
-          cassettes_keeping_webmock_enabled.clear
-          @webmock_disable_options = disable_options
-          yield
+        locked = begin
+          REENABLED_WEBMOCK_MUTEX.lock
+        rescue ThreadError
+          false
         end
+
+        begin
+          forget_reenabled_webmock(disable_options)
+          yield
+        ensure
+          REENABLED_WEBMOCK_MUTEX.unlock if locked
+        end
+      end
+
+      def forget_reenabled_webmock(disable_options = nil)
+        cassettes_keeping_webmock_enabled.clear
+        @webmock_disable_options = disable_options
       end
 
       REENABLED_WEBMOCK_MUTEX = Mutex.new

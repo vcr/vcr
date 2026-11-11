@@ -83,8 +83,7 @@ RSpec.describe "WebMock hook", with_monkey_patches: :webmock do
 
     after do
       ::WebMock::HttpLibAdapterRegistry.instance.each_adapter { |_name, adapter| adapter.enable! }
-      VCR::LibraryHooks::WebMock.cassettes_keeping_webmock_enabled.clear
-      VCR::LibraryHooks::WebMock.instance_variable_set(:@webmock_disable_options, nil)
+      VCR::LibraryHooks::WebMock.forget_reenabled_webmock
     end
 
     it "re-enables WebMock so that VCR handles requests again" do
@@ -114,12 +113,15 @@ RSpec.describe "WebMock hook", with_monkey_patches: :webmock do
         end
       end
 
-      inserted.pop
-      VCR.eject_cassette
-      expect(webmock_enabled?).to be true
+      begin
+        inserted.pop
+        VCR.eject_cassette
+        expect(webmock_enabled?).to be true
+      ensure
+        eject << true
+        other_thread.join
+      end
 
-      eject << true
-      other_thread.join
       expect(webmock_enabled?).to be false
     end
 
@@ -151,6 +153,32 @@ RSpec.describe "WebMock hook", with_monkey_patches: :webmock do
       end
 
       expect(HTTPClient.new.get("http://localhost:#{VCR::SinatraApp.port}/foo").body).to eq("FOO!")
+    end
+
+    it "leaves Net::HTTP untouched after WebMock.enable!(except: [:net_http])" do
+      ::WebMock.enable!(except: [:net_http])
+
+      VCR.use_cassette("example", record: :none) do
+        expect(webmock_enabled?).to be false
+        expect(make_request).to eq("FOO!")
+      end
+
+      expect(webmock_enabled?).to be false
+    end
+
+    it "lets a signal handler call WebMock.disable!", if: Signal.list.key?("USR1") do
+      disabled = false
+      previous_handler = Signal.trap("USR1") do
+        ::WebMock.disable!
+        disabled = true
+      end
+
+      Process.kill("USR1", Process.pid)
+      deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 5
+      sleep 0.01 until disabled || Process.clock_gettime(Process::CLOCK_MONOTONIC) > deadline
+      expect(disabled).to be true
+    ensure
+      Signal.trap("USR1", previous_handler)
     end
 
     it "does not insert the cassette when re-enabling WebMock fails" do
