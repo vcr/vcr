@@ -27,6 +27,7 @@ module VCR
       instance_variable_set(ivar, nil)
     end
     initialize_ivars
+    LibraryHooks::WebMock.forget_reenabled_webmock if defined?(LibraryHooks::WebMock)
     configuration.hook_into hook if hook
   end
 end
