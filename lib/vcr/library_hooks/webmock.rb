@@ -33,19 +33,33 @@ module VCR
 
       # WebMock.disable! also removes the hook VCR relies on, so a cassette
       # inserted afterwards would silently let requests through (#1062).
-      # WebMock is disabled again when that cassette is ejected.
+      # WebMock is disabled again once every cassette inserted since then,
+      # in any thread, is ejected.
       def reenable_webmock_if_disabled(cassette)
-        return unless ::Net::HTTP.equal?(::WebMock::HttpLibAdapters::NetHttpAdapter::OriginalNetHTTP)
+        REENABLED_WEBMOCK_MUTEX.synchronize do
+          if ::Net::HTTP.equal?(::WebMock::HttpLibAdapters::NetHttpAdapter::OriginalNetHTTP)
+            ::WebMock.enable!(except: adapters_hooked_directly_by_vcr)
+            cassettes_keeping_webmock_enabled.clear
+          elsif cassettes_keeping_webmock_enabled.empty?
+            return
+          end
 
-        ::WebMock.enable!(except: adapters_hooked_directly_by_vcr)
-        @cassette_that_reenabled_webmock = cassette
+          cassettes_keeping_webmock_enabled << cassette
+        end
       end
 
       def restore_disabled_webmock(cassette)
-        return unless cassette && cassette.equal?(@cassette_that_reenabled_webmock)
+        REENABLED_WEBMOCK_MUTEX.synchronize do
+          return unless cassettes_keeping_webmock_enabled.delete(cassette)
 
-        @cassette_that_reenabled_webmock = nil
-        ::WebMock.disable!
+          ::WebMock.disable! if cassettes_keeping_webmock_enabled.empty?
+        end
+      end
+
+      REENABLED_WEBMOCK_MUTEX = Mutex.new
+
+      def cassettes_keeping_webmock_enabled
+        @cassettes_keeping_webmock_enabled ||= []
       end
 
       def adapters_hooked_directly_by_vcr

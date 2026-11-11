@@ -102,6 +102,25 @@ RSpec.describe "WebMock hook", with_monkey_patches: :webmock do
       expect(make_request).to eq("FOO!")
     end
 
+    it "keeps WebMock enabled until the cassettes of every thread are ejected" do
+      inserted, eject = Queue.new, Queue.new
+      VCR.insert_cassette("main thread", record: :none)
+      other_thread = Thread.new do
+        VCR.use_cassette("other thread", record: :none) do
+          inserted << true
+          eject.pop
+        end
+      end
+
+      inserted.pop
+      VCR.eject_cassette
+      expect(webmock_enabled?).to be true
+
+      eject << true
+      other_thread.join
+      expect(webmock_enabled?).to be false
+    end
+
     it "keeps the WebMock adapters of libraries VCR hooks into directly disabled" do
       expect(::WebMock).to receive(:enable!).with(except: [:excon, :typhoeus])
 
