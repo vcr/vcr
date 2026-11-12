@@ -1,6 +1,7 @@
   - [CHANGELOG](/CHANGELOG.md)
   - [CONTRIBUTING](/CONTRIBUTING.md)
   - [DEVELOPMENT](/DEVELOPMENT.md)
+  - [About these examples](/about_these_examples.md)
   - [Allow unused http interactions](/allow_unused_http_interactions.md)
   - Cassettes
     - [Allow unused http interactions](/cassettes/allow_unused_http_interactions.md)
@@ -27,6 +28,7 @@
     - [Preserve exact body bytes](/configuration/preserve_exact_body_bytes.md)
     - [Query parser](/configuration/query_parser.md)
     - [Uri parser](/configuration/uri_parser.md)
+  - [Getting started](/getting_started.md)
   - Hooks
     - [After http request](/hooks/after_http_request.md)
     - [Around http request](/hooks/around_http_request.md)
@@ -45,7 +47,7 @@
     - [None](/record_modes/none.md)
     - [Once](/record_modes/once.md)
     - [Record on error](/record_modes/record_on_error.md)
-  - Request matching
+  - [Request matching](/request_matching/README.md)
     - [Body](/request_matching/body.md)
     - [Body as json](/request_matching/body_as_json.md)
     - [Custom matcher](/request_matching/custom_matcher.md)
