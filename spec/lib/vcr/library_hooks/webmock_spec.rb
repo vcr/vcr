@@ -70,6 +70,145 @@ RSpec.describe "WebMock hook", with_monkey_patches: :webmock do
     end
   end
 
+  describe "inserting a cassette after WebMock.disable!" do
+    def make_request
+      Net::HTTP.get_response(URI("http://localhost:#{VCR::SinatraApp.port}/foo")).body
+    end
+
+    def webmock_enabled?
+      !::Net::HTTP.equal?(::WebMock::HttpLibAdapters::NetHttpAdapter::OriginalNetHTTP)
+    end
+
+    before { ::WebMock.disable! }
+
+    after do
+      ::WebMock::HttpLibAdapterRegistry.instance.each_adapter { |_name, adapter| adapter.enable! }
+      VCR::LibraryHooks::WebMock.forget_reenabled_webmock
+    end
+
+    it "re-enables WebMock so that VCR handles requests again" do
+      VCR.use_cassette("example", record: :none) do
+        expect(webmock_enabled?).to be true
+        expect { make_request }.to raise_error(VCR::Errors::UnhandledHTTPRequestError)
+      end
+    end
+
+    it "disables WebMock again when that cassette is ejected" do
+      VCR.use_cassette("outer", record: :none) do
+        VCR.use_cassette("inner", record: :none) { }
+        expect(webmock_enabled?).to be true
+      end
+
+      expect(webmock_enabled?).to be false
+      expect(make_request).to eq("FOO!")
+    end
+
+    it "keeps WebMock enabled until the cassettes of every thread are ejected" do
+      inserted, eject = Queue.new, Queue.new
+      VCR.insert_cassette("main thread", record: :none)
+      other_thread = Thread.new do
+        VCR.use_cassette("other thread", record: :none) do
+          inserted << true
+          eject.pop
+        end
+      end
+
+      begin
+        inserted.pop
+        VCR.eject_cassette
+        expect(webmock_enabled?).to be true
+      ensure
+        eject << true
+        other_thread.join
+      end
+
+      expect(webmock_enabled?).to be false
+    end
+
+    it "leaves WebMock enabled when the user enabled it while the cassette was in" do
+      VCR.use_cassette("example", record: :none) { ::WebMock.enable! }
+
+      expect(webmock_enabled?).to be true
+    end
+
+    it "restores the adapters a partial WebMock.disable! left enabled" do
+      original_http_client = ::WebMock::HttpLibAdapters::HTTPClientAdapter::OriginalHttpClient
+      ::WebMock.disable!(except: [:httpclient])
+
+      VCR.use_cassette("example", record: :none) do
+        expect(webmock_enabled?).to be true
+      end
+
+      expect(webmock_enabled?).to be false
+      expect(::HTTPClient).not_to equal(original_http_client)
+    end
+
+    it "re-enables WebMock after a partial WebMock.disable! that leaves Net::HTTP hooked" do
+      ::WebMock.disable!(except: [:net_http])
+
+      VCR.use_cassette("example", record: :none) do
+        expect {
+          HTTPClient.new.get("http://localhost:#{VCR::SinatraApp.port}/foo")
+        }.to raise_error(VCR::Errors::UnhandledHTTPRequestError)
+      end
+
+      expect(HTTPClient.new.get("http://localhost:#{VCR::SinatraApp.port}/foo").body).to eq("FOO!")
+    end
+
+    it "leaves Net::HTTP untouched after WebMock.enable!(except: [:net_http])" do
+      ::WebMock.enable!(except: [:net_http])
+
+      VCR.use_cassette("example", record: :none) do
+        expect(webmock_enabled?).to be false
+        expect(make_request).to eq("FOO!")
+      end
+
+      expect(webmock_enabled?).to be false
+    end
+
+    it "lets a signal handler call WebMock.disable!", if: Signal.list.key?("USR1") do
+      disabled = false
+      previous_handler = Signal.trap("USR1") do
+        ::WebMock.disable!
+        disabled = true
+      end
+
+      Process.kill("USR1", Process.pid)
+      deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 5
+      sleep 0.01 until disabled || Process.clock_gettime(Process::CLOCK_MONOTONIC) > deadline
+      expect(disabled).to be true
+    ensure
+      Signal.trap("USR1", previous_handler)
+    end
+
+    it "does not insert the cassette when re-enabling WebMock fails" do
+      allow(::WebMock).to receive(:enable!).and_raise("boom")
+
+      expect { VCR.insert_cassette("example") }.to raise_error("boom")
+      expect(VCR.current_cassette).to be_nil
+    end
+
+    it "keeps the WebMock adapters of libraries VCR hooks into directly disabled" do
+      expect(::WebMock).to receive(:enable!).with(except: [:excon, :typhoeus])
+
+      VCR.insert_cassette("example")
+    end
+
+    it "leaves WebMock disabled when the cassette is ignored because VCR is turned off" do
+      VCR.turned_off(ignore_cassettes: true) do
+        VCR.insert_cassette("example")
+      end
+
+      expect(webmock_enabled?).to be false
+    end
+  end
+
+  it "does not re-enable WebMock on cassette insertion when it is already enabled" do
+    expect(::WebMock).not_to receive(:enable!)
+
+    VCR.insert_cassette("example")
+  end
+
   http_libs = %w[net/http patron httpclient em-http-request curb typhoeus excon]
   http_libs.each do |lib|
     other = []

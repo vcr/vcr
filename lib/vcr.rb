@@ -137,6 +137,7 @@ module VCR
       end
 
       cassette = Cassette.new(name, options)
+      LibraryHooks::WebMock.reenable_webmock_if_disabled(cassette) if defined?(LibraryHooks::WebMock)
       context_cassettes.push(cassette)
       cassette
     elsif !ignore_cassettes?
@@ -163,6 +164,7 @@ module VCR
     cassette
   ensure
     context_cassettes.delete(cassette)
+    LibraryHooks::WebMock.restore_disabled_webmock(cassette) if defined?(LibraryHooks::WebMock)
   end
 
   # Inserts a cassette using the given name and options, runs the given
