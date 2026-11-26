@@ -5,6 +5,12 @@ set -e
 go install github.com/raviqqe/gherkin2markdown@latest
 gherkin2markdown features/ docs/
 echo ">> Feature file to markdown ok"
+find features -name '*.md' | while read -r markdown_file; do
+  destination="docs/${markdown_file#features/}"
+  mkdir -p "$(dirname "$destination")"
+  cp -f "$markdown_file" "$destination"
+done
+echo ">> Copy hand written Markdown files from features/ ok"
 cp -f CHANGELOG.md CONTRIBUTING.md DEVELOPMENT.md README.md docs/
 echo ">> Copy files like CHANGELOG.md ok"
 node script/docsify-auto-sidebar.js -d docs
