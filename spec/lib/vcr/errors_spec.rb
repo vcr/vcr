@@ -37,6 +37,17 @@ module VCR
           )
         end
 
+        context 'when the default_cassette_options include a custom matcher with a description' do
+          it 'identifies the request by its headers when the default_cassette_options include the headers in the match_requests_on option' do
+            VCR.configuration.register_request_matcher(:custom, -> (request) { "Custom: #{request.method.to_s.chars.sort.join("")}" }) {}
+            VCR.configuration.default_cassette_options[:match_requests_on] = [:custom]
+
+            expect(message_for(:method => :post)).to include(
+              'Custom: opst'
+            )
+          end
+        end
+
         it 'mentions that there is no cassette' do
           expect(message).to include('There is currently no cassette in use.')
         end
